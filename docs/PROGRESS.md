@@ -156,15 +156,15 @@ Mini plan: khảo sát giao diện và directive; chỉnh chữ/icon/responsive;
 
 User chọn Admin IT đầu tiên: store 1 / user 111. Mini plan: xác thực native và session riêng; quyền/scope server; quản lý mapping và audit; kiểm HTTP/DB/browser; bàn giao SQL host. Đã kiểm local 46 browser + 32 routing + 8 integration checks, review độc lập không phát hiện lỗi. Hosting chưa chạy SQL Phase 2 hay kết nối runtime. Chi tiết PHASE02_VERIFY.md và BE_GATE_02.md.
 
-| Mã | Chức năng | Vùng | Trạng thái | Verify | Ghi chú |
-|---|---|---|---|---|---|
-| F2.1 | Đăng nhập giao diện mới | BE+FE | [x] local | PHP lint, browser đăng nhập/đăng xuất | Host chờ SQL/config; tái dùng credential native |
-| F2.2 | Ba vai trò | BE | [x] local | URL/API trái quyền 403 | Không kế thừa PM Admin |
-| F2.3 | Scope bộ phận/store | BE | [x] local | Hai non-admin, cross-store, dept, session revision | Áp dụng API tài sản đọc hiện có |
-| F2.4 | Quản lý quyền user hiện có | BE+FE | [x] local | Cấp/đổi quyền, last Admin guard, UI persisted | Không tạo tài khoản/đổi mật khẩu native |
-| F2.5 | Audit CRUD tài sản | BE | [~] | Writer allowlist integration đạt | Hook cần Phase 3 CRUD, chưa xong |
-| F2.6 | Xem log và bộ lọc | BE+FE | [x] local | Browser đọc audit quyền và màn hình | Log auth/quyền đã gắn |
-| F2.7 | Rate limit/CSRF | BE | [x] local | Thử sai lần 6:429; thiếu token:403 | Shared DB buckets, HTTPS host chờ UAT |
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F2.1 | Đăng nhập giao diện mới | BE+FE | [x] local | 6f461ef | PHP lint, browser đăng nhập/đăng xuất | Host chờ SQL/config; tái dùng credential native |
+| F2.2 | Ba vai trò | BE | [x] local | e41e922 | URL/API trái quyền 403 | Không kế thừa PM Admin; quyền CRUD kiểm tiếp Phase 3 |
+| F2.3 | Scope bộ phận/store | BE | [x] local | 9fcc1f2 | Hai non-admin, cross-store, dept, session revision | Áp dụng API tài sản đọc hiện có |
+| F2.4 | Quản lý quyền user hiện có | BE+FE | [x] local | fa05be8 | Cấp/đổi quyền, last Admin guard, UI persisted | Không tạo tài khoản/đổi mật khẩu native |
+| F2.5 | Audit CRUD tài sản | BE | [~] | — | Writer allowlist integration đạt | Hook cần Phase 3 CRUD, chưa xong |
+| F2.6 | Xem log và bộ lọc | BE+FE | [x] local | 9a6e9ab | Browser đọc audit quyền và màn hình | Log auth/quyền đã gắn |
+| F2.7 | Rate limit/CSRF | BE | [x] local | 44c4246 | Thử sai lần 6:429; thiếu token:403 | Shared DB buckets, HTTPS host chờ UAT |
 
 Không merge/tag phase done: F2.5 và host UAT còn mở. Danh mục host Phase 1 đã được user xác nhận 6/6/6 bằng ảnh.
 
@@ -177,3 +177,5 @@ F2.3 lưu `9fcc1f2`. F2.4: màn hình phân quyền tài khoản hiện có, b�
 F2.4 lưu `fa05be8`. F2.6: nhật ký Admin lọc thao tác/người/ngày Việt Nam, dữ liệu trước/sau được lọc allowlist; browser đọc log thật fixture và integration bỏ secret đạt. F2.5 còn hook CRUD Phase 3.
 
 F2.6 lưu `9a6e9ab`. F2.1: tích hợp login/logout, Smarty protected shell và dispatcher API, audit auth, cấu hình riêng; browser 3 vai trò đạt. SQL đọc/khởi tạo Admin/verify đã thực thi local; EXPLAIN scoped list/aggregate dùng idx_ita_assets_department (ref, 6 rows). Chi tiết lệnh, rollback và bước host ở PHASE02_VERIFY.md.
+
+Tích hợp F2.1 lưu `6f461ef`. Lần kiểm cuối: 47 browser checks (bổ sung không lỗi JS runtime trên role pages), 32 routing, 8 DB integration đều đạt. Không có thao tác hosting hoặc push. Working tree còn source legacy chưa có baseline như audit trước; không stage mã cũ ngoài phạm vi.
