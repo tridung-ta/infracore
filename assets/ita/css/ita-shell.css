@@ -35,3 +35,26 @@ html{scrollbar-color:var(--ita-border) var(--ita-bg)}
 #data-content[aria-busy="true"] .asset-table-wrap{min-height:360px}
 @media(min-width:768px) and (max-width:960px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi{min-height:138px}.chart-legend{font-size:12px}.distribution-body{gap:18px;padding-inline:14px}.attention-panel{grid-template-columns:1fr 1.6fr}.attention-panel .text-link{grid-column:1/-1;margin-top:0}.panel-heading .subtle-tag{font-size:10px}.heading-meta{display:none}}
 @media(max-width:767px){.icon-button{width:44px;height:44px}.secondary-button,.primary-button,.pagination-controls .secondary-button{min-height:44px}.detail-button{min-height:44px;min-width:44px}.form-control,.form-select{font-size:16px;min-height:44px}.kpi{min-height:144px}.kpi-glyph{width:18px;height:18px}.asset-name{align-items:start}.asset-name strong{overflow-wrap:anywhere}.asset-table tr{grid-template-columns:minmax(0,1fr) auto}.asset-filters>div{min-width:0}.chart-legend{font-size:12px}.attention-panel .panel-heading{padding-bottom:6px}.detail-grid{gap:20px}.app-toast{font-size:13px;line-height:1.5}}
+/* Phase 2 access surfaces inherit the established ITA visual language. */
+body[data-mode="mock"] .live-only{display:none!important}
+.logout-form{margin-left:auto}.logout-form .icon-button{width:36px;height:36px}
+.profile>.nav-label{min-width:0;overflow-wrap:anywhere}.profile{gap:8px}.profile .avatar{width:28px;height:28px}
+.login-page{min-height:100dvh;display:grid;place-items:center;padding:24px}
+.login-content{width:min(100%,460px);padding:0;margin:auto}
+.login-content>.brand{justify-content:center;padding:0 0 32px}
+.login-card{padding:32px;background:var(--ita-surface);border:1px solid var(--ita-border);border-radius:12px}
+.login-card h1{font-size:26px;letter-spacing:-.6px;margin:0 0 12px}.login-card>p{font-size:14px;margin-bottom:24px}
+.login-card label{display:block;font-size:13px;margin:18px 0 8px}.login-card .form-control{font-size:16px;min-height:46px}
+.password-field{display:flex;gap:8px;align-items:center}.password-field .form-control{min-width:0}.password-field button{min-height:46px}
+.login-submit{width:100%;min-height:46px;margin-top:24px;font-size:14px;font-weight:600}
+.login-help{font-size:12px!important;margin:24px 0 0!important;line-height:1.7}.login-footer{text-align:center;font-size:12px;margin:24px 0 0}
+.login-error{border:1px solid var(--ita-danger);background:var(--ita-danger-soft);color:var(--ita-text);padding:12px;font-size:13px;border-radius:6px}
+.admin-panel{margin-top:24px}.admin-message{margin:18px 20px;color:var(--ita-text-muted);font-size:13px}
+.admin-table-wrap{overflow:auto;max-width:100%}.admin-panel .asset-table{min-width:700px}
+.admin-panel .asset-table td{vertical-align:top}.admin-panel pre{max-width:320px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;margin:12px 0}
+.admin-panel summary{cursor:pointer;color:var(--ita-accent);min-height:32px}.admin-panel input[type="date"]{min-width:0}
+.access-form{padding:24px;border-top:1px solid var(--ita-border);max-width:660px}.access-form>label{display:block;margin:18px 0 8px;font-size:13px}
+.access-form fieldset{margin-top:24px}.access-form legend{font-size:14px;font-weight:600}.access-form fieldset p{font-size:12px}
+.scope-options{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}.checkbox-label{display:flex!important;align-items:center;gap:10px;min-height:44px;font-size:13px}
+.checkbox-label input{width:18px;height:18px;accent-color:var(--ita-accent);flex-shrink:0}
+@media(max-width:767px){.login-page{padding:18px}.login-card{padding:24px}.login-card h1{font-size:24px}.scope-options{grid-template-columns:1fr}.access-form{padding:20px}.admin-panel .asset-table{display:table}.admin-panel .asset-table thead{display:table-header-group}.admin-panel .asset-table tbody{display:table-row-group}.admin-panel .asset-table tr{display:table-row;padding:0}.admin-panel .asset-table th,.admin-panel .asset-table td{display:table-cell!important;padding:12px!important;border-bottom:1px solid var(--ita-border)}.admin-panel .asset-table td:nth-child(3){padding-left:12px!important}.logout-form .icon-button{width:44px;height:44px}}

@@ -15,7 +15,7 @@ function itaRequestDecision(string $path, array $query, string $method, array $f
     if (!$flags['enabled'] || $flags['legacy_enabled']) {
         return 'legacy';
     }
-    if (!in_array($method, ['GET', 'HEAD'], true)) {
+    if (!in_array($method, ['GET', 'HEAD', 'POST'], true)) {
         return 'denied';
     }
     $path = rawurldecode($path);
@@ -26,16 +26,22 @@ function itaRequestDecision(string $path, array $query, string $method, array $f
     }
     if (preg_match('~^/assets/ita/(?:css|js|mock|vendor)/[a-zA-Z0-9_./-]+\.(?:css|js|json|woff2)$~D', $path)
         || $path === '/assets/fonts/inter/InterVariable.woff2') {
-        return str_contains($path, '..') ? 'not_found' : 'static';
+        return $method==='POST' ? 'denied' : (str_contains($path, '..') ? 'not_found' : 'static');
     }
     if ($path === '/service-worker.js') {
-        return 'worker';
+        return $method==='POST' ? 'denied' : 'worker';
     }
     if (isset($query['op']) && !is_string($query['op'])) {
         return 'bad_request';
     }
     if ($path === '/admin.php' && ($query['op'] ?? '') === 'ita') {
+        if ($method==='POST' && !in_array($query['act'] ?? null, ['login','logout','access'], true)) {
+            return 'denied';
+        }
         return 'shell';
+    }
+    if ($method==='POST') {
+        return 'denied';
     }
     return 'redirect';
 }

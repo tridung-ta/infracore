@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="vi" data-bs-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Đăng nhập — InfraCore</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/assets/ita/vendor/bootstrap/5.3.8/bootstrap.min.css"><link rel="stylesheet" href="/assets/ita/css/ita-tokens.css"><link rel="stylesheet" href="/assets/ita/css/ita-shell.css"><script src="/assets/ita/js/ita-login.js" defer></script></head>
+<body class="login-page">
+ {include file="admin/ita/partials/icons.tpl.html"}
+ <main class="login-content"><a class="brand" href="/admin.php?op=ita&amp;act=login"><span class="brand-mark"><svg class="ita-icon" aria-hidden="true"><use href="#ita-icon-monitor"/></svg></span><span class="brand-text">Infra<span>Core</span></span></a>
+ <section class="login-card" aria-labelledby="login-title"><h1 id="login-title">Đăng nhập InfraCore</h1><p class="muted">Truy cập tài sản và công việc trong phạm vi bạn phụ trách.</p>
+ {if $itaError}<div class="login-error" role="alert">{$itaError|escape:'html'}</div>{/if}
+ <form method="post" action="/admin.php?op=ita&amp;act=login" id="login-form">
+  <input type="hidden" name="csrf_token" value="{$itaCsrf|escape:'html'}">
+  <label for="username">Tên đăng nhập hoặc email</label><input class="form-control" id="username" name="username" autocomplete="username" maxlength="200" required autofocus>
+  <label for="password">Mật khẩu</label><div class="password-field"><input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required><button type="button" class="secondary-button" id="password-toggle" aria-controls="password" aria-pressed="false">Hiện</button></div>
+  <button type="submit" class="primary-button login-submit">Đăng nhập</button>
+ </form><p class="login-help muted">Chưa có quyền truy cập? Liên hệ Admin IT của bạn.</p></section><p class="login-footer muted">Hệ thống quản lý & tối ưu hạ tầng CNTT</p></main>
+</body></html>
