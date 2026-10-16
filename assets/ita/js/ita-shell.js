@@ -13,6 +13,15 @@
   if (text !== undefined) node.textContent = text;
   return node;
  }
+ function svgIcon(name,className='') {
+  const node=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  node.setAttribute('class',`ita-icon ${className}`);
+  node.setAttribute('aria-hidden','true');
+  const use=document.createElementNS('http://www.w3.org/2000/svg','use');
+  use.setAttribute('href',`#ita-icon-${name}`);
+  node.append(use);
+  return node;
+ }
  function notify(message) {
   $('toast').textContent = message;
   $('toast').hidden = false;
@@ -30,6 +39,7 @@
   if (open) $('sidebar').querySelector('a').focus();
  }
  function changeView() {
+  const menuWasOpen=$('sidebar').classList.contains('is-open');
   const candidate = location.hash.slice(1);
   state.view = Object.hasOwn(titles,candidate)?candidate:'overview';
   const [title,description] = titles[state.view];
@@ -45,16 +55,16 @@
    else link.removeAttribute('aria-current');
   });
   setMobileMenu(false);
+  if(menuWasOpen)$('main').focus();
  }
  function renderKpis() {
   const assets=state.data.assets;
   const count=(status)=>assets.filter((a)=>a.status===status).length;
-  const cards=[['Tổng tài sản',assets.length,'Thiết bị trong bộ dữ liệu mẫu','accent','▤'],['Đang sử dụng',count('in_use'),`${Math.round(count('in_use')/assets.length*100)}% tổng số tài sản`,'success','◉'],['Đang bảo trì',count('maintenance'),'Cần theo dõi tiến độ xử lý','warning','⚒'],['Thiết bị hỏng',count('broken'),'Ưu tiên kiểm tra & khắc phục','danger','△']];
+  const cards=[['Tổng tài sản',assets.length,'Thiết bị trong bộ dữ liệu mẫu','accent','monitor'],['Đang sử dụng',count('in_use'),`${Math.round(count('in_use')/assets.length*100)}% tổng số tài sản`,'success','check'],['Đang bảo trì',count('maintenance'),'Cần theo dõi tiến độ xử lý','warning','wrench'],['Thiết bị hỏng',count('broken'),'Ưu tiên kiểm tra & khắc phục','danger','warning']];
   $('kpi-grid').replaceChildren(...cards.map(([label,value,detail,tone,glyph])=>{
    const card=el('article','kpi');
    const heading=el('div','kpi-label',label);
-   const icon=el('span',`kpi-glyph ${tone}-text`,glyph);
-   icon.setAttribute('aria-hidden','true'); heading.append(icon);
+   heading.append(svgIcon(glyph,`kpi-glyph ${tone}-text`));
    card.append(heading,el('div','kpi-value',String(value).padStart(2,'0')),el('div','kpi-detail',detail));
    return card;
   }));
@@ -113,10 +123,10 @@
   const start=(state.page-1)*state.pageSize;const visible=assets.slice(start,start+state.pageSize);
   $('asset-rows').replaceChildren(...visible.map((asset)=>{
    const row=el('tr');const name=el('td');const identity=el('div','asset-name');const label=el('div');
-   const glyph=el('span','asset-glyph',asset.category==='Switch / Router'?'⌘':'▣');glyph.setAttribute('aria-hidden','true');
+   const glyph=el('span','asset-glyph');glyph.append(svgIcon(asset.category==='Switch / Router'?'network':'monitor'));
    label.append(el('strong','',asset.name),el('span','asset-code',asset.code));identity.append(glyph,label);name.append(identity);
    const status=el('td');status.append(el('span',`status-badge ${asset.status}`,statuses[asset.status]));
-   const action=el('td');const button=el('button','detail-button','↗');button.type='button';button.setAttribute('aria-label',`Xem chi tiết ${asset.code}`);button.addEventListener('click',()=>showDetails(asset.id,button));action.append(button);
+   const action=el('td');const button=el('button','detail-button');button.append(svgIcon('arrow'));button.type='button';button.setAttribute('aria-label',`Xem chi tiết ${asset.code}`);button.addEventListener('click',()=>showDetails(asset.id,button));action.append(button);
    row.append(name,el('td','muted',asset.category),el('td','',asset.department),status,el('td','muted',asset.warranty),action);return row;
   }));
   $('empty-state').hidden=assets.length!==0;
