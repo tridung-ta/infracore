@@ -1,0 +1,10 @@
+@font-face{font-family:Inter;src:url('/assets/fonts/inter/InterVariable.woff2') format('woff2');font-weight:100 900;font-display:swap}
+:root,[data-bs-theme="dark"]{
+ --ita-bg:#081425;--ita-accent:#00d4ff;--ita-success:#24d6a6;--ita-warning:#ffb547;--ita-danger:#ff5c6c;
+ --ita-surface:#0e1f36;--ita-surface-2:#16294a;--ita-text:#e6eef8;--ita-text-muted:#9eb0c8;
+ --ita-border:#263b55;--ita-accent-soft:#102e40;--ita-success-soft:#10372f;--ita-warning-soft:#352c1d;--ita-danger-soft:#382331;
+ --ita-on-accent:#041721;--ita-scrim:#020b18cc;--ita-grid:#152a41;--ita-transparent:transparent;
+ --bs-body-bg:var(--ita-bg);--bs-body-color:var(--ita-text);--bs-border-color:var(--ita-border);--bs-primary:var(--ita-accent);
+ --bs-secondary-color:var(--ita-text-muted);--bs-link-color:var(--ita-accent);--bs-link-hover-color:var(--ita-text);
+ --bs-body-font-family:Inter,system-ui,sans-serif;--bs-tertiary-bg:var(--ita-surface-2);
+}
