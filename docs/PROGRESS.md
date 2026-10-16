@@ -171,3 +171,5 @@ Không merge/tag phase done: F2.5 và host UAT còn mở. Danh mục host Phase 
 Lưu local: F2.7 `44c4246`; F2.2: DAO tách vai trò ITA và kiểm native active mỗi request, SQL bootstrap 111 có guard. Verify vai trò qua browser/API trái quyền và bootstrap SQL local đạt; chưa áp dụng host.
 
 F2.2 lưu `e41e922`. F2.3: DAO scoped read, API pagination/aggregate và hiển thị live có retry; browser xác nhận scope/403/404 và hồi quy static MOCK đạt. Chưa có CRUD hoặc số liệu host.
+
+F2.3 lưu `9fcc1f2`. F2.4: màn hình phân quyền tài khoản hiện có, bắt buộc scope non-admin, bảo vệ Admin active cuối cùng và tăng revision thu hồi session; browser cấp/đổi quyền, UI đọc lại, session cũ bị chặn đạt.
