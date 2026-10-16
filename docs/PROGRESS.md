@@ -167,3 +167,5 @@ User chọn Admin IT đầu tiên: store 1 / user 111. Mini plan: xác thực na
 | F2.7 | Rate limit/CSRF | BE | [x] local | Thử sai lần 6:429; thiếu token:403 | Shared DB buckets, HTTPS host chờ UAT |
 
 Không merge/tag phase done: F2.5 và host UAT còn mở. Danh mục host Phase 1 đã được user xác nhận 6/6/6 bằng ảnh.
+
+Lưu local: F2.7 `44c4246`; F2.2: DAO tách vai trò ITA và kiểm native active mỗi request, SQL bootstrap 111 có guard. Verify vai trò qua browser/API trái quyền và bootstrap SQL local đạt; chưa áp dụng host.
