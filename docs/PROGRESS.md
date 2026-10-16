@@ -23,8 +23,8 @@ Cập nhật 16/10/2026. Chưa nghiệm thu yêu cầu sản phẩm nào trong 1
 | F1.4 | tạo schema ticket, audit, ngân sách và import | SQL | [~] | commit F1.4 trên feature/ita-phase01-ui | local MySQL: tạo bảng/constraint đạt | SQL giao user; MariaDB host chờ user chạy |
 | F1.5 | feat(db): seed dữ liệu mẫu dev/test [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F1.6 | Design tokens + Bootstrap dark theme | FE | [x] | 051f80b | Playwright 1366/768/390 đạt, Bootstrap hash trùng nguồn | Chỉ FE, chưa tích hợp PHP |
-| F1.7 | Layout sidebar, topbar, breadcrumb, toast | FE | [x] | commit F1.7 trên feature/ita-phase01-ui | PHP/Smarty + browser MOCK 1366/768/390 đạt | Chưa có live DB/auth |
-| F1.8 | Component dùng chung | FE | [x] | commit F1.8 trên feature/ita-phase01-ui | bảng/KPI/badge/modal chi tiết + confirm cancel/accept/escaping đạt | API confirm không tự ghi DB |
+| F1.7 | Layout sidebar, topbar, breadcrumb, toast | FE | [x] | c61ae8f | PHP/Smarty + browser MOCK 1366/768/390 đạt | Chưa có live DB/auth |
+| F1.8 | Component dùng chung | FE | [x] | d342024 | bảng/KPI/badge/modal chi tiết + confirm cancel/accept/escaping đạt | API confirm không tự ghi DB |
 | F1.9 | Sidebar mới chỉ có điều hướng ITA | FE | [x] | commit F1.9 trên feature/ita-phase01-ui | browser MOCK 1366/768/390 đạt | Tách file riêng, giữ nguyên menu cũ; guard BE chưa làm |
 | F1.10 | feat(legacy): guard route cũ theo cờ ITA_LEGACY_UI_ENABLED [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F2.1 | feat(auth): đăng nhập trên giao diện mới [BE+FE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
@@ -142,3 +142,5 @@ Mini plan: render khung bằng Smarty; kiểm soát route trước bootstrap; ho
 - F1.5a: SQL danh mục khởi tạo 6 loại/6 bộ phận/6 cấu hình cho store 1, giữ dữ liệu hiện có; đã kiểm lặp local, host chờ user chạy.
 - F1.5b: bộ seed 300–500 tài sản và dữ liệu nghiệp vụ dev/test, chưa làm; cần chọn actor dev/test đúng, không gán thao tác giả cho user thật.
 - F1.10: mã gate đã kiểm local; còn Apache/host và khôi phục legacy E2E, chưa nghiệm thu toàn bộ.
+
+Commits build mới: F1.7 c61ae8f; F1.8 d342024; gate PHP F1.10 fcc900d (còn kiểm Apache/legacy); danh mục F1.5a 0495e7d (host chờ user chạy). Không merge/tag phase done.
