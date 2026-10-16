@@ -23,8 +23,8 @@ Cập nhật 16/10/2026. Chưa nghiệm thu yêu cầu sản phẩm nào trong 1
 | F1.4 | tạo schema ticket, audit, ngân sách và import | SQL | [~] | commit F1.4 trên feature/ita-phase01-ui | local MySQL: tạo bảng/constraint đạt | SQL giao user; MariaDB host chờ user chạy |
 | F1.5 | feat(db): seed dữ liệu mẫu dev/test [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F1.6 | Design tokens + Bootstrap dark theme | FE | [x] | 051f80b | Playwright 1366/768/390 đạt, Bootstrap hash trùng nguồn | Chỉ FE, chưa tích hợp PHP |
-| F1.7 | Layout sidebar, topbar, breadcrumb, toast | FE | [~] | chưa có | browser MOCK đạt; UI_PHASE01_VERIFY.md | Chưa commit và chưa tích hợp PHP |
-| F1.8 | Component dùng chung | FE | [~] | chưa có | bảng/KPI/badge/modal chi tiết MOCK đạt | Modal xác nhận nghiệp vụ chờ nối hành động |
+| F1.7 | Layout sidebar, topbar, breadcrumb, toast | FE | [x] | commit F1.7 trên feature/ita-phase01-ui | PHP/Smarty + browser MOCK 1366/768/390 đạt | Chưa có live DB/auth |
+| F1.8 | Component dùng chung | FE | [x] | commit F1.8 trên feature/ita-phase01-ui | bảng/KPI/badge/modal chi tiết + confirm cancel/accept/escaping đạt | API confirm không tự ghi DB |
 | F1.9 | Sidebar mới chỉ có điều hướng ITA | FE | [x] | commit F1.9 trên feature/ita-phase01-ui | browser MOCK 1366/768/390 đạt | Tách file riêng, giữ nguyên menu cũ; guard BE chưa làm |
 | F1.10 | feat(legacy): guard route cũ theo cờ ITA_LEGACY_UI_ENABLED [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F2.1 | feat(auth): đăng nhập trên giao diện mới [BE+FE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
@@ -120,3 +120,25 @@ F1.6 theme đã build/verify. F1.7 khung đã build/verify. F1.8 KPI, bảng, ba
 ## SQL giao user chạy host
 
 Phạm vi user yêu cầu: soạn SQL tạo 12 bảng ITA. File tổng database/host/phase01_create_ita_tables.sql, kèm preflight và verify. Local MySQL 8.4.11: migrations và bundle tạo 12 bảng, 30 kiểm tra ràng buộc đạt. MariaDB host chưa chạy; chờ user báo kết quả. Không seed hoặc sửa PHP. Chi tiết SQL_PHASE01_VERIFY.md.
+
+## Xác nhận từ user sau import SQL host
+
+Ngày 16/10/2026: user báo «đã thành công» sau hướng dẫn chạy phase01_verify.sql. Ghi nhận user xác nhận tạo bảng trên dung_infracore/MariaDB hosting thành công; agent không kết nối host và chưa nhận ảnh bộ đếm 12/12/12 hoặc danh sách đủ 11 khóa ngoại sau lần import cuối. Không suy diễn xác nhận này thành quyền seed, sửa PHP/routing hoặc deploy. Migration F1.1–F1.4 đã bàn giao và được user xác nhận chạy; ứng dụng chưa tích hợp DB.
+## Đính chính xác nhận hosting
+
+Ảnh user gửi tiếp theo cho thấy selected_database=dung_infracore nhưng truy vấn metadata dùng DATABASE() trả 0/NULL/NULL, không thấy FK. Chưa xác nhận tạo đủ 12 bảng trên host; kết luận thành công trước đó chỉ dựa trên lời báo của user và được thay bằng «chờ chẩn đoán». Trước đó import có thông báo #1050 ita_departments already exists. Chưa rõ nguyên nhân hai quan sát khác nhau; không mặc định bảng bị mất hoặc migration thất bại. Đã thay bộ lọc metadata trong preflight/verify bằng tên schema cố định để giảm phụ thuộc ngữ cảnh truy vấn. Cần SHOW TABLES và SHOW CREATE TABLE với schema chỉ định rõ. Không chạy lại CREATE hoặc xóa bảng khi chưa đối chiếu.
+## Bằng chứng SHOW TABLES trên host
+
+User gửi ảnh SHOW TABLES FROM dung_infracore LIKE 'ita%': liệt kê đủ 12 tên bảng đúng migration. SHOW CREATE TABLE dung_infracore.ita_departments trả về cấu trúc nhưng ảnh bị rút gọn. Đã xác nhận tồn tại đủ bảng; không chạy lại CREATE. Chưa xác nhận toàn bộ cột/engine/collation/11 FK qua ảnh này. Nguyên nhân truy vấn information_schema trước đó dùng DATABASE() trả 0 chưa xác minh; không kết luận bảng chưa được tạo. File verify đã dùng tên schema cố định.
+## Xác nhận số lượng khóa ngoại trên host
+
+Ảnh mới từ user cho thấy truy vấn information_schema.TABLE_CONSTRAINTS với CONSTRAINT_SCHEMA='dung_infracore' và loại FOREIGN KEY trả tổng 11 dòng. Kết hợp SHOW TABLES trước đó: đã xác nhận đủ 12 tên bảng và 11 khóa ngoại trên MariaDB host. Chưa có ảnh bộ đếm engine/collation 12/12/12 hoặc toàn bộ định nghĩa cột. Không yêu cầu chạy lại CREATE. Quyền PHP/routing và seed vẫn chưa được user phê duyệt.
+## Build PHP sau khi user yêu cầu tiếp tục
+
+Mini plan: render khung bằng Smarty; kiểm soát route trước bootstrap; hoàn thiện component xác nhận; kiểm route/UI thật; soạn danh mục đúng store. Đã render /admin.php?op=ita bằng Smarty; 32 checks HTTP/flags đạt và browser 1366/768/390 đạt. SQL danh mục 6/6/6 store_id=1 đã kiểm lặp local, host chưa chạy. Chi tiết PHP_PHASE01_VERIFY.md. F1.7 và F1.8 FE đã kiểm chứng; F1.10 còn Apache/legacy restoration và allowlist auth Phase 2; F1.5 còn bộ seed đầy đủ. Không tuyên bố Phase 1 hoàn tất.
+
+### Tách seed thành hai chức năng tự chứa
+
+- F1.5a: SQL danh mục khởi tạo 6 loại/6 bộ phận/6 cấu hình cho store 1, giữ dữ liệu hiện có; đã kiểm lặp local, host chờ user chạy.
+- F1.5b: bộ seed 300–500 tài sản và dữ liệu nghiệp vụ dev/test, chưa làm; cần chọn actor dev/test đúng, không gán thao tác giả cho user thật.
+- F1.10: mã gate đã kiểm local; còn Apache/host và khôi phục legacy E2E, chưa nghiệm thu toàn bộ.

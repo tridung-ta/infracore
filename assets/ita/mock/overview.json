@@ -1,0 +1,255 @@
+{
+    "mock":  true,
+    "departments":  [
+                        "CNTT",
+                        "Kế toán",
+                        "Nhân sự",
+                        "Kinh doanh",
+                        "Vận hành",
+                        "Ban giám đốc"
+                    ],
+    "assets":  [
+                   {
+                       "id":  1,
+                       "code":  "IT-0001",
+                       "name":  "Dell Latitude 5450",
+                       "serial":  "DEMO-SN-00001",
+                       "category":  "Máy tính",
+                       "department":  "Nhân sự",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2026",
+                       "specs":  "16 GB RAM · SSD 512 GB",
+                       "location":  "Tầng 1 · Trụ sở chính"
+                   },
+                   {
+                       "id":  2,
+                       "code":  "IT-0002",
+                       "name":  "Lenovo ThinkPad T14",
+                       "serial":  "DEMO-SN-00002",
+                       "category":  "Máy tính",
+                       "department":  "Kế toán",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2027",
+                       "specs":  "16 GB RAM · SSD 512 GB",
+                       "location":  "Tầng 2 · Trụ sở chính"
+                   },
+                   {
+                       "id":  3,
+                       "code":  "IT-0003",
+                       "name":  "Dell UltraSharp U2724D",
+                       "serial":  "DEMO-SN-00003",
+                       "category":  "Màn hình",
+                       "department":  "CNTT",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2028",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 3 · Trụ sở chính"
+                   },
+                   {
+                       "id":  4,
+                       "code":  "IT-0004",
+                       "name":  "HP LaserJet Pro 4003",
+                       "serial":  "DEMO-SN-00004",
+                       "category":  "Máy in",
+                       "department":  "Ban giám đốc",
+                       "status":  "maintenance",
+                       "warranty":  "15/06/2026",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 4 · Trụ sở chính"
+                   },
+                   {
+                       "id":  5,
+                       "code":  "IT-0005",
+                       "name":  "Cisco Catalyst C9200",
+                       "serial":  "DEMO-SN-00005",
+                       "category":  "Switch / Router",
+                       "department":  "Vận hành",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2027",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 1 · Trụ sở chính"
+                   },
+                   {
+                       "id":  6,
+                       "code":  "IT-0006",
+                       "name":  "Synology DS923+",
+                       "serial":  "DEMO-SN-00006",
+                       "category":  "Thiết bị lưu trữ",
+                       "department":  "Kinh doanh",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2028",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 2 · Trụ sở chính"
+                   },
+                   {
+                       "id":  7,
+                       "code":  "IT-0007",
+                       "name":  "MacBook Air M3",
+                       "serial":  "DEMO-SN-00007",
+                       "category":  "Máy tính",
+                       "department":  "Nhân sự",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2026",
+                       "specs":  "16 GB RAM · SSD 512 GB",
+                       "location":  "Tầng 3 · Trụ sở chính"
+                   },
+                   {
+                       "id":  8,
+                       "code":  "IT-0008",
+                       "name":  "HP EliteBook 840",
+                       "serial":  "DEMO-SN-00008",
+                       "category":  "Máy tính",
+                       "department":  "Kế toán",
+                       "status":  "broken",
+                       "warranty":  "15/06/2027",
+                       "specs":  "16 GB RAM · SSD 512 GB",
+                       "location":  "Tầng 4 · Trụ sở chính"
+                   },
+                   {
+                       "id":  9,
+                       "code":  "IT-0009",
+                       "name":  "LG UltraFine 27UP850",
+                       "serial":  "DEMO-SN-00009",
+                       "category":  "Màn hình",
+                       "department":  "CNTT",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2028",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 1 · Trụ sở chính"
+                   },
+                   {
+                       "id":  10,
+                       "code":  "IT-0010",
+                       "name":  "Brother HL-L2366DW",
+                       "serial":  "DEMO-SN-00010",
+                       "category":  "Máy in",
+                       "department":  "Ban giám đốc",
+                       "status":  "maintenance",
+                       "warranty":  "15/06/2026",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 2 · Trụ sở chính"
+                   },
+                   {
+                       "id":  11,
+                       "code":  "IT-0011",
+                       "name":  "MikroTik RB5009",
+                       "serial":  "DEMO-SN-00011",
+                       "category":  "Switch / Router",
+                       "department":  "Vận hành",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2027",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 3 · Trụ sở chính"
+                   },
+                   {
+                       "id":  12,
+                       "code":  "IT-0012",
+                       "name":  "QNAP TS-464",
+                       "serial":  "DEMO-SN-00012",
+                       "category":  "Thiết bị lưu trữ",
+                       "department":  "Kinh doanh",
+                       "status":  "retired",
+                       "warranty":  "15/06/2028",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 4 · Trụ sở chính"
+                   },
+                   {
+                       "id":  13,
+                       "code":  "IT-0013",
+                       "name":  "Dell OptiPlex 7010",
+                       "serial":  "DEMO-SN-00013",
+                       "category":  "Máy tính",
+                       "department":  "Nhân sự",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2026",
+                       "specs":  "16 GB RAM · SSD 512 GB",
+                       "location":  "Tầng 1 · Trụ sở chính"
+                   },
+                   {
+                       "id":  14,
+                       "code":  "IT-0014",
+                       "name":  "Lenovo ThinkCentre M70",
+                       "serial":  "DEMO-SN-00014",
+                       "category":  "Máy tính",
+                       "department":  "Kế toán",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2027",
+                       "specs":  "16 GB RAM · SSD 512 GB",
+                       "location":  "Tầng 2 · Trụ sở chính"
+                   },
+                   {
+                       "id":  15,
+                       "code":  "IT-0015",
+                       "name":  "Dell P2425H",
+                       "serial":  "DEMO-SN-00015",
+                       "category":  "Màn hình",
+                       "department":  "CNTT",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2028",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 3 · Trụ sở chính"
+                   },
+                   {
+                       "id":  16,
+                       "code":  "IT-0016",
+                       "name":  "Canon LBP 2900",
+                       "serial":  "DEMO-SN-00016",
+                       "category":  "Máy in",
+                       "department":  "Ban giám đốc",
+                       "status":  "broken",
+                       "warranty":  "15/06/2026",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 4 · Trụ sở chính"
+                   },
+                   {
+                       "id":  17,
+                       "code":  "IT-0017",
+                       "name":  "Aruba Instant On 1930",
+                       "serial":  "DEMO-SN-00017",
+                       "category":  "Switch / Router",
+                       "department":  "Vận hành",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2027",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 1 · Trụ sở chính"
+                   },
+                   {
+                       "id":  18,
+                       "code":  "IT-0018",
+                       "name":  "Samsung T7 Shield",
+                       "serial":  "DEMO-SN-00018",
+                       "category":  "Thiết bị lưu trữ",
+                       "department":  "Kinh doanh",
+                       "status":  "in_use",
+                       "warranty":  "15/06/2028",
+                       "specs":  "Cấu hình tiêu chuẩn · dữ liệu mẫu",
+                       "location":  "Tầng 2 · Trụ sở chính"
+                   }
+               ],
+    "alerts":  [
+                   {
+                       "asset_id":  8,
+                       "title":  "Thiết bị cần kiểm tra kỹ thuật",
+                       "description":  "HP EliteBook 840 · Trạng thái hỏng, cần đánh giá phương án xử lý.",
+                       "level":  "critical"
+                   },
+                   {
+                       "asset_id":  16,
+                       "title":  "Máy in tạm ngừng hoạt động",
+                       "description":  "Canon LBP 2900 · Chờ bộ phận kỹ thuật tiếp nhận.",
+                       "level":  "critical"
+                   },
+                   {
+                       "asset_id":  4,
+                       "title":  "Theo dõi tiến độ bảo trì",
+                       "description":  "HP LaserJet Pro 4003 · Thiết bị mẫu đang trong đợt bảo trì.",
+                       "level":  "warning"
+                   },
+                   {
+                       "asset_id":  10,
+                       "title":  "Kiểm tra sau bảo trì",
+                       "description":  "Brother HL-L2366DW · Cần xác nhận tình trạng trước khi bàn giao.",
+                       "level":  "warning"
+                   }
+               ]
+}
