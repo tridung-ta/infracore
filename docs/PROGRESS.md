@@ -22,10 +22,10 @@ Cập nhật 16/10/2026. Chưa nghiệm thu yêu cầu sản phẩm nào trong 1
 | F1.3 | feat(db): licenses, allocations, assignments [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F1.4 | feat(db): tickets, ticket_events, audit_logs, budget_plans, import_batches [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F1.5 | feat(db): seed dữ liệu mẫu dev/test [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
-| F1.6 | Design tokens + Bootstrap dark theme | FE | [x] | commit F1.6 trên feature/ita-phase01-ui | Playwright 1366/768/390 đạt, Bootstrap hash trùng nguồn | Chỉ FE, chưa tích hợp PHP |
+| F1.6 | Design tokens + Bootstrap dark theme | FE | [x] | 051f80b | Playwright 1366/768/390 đạt, Bootstrap hash trùng nguồn | Chỉ FE, chưa tích hợp PHP |
 | F1.7 | Layout sidebar, topbar, breadcrumb, toast | FE | [~] | chưa có | browser MOCK đạt; UI_PHASE01_VERIFY.md | Chưa commit và chưa tích hợp PHP |
 | F1.8 | Component dùng chung | FE | [~] | chưa có | bảng/KPI/badge/modal chi tiết MOCK đạt | Modal xác nhận nghiệp vụ chờ nối hành động |
-| F1.9 | Sidebar mới chỉ có điều hướng ITA | FE | [~] | chưa có | browser MOCK đạt | Tách file riêng, giữ nguyên menu cũ |
+| F1.9 | Sidebar mới chỉ có điều hướng ITA | FE | [x] | commit F1.9 trên feature/ita-phase01-ui | browser MOCK 1366/768/390 đạt | Tách file riêng, giữ nguyên menu cũ; guard BE chưa làm |
 | F1.10 | feat(legacy): guard route cũ theo cờ ITA_LEGACY_UI_ENABLED [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F2.1 | feat(auth): đăng nhập trên giao diện mới [BE+FE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F2.2 | feat(rbac): 3 vai trò + ma trận quyền 4.1 [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
