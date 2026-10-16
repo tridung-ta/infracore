@@ -51,6 +51,7 @@ body[data-mode="mock"] .live-only{display:none!important}
 .login-error{border:1px solid var(--ita-danger);background:var(--ita-danger-soft);color:var(--ita-text);padding:12px;font-size:13px;border-radius:6px}
 .admin-panel{margin-top:24px}.admin-message{margin:18px 20px;color:var(--ita-text-muted);font-size:13px}
 .admin-table-wrap{overflow:auto;max-width:100%}.admin-panel .asset-table{min-width:700px}
+.admin-panel .asset-table th:nth-child(5),.admin-panel .asset-table td:nth-child(5){display:table-cell}
 .admin-panel .asset-table td{vertical-align:top}.admin-panel pre{max-width:320px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;margin:12px 0}
 .admin-panel summary{cursor:pointer;color:var(--ita-accent);min-height:32px}.admin-panel input[type="date"]{min-width:0}
 .access-form{padding:24px;border-top:1px solid var(--ita-border);max-width:660px}.access-form>label{display:block;margin:18px 0 8px;font-size:13px}

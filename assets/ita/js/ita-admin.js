@@ -6,11 +6,26 @@
  const state={users:1};
  let openedView='';
  function el(tag,text){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;}
+ const feedback=el('p');feedback.id='access-message';feedback.className='admin-message';feedback.hidden=true;
+ $('access-form').insertBefore(feedback,$('access-form').lastElementChild);
+ function announce(node,message,error=false){
+  node.textContent=message;node.hidden=false;node.tabIndex=-1;
+  node.setAttribute('role',error?'alert':'status');
+  node.classList.toggle('danger-text',error);node.classList.toggle('success-text',!error);
+  node.focus({preventScroll:true});node.scrollIntoView({block:'nearest'});
+ }
  async function api(action,query={},body){
   const options=body?{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':document.querySelector('meta[name=ita-csrf]').content},body:JSON.stringify(body)}:{};
-  const response=await fetch(`/admin.php?${new URLSearchParams({op:'ita',act:action,...query})}`,options);
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
+  let response,result;
+  try{
+   response=await fetch(`/admin.php?${new URLSearchParams({op:'ita',act:action,...query})}`,{...options,signal:controller.signal});
+   result=await response.json();
+  }catch(error){
+   throw new Error(body?'Chưa xác nhận được kết quả lưu. Hãy mở lại quyền để kiểm tra trước khi lưu lại.':'Không tải được dữ liệu. Vui lòng thử lại.');
+  }finally{clearTimeout(timeout);}
   if(response.status===401){location.assign('/admin.php?op=ita&act=login');throw new Error('Phiên đã hết hạn.');}
-  const result=await response.json();if(!result.success)throw new Error(result.message||'Chưa thực hiện được yêu cầu.');return result.data;
+  if(!response.ok||!result.success)throw new Error(result.message||'Chưa thực hiện được yêu cầu.');return result.data;
  }
  function pager(name,data){
   $(`${name}-previous`).disabled=data.page<=1;$(`${name}-next`).disabled=data.page*data.per_page>=data.total;
@@ -24,17 +39,18 @@
     const row=el('tr');[user.username,user.fullname||'—',roles[user.role]||'Chưa cấp quyền',Number(user.enabled)===1?'Đã cấp quyền':'Chưa cho phép'].forEach(value=>row.append(el('td',value)));
     const cell=el('td'),button=el('button','Phân quyền');button.type='button';button.className='secondary-button';button.setAttribute('aria-label',`Phân quyền ${user.username}`);button.addEventListener('click',()=>editAccess(user.id));cell.append(button);row.append(cell);return row;
    }));
-   pager('users',data);$('admin-message').textContent=data.total?'':'Chưa có tài khoản.';
-  }catch(error){$('admin-message').textContent=error.message;}
+   pager('users',data);$('admin-message').textContent=data.total?'':'Chưa có tài khoản.';return true;
+  }catch(error){$('admin-message').textContent=error.message;return false;}
  }
  async function editAccess(id){
-  $('admin-message').textContent='Đang tải quyền truy cập…';$('access-form').hidden=true;
+  $('admin-message').textContent='Đang tải quyền truy cập…';$('access-form').hidden=true;feedback.hidden=true;
   try{
    const user=await api('access',{id});$('access-user-id').value=user.id;$('access-title').textContent=`Phân quyền: ${user.username}`;
    $('access-role').value=user.role||'support_technician';$('access-enabled').checked=Number(user.enabled)===1;
    $('scope-options').replaceChildren(...window.itaLiveContext.departments.map(department=>{
     const label=el('label'),box=el('input');box.type='checkbox';box.value=department.value;box.checked=user.department_ids.includes(Number(department.value));label.className='checkbox-label';label.append(box,el('span',department.label));return label;
    }));
+   $('access-form').dataset.accountName=user.username;
    $('admin-message').textContent='';$('access-form').hidden=false;$('access-role').focus();
   }catch(error){$('admin-message').textContent=error.message;}
  }
@@ -49,13 +65,18 @@
   users();
  }
  $('access-form').addEventListener('submit',async event=>{
-  event.preventDefault();const button=$('access-save');button.disabled=true;
+  event.preventDefault();const button=$('access-save');button.disabled=true;feedback.hidden=true;
   try{
    const confirmed=await window.ItaUi.confirm({title:'Cập nhật quyền truy cập?',message:'Quyền mới có hiệu lực ngay. Tài khoản được chỉnh sẽ cần đăng nhập lại.',confirmLabel:'Cập nhật quyền'});
    if(!confirmed)return;
-   await api('access',{}, {user_id:$('access-user-id').value,role:$('access-role').value,enabled:$('access-enabled').checked,department_ids:[...$('scope-options input:checked')].map(input=>input.value)});
-   $('access-form').hidden=true;await users();$('admin-message').textContent='Đã cập nhật quyền truy cập.';
-  }catch(error){$('admin-message').textContent=error.message;}finally{button.disabled=false;}
+   button.textContent='Đang lưu…';$('access-form').setAttribute('aria-busy','true');$('access-cancel').disabled=true;
+   await api('access',{}, {user_id:$('access-user-id').value,role:$('access-role').value,enabled:$('access-enabled').checked,department_ids:[...document.querySelectorAll('#scope-options input:checked')].map(input=>input.value)});
+   const message=`Đã cập nhật quyền truy cập cho ${$('access-form').dataset.accountName}.`;
+   $('access-form').hidden=true;const refreshed=await users();
+   announce($('admin-message'),message+(refreshed?'':' Chưa tải lại được danh sách; hãy tải lại trang để kiểm tra.'));
+  }catch(error){announce(feedback,error.message,true);}finally{
+   button.disabled=false;button.textContent='Lưu quyền truy cập';$('access-cancel').disabled=false;$('access-form').removeAttribute('aria-busy');
+  }
  });
  $('access-cancel').addEventListener('click',()=>{$('access-form').hidden=true;});
  for(const name of ['users'])for(const direction of ['previous','next'])$(name+'-'+direction).addEventListener('click',()=>{state[name]+=direction==='next'?1:-1;users();});

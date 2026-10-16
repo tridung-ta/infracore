@@ -179,3 +179,7 @@ F2.4 lưu `fa05be8`. F2.6: nhật ký Admin lọc thao tác/người/ngày Việ
 F2.6 lưu `9a6e9ab`. F2.1: tích hợp login/logout, Smarty protected shell và dispatcher API, audit auth, cấu hình riêng; browser 3 vai trò đạt. SQL đọc/khởi tạo Admin/verify đã thực thi local; EXPLAIN scoped list/aggregate dùng idx_ita_assets_department (ref, 6 rows). Chi tiết lệnh, rollback và bước host ở PHASE02_VERIFY.md.
 
 Tích hợp F2.1 lưu `6f461ef`. Lần kiểm cuối: 47 browser checks (bổ sung không lỗi JS runtime trên role pages), 32 routing, 8 DB integration đều đạt. Không có thao tác hosting hoặc push. Working tree còn source legacy chưa có baseline như audit trước; không stage mã cũ ngoài phạm vi.
+
+## Sửa F2.4 sau UAT host
+
+User xác nhận login bằng username/Gmail và logout/login trên host thành công. User báo không biết lưu quyền có thành công không. Tái hiện local phát hiện selector bộ phận sai gây lỗi trước POST, lỗi ngoài viewport và cột thao tác admin bị ẩn tại tablet. Đã sửa JS/CSS, version asset trong layout. `tests/ita_access_feedback.js`: 13 checks đạt gồm submit form thật/read-back DB ở 390/768/1366, lỗi validation/mạng/refresh và JS runtime. Host chờ upload 3 file giao diện và UAT lại, không cần SQL mới. Bài học cụ thể ở LESSONS.md; 47 checks cũ không có coverage submit UI này.
