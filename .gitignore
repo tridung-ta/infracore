@@ -40,3 +40,5 @@ desktop.ini
 !/database/host/phase01_preflight.sql
 !/database/host/phase01_create_ita_tables.sql
 !/database/host/phase01_verify.sql
+
+!/database/host/phase01_initial_catalog.sql

@@ -27,3 +27,7 @@
 Đã chạy tạo đủ 12 bảng trên MySQL 8.4.11 local cô lập, 30 kiểm tra tích hợp ràng buộc đạt; dữ liệu test được rollback. Đã đối chiếu cú pháp CHECK, foreign key và generated columns với tài liệu MariaDB. Chưa thực thi trên MariaDB 10.6.28 hosting và chưa coi kết quả local là xác nhận host.
 
 Nguồn: https://mariadb.com/docs/server/reference/sql-statements/data-definition/constraint và https://mariadb.com/docs/server/reference/sql-statements/data-definition/create/generated-columns
+
+## Danh mục ban đầu
+
+Sau khi đã có 12 bảng, file phase01_initial_catalog.sql bổ sung 6 loại thiết bị, 6 bộ phận khởi tạo và 6 cài đặt cho store_id=1 (user đã xác nhận). Backup trước khi chạy; script không sửa bảng dc_ và không ghi đè mã/key đang có. Nếu lỗi, gửi thông báo và dừng; không dựa vào nút nhập thành công để suy ra đủ dữ liệu. Kết quả cuối hiển thị các dòng đã có. Đây chưa phải bộ seed tài sản/ticket số lượng lớn.
