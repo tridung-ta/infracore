@@ -151,3 +151,19 @@ Commits build mới: F1.7 c61ae8f; F1.8 d342024; gate PHP F1.10 fcc900d (còn ki
 ## Tinh chỉnh UI theo Impeccable
 
 Mini plan: khảo sát giao diện và directive; chỉnh chữ/icon/responsive; kiểm hai lượt có giới hạn; review và commit riêng. Đã hoàn tất polish FE: chữ rõ hơn, icon SVG cùng hệ, KPI tablet hai cột, select mobile toàn hàng, focus bàn phím và skeleton. Playwright MOCK qua PHP/Smarty đạt; không tràn ở 1366/768/390/320/683. Cặp semantic contrast thấp nhất 4.82:1. Detector một lần có warning Inter được giữ theo hệ font hiện có. Chi tiết UI_POLISH_IMPECCABLE.md. Không thay PHP/DB. User cũng đã gửi ảnh xác nhận danh mục host 6/6/6 store 1 ở bước trước; không yêu cầu chạy lại.
+
+## Phase 2 — Build được user cho phép sau rà UI
+
+User chọn Admin IT đầu tiên: store 1 / user 111. Mini plan: xác thực native và session riêng; quyền/scope server; quản lý mapping và audit; kiểm HTTP/DB/browser; bàn giao SQL host. Đã kiểm local 46 browser + 32 routing + 8 integration checks, review độc lập không phát hiện lỗi. Hosting chưa chạy SQL Phase 2 hay kết nối runtime. Chi tiết PHASE02_VERIFY.md và BE_GATE_02.md.
+
+| Mã | Chức năng | Vùng | Trạng thái | Verify | Ghi chú |
+|---|---|---|---|---|---|
+| F2.1 | Đăng nhập giao diện mới | BE+FE | [x] local | PHP lint, browser đăng nhập/đăng xuất | Host chờ SQL/config; tái dùng credential native |
+| F2.2 | Ba vai trò | BE | [x] local | URL/API trái quyền 403 | Không kế thừa PM Admin |
+| F2.3 | Scope bộ phận/store | BE | [x] local | Hai non-admin, cross-store, dept, session revision | Áp dụng API tài sản đọc hiện có |
+| F2.4 | Quản lý quyền user hiện có | BE+FE | [x] local | Cấp/đổi quyền, last Admin guard, UI persisted | Không tạo tài khoản/đổi mật khẩu native |
+| F2.5 | Audit CRUD tài sản | BE | [~] | Writer allowlist integration đạt | Hook cần Phase 3 CRUD, chưa xong |
+| F2.6 | Xem log và bộ lọc | BE+FE | [x] local | Browser đọc audit quyền và màn hình | Log auth/quyền đã gắn |
+| F2.7 | Rate limit/CSRF | BE | [x] local | Thử sai lần 6:429; thiếu token:403 | Shared DB buckets, HTTPS host chờ UAT |
+
+Không merge/tag phase done: F2.5 và host UAT còn mở. Danh mục host Phase 1 đã được user xác nhận 6/6/6 bằng ảnh.

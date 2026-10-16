@@ -42,3 +42,9 @@ desktop.ini
 !/database/host/phase01_verify.sql
 
 !/database/host/phase01_initial_catalog.sql
+
+/includes/ita_database.local.php
+!/database/migrations/005_ita_auth.sql
+!/database/host/phase02_bootstrap_admin.sql
+!/database/host/phase02_preflight.sql
+!/database/host/phase02_verify.sql
