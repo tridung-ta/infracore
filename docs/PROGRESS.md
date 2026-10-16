@@ -173,3 +173,5 @@ Lưu local: F2.7 `44c4246`; F2.2: DAO tách vai trò ITA và kiểm native activ
 F2.2 lưu `e41e922`. F2.3: DAO scoped read, API pagination/aggregate và hiển thị live có retry; browser xác nhận scope/403/404 và hồi quy static MOCK đạt. Chưa có CRUD hoặc số liệu host.
 
 F2.3 lưu `9fcc1f2`. F2.4: màn hình phân quyền tài khoản hiện có, bắt buộc scope non-admin, bảo vệ Admin active cuối cùng và tăng revision thu hồi session; browser cấp/đổi quyền, UI đọc lại, session cũ bị chặn đạt.
+
+F2.4 lưu `fa05be8`. F2.6: nhật ký Admin lọc thao tác/người/ngày Việt Nam, dữ liệu trước/sau được lọc allowlist; browser đọc log thật fixture và integration bỏ secret đạt. F2.5 còn hook CRUD Phase 3.
