@@ -20,7 +20,7 @@ Cập nhật 16/10/2026. Chưa nghiệm thu yêu cầu sản phẩm nào trong 1
 | F1.1 | tạo schema bộ phận, loại tài sản và cài đặt | SQL | [~] | commit F1.1 trên feature/ita-phase01-ui | local MySQL: tạo bảng/constraint đạt | SQL giao user; MariaDB host chờ user chạy |
 | F1.2 | tạo schema tài sản và chỉ mục theo phạm vi | SQL | [~] | commit F1.2 trên feature/ita-phase01-ui | local MySQL: tạo bảng/constraint đạt | SQL giao user; MariaDB host chờ user chạy |
 | F1.3 | tạo schema giấy phép và bàn giao thiết bị | SQL | [~] | commit F1.3 trên feature/ita-phase01-ui | local MySQL: tạo bảng/constraint đạt | SQL giao user; MariaDB host chờ user chạy |
-| F1.4 | feat(db): tickets, ticket_events, audit_logs, budget_plans, import_batches [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
+| F1.4 | tạo schema ticket, audit, ngân sách và import | SQL | [~] | commit F1.4 trên feature/ita-phase01-ui | local MySQL: tạo bảng/constraint đạt | SQL giao user; MariaDB host chờ user chạy |
 | F1.5 | feat(db): seed dữ liệu mẫu dev/test [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F1.6 | Design tokens + Bootstrap dark theme | FE | [x] | 051f80b | Playwright 1366/768/390 đạt, Bootstrap hash trùng nguồn | Chỉ FE, chưa tích hợp PHP |
 | F1.7 | Layout sidebar, topbar, breadcrumb, toast | FE | [~] | chưa có | browser MOCK đạt; UI_PHASE01_VERIFY.md | Chưa commit và chưa tích hợp PHP |
