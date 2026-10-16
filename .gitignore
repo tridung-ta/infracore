@@ -1,0 +1,42 @@
+# Local environment and credentials
+/.env
+/.env.*
+!/.env.example
+/includes/config.inc.php
+/includes/constant.inc.php
+/includes/editorial_mail.inc.php
+/license/
+*.pem
+*.key
+
+# Backups, database dumps and runtime output
+/.source-backup/
+*.sql
+*.sql.gz
+*.zip
+/templates_c/*
+/cache/
+/logs/
+/debug/
+/uploads/
+*.log
+*.tmp
+*.bak
+
+# Workstation metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local browser QA artifacts
+/.playwright-cli/
+/assets/ita/preview/index.html
+
+# Reviewed schema-only ITA migrations; keep all other SQL dumps ignored
+!/database/migrations/001_ita_foundation.sql
+!/database/migrations/002_ita_assets.sql
+!/database/migrations/003_ita_allocations_licenses.sql
+!/database/migrations/004_ita_operations.sql
+!/database/host/phase01_preflight.sql
+!/database/host/phase01_create_ita_tables.sql
+!/database/host/phase01_verify.sql

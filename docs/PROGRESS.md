@@ -17,7 +17,7 @@ Cập nhật 16/10/2026. Chưa nghiệm thu yêu cầu sản phẩm nào trong 1
 | F0.3 | Kiểm kê giao diện cũ | Tài liệu/Git | [~] | chưa có | xem AUDIT.md | Chưa nghiệm thu Phase 0 |
 | F0.4 | Kế hoạch và bảng tiến độ | Tài liệu/Git | [~] | chưa có | xem AUDIT.md | Chưa nghiệm thu Phase 0 |
 | F0.5 | Lint và smoke baseline | Tài liệu/Git | [!] | chưa có | php -l: 1451/1456 đạt; HTTP smoke 5/5 trang cô lập | 5 lỗi thư viện mail cũ; xem BASELINE.md |
-| F1.1 | feat(db): bảng ita_departments, ita_asset_categories, ita_settings [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
+| F1.1 | tạo schema bộ phận, loại tài sản và cài đặt | SQL | [~] | commit F1.1 trên feature/ita-phase01-ui | local MySQL: tạo bảng/constraint đạt | SQL giao user; MariaDB host chờ user chạy |
 | F1.2 | feat(db): ita_assets + index [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F1.3 | feat(db): licenses, allocations, assignments [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
 | F1.4 | feat(db): tickets, ticket_events, audit_logs, budget_plans, import_batches [BE]. | theo PLAN_FINAL | [ ] | chưa có | chưa chạy | |
@@ -116,3 +116,7 @@ Cập nhật 16/10/2026. Chưa nghiệm thu yêu cầu sản phẩm nào trong 1
 Mini plan: (1) tokens/theme cục bộ; (2) layout và sidebar riêng; (3) component/mock tương tác; (4) Playwright 3 kích thước và lỗi tải; (5) review/commit và đề xuất BE-GATE.
 
 F1.6 theme đã build/verify. F1.7 khung đã build/verify. F1.8 KPI, bảng, badge, modal chi tiết đã build/verify; modal xác nhận nghiệp vụ còn chờ hành động BE. F1.9 sidebar riêng không include chức năng cũ đã build/verify. Chưa nghiệm thu tích hợp PHP/DB. Chi tiết UI_PHASE01_VERIFY.md. BE-GATE đề xuất tại BE_GATE_01.md.
+
+## SQL giao user chạy host
+
+Phạm vi user yêu cầu: soạn SQL tạo 12 bảng ITA. File tổng database/host/phase01_create_ita_tables.sql, kèm preflight và verify. Local MySQL 8.4.11: migrations và bundle tạo 12 bảng, 30 kiểm tra ràng buộc đạt. MariaDB host chưa chạy; chờ user báo kết quả. Không seed hoặc sửa PHP. Chi tiết SQL_PHASE01_VERIFY.md.
