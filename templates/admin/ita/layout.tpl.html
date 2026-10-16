@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="vi" data-bs-theme="dark">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="color-scheme" content="dark"><title>InfraCore — Tổng quan hạ tầng</title>
+ <link rel="icon" href="data:,">
+ <link rel="stylesheet" href="/assets/ita/vendor/bootstrap/5.3.8/bootstrap.min.css">
+ <link rel="stylesheet" href="/assets/ita/css/ita-tokens.css">
+ <link rel="stylesheet" href="/assets/ita/css/ita-shell.css">
+ <script src="/assets/ita/js/ita-shell.js" defer></script>
+ <script src="/assets/ita/js/ita-components.js" defer></script>
+</head>
+<body data-renderer="{$itaRenderer|default:'static'|escape:'html'}">
+ <a class="skip-link" href="#main">Đến nội dung chính</a>
+ {include file="admin/ita/partials/sidebar.tpl.html"}
+ <div class="workspace">
+  {include file="admin/ita/partials/topbar.tpl.html"}
+  <main id="main" tabindex="-1">
+   <div class="mock-notice"><span class="mock-label">MOCK</span> Bản xem thử giao diện · Dữ liệu minh họa, chưa kết nối database.</div>
+   {include file="admin/ita/partials/overview.tpl.html"}
+  </main>
+  <footer class="app-footer"><span>InfraCore · Quản lý hạ tầng CNTT</span><span>Phiên bản giao diện 0.1</span></footer>
+ </div>
+ <div id="toast" class="app-toast" role="status" aria-live="polite" hidden></div>
+ {include file="admin/ita/partials/dialogs.tpl.html"}
+ <noscript><p class="mock-notice">Hãy bật JavaScript để dùng bản xem thử giao diện.</p></noscript>
+</body>
+</html>

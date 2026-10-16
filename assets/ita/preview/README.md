@@ -1,0 +1,21 @@
+# InfraCore UI preview
+
+Read-only MOCK interface for Phase 1. No PHP, database, auth, mutations or external network dependency.
+
+From the repository root:
+
+```powershell
+node assets/ita/preview/build-preview.cjs
+node assets/ita/preview/serve-preview.cjs
+```
+
+Open http://127.0.0.1:18766. The preview server exposes only the preview HTML, ITA CSS/JS/mock/vendor and the existing Inter font. It never serves PHP, config or SQL. Stop with Ctrl+C. A port in use fails instead of replacing an existing process.
+
+The HTML is generated from `templates/admin/ita/layout.tpl.html` and its presentation includes. Regenerate after editing a template. Production will render these through Smarty after backend approval; the preview server is not a deployment server.
+
+```powershell
+playwright-cli -s=infracore open http://127.0.0.1:18766
+playwright-cli -s=infracore run-code --filename assets/ita/preview/verify-ui.js
+```
+
+The browser checks validate the mock UI, including a deliberately simulated HTTP 503 and recovery. That case produces an expected failed-resource console entry. They do not validate database pagination, permissions, security middleware, or production integration.
