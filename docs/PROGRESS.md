@@ -183,3 +183,10 @@ Tích hợp F2.1 lưu `6f461ef`. Lần kiểm cuối: 47 browser checks (bổ su
 ## Sửa F2.4 sau UAT host
 
 User xác nhận login bằng username/Gmail và logout/login trên host thành công. User báo không biết lưu quyền có thành công không. Tái hiện local phát hiện selector bộ phận sai gây lỗi trước POST, lỗi ngoài viewport và cột thao tác admin bị ẩn tại tablet. Đã sửa JS/CSS, version asset trong layout. `tests/ita_access_feedback.js`: 13 checks đạt gồm submit form thật/read-back DB ở 390/768/1366, lỗi validation/mạng/refresh và JS runtime. Host chờ upload 3 file giao diện và UAT lại, không cần SQL mới. Bài học cụ thể ở LESSONS.md; 47 checks cũ không có coverage submit UI này.
+
+## Tiếp tục ngày 19/10/2026
+
+- Rà lại source và trạng thái Git: không có tracked change trước khi tiếp tục; commit gần nhất `9bc9e06` sửa F2.4. Không chạy lại CREATE bảng hoặc dùng credential host.
+- Bằng chứng user ngày 16/10: SQL tạo 3 bảng auth thành công; bootstrap store 1/user 111/admin_it/enabled 1; đăng nhập username/Gmail và đăng xuất trên host thành công. Thông báo không thể thu hồi Admin IT cuối cùng xác nhận guard đã phản hồi trên host, không chứng minh lưu quyền tài khoản phụ thành công.
+- F2.4 vẫn cần UAT tài khoản phụ trên host; F2.5 cần hook CRUD. Không đánh dấu nghiệm thu Phase 2 toàn bộ.
+- Đã đối chiếu schema ita_assets và ma trận quyền 4.1 từ tài liệu nguồn. Chuẩn bị BE_GATE_03.md cho F3.1–F3.8 và F2.5; backend Phase 3 chờ duyệt theo AGENTS mục 2. Không cần chạy lại file SQL Phase 1 đang mở trong IDE.
