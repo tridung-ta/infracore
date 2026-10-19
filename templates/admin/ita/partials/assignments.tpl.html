@@ -1,0 +1,35 @@
+<section id="assignments-panel" class="panel" aria-labelledby="assignment-title" hidden>
+ <div class="panel-heading"><div><h2 id="assignment-title">Giao thiết bị &amp; thu hồi</h2><p class="muted" id="assignment-mode">MOCK · Chỉ xem trước với dữ liệu giả. Chưa ghi phân bổ, xác nhận hoặc tạo PDF.</p></div></div>
+ <div id="assignment-live" class="import-step" hidden>
+  <p id="handover-message" class="admin-message" role="status" tabindex="-1"></p>
+  <form id="handover-search-form" class="assignment-controls"><div><label for="handover-search">Tìm thiết bị theo mã, tên hoặc seri</label><input id="handover-search" class="form-control" maxlength="100"></div><button type="submit" class="secondary-button">Tìm thiết bị</button></form>
+  <div class="assignment-controls"><div><label for="handover-asset">Thiết bị trong phạm vi của bạn</label><select id="handover-asset" class="form-select"></select></div><button type="button" class="secondary-button" id="handover-reload">Tải lại hồ sơ</button></div>
+  <div class="table-footer"><span id="handover-assets-page"></span><button type="button" class="secondary-button" id="handover-assets-previous">Trước</button><button type="button" class="secondary-button" id="handover-assets-next">Sau</button></div>
+  <section id="handover-record" hidden>
+   <dl class="detail-grid" id="handover-details"></dl><p id="handover-eligible" class="muted"></p>
+   <form id="handover-create" hidden>
+    <h3>Giao thiết bị</h3><div class="assignment-controls"><div><label for="handover-target-type">Bàn giao cho</label><select id="handover-target-type" class="form-select"><option value="user">Nhân viên</option><option value="department">Bộ phận</option></select></div><div id="handover-user-search-group"><label for="handover-user-search">Tìm người nhận theo tên hoặc tài khoản</label><input id="handover-user-search" class="form-control" maxlength="100"><button type="button" id="handover-user-find" class="secondary-button">Tìm người nhận</button></div></div>
+    <div class="assignment-controls"><div><label for="handover-target">Người/bộ phận nhận</label><select id="handover-target" class="form-select" required></select><div class="pagination-controls" id="handover-user-pages"><button type="button" id="handover-user-previous" class="secondary-button">Trước</button><span id="handover-user-page"></span><button type="button" id="handover-user-next" class="secondary-button">Sau</button></div></div><div><label for="handover-due">Hạn thu hồi (không bắt buộc)</label><input type="date" id="handover-due" class="form-control"></div></div>
+    <label for="handover-create-note">Ghi chú bàn giao</label><textarea id="handover-create-note" class="form-control" maxlength="4000" rows="3"></textarea><button type="submit" class="primary-button" id="handover-assign">Xác nhận giao thiết bị</button>
+   </form>
+   <section id="handover-active" hidden><h3>Lượt bàn giao đang mở</h3><p id="handover-active-text"></p><p id="handover-ack-help" class="muted"></p><button type="button" id="handover-acknowledge" class="secondary-button" hidden>Xác nhận tôi đã nhận thiết bị</button>
+    <form id="handover-return-form"><label for="handover-return-note">Lý do/tình trạng khi thu hồi</label><textarea id="handover-return-note" class="form-control" maxlength="4000" rows="3" required></textarea><button type="submit" id="handover-return" class="primary-button">Xác nhận thu hồi thiết bị</button></form>
+   </section>
+   <h3>Lịch sử phân bổ</h3><div id="handover-history"></div><div class="table-footer"><span id="handover-history-page"></span><button type="button" class="secondary-button" id="handover-history-previous">Trước</button><button type="button" class="secondary-button" id="handover-history-next">Sau</button></div>
+   <p class="muted">Biên bản PDF chưa khả dụng: đang chờ duyệt thư viện xuất PDF. Bàn giao cho bộ phận hoặc nhân viên không có quyền ITA chưa có xác nhận điện tử.</p><button type="button" class="secondary-button" disabled>Tải biên bản PDF — chưa khả dụng</button>
+  </section>
+ </div>
+ <div class="import-step">
+  <div class="assignment-controls"><div><label for="assignment-scenario">Tình huống xem thử</label><select id="assignment-scenario" class="form-select"><option value="normal">Thiết bị và lịch sử minh họa</option><option value="empty">Chưa có thiết bị</option><option value="failure">Không tải được dữ liệu</option></select></div><button type="button" class="secondary-button" id="assignment-retry" hidden>Thử lại dữ liệu MOCK</button></div>
+  <p id="assignment-message" role="status" aria-live="polite">Đang tải dữ liệu minh họa…</p>
+  <div id="assignment-workspace" hidden>
+   <div class="assignment-controls"><div><label for="assignment-device">Thiết bị minh họa</label><select id="assignment-device" class="form-select"></select></div><div><label for="assignment-recipient">Hình thức nhận bàn giao</label><select id="assignment-recipient" class="form-select"><option value="employee">Nhân viên minh họa · Bộ phận IT</option><option value="department">Bộ phận IT minh họa</option></select></div></div>
+   <dl class="detail-grid" id="assignment-details"></dl>
+   <p id="assignment-eligibility" class="admin-message" role="status"></p>
+   <button type="button" class="secondary-button" id="assignment-preview">Xem nội dung bàn giao MOCK</button>
+   <section id="assignment-draft" hidden aria-labelledby="assignment-draft-title"><h3 id="assignment-draft-title">Bản xem trước bàn giao</h3><p id="assignment-draft-content"></p><p class="muted">Số biên bản, người lập, ngày giao và chữ ký sẽ lấy từ dữ liệu được backend xác thực. Chưa phát hành biên bản.</p><button type="button" class="primary-button" disabled>Lưu bàn giao — chờ kết nối</button> <button type="button" class="secondary-button" disabled>Tải PDF — chờ kết nối</button></section>
+   <h3>Lịch sử phân bổ minh họa</h3><div id="assignment-history"></div>
+   <p id="assignment-return-help" class="muted"></p><button type="button" class="secondary-button" disabled>Thu hồi thiết bị — chờ kết nối</button> <button type="button" class="secondary-button" disabled>Xác nhận đã nhận — chờ kết nối</button>
+  </div>
+ </div>
+</section>

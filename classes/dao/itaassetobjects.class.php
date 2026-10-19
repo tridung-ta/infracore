@@ -39,8 +39,9 @@ class ItaAssetObjects
         return array_map(fn($r)=>['value'=>(string) $r['id'],'label'=>$r['name']], $rows);
     }
 
-    public function listing(array $filters, int $page): array
+    private function filteredScope(array $filters): array
     {
+        ItaAssetValidation::warrantyRange($filters);
         [$where,$types,$params] = $this->scope();
         $query = ItaInput::text($filters['q'] ?? '', 100);
         if ($query !== '') {
@@ -54,6 +55,27 @@ class ItaAssetObjects
             $types .= 'i';
             $params[] = ItaInput::positiveInt($filters['department_id']);
         }
+        if (($filters['category_id'] ?? '') !== '') {
+            $where .= ' AND a.category_id=?';
+            $types .= 'i';
+            $params[] = ItaInput::positiveInt($filters['category_id']);
+        }
+        if (($filters['purchase_year'] ?? '') !== '') {
+            $year = ItaInput::text($filters['purchase_year'],4);
+            if (!preg_match('/^[1-9][0-9]{3}$/D',$year) || (int) $year >= 9999) {
+                throw new ItaHttpError(422,'Năm mua không hợp lệ.');
+            }
+            $where .= ' AND a.purchase_date>=? AND a.purchase_date<?';
+            $types .= 'ss';
+            $params = [...$params,$year.'-01-01',((int) $year+1).'-01-01'];
+        }
+        foreach (['warranty_from'=>'>=','warranty_to'=>'<='] as $field=>$operator) {
+            if (($filters[$field] ?? '') !== '') {
+                $where .= ' AND a.warranty_end '.$operator.' ?';
+                $types .= 's';
+                $params[] = ItaInput::date($filters[$field])->format('Y-m-d');
+            }
+        }
         $status = ItaInput::text($filters['status'] ?? '', 20);
         if ($status !== '') {
             if (!in_array($status, ['in_use','maintenance','broken','retired'], true)) {
@@ -63,6 +85,26 @@ class ItaAssetObjects
             $types .= 's';
             $params[] = $status;
         }
+        return [$where,$types,$params];
+    }
+
+    public function export(array $filters): array
+    {
+        if (!in_array($this->actor->role,['admin_it','system_manager'],true)) {
+            throw new ItaHttpError(403,'Bạn không có quyền xuất tài sản.');
+        }
+        [$where,$types,$params] = $this->filteredScope($filters);
+        $select = str_replace('c.name category_name,d.name department_name','c.code category_code,d.code department_code',self::SELECT);
+        $rows = $this->db->fetchAll($select.' WHERE '.$where.' ORDER BY a.id DESC LIMIT 5001',$types,$params);
+        if (count($rows)>5000) {
+            throw new ItaHttpError(422,'Có hơn 5.000 tài sản. Hãy thu hẹp bộ lọc trước khi xuất.');
+        }
+        return array_map(fn($row)=>array_map(fn($key)=>$row[$key] ?? '',ItaExcel::HEADERS),$rows);
+    }
+
+    public function listing(array $filters, int $page): array
+    {
+        [$where,$types,$params] = $this->filteredScope($filters);
         $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_assets a WHERE '.$where, $types, $params)['n'];
         $page = min($page, max(1, (int) ceil($total/5)));
         $rows = $this->db->fetchAll(self::SELECT.' WHERE '.$where.' ORDER BY a.id DESC LIMIT 5 OFFSET ?', $types.'i', [...$params,($page-1)*5]);
@@ -77,7 +119,11 @@ class ItaAssetObjects
             throw new ItaHttpError(404, 'Không tìm thấy thiết bị.');
         }
         $this->actor->requireDepartment($row['department_id'] === null ? null : (int) $row['department_id']);
-        return (new ItaAssetObjectInfo($row))->presentation();
+        $raw = array_diff_key($row,array_flip(['category_name','department_name']));
+        $history = $this->db->fetchAll("SELECT id,user_id,action,before_json,after_json,created_at FROM ita_audit_logs
+            WHERE store_id=? AND entity_type='asset' AND entity_id=? ORDER BY id DESC LIMIT 51",'ii',[$this->actor->storeId,$id]);
+        return (new ItaAssetObjectInfo($row))->presentation() + ['fields'=>$raw,'version'=>ItaAssetService::version($raw),
+            'history'=>array_slice($history,0,50),'history_has_more'=>count($history)>50];
     }
 
     public function summary(): array
@@ -93,7 +139,21 @@ class ItaAssetObjects
         $alerts = array_map(fn($r)=>['asset_id'=>(int) $r['id'],'level'=>$r['status']==='broken'?'critical':'warning',
             'title'=>($r['status']==='broken'?'Thiết bị hỏng: ':'Đang bảo trì: ').$r['name'],
             'description'=>$r['asset_code'].' · '.($r['department_name'] ?? 'Chưa phân bổ')], $alertRows);
+        $overdue = $this->maintenanceAlerts([$where,$types,$params]);
+        $alerts = [...$alerts,...$overdue['alerts']];
         return ['total'=>array_sum($counts),'by_status'=>$counts,'by_department'=>$departments,'alerts'=>$alerts,
-            'alerts_total'=>$counts['broken']+$counts['maintenance']];
+            'alerts_total'=>$counts['broken']+$counts['maintenance']+$overdue['total'],'maintenance_overdue_total'=>$overdue['total']];
+    }
+
+    private function maintenanceAlerts(array $scope): array
+    {
+        [$where,$types,$params] = $scope;
+        $where .= " AND a.status<>'retired' AND a.next_maintenance_due<?";
+        $params[] = ItaAssignmentRules::today();
+        $types .= 's';
+        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_assets a WHERE '.$where,$types,$params)['n'];
+        $rows = $this->db->fetchAll(self::SELECT.' WHERE '.$where.' ORDER BY a.next_maintenance_due,a.id LIMIT 10',$types,$params);
+        return ['total'=>$total,'alerts'=>array_map(fn($row)=>['asset_id'=>(int) $row['id'],'level'=>'warning',
+            'title'=>'Quá hạn bảo trì: '.$row['name'],'description'=>$row['asset_code'].' · Hạn '.$row['next_maintenance_due']],$rows)];
     }
 }

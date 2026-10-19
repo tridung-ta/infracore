@@ -1,6 +1,6 @@
 # BE-GATE #03 — Quản lý tài sản và hoàn thiện log tài sản
 
-Ngày chuẩn bị: 19/10/2026. Trạng thái: chờ user duyệt; chưa sửa backend Phase 3.
+Ngày chuẩn bị: 19/10/2026. User đã duyệt «được bắt đầu BUILD» sau khi thống nhất không tạo DB test; SQL host/test ghi trên host do user tự làm. Agent được build local, không được kết nối/ghi DB host hoặc deploy.
 
 ## Phạm vi
 
@@ -21,7 +21,7 @@ Hoàn tác runtime bằng phục hồi source trước cutover; giữ nguyên d�
 
 ## Rủi ro, backup và kiểm chứng
 
-User backup DB/source ngoài repo trước triển khai host. Agent chỉ phát triển trên DB fixture local, không kết nối hoặc ghi host. Bộ 500 tài sản kiểm hiệu năng chỉ tạo trong schema QA riêng, không seed host. Verify: ba vai trò, request trái quyền, validation/mã trùng, CSRF/XSS, rollback audit, EXPLAIN, form submit/read-back, responsive 1366/768/390 và Review Agent. User tự upload FileZilla, chạy SQL host nếu được bàn giao sau này.
+User backup DB/source ngoài repo trước triển khai host. Theo chỉ đạo bổ sung, agent không tạo hoặc chạy DB test, không kết nối hoặc ghi host. Kiểm tự động chỉ gồm pure rules, service với adapter mô phỏng, Smarty render, browser API mock và review source. Không chạy EXPLAIN, SQL integration, kiểm concurrency DB hoặc benchmark 500 tài sản trong đợt này. Không báo các mục đó PASS. User tự upload FileZilla và test thủ công host bằng tài sản thử riêng sau backup.
 
 ## Giả định cần duyệt
 

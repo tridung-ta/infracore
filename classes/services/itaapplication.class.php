@@ -86,17 +86,28 @@ class ItaApplication
 
     private function api(): void
     {
+        if (in_array($this->action,['import-template','import-upload','import-preview','import-confirm','import-errors','asset-export'],true)) {
+            (new ItaImportController($this->db,$this->user))->run($this->action);
+            return;
+        }
         $page = ItaInput::positiveInt($_GET['page'] ?? '1');
+        if ($this->action==='assignment-save' && $_SERVER['REQUEST_METHOD']==='POST') {
+            $this->requirePost();
+            $data = (new ItaAssignmentService($this->db,$this->user))->save($this->readJson());
+            $this->json(['success'=>true,'data'=>$data,'message'=>'Đã cập nhật bàn giao.']);
+            return;
+        }
+        if (in_array($this->action,['asset-save','category-save'],true) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->requirePost();
+            $input = $this->readJson();
+            $service = $this->action === 'asset-save' ? new ItaAssetService($this->db,$this->user) : new ItaCategoryService($this->db,$this->user);
+            $id = $service->save($input);
+            $this->json(['success'=>true,'data'=>['id'=>$id],'message'=>'Đã lưu thay đổi.']);
+            return;
+        }
         if ($this->action === 'access' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->requirePost();
-            if (!str_starts_with($_SERVER['CONTENT_TYPE'] ?? '', 'application/json')) {
-                throw new ItaHttpError(415, 'Yêu cầu cần dữ liệu JSON.');
-            }
-            $body = file_get_contents('php://input', false, null, 0, 16385);
-            $data = strlen($body)>16384 ? null : json_decode($body, true);
-            if (!is_array($data)) {
-                throw new ItaHttpError(422, 'Dữ liệu quyền không hợp lệ.');
-            }
+            $data = $this->readJson(16384);
             (new ItaAccessService($this->db,$this->user))->update($data);
             $this->json(['success'=>true,'data'=>null,'message'=>'Đã cập nhật quyền truy cập.']);
             return;
@@ -109,12 +120,28 @@ class ItaApplication
             'data' => $assets->listing($_GET,$page) + ['summary'=>$assets->summary(),'departments'=>$assets->departments(),
                 'mock'=>false,'user'=>['id'=>$this->user->id,'display_name'=>$this->user->name,'role'=>$this->user->role,'role_label'=>$this->user->roleLabel()]],
             'asset' => $assets->detail(ItaInput::positiveInt($_GET['id'] ?? null)),
+            'assignments' => (new ItaAssignmentObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['asset_id'] ?? null),$page),
+            'assignment-recipients' => (new ItaAssignmentObjects($this->db,$this->user))->recipients(ItaInput::text($_GET['q'] ?? '',100),$page),
+            'categories' => array_map(fn($r)=>$r+['version'=>ItaAssetService::version($r)],(new ItaCategoryService($this->db,$this->user))->listing()),
             'users' => (new ItaUserObjects($this->db))->listing($this->user,$page),
             'access' => (new ItaUserObjects($this->db))->access($this->user,ItaInput::positiveInt($_GET['id'] ?? null)),
             'audit' => (new ItaAuditService($this->db,$this->user))->listing($_GET,$page),
             default => throw new ItaHttpError(404, 'Không tìm thấy chức năng.'),
         };
         $this->json(['success'=>true,'data'=>$data,'message'=>'']);
+    }
+
+    private function readJson(int $limit = 32768): array
+    {
+        if (!str_starts_with($_SERVER['CONTENT_TYPE'] ?? '', 'application/json')) {
+            throw new ItaHttpError(415,'Yêu cầu cần dữ liệu JSON.');
+        }
+        $body = file_get_contents('php://input',false,null,0,$limit+1);
+        $data = $body !== false && strlen($body)<=$limit ? json_decode($body,true) : null;
+        if (!is_array($data) || array_is_list($data)) {
+            throw new ItaHttpError(422,'Dữ liệu không hợp lệ hoặc vượt giới hạn.');
+        }
+        return $data;
     }
 
     private function requirePost(): void

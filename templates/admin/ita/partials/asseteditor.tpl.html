@@ -1,0 +1,17 @@
+<dialog id="asset-editor" aria-labelledby="asset-editor-title">
+ <form id="asset-edit-form"><div class="dialog-heading"><h2 id="asset-editor-title">Tài sản</h2><button type="button" class="icon-button" id="asset-editor-close" aria-label="Đóng form">×</button></div>
+ <div id="asset-edit-fields" class="asset-edit-grid"></div>
+ <p id="asset-edit-message" role="status" aria-live="polite" tabindex="-1" hidden></p>
+ <div class="confirmation-actions"><button type="button" class="secondary-button" id="asset-editor-cancel">Hủy</button><button type="submit" class="primary-button" id="asset-editor-save">Lưu tài sản</button></div></form>
+</dialog>
+<dialog id="category-editor" aria-labelledby="category-editor-title">
+ <div class="dialog-heading"><h2 id="category-editor-title">Loại tài sản</h2><button type="button" class="icon-button" id="category-close" aria-label="Đóng danh mục">×</button></div>
+ <p class="muted">Ngừng sử dụng loại tài sản sẽ ẩn lựa chọn khi tạo mới; hồ sơ cũ được giữ nguyên.</p>
+ <div id="category-list" class="category-list"></div>
+ <form id="category-form" class="asset-edit-grid"><input type="hidden" id="category-id"><input type="hidden" id="category-version">
+ <div><label for="category-code">Mã loại</label><input id="category-code" class="form-control" required maxlength="50"></div>
+ <div><label for="category-name">Tên loại</label><input id="category-name" class="form-control" required maxlength="150"></div>
+ <div><label for="category-status">Trạng thái</label><select id="category-status" class="form-select"><option value="active">Hoạt động</option><option value="inactive">Ngừng sử dụng</option></select></div>
+ <div class="confirmation-actions"><button type="reset" class="secondary-button">Thêm loại mới</button><button type="submit" class="primary-button" id="category-save">Lưu loại tài sản</button></div></form>
+ <p id="category-message" role="status" aria-live="polite" tabindex="-1"></p>
+</dialog>

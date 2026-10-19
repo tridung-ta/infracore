@@ -1,6 +1,40 @@
 # Tiến độ dự án 5
 
-Cập nhật 16/10/2026. Chưa nghiệm thu yêu cầu sản phẩm nào trong 10 yêu cầu. Không tính audit thành phần trăm hoàn thành chức năng.
+Cập nhật 19/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm nào trong 10 yêu cầu. Bảng đầu là kế hoạch gốc; các mục cập nhật cuối tài liệu ghi trạng thái build/verify mới nhất, không tính audit thành phần trăm chức năng.
+
+## Trạng thái hiện hành sau đối chiếu Word
+
+### Phase 5 — BE-GATE #05 đã duyệt, đã nối local, PDF chờ gate riêng
+
+User duyệt **“OK BE Phase 5”** ngày 19/10/2026. Đã nối giao nhân viên/bộ phận, thu hồi (gồm Support trong scope), lịch sử 20 dòng/trang, người nhận tự xác nhận, badge/chuông quá hạn từ ngày bảo trì có sẵn. Có khóa role/asset/assignment, version, unique lượt mở và audit cùng transaction. Không DDL, không ghi dc_, tạo DB hoặc kết nối/deploy host. PDF chưa cài thư viện, nút vẫn khóa; xem BE_GATE_05_PDF.md cho package cụ thể cần duyệt riêng.
+
+`php tests/ita_phase05_unit.php`: **173 pure/scripted checks đạt**, không DB. `tests/ita_phase05_browser.js`: **29 browser API mock checks đạt**, submit thật trong browser, role/CSRF/payload/version/lỗi/unknown-result/ba viewport; không HTTP/DB integration. Static `ita_phase05_preview.js` giữ 22 checks. Phase3 36 + Phase4 88 pure/scripted hồi quy đạt, Smarty render đạt. Chi tiết PHASE05_VERIFY.md; các ca DB/concurrency/user UAT ở PHASE05_HOST_TEST.md. Chưa commit/tag hoàn tất phase khi nghiệm thu và PDF còn mở.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+| --- | --- | --- | --- | --- | --- | --- |
+| F5.1–F5.3 | Giao/thu hồi/lịch sử | FE/BE | [~] | chưa commit | Pure/scripted173 + browser API mock29 đạt | Code local có, DB/concurrency chưa chạy |
+| F5.4 | Biên bản PDF | BE/FE | [G] | chưa commit | chưa chạy PDF | Nút khóa; renderer chưa có bằng chứng đầy đủ, dependency cần gate riêng |
+| F5.5–F5.6 | Xác nhận nhận/quá hạn bảo trì | FE/BE | [~] | chưa commit | Rule/scope/alert query + browser submit/badge/center đạt | DB/read-back/timezone host chưa chạy |
+
+### Phase 4 — BE-GATE đã duyệt, đã build local, DB UAT chưa chạy
+
+User duyệt **“OK BE Phase 4”** ngày 19/10/2026. Đã nối tải mẫu XLSX, upload/đọc/validate, staging private, preview 20 dòng/trang, confirm một transaction có audit và chống ghi hai lần, Excel lỗi, export theo filter/scope. Dùng PhpSpreadsheet có sẵn; không package mới, không DDL, không tạo/kết nối DB, không deploy. Static preview vẫn giữ 4 kịch bản MOCK và khóa ghi thật.
+
+`tests/ita_phase04_unit.php`: **88 checks đạt** (XLSX thật + pure + adapter giả, không DB). `tests/ita_phase04_browser.js`: **30 checks đạt** (API mock, 1366/768/390, upload/preview/confirm/download/lỗi/mất phản hồi/role). `tests/ita_phase04_preview.js`: **16 checks đạt** (MOCK không ghi). Chi tiết `PHASE04_VERIFY.md`; phần DB/host còn lại ở `PHASE04_HOST_TEST.md`. Phase3 DB UAT và Git theo chức năng còn mở, không tag phase-done. Không deploy hoặc dùng gói cũ.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+| --- | --- | --- | --- | --- | --- | --- |
+| F4.1 | Tải mẫu Excel | FE/BE | [~] | chưa commit | XLSX thật + browser API mock đạt | Code local có; HTTP host/Excel desktop chưa chạy |
+| F4.2 | Upload và validate | FE/BE | [~] | chưa commit | pure/XLSX/adapter + browser API mock đạt | SQL collation/DB thật chưa chạy |
+| F4.3 | Preview và confirm theo lô | FE/BE | [~] | chưa commit | adapter transaction/idempotency/role + browser API mock đạt | InnoDB rollback/concurrency thật chưa chạy |
+| F4.4 | Excel lỗi theo dòng | FE/BE | [~] | chưa commit | writer thật + browser download mock đạt | Host UAT chưa chạy |
+| F4.5 | Export theo filter/scope | FE/BE | [~] | chưa commit | adapter query/scope/limit + browser download mock đạt | SQL/performance/host UAT chưa chạy |
+
+- Phạm vi đang build: Phase 3 và BE Phase 4 đã duyệt; không tự mở BE Phase 5. Host Phase 2 đã được user xác nhận login username/Gmail và logout, chưa coi là toàn bộ RBAC UAT đạt.
+- Local Phase 3: **36 pure/scripted checks +30 browser API mock checks đạt**, Smarty render/escape đạt. Đã kiểm khoảng bảo hành nhập ngược, mảng thay ngày, ngày không tồn tại; helper form còn 3 tham số.
+- Có ERD.md từ migrations và PERF_NOTES.md phân biệt bằng chứng lịch sử/việc chưa chạy. RUN_LOCAL.md đã sửa: preview không DB dùng static server, PHP thật yêu cầu auth/DB.
+- Chưa có DB integration Phase 3, benchmark 500 dòng hoặc nghiệm thu production. Không tạo DB, không kết nối host, không upload. Luồng duyệt thanh lý của Quản lý và phân trang lookup/history vẫn là chênh lệch còn mở; không đánh dấu toàn bộ Word đã hoàn thành.
+- Các đoạn nhật ký phía dưới có thời điểm riêng; câu «chưa có HEAD», «chưa có bảng», «host chờ import» ở thời điểm audit không mô tả trạng thái hiện tại. Mã Phase 3 đang ở working tree, không gộp thành một commit nhiều chức năng hoặc tạo tag phase-done khi nghiệm thu còn thiếu.
 
 ## Mini plan Phase 0
 
@@ -190,3 +224,25 @@ User xác nhận login bằng username/Gmail và logout/login trên host thành 
 - Bằng chứng user ngày 16/10: SQL tạo 3 bảng auth thành công; bootstrap store 1/user 111/admin_it/enabled 1; đăng nhập username/Gmail và đăng xuất trên host thành công. Thông báo không thể thu hồi Admin IT cuối cùng xác nhận guard đã phản hồi trên host, không chứng minh lưu quyền tài khoản phụ thành công.
 - F2.4 vẫn cần UAT tài khoản phụ trên host; F2.5 cần hook CRUD. Không đánh dấu nghiệm thu Phase 2 toàn bộ.
 - Đã đối chiếu schema ita_assets và ma trận quyền 4.1 từ tài liệu nguồn. Chuẩn bị BE_GATE_03.md cho F3.1–F3.8 và F2.5; backend Phase 3 chờ duyệt theo AGENTS mục 2. Không cần chạy lại file SQL Phase 1 đang mở trong IDE.
+
+## Phase 3 — Build đã được duyệt, không tạo DB test
+
+User duyệt «được bắt đầu BUILD» sau yêu cầu không tạo DB test, user sẽ test thủ công host. Agent không tạo/kết nối DB, không chạy lại SQL cũ và không deploy. Mini plan: xây service validation/transaction/audit; nối API + form; kiểm pure/scripted/Smarty/browser mock; review độc lập; đóng gói để user test host.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F3.1 | Danh sách phân trang | BE+FE | [~] | nền 9fcc1f2; runtime mới chờ UAT | kiểm mock UI, chưa benchmark | 5 dòng/trang, chưa EXPLAIN mới/500 dòng |
+| F3.2 | Tạo tài sản | BE+FE | [~] | chờ UAT DB | pure/scripted + browser payload đạt | Chưa INSERT thật |
+| F3.3 | Sửa thông tin | BE+FE | [~] | chờ UAT DB | version và inactive category pure/mock đạt | Chưa test locking/concurrency DB |
+| F3.4 | Trạng thái/lý do/ghi chú | BE+FE | [~] | chờ UAT DB | transitions/role pure + form mock đạt | Chưa UPDATE thật |
+| F3.5 | Xóa mềm | BE+FE | [~] | chờ UAT DB | admin-only/assigned guard scripted; confirm UI mock | Không hard delete |
+| F3.6 | Chi tiết/lịch sử | BE+FE | [~] | chờ UAT DB | tabs/escaping/Smarty/mock đạt | 50 log mới nhất, DB chưa chạy |
+| F3.7 | Lọc nâng cao | BE+FE | [~] | chờ UAT DB | query params UI mock đạt | Năm mua dùng range, chưa EXPLAIN |
+| F3.8 | Quản lý loại | BE+FE | [~] | chờ UAT DB | form mock, inactive rule pure/scripted | Admin, không xóa cứng |
+| F2.5 | Hook audit tài sản | BE | [~] | chờ UAT DB | scripted rollback khi audit error | Chưa chứng minh rollback InnoDB thật |
+
+Kết quả: 33 pure/scripted checks, 28 browser API mock checks, Smarty render/escape, PHP/JS lint đạt; hồi quy static MOCK đạt (console có lỗi mạng được test chủ động tạo). Impeccable detector `[]`; đã xem form mobile. Review Agent phát hiện 1 lỗi inactive category, đã sửa; lượt cuối không thấy lỗi mới. Không đồng nhất test mock với DB integration. Runtime chưa commit hoàn tất chức năng/merge/tag vì tiêu chí SQL/read-back DB còn chờ UAT do user đảm nhận; đã chuẩn bị snapshot bàn giao có hash và checklist PHASE03_HOST_TEST.md.
+
+### Chốt local theo chỉ đạo bổ sung
+
+User yêu cầu chưa upload, không tạo DB và hoàn thành trong phạm vi local; các việc cần DB để user test thủ công sau. Đã bổ sung chặn trạng thái trống tại form, tách tải loại khỏi ghi chú/trạng thái và giữ thông báo lưu khi danh mục tải lỗi. Browser API mock lần cuối **30 checks đạt**; pure/scripted vẫn **33 checks**, Smarty render đạt. Hoàn tất phạm vi local; không tuyên bố DB/production đạt. Snapshot cũ `b965bd30a9b4` không còn cập nhật, chưa dùng để deploy. Chưa mở Phase 4 hoặc yêu cầu thêm DB.

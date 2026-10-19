@@ -5,6 +5,9 @@ if (!defined('ROOT_PATH')) {
 foreach (['database/itadb','security/itahttperror','security/itainput','security/itasession',
     'dao/itauserobjectinfo','dao/itauserobjects','security/italoginlimiter','security/pmauth',
     'services/itaauditservice','services/itaauthservice','services/itaaccessservice',
-    'dao/itaassetobjectinfo','dao/itaassetobjects','services/itaapplication'] as $itaClassFile) {
+    'dao/itaassetobjectinfo','dao/itaassetobjects','services/itaassetvalidation','services/itaassetservice',
+    'services/itacategoryservice','services/itaexcel','services/itaimportstorage','services/itaimportrows',
+    'services/itaimportservice','services/itaimportcontroller','services/itaassignmentrules','dao/itaassignmentobjects',
+    'services/itaassignmentservice','services/itaapplication'] as $itaClassFile) {
     require_once ROOT_PATH . 'classes/' . $itaClassFile . '.class.php';
 }

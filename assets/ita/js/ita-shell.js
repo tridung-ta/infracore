@@ -6,6 +6,8 @@
  const liveMode=document.body.dataset.mode==='live';
  const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Quản lý quyền IT và phạm vi bộ phận cho tài khoản hiện có.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
  const state = {data:null,page:1,pageSize:5,view:'overview'};
+ titles.imports=['Import / Export tài sản',liveMode?'Kiểm tra file, nhập theo lô và xuất tài sản theo quyền.':'Chuẩn bị dữ liệu Excel và xem luồng nhập minh họa.'];
+ titles.assignments=['Phân bổ & thu hồi',liveMode?'Giao thiết bị, xác nhận nhận và theo dõi thu hồi trong phạm vi của bạn.':'MOCK · Xem trước bàn giao và lịch sử với dữ liệu giả.'];
  let toastTimer;
  let returnFocus;
  let currentRequest;
@@ -56,6 +58,8 @@
   $('alerts-panel').hidden = state.view!=='alerts';
   $('users-panel').hidden = state.view!=='users';
   $('audit-panel').hidden = state.view!=='audit';
+  $('imports-panel').hidden = state.view!=='imports';
+  $('assignments-panel').hidden = state.view!=='assignments';
   document.querySelectorAll('[data-view]').forEach((link) => {
    if (link.dataset.view===state.view) link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
@@ -105,9 +109,10 @@
  function renderAlerts() {
   const alerts=state.data.alerts;
   $('nav-alert-count').textContent=liveMode?state.data.summary.alerts_total:alerts.length;
+  $('notification-button').querySelector('.notification-dot').hidden=liveMode?state.data.summary.alerts_total===0:alerts.length===0;
   $('attention-summary').replaceChildren(...['critical','warning'].map((level)=>{
    const item=el('div','attention-item');
-   const count=liveMode?state.data.summary.by_status[level==='critical'?'broken':'maintenance']:alerts.filter((a)=>a.level===level).length;
+   const count=liveMode?(state.data.summary.by_status[level==='critical'?'broken':'maintenance']||0)+(level==='warning'?(state.data.summary.maintenance_overdue_total||0):0):alerts.filter((a)=>a.level===level).length;
    item.append(el('strong',level==='critical'?'danger-text':'warning-text',String(count).padStart(2,'0')),el('span','',level==='critical'?'Cảnh báo nghiêm trọng':'Cần theo dõi'));return item;
   }));
   $('alert-list').replaceChildren(...alerts.map((alert)=>{
@@ -134,6 +139,7 @@
   const details=[['Mã tài sản',asset.code],['Số seri',asset.serial],['Loại thiết bị',asset.category],['Bộ phận',asset.department],['Trạng thái',statuses[asset.status]],['Bảo hành đến',asset.warranty],['Cấu hình',asset.specs],['Vị trí',asset.location]];
   $('asset-details').replaceChildren(...details.map(([label,value])=>{const group=el('div');group.append(el('dt','',label),el('dd','',value));return group;}));
   $('asset-dialog').showModal();
+  if(liveMode)dispatchEvent(new CustomEvent('ita:asset',{detail:asset}));
  }
  function renderTable() {
   if(!state.data)return;
@@ -146,6 +152,7 @@
    const row=el('tr');const name=el('td');const identity=el('div','asset-name');const label=el('div');
    const glyph=el('span','asset-glyph');glyph.append(svgIcon(asset.category==='Switch / Router'?'network':'monitor'));
    label.append(el('strong','',asset.name),el('span','asset-code',asset.code));identity.append(glyph,label);name.append(identity);
+   if(asset.maintenance_overdue)label.append(el('span','warning-text','Quá hạn bảo trì'));
    const status=el('td');status.append(el('span',`status-badge ${asset.status}`,statuses[asset.status]));
    const action=el('td');const button=el('button','detail-button');button.append(svgIcon('arrow'));button.type='button';button.setAttribute('aria-label',`Xem chi tiết ${asset.code}`);button.addEventListener('click',()=>showDetails(asset.id,button));action.append(button);
    row.append(name,el('td','muted',asset.category),el('td','',asset.department),status,el('td','muted',asset.warranty),action);return row;
@@ -168,6 +175,9 @@
   $('next-page').disabled=true;$('previous-page').disabled=true;
   try {
    const query=new URLSearchParams({op:'ita',act:'data',page:state.page,q:$('asset-search').value,department_id:$('department-filter').value,status:$('status-filter').value});
+   if(liveMode)for(const id of ['category_id','purchase_year','warranty_from','warranty_to']){
+    const input=document.getElementById('filter-'+id);if(input?.value)query.set(id,input.value);
+   }
    const response=await fetch(liveMode?`/admin.php?${query}`:'/assets/ita/mock/overview.json',{cache:'no-store',signal:controller.signal});
    if(response.status===401&&liveMode){location.assign('/admin.php?op=ita&act=login');return;}
    const result=await response.json();if(!response.ok)throw new Error(result.message||'Chưa tải được dữ liệu.');
@@ -211,6 +221,7 @@
  $('previous-page').addEventListener('click',()=>{state.page--;if(liveMode)loadData();else renderTable();});
  $('next-page').addEventListener('click',()=>{state.page++;if(liveMode)loadData();else renderTable();});
  $('retry-button').addEventListener('click',loadData);
+ addEventListener('ita:refresh',()=>{state.page=1;loadData();});
  addEventListener('hashchange',changeView);
  addEventListener('resize',()=>{if(innerWidth>=768)setMobileMenu(false);else $('sidebar').inert=!$('sidebar').classList.contains('is-open');});
  // Tablet navigation keeps compact icons accessible through explicit labels.

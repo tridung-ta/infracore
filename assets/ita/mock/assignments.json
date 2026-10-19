@@ -1,0 +1,8 @@
+{
+ "mock": true,
+ "assets": [
+  {"id":"demo-free","code":"MOCK-PC-01","name":"Máy tính minh họa","status":"in_use","assigned":false,"overdue":false,"history":[{"date":"2026-10-01","event":"Đã thu hồi từ nhân viên minh họa","receipt":"MOCK-BG-001"}]},
+  {"id":"demo-assigned","code":"MOCK-LT-02","name":"Laptop đang bàn giao","status":"in_use","assigned":true,"overdue":true,"history":[{"date":"2026-10-10","event":"Đã bàn giao cho Bộ phận IT minh họa · Chờ xác nhận nhận","receipt":"MOCK-BG-002"}]},
+  {"id":"demo-retired","code":"MOCK-PC-03","name":"Thiết bị đã thanh lý","status":"retired","assigned":false,"overdue":false,"history":[]}
+ ]
+}

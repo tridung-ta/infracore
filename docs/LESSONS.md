@@ -80,3 +80,19 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Sửa: querySelectorAll đúng; lỗi cạnh form, success được focus/scroll vào vùng nhìn; tách kết quả lưu và lỗi tải lại danh sách, timeout mạng có thông báo chưa xác nhận; giữ cột thao tác admin. Cache version cho JS/CSS.
 - Verify: tests/ita_access_feedback.js đạt 13 checks qua PHP/MySQL fixture: submit UI thật và read-back DB ở 390/768/1366, validation, lỗi mạng, lỗi refresh, không JS runtime error.
 - Bài học: 47 checks trước đã thử ghi bằng API trực tiếp và mở editor, chưa bấm Lưu từ UI; không xem coverage API là coverage submit form. Host chờ upload bản sửa và UAT lại.
+
+## ITA-20261019-03 Giữ danh mục inactive ở hồ sơ cũ
+
+- Triệu chứng: review Phase 3 phát hiện edit tài sản đang dùng loại inactive mất option và service buộc chọn loại mới dù chỉ sửa vị trí.
+- Nguyên nhân: dùng cùng điều kiện active cho create và update, không phân biệt giữ nguyên tham chiếu cũ.
+- Sửa: edit giữ option inactive hiện tại; server cho giữ nguyên category_id inactive, tạo/chuyển sang inactive vẫn trả 422.
+- Kiểm tra: pure/scripted checks unchanged/create/change và browser API mock edit/create đạt. Không chạy SQL/DB integration theo yêu cầu user.
+- Giới hạn: đây là evidence test mô phỏng và review source, chưa phải UAT host.
+
+## ITA-20261019-04 Giới hạn staging phải khớp từ lúc ghi
+
+- Triệu chứng/phân loại: Review Agent thấy XLSX hợp lệ có thể tạo batch rồi preview báo không khả dụng; lỗi thiết kế giới hạn file, chưa tái hiện trên host.
+- Bằng chứng: validate trả cả values và fields, code staging serialize cả hai; put không giới hạn nhưng get từ chối trên 32 MiB. Trường dài bị lưu trùng, và JSON có thể phình hơn XLSX/XML.
+- Sửa: bỏ fields khỏi staging, confirm dựng lại từ nguồn; kiểm JSON tối đa 32 MiB trước khi tạo file/batch. Không đổi dữ liệu/schema cũ.
+- Kiểm tra: `php tests/ita_phase04_unit.php` có case staging vượt giới hạn trả 422, roundtrip XLSX và revalidation dùng adapter; không DB.
+- Phạm vi: giới hạn payload phải được áp dụng trước persistence; không suy từ dung lượng nén ra dung lượng JSON/bộ nhớ. DB/concurrency thật vẫn cần UAT.

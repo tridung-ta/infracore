@@ -7,11 +7,16 @@
  <link rel="icon" href="data:,">
  <link rel="stylesheet" href="/assets/ita/vendor/bootstrap/5.3.8/bootstrap.min.css">
  <link rel="stylesheet" href="/assets/ita/css/ita-tokens.css">
- <link rel="stylesheet" href="/assets/ita/css/ita-shell.css?v=20261016-access1">
- <script src="/assets/ita/js/ita-shell.js" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-shell.css?v=20261019-phase5-live">
+ <script src="/assets/ita/js/ita-shell.js?v=20261019-phase5-live" defer></script>
  <script src="/assets/ita/js/ita-components.js" defer></script>
  <script src="/assets/ita/js/ita-admin.js?v=20261016-access1" defer></script>
  <script src="/assets/ita/js/ita-audit.js" defer></script>
+ <script src="/assets/ita/js/ita-assets.js?v=20261019-phase3" defer></script>
+ <script src="/assets/ita/js/ita-import.js?v=20261019-phase4" defer></script>
+ <script src="/assets/ita/js/ita-import-live.js?v=20261019-phase4" defer></script>
+ <script src="/assets/ita/js/ita-assignments.js?v=20261019-phase5" defer></script>
+ <script src="/assets/ita/js/ita-assignments-live.js?v=20261019-phase5" defer></script>
 </head>
 <body data-renderer="{$itaRenderer|default:'static'|escape:'html'}" data-mode="{$itaMode|default:'mock'|escape:'html'}">
  {include file="admin/ita/partials/icons.tpl.html"}
@@ -24,11 +29,14 @@
    {include file="admin/ita/partials/overview.tpl.html"}
    {include file="admin/ita/partials/access.tpl.html"}
    {include file="admin/ita/partials/audit.tpl.html"}
+   {include file="admin/ita/partials/import.tpl.html"}
+   {include file="admin/ita/partials/assignments.tpl.html"}
   </main>
   <footer class="app-footer"><span>InfraCore · Quản lý hạ tầng CNTT</span><span>Phiên bản giao diện 0.1</span></footer>
  </div>
  <div id="toast" class="app-toast" role="status" aria-live="polite" hidden></div>
  {include file="admin/ita/partials/dialogs.tpl.html"}
+ {include file="admin/ita/partials/asseteditor.tpl.html"}
  <noscript><p class="mock-notice">Hãy bật JavaScript để dùng bản xem thử giao diện.</p></noscript>
 </body>
 </html>
