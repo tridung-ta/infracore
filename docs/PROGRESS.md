@@ -4,6 +4,10 @@ Cập nhật 20/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm
 
 ## Trạng thái hiện hành sau đối chiếu Word
 
+### F7.6 — Lịch bảo trì ban đầu local
+
+Gate #07-SCHEDULE được user duyệt. Pure/scripted schedule9 và hồi quy local đạt; không DDL/backfill/DB/deploy. Chưa merge Phase7, chờ DB UAT Phase1–7. CHECK chưa xác minh trên DB thật. Các phần ticket tiếp tục ở working tree.
+
 ### Phase 6 — Gate đã duyệt kèm chỉnh sửa, đang build local
 
 User duyệt #06 ngày 20/10: chỉ Admin xác nhận vượt mức với lý do/audit; xem key POST+CSRF/no-store/rate limit/nhập lại mật khẩu/tự ẩn 10 giây/audit fail-closed; preflight khóa. Không DDL, không DB/deploy. **Phase 1–6 chưa được kiểm chứng đầy đủ trên DB thật; cần kiểm thử DB trước Phase 8.** Không dùng kết quả mock thay nghiệm thu DB.

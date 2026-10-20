@@ -24,7 +24,7 @@ function actor05(string $role = 'admin_it', array $scope = [10]): ItaUserObjectI
 }
 class Adapter05 extends ItaDb
 {
-    public array $asset = ['id'=>7,'store_id'=>1,'asset_code'=>'QA-7','name'=>'QA','status'=>'in_use','department_id'=>10,'current_user_id'=>null,'is_deleted'=>0,'next_maintenance_due'=>null];
+    public array $asset = ['id'=>7,'store_id'=>1,'asset_code'=>'QA-7','name'=>'QA','status'=>'in_use','category_id'=>2,'department_id'=>10,'current_user_id'=>null,'is_deleted'=>0,'next_maintenance_due'=>null];
     public ?array $active = null;
     public array $reads = [];
     public array $writes = [];
@@ -49,6 +49,7 @@ class Adapter05 extends ItaDb
         if (str_contains($sql,'ita_user_roles')) return ['role'=>$this->role,'enabled'=>(int) $this->roleEnabled,'auth_revision'=>1];
         if (str_contains($sql,'LAST_INSERT_ID')) return ['id'=>9];
         if (str_contains($sql,'COUNT(*)')) return ['n'=>str_contains($sql,'next_maintenance_due')?1:count($this->history)];
+        if (str_contains($sql,'ita_asset_categories')) return ['maintenance_cycle_months'=>6];
         if (str_contains($sql,'ita_assets')) return $params[0]===1 && $params[1]===7 && !$this->asset['is_deleted'] ? $this->asset : null;
         if (str_contains($sql,'ita_assignments')) return str_contains($sql,'returned_at IS NULL') && $this->active && $this->active['returned_at']!==null ? null : $this->active;
         if (str_contains($sql,'dc_users')) return $this->userActive ? ['id'=>$params[1]] : null;
@@ -167,7 +168,7 @@ expect05(in_array('%QA=%%',$last[1],true) && str_contains($last[0],'LIMIT 20 OFF
 $db=new Adapter05();$db->asset['next_maintenance_due']='2020-01-01';
 $summary=(new ItaAssetObjects($db,actor05('support_technician')))->summary();
 expect05($summary['alerts_total']===1 && str_starts_with($summary['alerts'][0]['title'],'Quá hạn bảo trì:'),'Maintenance contributes to scoped notification total');
-$dueReads=array_filter($db->reads,fn($read)=>str_contains($read[0],'a.next_maintenance_due<?'));
+$dueReads=array_filter($db->reads,fn($read)=>str_contains($read[0],ItaMaintenanceSchedule::SQL.'<?'));
 expect05(count($dueReads)===2 && count(array_filter($dueReads,fn($read)=>str_contains($read[0],'a.department_id IN (?)') && str_contains($read[0],"a.status<>'retired'") && $read[1]===[1,10,ItaAssignmentRules::today()]))===2,'Maintenance queries preserve store/department/retired/timezone predicates');
 $_GET=[];$_SESSION=['ita_csrf'=>'qa-token'];$_SERVER['REQUEST_METHOD']='POST';
 $application=new ItaApplication();$reflection=new ReflectionClass($application);

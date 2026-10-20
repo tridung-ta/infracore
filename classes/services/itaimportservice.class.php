@@ -124,6 +124,7 @@ class ItaImportService
 
     private function insert(array $values): void
     {
+        $values = ItaMaintenanceSchedule::initial($this->db,$this->actor->storeId,$values);
         $values = ['store_id'=>$this->actor->storeId]+$values+['created_by'=>$this->actor->id,'updated_by'=>$this->actor->id];
         $columns = implode(',',array_keys($values));
         $this->db->execute('INSERT INTO ita_assets ('.$columns.') VALUES ('.implode(',',array_fill(0,count($values),'?')).')',

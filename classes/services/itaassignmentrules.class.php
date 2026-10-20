@@ -9,7 +9,8 @@ class ItaAssignmentRules
 
     public static function overdue(array $asset): bool
     {
-        return $asset['status']!=='retired' && !empty($asset['next_maintenance_due']) && $asset['next_maintenance_due']<self::today();
+        $due = ItaMaintenanceSchedule::effective($asset);
+        return $asset['status']!=='retired' && $due!==null && $due<self::today();
     }
 
     public static function assignable(array $asset, ?array $active, ItaUserObjectInfo $actor): void

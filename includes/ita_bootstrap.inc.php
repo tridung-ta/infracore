@@ -10,6 +10,6 @@ foreach (['database/itadb','security/itahttperror','security/itainput','security
     'services/itaimportservice','services/itaimportcontroller','services/itaassignmentrules','dao/itaassignmentobjects',
     'services/itaassignmentservice','services/itahandoverpdf','services/itahandoverservice',
     'services/italicensecrypto','services/italicenserules','dao/italicenseobjectinfo','dao/italicenseobjects',
-    'services/italicenseservice','services/italicensereveal','services/itaapplication'] as $itaClassFile) {
+    'services/italicenseservice','services/italicensereveal','services/itamaintenanceschedule','services/itaapplication'] as $itaClassFile) {
     require_once ROOT_PATH . 'classes/' . $itaClassFile . '.class.php';
 }

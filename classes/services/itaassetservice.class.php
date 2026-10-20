@@ -67,6 +67,7 @@ class ItaAssetService
         $values = ItaAssetValidation::fields($input);
         $this->actor->requireDepartment($values['department_id']);
         $this->validateReferences($values,$before);
+        $values = ItaMaintenanceSchedule::initial($this->db,$this->actor->storeId,$values,$before);
         if ($before && (int) $before['department_id'] !== (int) $values['department_id']) {
             $this->assertUnassigned((int) $before['id']);
         }

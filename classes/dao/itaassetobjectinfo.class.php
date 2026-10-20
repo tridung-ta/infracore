@@ -12,6 +12,6 @@ class ItaAssetObjectInfo
             'category'=>$r['category_name'],'department'=>$r['department_name'] ?? 'Chưa phân bổ','status'=>$r['status'],
             'warranty'=>$r['warranty_end'] ? (new DateTimeImmutable($r['warranty_end']))->format('d/m/Y') : 'Chưa ghi nhận',
             'specs'=>$r['specs'] ?? 'Chưa ghi nhận','location'=>$r['location'] ?? 'Chưa ghi nhận',
-            'maintenance_overdue'=>ItaAssignmentRules::overdue($r),'next_maintenance_due'=>$r['next_maintenance_due'] ?? null];
+            'maintenance_overdue'=>ItaAssignmentRules::overdue($r),'next_maintenance_due'=>ItaMaintenanceSchedule::effective($r)];
     }
 }
