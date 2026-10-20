@@ -21,7 +21,7 @@ async(page)=>{
    if(act==='ticket-statistics')return json(route,{year:2026,rows:[{type:'repair',status:'resolved',n:1,cost:'120.25'}]});
    if(act==='ticket-save'){
     const body=req.postDataJSON();posts.push({body,csrf:req.headers()['x-csrf-token'],method:req.method()});
-    if(fail==='network'){fail='';return route.abort();}if(fail==='conflict'){fail='';return json(route,null,409,'Thiết bị đã có phiếu pending khác.');}
+    if(fail==='network'){fail='';return route.abort();}if(fail==='conflict'){fail='';return json(route,null,409,'Thiết bị đã có phiếu pending khác.');}if(fail==='server'){fail='';return json(route,null,503,'QA backend unavailable');}
     if(body.operation==='create')ticket={id:9,asset_id:7,ticket_no:'QA-TICKET-9',type:body.type,severity:body.severity,status:'pending',issue:body.note,technician_id:null,cost:'0.00',handled_date:null,resolution_note:null,version:'v1'};
     if(body.operation==='assign')ticket={...ticket,technician_id:Number(body.technician_id),version:'v2'};
     if(body.operation==='transition'){ticket={...ticket,status:body.status,cost:body.cost,handled_date:body.handled_date,resolution_note:body.note,version:'v3'};waiting=body.status==='resolved';}
@@ -41,6 +41,8 @@ async(page)=>{
    check(s.posts[0].body.operation==='create'&&s.posts[0].csrf==='qa-token',`Scoped create form ${role}`);
    check(await p.locator('#ticket-details img').count()===0&&await p.locator('#ticket-history script').count()===0,`Escaped text ${role}`);
    check((await p.locator('#ticket-history').textContent()).includes('ticket.assign'),`Merged assignment audit ${role}`);
+   await p.locator('#ticket-filter button').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('Đã tải danh sách:'));
+   check((await p.locator('#ticket-message').textContent()).includes('1 phiếu'),`List reload completion feedback ${role}`);
    if(role==='admin_it'){
     for(const width of [1366,768,390]){await p.setViewportSize({width,height:1000});check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`No page overflow ${width}`);check(await p.locator('#ticket-cost').evaluate(n=>{const r=n.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;}),`Form bounds ${width}`);await p.screenshot({path:`.playwright-cli/phase07-${width}.png`,fullPage:true});}
     await p.locator('#ticket-technician').selectOption('222');await p.locator('#ticket-assign-note').fill('QA assign');await p.locator('#ticket-assign button[type=submit]').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('đọc lại phiếu.'));
@@ -55,10 +57,14 @@ async(page)=>{
     await p.locator('.asset-ticket-history summary').click();await p.locator('.asset-ticket-history button').filter({hasText:'QA-TICKET-9'}).click();
     await p.waitForFunction(()=>document.querySelector('.asset-ticket-history').textContent.includes('ticket.assign'));
     check((await p.locator('.asset-ticket-history').textContent()).includes('pending'),'Inline asset history merges state and assignment audit');
+    await p.locator('#asset-dialog .dialog-close').count().then(async count=>{if(count)await p.locator('#asset-dialog .dialog-close').click();else await p.evaluate(()=>document.getElementById('asset-dialog').close());});
+    await p.evaluate(()=>location.hash='tickets');s.fail('server');await p.locator('#ticket-create button').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('HTTP 503'));
+    check((await p.locator('#ticket-message').textContent()).includes('QA backend unavailable'),'Backend rejection shown with HTTP status');
    }else if(role==='system_manager'){check(await p.locator('#ticket-transition').isHidden()&&await p.locator('#ticket-assign').isVisible(),'Manager assign but no transition');}
    else{
     check(await p.locator('#ticket-assign').isHidden()&&await p.locator('#ticket-transition').isVisible(),'Support processes without reassign');
     s.fail('network');await p.locator('#ticket-handled').fill('2026-10-20');await p.locator('#ticket-cost').fill('1');await p.locator('#ticket-resolution').fill('QA done');await p.locator('#ticket-transition button').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('Chưa xác nhận'));check(await p.locator('#ticket-transition button').isDisabled(),'Uncertain write blocks resubmit until reload');
+    const feedback=await p.locator('#ticket-message').evaluate(n=>{const r=n.getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:innerHeight,active:document.activeElement.id};});check(feedback.top>=0&&feedback.bottom<=feedback.height,'Write failure feedback visible in viewport '+JSON.stringify(feedback));
    }
   }finally{await s.context.close();}
  }

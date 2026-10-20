@@ -1,5 +1,11 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## ITA-20261020-07 Ticket thiếu phản hồi nhìn thấy khi UAT host
+
+User báo tạo phiếu/tải danh sách không có thông báo; chưa có response/log để xác định nguyên nhân ghi DB host. Đã tái hiện local: lỗi mạng đặt text nhưng thông báo có bbox top=-365px dù đang focus; scroll-behavior smooth chưa đưa nó vào viewport ở thời điểm phản hồi. Tải danh sách thành công cũng không có thông báo hoàn tất khi kết quả không đổi.
+
+Sửa FE: focus/cuộn instant vào giữa, thông báo pending/completion, số phiếu sau tải, lỗi HTTP/JSON và invalid form. Review bổ sung completion mặc định cho detail/statistics/paging. Browser API mock kiểm viewport sau lỗi và HTTP503; không coi việc sửa phản hồi là đã sửa nguyên nhân DB host. Cần UAT lại và đọc thông báo thực tế, không chạy lại CREATE.
+
 Các nguyên tắc dưới đây được rút ra từ tình huống đã gặp ở dự án trước. Chúng không chứng minh dự án mới có cùng lỗi hoặc mọi giải pháp cũ đều áp dụng được.
 
 | Khi gặp | Cách tiếp cận nên dùng | Điều cần kiểm tra |

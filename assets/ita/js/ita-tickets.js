@@ -4,12 +4,13 @@
  let current=null,page=1,total=0,busy=false,stale=false,started=false,techPage=1,techTotal=0;
  const role=()=>window.itaLiveContext?.user.role,admin=()=>role()==='admin_it';
  const el=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
- function message(text,error=false){const n=$('ticket-message');n.textContent=text;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);}
+ function message(text,error=false){const n=$('ticket-message');n.textContent=text;n.hidden=false;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);n.focus({preventScroll:true});n.scrollIntoView({behavior:'instant',block:'center'});}
  async function api(action,query={},body){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
   try{
    const response=await fetch(`/admin.php?${new URLSearchParams({op:'ita',act:action,...query})}`,{method:body?'POST':'GET',cache:'no-store',credentials:'same-origin',signal:controller.signal,headers:body?{'Content-Type':'application/json','X-CSRF-Token':document.querySelector('meta[name=ita-csrf]').content}:{},body:body?JSON.stringify(body):undefined});
-   const result=await response.json();if(!response.ok||!result.success)throw new Error(result.message||'Yêu cầu bị từ chối.');return result.data;
+   let result;try{result=await response.json();}catch(error){throw new Error(`Máy chủ trả phản hồi không hợp lệ (HTTP ${response.status}). ${body?'Chưa xác nhận đã lưu; tải lại danh sách để kiểm tra.':'Vui lòng thử tải lại.'}`);}
+   if(!response.ok||!result.success)throw new Error(`${result.message||'Yêu cầu bị từ chối.'} (HTTP ${response.status})`);return result.data;
   }catch(error){if(error instanceof TypeError||error.name==='AbortError')throw new Error(body?'Chưa xác nhận kết quả lưu. Tải lại danh sách và mở phiếu trước khi thao tác lại.':'Không tải được dữ liệu. Hãy thử lại.');throw error;}
   finally{clearTimeout(timer);}
  }
@@ -22,7 +23,7 @@
   $('ticket-tech-prev').disabled=busy||techPage<=1;$('ticket-tech-next').disabled=busy||techPage*20>=techTotal;
   if(stale)$('ticket-record').querySelectorAll('button[type=submit]').forEach(n=>n.disabled=true);
  }
- async function task(fn){if(busy)return;busy=true;controls();$('ticket-live').setAttribute('aria-busy','true');try{await fn();}catch(e){message(e.message,true);}finally{busy=false;controls();$('ticket-live').removeAttribute('aria-busy');}}
+ async function task(fn){if(busy)return;busy=true;controls();$('ticket-live').setAttribute('aria-busy','true');message('Đang thực hiện yêu cầu…');try{await fn();if($('ticket-message').textContent==='Đang thực hiện yêu cầu…')message('Đã tải dữ liệu.');}catch(e){message(e.message,true);}finally{busy=false;controls();$('ticket-live').removeAttribute('aria-busy');}}
  async function listing(){
   const data=await api('tickets',{page,asset_id:$('ticket-filter-asset').value,status:$('ticket-filter-status').value});page=data.page;total=data.total;
   $('ticket-rows').replaceChildren(...data.rows.map(row=>{
@@ -31,6 +32,7 @@
   }));
   if(!data.rows.length){const tr=el('tr',''),td=el('td','Không có phiếu phù hợp.');td.colSpan=5;tr.append(td);$('ticket-rows').append(tr);}
   $('ticket-page').textContent=`Trang ${page} · ${total} phiếu`;
+  message(`Đã tải danh sách: ${total} phiếu. ${total?'Chọn Mở phiếu để xem chi tiết.':'Chưa có phiếu phù hợp với bộ lọc.'}`);
  }
  async function technicians(nextPage=1){
   const data=await api('ticket-technicians',{asset_id:current.ticket.asset_id,page:nextPage});techPage=data.page;techTotal=data.total;
@@ -59,6 +61,7 @@
   try{await listing();if(result.id)await detail(result.id);else if(current)await detail(current.ticket.id);stale=false;message('Đã lưu và đọc lại phiếu.');dispatchEvent(new Event('ita:refresh'));}
   catch(error){message('Đã lưu nhưng chưa tải lại được. Mở lại phiếu trước khi tiếp tục.',true);$('ticket-record').hidden=true;}
  }
+ $('ticket-live').addEventListener('invalid',e=>{const label=document.querySelector(`label[for="${e.target.id}"]`)?.textContent||'Thông tin nhập';message(`${label}: ${e.target.validationMessage}`,true);},true);
  $('ticket-filter').addEventListener('submit',e=>{e.preventDefault();task(async()=>{page=1;await listing();if(current)await detail(current.ticket.id);});});
  $('ticket-prev').addEventListener('click',()=>task(async()=>{page--;await listing();}));$('ticket-next').addEventListener('click',()=>task(async()=>{page++;await listing();}));
  for(const [direction,delta] of [['prev',-1],['next',1]]){
