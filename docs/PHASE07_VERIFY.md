@@ -2,6 +2,8 @@
 
 Gate #07 được duyệt kèm 8 chỉnh sửa; #07-SCHEDULE được user duyệt riêng. Không DDL, Composer, DB connection/creation hoặc deploy. **Không merge trước UAT DB thật Phase 1–7; CHECK chưa xác minh thực tế.** Host theo ảnh cũ là MariaDB10.6.28.
 
+Commit local: ddc9c87 (lịch ban đầu), c4c5942 (ticket/guard), nhánh feature/ita-phase07-tickets. Chưa push/merge/deploy; không tag phase-done.
+
 ## Phạm vi có trong code
 
 - Tạo/list/detail phiếu theo store/scope, cả ba vai trò tạo. Admin/Manager gán; Admin/Hỗ trợ xử lý, app tự validate transition. Event chỉ cho tạo/chuyển hợp lệ; gán và sửa cost ghi audit, không event cùng trạng thái.

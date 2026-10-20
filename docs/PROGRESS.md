@@ -10,11 +10,11 @@ Không merge Phase 7 trước khi user kiểm thử DB thật Phase 1–7. Chưa
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- |
-| F7.1 | Tạo/list/detail phiếu | BE/FE | [~] | local | scripted236 + browser25 | Ba vai trò theo scope; DB chưa chạy |
-| F7.2 | Gán/xử lý/cost | BE/FE | [~] | local | scripted + form mock đạt | Admin-only closed cost, app transitions |
-| F7.3 | Đồng bộ/guard asset | BE/FE | [~] | local | Phase3 39, Phase5 203 | Pending vẫn cho thu hồi; chưa DB locking |
-| F7.4 | Lịch sử gộp | BE/FE | [~] | local | browser inline history đạt | Phân trang20, SQL UNION chưa chạy DB |
-| F7.5 | Thống kê theo asset/năm | BE/FE | [~] | local | tham số/query contract + UI đạt | opened_at/type=repair cho Phase8; EXPLAIN chưa chạy |
+| F7.1 | Tạo/list/detail phiếu | BE/FE | [~] | c4c5942 | scripted236 + browser25 | Ba vai trò theo scope; DB chưa chạy |
+| F7.2 | Gán/xử lý/cost | BE/FE | [~] | c4c5942 | scripted + form mock đạt | Admin-only closed cost, app transitions |
+| F7.3 | Đồng bộ/guard asset | BE/FE | [~] | c4c5942 | Phase3 39, Phase5 203 | Pending vẫn cho thu hồi; chưa DB locking |
+| F7.4 | Lịch sử gộp | BE/FE | [~] | c4c5942 | browser inline history đạt | Phân trang20, SQL UNION chưa chạy DB |
+| F7.5 | Thống kê theo asset/năm | BE/FE | [~] | c4c5942 | tham số/query contract + UI đạt | opened_at/type=repair cho Phase8; EXPLAIN chưa chạy |
 | F7.6 | Lịch bảo trì | BE/FE | [~] | ddc9c87 | cuối tháng, nguồn ngày mua/last đạt | Gate schedule duyệt; DB timezone chưa chạy |
 
 ### Phase 6 — Gate đã duyệt kèm chỉnh sửa, đang build local
