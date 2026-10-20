@@ -1,5 +1,15 @@
 # Nhật ký thao tác hosting
 
+## 20/10/2026 — Gói upload cộng dồn đến Phase7 theo yêu cầu user
+
+User xác nhận chỉ kiểm được trên host với DB hiện có, yêu cầu bắt đầu chuẩn bị gói. Agent chỉ đóng gói local, không upload/DB/merge/push. Source runtime cố định `80929beff9bb0675b19428df63d6f4316a706caf`, dùng cho host Phase2 đã đăng nhập được.
+
+- ZIP: `artifacts/ita-phase07/infracore-host-through-phase07-80929beff9bb.zip`, 48.553.362 byte; 1.340 runtime files +6 handoff files và MANIFEST.json.
+- SHA-256: `128748eb34c3c59beac605c19335642cac119df23c383d4f283d282b3e0d8f9b`. Đã đọc lại inventory, CRC và hash từng mục. Manifest ghi source commit, nguồn dependency và hash; PDF vendor khớp composer.lock. Excel dependency/font là snapshot bộ cục bộ hiện có, không tuyên bố chúng tracked trong source Git.
+- Không chứa private config, auth/key secret, SQL/dump, session/log, dữ liệu MOCK, tests. Không mang workbook Translations.xlsx dùng duy trì dịch thuật của thư viện. Bao gồm dependency Excel/PDF/font, không cần Composer hoặc Node production.
+- User giải nén và upload **nội dung runtime/** vào `/domains/infracore.dung.derasoft.com/public_html`, giữ cấu hình host, .ita-enabled và mã nền admin.php/Smarty/PmAuth/PmDb hiện có. Không upload handoff/manifest/ZIP. Hướng dẫn backup/rollback và điều kiện PHP/khóa: HOST_UPLOAD_PHASE07.md.
+- Bằng chứng user mới: selected_database=dung_infracore, MariaDB10.6.28, check_constraint_checks=ON trong phpMyAdmin, 5 bảng chính đều InnoDB. Đây chưa phải DB UAT nghiệp vụ/rollback/concurrency hoặc CHECK enforcement của PHP session. Chưa merge Phase7; chưa sang Phase8.
+
 ## 20/10/2026 — Ticket local, chưa triển khai hoặc merge
 
 User duyệt #07 kèm chỉnh sửa và #07-SCHEDULE. Đã build/kiểm local ticket, guard mọi writer, lịch ban đầu và periodic, lịch sử gộp/statistics. Không DDL, không SQL host, không tạo/kết nối DB hoặc upload. Commit lịch ban đầu ddc9c87; runtime ticket lưu trên nhánh feature/ita-phase07-tickets, không merge trước user UAT DB Phase1–7. Host/CHECK/EXPLAIN/concurrency chưa kiểm chứng. Checklist PHASE07_HOST_TEST.md; không dùng gói Phase5 cũ hoặc copy toàn repo để deploy. Chưa tạo gói phát hành mới.

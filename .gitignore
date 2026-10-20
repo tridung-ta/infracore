@@ -52,6 +52,7 @@ desktop.ini
 # Fixed local delivery snapshots; never stage generated bundles/manifests.
 /artifacts/ita-phase03/
 /artifacts/ita-phase05/
+/artifacts/ita-phase07/
 /.cache/composer-ita-pdf/
 /.cache/composer-ita-home/
 /tmp/pdfs/

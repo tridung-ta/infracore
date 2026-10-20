@@ -6,6 +6,8 @@ Cập nhật 20/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm
 
 ### Phase 7 — Đã duyệt kèm chỉnh sửa, đang build local
 
+Đã chuẩn bị gói upload cộng dồn từ source80929be theo yêu cầu user, 1.340 runtime files; manifest/CRC/hash đọc lại đạt, chi tiết DEPLOY_LOG.md và HOST_UPLOAD_PHASE07.md. Agent chưa upload. User đã gửi metadata DB dung_infracore/MariaDB10.6.28, 5 bảng chính InnoDB, CHECK=ON ở phiên phpMyAdmin; nghiệp vụ DB Phase1–7 vẫn chưa nghiệm thu.
+
 Không merge Phase 7 trước khi user kiểm thử DB thật Phase 1–7. Chưa xác minh CHECK trên DB thật; phiên bản host theo ảnh cũ 10.6.28-MariaDB, chưa kết nối lại. Service kiểm transitions độc lập CHECK. User duyệt #07-SCHEDULE riêng; lịch ban đầu từ ngày mua đã nối Phase 3–5, không DDL/backfill/DB/deploy. Không mở Phase 8 trước kiểm thử DB đã thống nhất.
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
