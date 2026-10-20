@@ -27,7 +27,7 @@ class ItaAssignmentObjects
             'department_id'=>$asset['department_id'],'current_user_id'=>$asset['current_user_id'],'version'=>ItaAssetService::version($asset),
             'maintenance_overdue'=>ItaAssignmentRules::overdue($asset),'next_maintenance_due'=>$asset['next_maintenance_due'] ?? null],
             'active'=>$active ? $this->presentation($active) : null,'history'=>$rows,'page'=>$page,'per_page'=>20,'total'=>$total,
-            'pdf_available'=>false];
+            'pdf_available'=>ItaHandoverPdf::available()];
     }
 
     private function presentation(array $row): array

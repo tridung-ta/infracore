@@ -96,3 +96,10 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Sửa: bỏ fields khỏi staging, confirm dựng lại từ nguồn; kiểm JSON tối đa 32 MiB trước khi tạo file/batch. Không đổi dữ liệu/schema cũ.
 - Kiểm tra: `php tests/ita_phase04_unit.php` có case staging vượt giới hạn trả 422, roundtrip XLSX và revalidation dùng adapter; không DB.
 - Phạm vi: giới hạn payload phải được áp dụng trước persistence; không suy từ dung lượng nén ra dung lượng JSON/bộ nhớ. DB/concurrency thật vẫn cần UAT.
+
+## ITA-20261020-05 CSS inline của template PDF phải tách khỏi cú pháp Smarty
+
+- Triệu chứng/phân loại: lần render local đầu của F5.4 báo Smarty Compiler Unexpected ':' tại dòng CSS, chưa sinh PDF; đây là lỗi template, không phải GD/font hoặc DB.
+- Bằng chứng: stylesheet inline chứa dấu ngoặc nhọn không có khoảng trắng, Smarty diễn giải thành tag. Lệnh `php -d extension=gd tests/ita_phase05_pdf.php` tái hiện được.
+- Sửa: chỉ bọc stylesheet tĩnh bằng literal, giữ toàn bộ dữ liệu biên bản dùng escape html và nl2br sau escape. Không bọc literal quanh dữ liệu để bỏ escape.
+- Kiểm tra: render PDF thật 1/2 trang, kiểm injection template, pypdf/pdfplumber và nhìn ảnh Poppler đạt. Múi giờ VN, seri 0 đầu, tiếng Việt và chữ ký đọc được; không DB.

@@ -1,0 +1,14 @@
+{
+    "name": "infracore/ita-pdf-runtime",
+    "description": "Isolated ITA handover PDF renderer",
+    "type": "project",
+    "require": {
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+        "mpdf/mpdf": "8.3.1"
+    },
+    "config": {
+        "allow-plugins": false,
+        "platform": {"php": "8.3.33"},
+        "sort-packages": true
+    }
+}

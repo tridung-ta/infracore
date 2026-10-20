@@ -86,6 +86,10 @@ class ItaApplication
 
     private function api(): void
     {
+        if ($this->action==='assignment-pdf') {
+            $this->handoverPdf();
+            return;
+        }
         if (in_array($this->action,['import-template','import-upload','import-preview','import-confirm','import-errors','asset-export'],true)) {
             (new ItaImportController($this->db,$this->user))->run($this->action);
             return;
@@ -142,6 +146,19 @@ class ItaApplication
             throw new ItaHttpError(422,'Dữ liệu không hợp lệ hoặc vượt giới hạn.');
         }
         return $data;
+    }
+
+    private function handoverPdf(): void
+    {
+        if ($_SERVER['REQUEST_METHOD']!=='GET') {
+            throw new ItaHttpError(405,'Tải PDF cần phương thức GET.');
+        }
+        $id = ItaInput::positiveInt($_GET['id'] ?? null);
+        $bytes = (new ItaHandoverService($this->db,$this->user))->download($id);
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="ita-handover-'.$id.'.pdf"');
+        header('Content-Length: '.strlen($bytes));
+        echo $bytes;
     }
 
     private function requirePost(): void

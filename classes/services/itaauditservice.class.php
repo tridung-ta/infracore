@@ -11,7 +11,7 @@ class ItaAuditService
     /** Credentials, license keys and session values are excluded by an explicit field allowlist. */
     public function record(string $action, string $entity, int $id, array $change = []): void
     {
-        if (!in_array($action, ['auth.login','auth.logout','user.access_update','asset.create','asset.update','asset.soft_delete','asset.status_change','category.update','import.complete','assignment.assign','assignment.return','assignment.acknowledge'], true)) {
+        if (!in_array($action, ['auth.login','auth.logout','user.access_update','asset.create','asset.update','asset.soft_delete','asset.status_change','category.update','import.complete','assignment.assign','assignment.return','assignment.acknowledge','assignment.pdf_download'], true)) {
             throw new LogicException('Unknown ITA audit action');
         }
         $json = static function ($value): ?string {

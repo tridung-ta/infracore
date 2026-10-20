@@ -16,7 +16,7 @@
     <form id="handover-return-form"><label for="handover-return-note">Lý do/tình trạng khi thu hồi</label><textarea id="handover-return-note" class="form-control" maxlength="4000" rows="3" required></textarea><button type="submit" id="handover-return" class="primary-button">Xác nhận thu hồi thiết bị</button></form>
    </section>
    <h3>Lịch sử phân bổ</h3><div id="handover-history"></div><div class="table-footer"><span id="handover-history-page"></span><button type="button" class="secondary-button" id="handover-history-previous">Trước</button><button type="button" class="secondary-button" id="handover-history-next">Sau</button></div>
-   <p class="muted">Biên bản PDF chưa khả dụng: đang chờ duyệt thư viện xuất PDF. Bàn giao cho bộ phận hoặc nhân viên không có quyền ITA chưa có xác nhận điện tử.</p><button type="button" class="secondary-button" disabled>Tải biên bản PDF — chưa khả dụng</button>
+   <p class="muted" id="handover-pdf-help">Chọn lượt bàn giao trong lịch sử để tải biên bản PDF. Bàn giao cho bộ phận hoặc nhân viên không có quyền ITA chưa có xác nhận điện tử.</p><button type="button" class="secondary-button" id="handover-pdf" disabled>Tải PDF lượt đang mở</button>
   </section>
  </div>
  <div class="import-step">

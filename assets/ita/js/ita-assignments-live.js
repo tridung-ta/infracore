@@ -11,6 +11,8 @@
   $('handover-assign').disabled=busy||stale||!record||!!record.active||record.asset.status!=='in_use'||!!record.asset.current_user_id||!canAssign||!$('handover-target').value;
   $('handover-return').disabled=busy||stale||!record?.active;
   $('handover-acknowledge').disabled=busy||stale||!record?.active;
+  $('handover-pdf').disabled=busy||stale||!record?.active||!record.pdf_available;
+  $('handover-history').querySelectorAll('button').forEach(button=>button.disabled=busy||stale||!record?.pdf_available);
   for(const [prefix,page,total,size] of [['assets',assetPage,assetTotal,5],['user',userPage,userTotal,20],['history',record?.page||1,record?.total||0,20]]){
    $(`handover-${prefix}-previous`).disabled=busy||page<=1;$(`handover-${prefix}-next`).disabled=busy||page*size>=total;
   }
@@ -48,10 +50,12 @@
    $('handover-ack-help').textContent=active.acknowledged_at?`Đã xác nhận nhận lúc ${active.acknowledged_at} UTC.`:active.to_user_id?'Chỉ chính tài khoản người nhận có quyền ITA và phạm vi thiết bị được xác nhận.':'Bàn giao cho bộ phận dùng biên bản ký nhận; chưa có xác nhận điện tử.';
   }
   $('handover-history').replaceChildren(...history.map(item=>{
-   const p=node('p','');p.append(node('strong',item.handover_no),document.createElement('br'),node('span',`${item.assigned_at} UTC · ${item.returned_at?'Đã thu hồi '+item.returned_at+' UTC':item.acknowledged_at?'Đã xác nhận nhận':'Đang giao, chưa xác nhận'} · ${item.to_user_id?'Tài khoản #'+item.to_user_id:'Bộ phận #'+item.to_department_id}`));return p;
+   const p=node('p','');p.append(node('strong',item.handover_no),document.createElement('br'),node('span',`${item.assigned_at} UTC · ${item.returned_at?'Đã thu hồi '+item.returned_at+' UTC':item.acknowledged_at?'Đã xác nhận nhận':'Đang giao, chưa xác nhận'} · ${item.to_user_id?'Tài khoản #'+item.to_user_id:'Bộ phận #'+item.to_department_id}`));
+   const button=node('button','Tải PDF '+item.handover_no);button.type='button';button.className='secondary-button';button.disabled=busy||!record.pdf_available;button.addEventListener('click',()=>task(()=>downloadPdf(item.id)));p.append(document.createElement('br'),button);return p;
   }));
   if(!history.length)$('handover-history').append(node('p','Chưa có lịch sử phân bổ.'));
   $('handover-history-page').textContent=`Trang ${record.page}/${Math.max(1,Math.ceil(record.total/20))} · ${record.total} lượt`;
+  $('handover-pdf-help').textContent=record.pdf_available?'PDF lấy thông tin hồ sơ hiện tại; mỗi lần tải đều kiểm quyền và ghi nhật ký. Chọn lượt đã thu hồi trong lịch sử để tải biên bản cũ.':'Máy chủ chưa sẵn sàng xuất PDF. Cần bộ thư viện PDF và PHP GD/mbstring; các thao tác bàn giao khác vẫn sử dụng được.';
  }
  async function loadRecipients(page=1){
   $('handover-target').replaceChildren(new Option('Chọn người/bộ phận nhận',''));
@@ -73,18 +77,34 @@
   catch(error){message(`Đã lưu thao tác, nhưng chưa tải lại được hồ sơ. ${error.message} Bấm Tải lại hồ sơ trước thao tác tiếp theo.`,true);}
   dispatchEvent(new Event('ita:refresh'));
  }
+ async function downloadPdf(id){
+  if(!record?.pdf_available||stale)return;
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);
+  try{
+   const query=new URLSearchParams({op:'ita',act:'assignment-pdf',id});
+   const response=await fetch(`/admin.php?${query}`,{cache:'no-store',credentials:'same-origin',signal:controller.signal});
+   if(!response.ok){const error=await response.json();throw new Error(error.message||'Chưa tải được biên bản.');}
+   if(!(response.headers.get('content-type')||'').includes('application/pdf'))throw new Error('Máy chủ chưa trả về file PDF hợp lệ.');
+   const bytes=await response.arrayBuffer();if(new TextDecoder().decode(bytes.slice(0,5))!=='%PDF-')throw new Error('Nội dung biên bản không phải PDF.');
+   const url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'})),link=document.createElement('a');
+   link.href=url;link.download=`ita-handover-${Number(id)}.pdf`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+   message('Đã tải biên bản PDF.');
+  }catch(error){throw new Error(error.name==='AbortError'?'Chưa nhận được PDF. Bạn có thể thử tải lại.':error.message);}
+  finally{clearTimeout(timer);}
+ }
  $('handover-search-form').addEventListener('submit',e=>{e.preventDefault();task(()=>loadAssets(1));});
  $('handover-asset').addEventListener('change',()=>task(()=>loadRecord()));$('handover-reload').addEventListener('click',()=>task(()=>loadAssets(assetPage)));
  $('handover-create').addEventListener('submit',e=>{e.preventDefault();task(()=>save('assign'));});
  $('handover-return-form').addEventListener('submit',e=>{e.preventDefault();task(()=>save('return'));});
  $('handover-acknowledge').addEventListener('click',()=>task(()=>save('acknowledge')));
+ $('handover-pdf').addEventListener('click',()=>task(()=>downloadPdf(record.active.id)));
  $('handover-target-type').addEventListener('change',()=>task(()=>loadRecipients(1)));$('handover-target').addEventListener('change',buttons);
  $('handover-user-find').addEventListener('click',()=>task(()=>loadRecipients(1)));
  for(const [prefix,read,current] of [['assets',loadAssets,()=>assetPage],['user',loadRecipients,()=>userPage],['history',loadRecord,()=>record.page]])for(const [direction,delta] of [['previous',-1],['next',1]])$(`handover-${prefix}-${direction}`).addEventListener('click',()=>task(()=>read(current()+delta)));
  $('assignment-mode').textContent='Giao và thu hồi thiết bị theo quyền; lịch sử lưu riêng từng lượt bàn giao.';
  $('assignment-live').nextElementSibling.hidden=true;$('assignment-live').hidden=false;
  document.querySelector('[data-view=assignments] .nav-count')?.remove();
- for(const [value,label] of [['assignment.assign','Giao thiết bị'],['assignment.return','Thu hồi thiết bị'],['assignment.acknowledge','Xác nhận nhận thiết bị']])$('audit-action').append(new Option(label,value));
+ for(const [value,label] of [['assignment.assign','Giao thiết bị'],['assignment.return','Thu hồi thiết bị'],['assignment.acknowledge','Xác nhận nhận thiết bị'],['assignment.pdf_download','Tải biên bản bàn giao']])$('audit-action').append(new Option(label,value));
  function activate(){if(!started&&location.hash==='#assignments'&&window.itaLiveContext){started=true;task(()=>loadAssets());}}
  addEventListener('ita:view',activate);addEventListener('ita:data',activate);activate();
 })();

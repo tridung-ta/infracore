@@ -1,6 +1,6 @@
 # Phase 5 — Kiểm chứng local ngày 19/10/2026
 
-User đã duyệt “OK BE Phase 5”. Đã build F5.1 giao thiết bị, F5.2 thu hồi, F5.3 lịch sử, F5.5 người nhận tự xác nhận và F5.6 cảnh báo từ next_maintenance_due. F5.4 PDF chưa build vì renderer/package mới cần gate riêng. Không tạo DB, đọc private config, chạy SQL host hoặc deploy.
+User đã duyệt “OK BE Phase 5”. Đã build F5.1 giao thiết bị, F5.2 thu hồi, F5.3 lịch sử, F5.5 người nhận tự xác nhận và F5.6 cảnh báo từ next_maintenance_due. F5.4 sau đó được duyệt “OK PDF Phase 5” và build local ngày 20/10; kết quả riêng ở PHASE05_PDF_VERIFY.md. Không tạo DB, đọc private config, chạy SQL host hoặc deploy.
 
 | Kiểm tra | Kết quả thật | Giới hạn |
 | --- | --- | --- |
@@ -12,7 +12,7 @@ User đã duyệt “OK BE Phase 5”. Đã build F5.1 giao thiết bị, F5.2 t
 
 ## Contract đã build
 
-- GET `/admin.php?op=ita&act=assignments&asset_id=...&page=...`: asset tối thiểu/version, active assignment/version, history 20 dòng/trang, pdf_available=false. Không trả handover_file private. Scope kiểm từ asset hiện tại; lịch sử bộ phận cũ không cấp quyền vượt scope hiện tại.
+- GET `/admin.php?op=ita&act=assignments&asset_id=...&page=...`: asset tối thiểu/version, active assignment/version, history 20 dòng/trang; pdf_available phản ánh vendor và GD/mbstring hiện có. Không trả handover_file private. Scope kiểm từ asset hiện tại; lịch sử bộ phận cũ không cấp quyền vượt scope hiện tại.
 - GET `assignment-recipients&q=...&page=...`: tối đa 20 tài khoản active của store mỗi trang; chỉ Admin/Quản lý. Chỉ đọc id, username, fullname; không email/password. Không suy bộ phận nhân viên từ role/schema PM. Giao cho người dùng giữ nguyên bộ phận của tài sản; giao cho bộ phận cập nhật department_id, kiểm cả source và target scope.
 - POST `assignment-save`: JSON tối đa 32 KiB để đủ 4.000 ký tự UTF-8, X-CSRF-Token; operation assign/return/acknowledge. Browser gửi asset_id/asset_version; return/ack còn có assignment_id/assignment_version. ID/actor/store/số biên bản/ngày xác nhận do server quyết định, không tin client.
 - Khóa role/revision → asset → active assignment; kiểm target department active. Tất cả writer mới và audit dùng cùng InnoDB transaction, không ghi dc_. Unique active_asset_id là chốt chống hai lượt giao mở. Duplicate/deadlock/lock timeout trả 409, gọi rollback; không tự retry ngầm.
@@ -25,4 +25,4 @@ User đã duyệt “OK BE Phase 5”. Đã build F5.1 giao thiết bị, F5.2 t
 
 DB integration/read-back, rollback thật, hai người giao cùng thiết bị, race đổi quyền hoặc native user status, timezone/default timestamp của schema host, EXPLAIN và tải lớn chưa chạy. dc_users MyISAM chỉ đọc, không khóa transactional/FK được với native user; tài khoản native có thể đổi trạng thái sau bước kiểm tra, không tuyên bố bảo đảm xuyên engine. Không đổi engine/schema cũ để xử lý giới hạn này.
 
-PDF chưa cài dependency/renderer, chưa có file PDF để render/font QA. Mã Phase3/4/5 còn working tree; không gộp nhiều Fx.y vào một commit hoặc tag phase-done khi các tiêu chí nghiệm thu còn thiếu. Không có gói deploy mới; user tiếp tục giữ production riêng.
+PDF đã cài dependency, render/font QA và browser mock theo PHASE05_PDF_VERIFY.md; chưa kiểm host. Checkpoint bfe3539 đã lưu trạng thái local Phase3/4/5, F5.4 lưu commit riêng; không tag phase-done khi tiêu chí DB/host còn thiếu. Không deploy; user tiếp tục giữ production riêng.

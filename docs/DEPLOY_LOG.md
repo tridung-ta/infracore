@@ -1,5 +1,13 @@
 # Nhật ký thao tác hosting
 
+## 20/10/2026 — PDF hoàn thiện local, chưa deploy host
+
+BE-GATE #05-PDF được user duyệt 19/10, mPDF8.3.1 +7 dependency khóa riêng; GD local chạy per-process, không sửa php.ini hoặc server. F5.4 render/PDF text/font/pages/signatures, adapter scope/audit và browser mock đã kiểm; host/DB/download thực chưa UAT. Không migration/SQL mới.
+
+User đã cho phép origin và push nhánh đang làm: checkpoint bfe3539 đã push feature/ita-phase05-pdf; bản PDF được commit/push riêng sau kiểm chứng. Đây là lưu mã, không deploy production hoặc merge main.
+
+Builder scripts/package_ita_pdf.py tạo delta local từ source committed, gom vendor/font/license có manifest/hash và kiểm đọc lại; chỉ dùng khi user chủ động yêu cầu bàn giao. Delta phụ thuộc checkpoint, không phải bộ cài toàn app. Rollback code: khôi phục source/vendor cũ đã backup, giữ assignment/audit/DB; không DROP/restore dump đè dữ liệu hoặc sửa config host. Host cần GD/mbstring/zlib, temp ngoài webroot ghi được và runtime dependency đầy đủ; Composer chạy ở máy build, không production.
+
 ## 19/10/2026 — Phase 5 chỉ build local
 
 BE-GATE #05 đã duyệt, code phân bổ/thu hồi/acknowledge/history/maintenance badge đã nối; không migration mới, không cài PDF dependency, không DB/host/deploy. Source còn working tree, chưa có release/manifest Phase5. Không upload toàn repo hoặc dùng gói Phase3 cũ. PHASE05_VERIFY.md ghi kết quả pure/scripted/browser mock; PHASE05_HOST_TEST.md ghi UAT còn lại. Không tạo PDF giả hoặc công bố phase-done.

@@ -78,7 +78,7 @@ async(page)=>{
   check(await p.locator('#handover-record').isHidden(),'Saved-but-refresh-failed does not expose stale record');
   await p.locator('#handover-reload').click();await p.locator('#handover-active').waitFor({state:'visible'});
   check(await p.locator('#handover-acknowledge').isHidden(),'Department handover has no self acknowledgement');
-  check(await p.getByRole('button',{name:'Tải biên bản PDF — chưa khả dụng'}).isDisabled(),'PDF explicitly unavailable');
+  check(await p.locator('#handover-pdf').isDisabled(),'PDF disabled when server reports unavailable');
  }finally{await admin.context.close();}
  for(const role of ['system_manager','support_technician']){
   const test=await scenario(role);

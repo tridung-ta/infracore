@@ -1,20 +1,20 @@
 # Tiến độ dự án 5
 
-Cập nhật 19/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm nào trong 10 yêu cầu. Bảng đầu là kế hoạch gốc; các mục cập nhật cuối tài liệu ghi trạng thái build/verify mới nhất, không tính audit thành phần trăm chức năng.
+Cập nhật 20/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm nào trong 10 yêu cầu. Bảng đầu là kế hoạch gốc; các mục cập nhật cuối tài liệu ghi trạng thái build/verify mới nhất, không tính audit thành phần trăm chức năng.
 
 ## Trạng thái hiện hành sau đối chiếu Word
 
-### Phase 5 — BE-GATE #05 đã duyệt, đã nối local, PDF chờ gate riêng
+### Phase 5 — BE và PDF đã duyệt, đã nối local, host UAT chưa chạy
 
-User duyệt **“OK BE Phase 5”** ngày 19/10/2026. Đã nối giao nhân viên/bộ phận, thu hồi (gồm Support trong scope), lịch sử 20 dòng/trang, người nhận tự xác nhận, badge/chuông quá hạn từ ngày bảo trì có sẵn. Có khóa role/asset/assignment, version, unique lượt mở và audit cùng transaction. Không DDL, không ghi dc_, tạo DB hoặc kết nối/deploy host. PDF chưa cài thư viện, nút vẫn khóa; xem BE_GATE_05_PDF.md cho package cụ thể cần duyệt riêng.
+User duyệt **“OK BE Phase 5”** và **“OK PDF Phase 5”** ngày 19/10/2026. Đã nối giao nhân viên/bộ phận, thu hồi (gồm Support trong scope), lịch sử 20 dòng/trang, người nhận tự xác nhận, badge/chuông quá hạn từ ngày bảo trì có sẵn. Ngày 20/10 đã hoàn thiện PDF thật bằng mPDF8.3.1, tải từ lượt đang mở/lịch sử, kiểm lại actor/scope/version và audit trước trả bytes. Không DDL, không ghi dc_, tạo DB hoặc kết nối/deploy host. GD local chỉ bật per-process; host cần kiểm riêng.
 
-`php tests/ita_phase05_unit.php`: **173 pure/scripted checks đạt**, không DB. `tests/ita_phase05_browser.js`: **29 browser API mock checks đạt**, submit thật trong browser, role/CSRF/payload/version/lỗi/unknown-result/ba viewport; không HTTP/DB integration. Static `ita_phase05_preview.js` giữ 22 checks. Phase3 36 + Phase4 88 pure/scripted hồi quy đạt, Smarty render đạt. Chi tiết PHASE05_VERIFY.md; các ca DB/concurrency/user UAT ở PHASE05_HOST_TEST.md. Chưa commit/tag hoàn tất phase khi nghiệm thu và PDF còn mở.
+`php tests/ita_phase05_unit.php`: **173 pure/scripted checks đạt**, không DB. `tests/ita_phase05_browser.js`: **29 browser API mock checks đạt**; static giữ 22 checks. PDF: **118 PHP/renderer/scripted +2 thiếu-GD +18 browser transport mock checks đạt**; pypdf/pdfplumber và Poppler xác minh 1/2 trang, tiếng Việt, số biên bản, seri, giờ VN và khung ký. Chi tiết PHASE05_PDF_VERIFY.md. Checkpoint bfe3539 đã commit/push nhánh feature/ita-phase05-pdf theo yêu cầu user; F5.4 lưu commit riêng. Không tag phase-done vì DB/host UAT còn mở.
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- |
-| F5.1–F5.3 | Giao/thu hồi/lịch sử | FE/BE | [~] | chưa commit | Pure/scripted173 + browser API mock29 đạt | Code local có, DB/concurrency chưa chạy |
-| F5.4 | Biên bản PDF | BE/FE | [G] | chưa commit | chưa chạy PDF | Nút khóa; renderer chưa có bằng chứng đầy đủ, dependency cần gate riêng |
-| F5.5–F5.6 | Xác nhận nhận/quá hạn bảo trì | FE/BE | [~] | chưa commit | Rule/scope/alert query + browser submit/badge/center đạt | DB/read-back/timezone host chưa chạy |
+| F5.1–F5.3 | Giao/thu hồi/lịch sử | FE/BE | [~] | bfe3539 checkpoint | Pure/scripted173 + browser API mock29 đạt | Code local có, DB/concurrency chưa chạy |
+| F5.4 | Biên bản PDF | BE/FE | [~] | commit F5.4 theo Git log | PHP118 + thiếu-GD2 + browser18 + parser/render đạt | Code local hoàn tất, auth/DB/host UAT chưa chạy |
+| F5.5–F5.6 | Xác nhận nhận/quá hạn bảo trì | FE/BE | [~] | bfe3539 checkpoint | Rule/scope/alert query + browser submit/badge/center đạt | DB/read-back/timezone host chưa chạy |
 
 ### Phase 4 — BE-GATE đã duyệt, đã build local, DB UAT chưa chạy
 

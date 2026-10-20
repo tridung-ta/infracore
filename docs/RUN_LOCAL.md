@@ -11,6 +11,16 @@ playwright-cli -s=ita-phase03 run-code --filename tests/ita_phase05_browser.js
 
 Xem PHASE05_VERIFY.md và PHASE05_HOST_TEST.md. Không chạy fixture/reset/integration DB cũ.
 
+PDF F5.4 (20/10): vendor local đã cài từ composer.lock, GD có sẵn nhưng chỉ bật riêng cho process kiểm thử:
+
+```powershell
+php -d extension=gd tests/ita_phase05_pdf.php
+php tests/ita_phase05_pdf.php --unavailable
+playwright-cli -s=ita-phase03 run-code --filename tests/ita_phase05_pdf_browser.js
+```
+
+Parser `tests/ita_phase05_pdf_text.py` cần Python có pypdf/pdfplumber (đã chạy bằng Python bundled); Poppler render các PDF giả trong tmp/pdfs để nhìn từng trang. Không commit tmp/pdfs. Môi trường khác phải `composer install --no-dev --no-scripts --no-plugins` ở classes/ita-pdf bằng PHP có GD/mbstring; không ignore platform requirement. Xem classes/ita-pdf/README.md và PHASE05_PDF_VERIFY.md. Static preview không sinh PDF từ DB; browser test mock transport, PHP CLI mới render file thật bằng dữ liệu giả.
+
 ## Cách dùng hiện tại, không cần DB
 
 Hướng dẫn shell MOCK bằng PHP phía dưới là lịch sử Phase 1, đã lỗi thời sau khi thêm auth Phase 2. Không dùng runtime PHP để xem preview không DB.
