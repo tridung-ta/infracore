@@ -26,3 +26,5 @@ Mẫu chỉ in text đã escape, không nhận HTML/CSS/URL/tệp từ user. mPD
 Checkpoint bfe3539 đã lưu mã local Phase3–5 và đã push lên origin/feature/ita-phase05-pdf theo yêu cầu user; không phải tag nghiệm thu phase. F5.4 được commit riêng sau kiểm chứng. vendor không đưa Git; composer.json/lock/README đưa Git để tái lập. Builder `scripts/package_ita_pdf.py` chỉ đóng gói từ source committed và vendor khớp lock, có manifest/hash và đọc lại zip; không deploy, không là backup toàn app/DB. Gói delta phụ thuộc checkpoint và phải giữ config host riêng.
 
 Host UAT còn mở: session/HTTP/download thật, scope với dữ liệu thật, audit read-back, font/bộ nhớ trên PHP8.3.33, GD/extensions, webserver headers/cache và đóng gói triển khai thực tế. Không đánh dấu toàn Phase5 hoặc 10 yêu cầu đã nghiệm thu.
+
+Gói local đã tạo và đọc lại toàn bộ 710 mục từ commit `5f1e6ea4f5fafef08e51be4b9a08641b5dbf34e0`: `artifacts/ita-phase05/ita-pdf-5f1e6ea4f5fa.zip`. SHA-256: `7d0149bcd1c89aad417a526522a3ab2d1bfcde84c9259ed5e09ba2da43443dec`. Gói chỉ lưu local, chưa upload/deploy.

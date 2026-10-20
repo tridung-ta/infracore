@@ -13,7 +13,7 @@ User duyệt **“OK BE Phase 5”** và **“OK PDF Phase 5”** ngày 19/10/20
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- |
 | F5.1–F5.3 | Giao/thu hồi/lịch sử | FE/BE | [~] | bfe3539 checkpoint | Pure/scripted173 + browser API mock29 đạt | Code local có, DB/concurrency chưa chạy |
-| F5.4 | Biên bản PDF | BE/FE | [~] | commit F5.4 theo Git log | PHP118 + thiếu-GD2 + browser18 + parser/render đạt | Code local hoàn tất, auth/DB/host UAT chưa chạy |
+| F5.4 | Biên bản PDF | BE/FE | [~] | 5f1e6ea | PHP118 + thiếu-GD2 + browser18 + parser/render đạt | Code local hoàn tất, auth/DB/host UAT chưa chạy |
 | F5.5–F5.6 | Xác nhận nhận/quá hạn bảo trì | FE/BE | [~] | bfe3539 checkpoint | Rule/scope/alert query + browser submit/badge/center đạt | DB/read-back/timezone host chưa chạy |
 
 ### Phase 4 — BE-GATE đã duyệt, đã build local, DB UAT chưa chạy
