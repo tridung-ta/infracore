@@ -2,7 +2,8 @@
 class ItaAuditService
 {
     private const FIELDS = ['asset_code','code','name','brand','model','serial_no','specs','os','purchase_date','purchase_price','warranty_end','vendor','location','category_id','department_id','current_user_id','status','is_deleted','status_reason','role','enabled','department_ids','total_rows',
-        'asset_id','to_user_id','to_department_id','assigned_by','assigned_at','due_return','returned_at','handover_no','acknowledged_by','acknowledged_at','note','return_note'];
+        'asset_id','to_user_id','to_department_id','assigned_by','assigned_at','due_return','returned_at','handover_no','acknowledged_by','acknowledged_at','note','return_note',
+        'software_name','license_type','total_seats','used_seats','start_date','expire_date','cost','allocation_id','user_id','override_reason'];
 
     public function __construct(private ItaDb $db, private ItaUserObjectInfo $actor)
     {
@@ -11,7 +12,8 @@ class ItaAuditService
     /** Credentials, license keys and session values are excluded by an explicit field allowlist. */
     public function record(string $action, string $entity, int $id, array $change = []): void
     {
-        if (!in_array($action, ['auth.login','auth.logout','user.access_update','asset.create','asset.update','asset.soft_delete','asset.status_change','category.update','import.complete','assignment.assign','assignment.return','assignment.acknowledge','assignment.pdf_download'], true)) {
+        if (!in_array($action, ['auth.login','auth.logout','user.access_update','asset.create','asset.update','asset.soft_delete','asset.status_change','category.update','import.complete','assignment.assign','assignment.return','assignment.acknowledge','assignment.pdf_download',
+            'license.create','license.update','license.allocate','license.release','license.overage','license.key_view'], true)) {
             throw new LogicException('Unknown ITA audit action');
         }
         $json = static function ($value): ?string {

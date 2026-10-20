@@ -4,6 +4,19 @@ Cập nhật 20/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm
 
 ## Trạng thái hiện hành sau đối chiếu Word
 
+### Phase 6 — Gate đã duyệt kèm chỉnh sửa, đang build local
+
+User duyệt #06 ngày 20/10: chỉ Admin xác nhận vượt mức với lý do/audit; xem key POST+CSRF/no-store/rate limit/nhập lại mật khẩu/tự ẩn 10 giây/audit fail-closed; preflight khóa. Không DDL, không DB/deploy. **Phase 1–6 chưa được kiểm chứng đầy đủ trên DB thật; cần kiểm thử DB trước Phase 8.** Không dùng kết quả mock thay nghiệm thu DB.
+
+Giới hạn an toàn từ schema: giấy phép không có bộ phận sở hữu và native user chưa có membership đã xác minh. Metadata chung chỉ Admin sửa; manager xem catalog che key và cấp/thu hồi máy/bộ phận theo scope; cấp theo user chỉ Admin. Không thêm cột để suy diễn quyền.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+| --- | --- | --- | --- | --- | --- | --- |
+| F6.1 | Danh mục và key mã hóa | BE/FE | [~] | local, chờ Git log | pure32 + scripted159 + browser28 đạt | Không DB; PHASE06_VERIFY.md |
+| F6.2 | Cấp phát/thu hồi | BE/FE | [~] | local, chờ Git log | scripted scope/transaction/overage + browser đạt | DB concurrency chưa chạy |
+| F6.3–F6.4 | Hết hạn/vượt mức | BE/FE | [~] | local, chờ Git log | ngày biên + chuông/dashboard mock đạt | Chưa DB/timezone host |
+| F6.5 | Xem key có reauth/audit | BE/FE | [~] | local, chờ Git log | audit failure/rate/role + browser tự ẩn10s đạt | HTTP/DB host chưa kiểm |
+
 ### Phase 5 — BE và PDF đã duyệt, đã nối local, host UAT chưa chạy
 
 User duyệt **“OK BE Phase 5”** và **“OK PDF Phase 5”** ngày 19/10/2026. Đã nối giao nhân viên/bộ phận, thu hồi (gồm Support trong scope), lịch sử 20 dòng/trang, người nhận tự xác nhận, badge/chuông quá hạn từ ngày bảo trì có sẵn. Ngày 20/10 đã hoàn thiện PDF thật bằng mPDF8.3.1, tải từ lượt đang mở/lịch sử, kiểm lại actor/scope/version và audit trước trả bytes. Không DDL, không ghi dc_, tạo DB hoặc kết nối/deploy host. GD local chỉ bật per-process; host cần kiểm riêng.

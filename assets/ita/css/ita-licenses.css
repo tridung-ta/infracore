@@ -1,0 +1,12 @@
+#licenses-panel h3 { margin: 1.6rem 0 .75rem; font-size: 1.1rem; }
+#license-live { padding: 0 1.25rem 1.25rem; }
+.license-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
+.license-fields label, .license-override > label { display: block; margin-bottom: .4rem; }
+.license-override { margin: 1rem 0; max-width: 65ch; }
+.license-key { display: block; overflow-wrap: anywhere; padding: 1rem; margin-top: .75rem; background-color: var(--ita-surface-2); color: var(--ita-text); }
+.license-table { width: 100%; min-width: 620px; }
+.license-table th, .license-table td { padding: .8rem; border-bottom: 1px solid var(--ita-border); text-align: left; vertical-align: top; }
+.license-table td { overflow-wrap: anywhere; max-width: 28ch; }
+#licenses-panel [hidden] { display: none !important; }
+#license-details { overflow-wrap: anywhere; }
+@media(max-width: 600px) { .license-fields { grid-template-columns: minmax(0,1fr); } #licenses-panel .panel-heading { align-items: stretch; flex-direction: column; } }

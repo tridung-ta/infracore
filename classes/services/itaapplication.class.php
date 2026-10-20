@@ -10,6 +10,9 @@ class ItaApplication
     {
         try {
             $this->action = ItaInput::text($_GET['act'] ?? '', 30);
+            if ($this->action==='license-key') {
+                header('Cache-Control: no-store, private');
+            }
             $this->config = ItaDb::configuration();
             ItaSession::start($this->config);
             if ($this->action === 'login') {
@@ -86,6 +89,16 @@ class ItaApplication
 
     private function api(): void
     {
+        if (in_array($this->action,['license-save','license-key'],true)) {
+            header('Cache-Control: no-store, private');
+            $this->requirePost();
+            $input = $this->readJson();
+            $data = $this->action==='license-key'
+                ? (new ItaLicenseReveal($this->db,$this->user,$this->config))->reveal(ItaInput::positiveInt($input['id'] ?? null),$input['password'] ?? null)
+                : (new ItaLicenseService($this->db,$this->user))->save($input);
+            $this->json(['success'=>true,'data'=>$data,'message'=>$this->action==='license-key'?'Key tự ẩn sau 10 giây.':'Đã cập nhật giấy phép.']);
+            return;
+        }
         if ($this->action==='assignment-pdf') {
             $this->handoverPdf();
             return;
@@ -121,8 +134,9 @@ class ItaApplication
         }
         $assets = new ItaAssetObjects($this->db,$this->user);
         $data = match ($this->action) {
-            'data' => $assets->listing($_GET,$page) + ['summary'=>$assets->summary(),'departments'=>$assets->departments(),
-                'mock'=>false,'user'=>['id'=>$this->user->id,'display_name'=>$this->user->name,'role'=>$this->user->role,'role_label'=>$this->user->roleLabel()]],
+            'licenses' => (new ItaLicenseObjects($this->db,$this->user))->listing($_GET,$page),
+            'license' => (new ItaLicenseObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['id'] ?? null),$page),
+            'data' => $this->overview($assets,$page),
             'asset' => $assets->detail(ItaInput::positiveInt($_GET['id'] ?? null)),
             'assignments' => (new ItaAssignmentObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['asset_id'] ?? null),$page),
             'assignment-recipients' => (new ItaAssignmentObjects($this->db,$this->user))->recipients(ItaInput::text($_GET['q'] ?? '',100),$page),
@@ -133,6 +147,19 @@ class ItaApplication
             default => throw new ItaHttpError(404, 'Không tìm thấy chức năng.'),
         };
         $this->json(['success'=>true,'data'=>$data,'message'=>'']);
+    }
+
+    private function overview(ItaAssetObjects $assets, int $page): array
+    {
+        $summary = $assets->summary();
+        if (in_array($this->user->role,['admin_it','system_manager'],true)) {
+            $licenses = (new ItaLicenseObjects($this->db,$this->user))->alerts();
+            $summary['alerts'] = [...$summary['alerts'],...$licenses['alerts']];
+            $summary['alerts_total'] += $licenses['total'];
+            $summary['license_counts'] = $licenses['counts'];
+        }
+        return $assets->listing($_GET,$page)+['summary'=>$summary,'departments'=>$assets->departments(),'mock'=>false,
+            'user'=>['id'=>$this->user->id,'display_name'=>$this->user->name,'role'=>$this->user->role,'role_label'=>$this->user->roleLabel()]];
     }
 
     private function readJson(int $limit = 32768): array

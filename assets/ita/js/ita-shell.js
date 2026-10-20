@@ -6,6 +6,7 @@
  const liveMode=document.body.dataset.mode==='live';
  const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Quản lý quyền IT và phạm vi bộ phận cho tài khoản hiện có.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
  const state = {data:null,page:1,pageSize:5,view:'overview'};
+ titles.licenses=['Phần mềm & giấy phép','Theo dõi số chỗ, thời hạn và cấp phát trong phạm vi quản lý.'];
  titles.imports=['Import / Export tài sản',liveMode?'Kiểm tra file, nhập theo lô và xuất tài sản theo quyền.':'Chuẩn bị dữ liệu Excel và xem luồng nhập minh họa.'];
  titles.assignments=['Phân bổ & thu hồi',liveMode?'Giao thiết bị, xác nhận nhận và theo dõi thu hồi trong phạm vi của bạn.':'MOCK · Xem trước bàn giao và lịch sử với dữ liệu giả.'];
  let toastTimer;
@@ -60,6 +61,7 @@
   $('audit-panel').hidden = state.view!=='audit';
   $('imports-panel').hidden = state.view!=='imports';
   $('assignments-panel').hidden = state.view!=='assignments';
+  $('licenses-panel').hidden = state.view!=='licenses';
   document.querySelectorAll('[data-view]').forEach((link) => {
    if (link.dataset.view===state.view) link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
@@ -112,15 +114,15 @@
   $('notification-button').querySelector('.notification-dot').hidden=liveMode?state.data.summary.alerts_total===0:alerts.length===0;
   $('attention-summary').replaceChildren(...['critical','warning'].map((level)=>{
    const item=el('div','attention-item');
-   const count=liveMode?(state.data.summary.by_status[level==='critical'?'broken':'maintenance']||0)+(level==='warning'?(state.data.summary.maintenance_overdue_total||0):0):alerts.filter((a)=>a.level===level).length;
+   const count=liveMode?(state.data.summary.by_status[level==='critical'?'broken':'maintenance']||0)+(state.data.summary.license_counts?.[level]||0)+(level==='warning'?(state.data.summary.maintenance_overdue_total||0):0):alerts.filter((a)=>a.level===level).length;
    item.append(el('strong',level==='critical'?'danger-text':'warning-text',String(count).padStart(2,'0')),el('span','',level==='critical'?'Cảnh báo nghiêm trọng':'Cần theo dõi'));return item;
   }));
   $('alert-list').replaceChildren(...alerts.map((alert)=>{
    const row=el('article','alert-row');const text=el('div');text.append(el('h3','',alert.title),el('p','muted',alert.description));
-   const button=el('button','secondary-button','Xem thiết bị');button.type='button';button.addEventListener('click',()=>showDetails(alert.asset_id,button));
+   const button=el('button','secondary-button',alert.license_id?'Xem giấy phép':'Xem thiết bị');button.type='button';button.addEventListener('click',()=>{if(alert.license_id)location.hash='licenses';else showDetails(alert.asset_id,button);});
    row.append(el('span',`alert-severity ${alert.level==='critical'?'danger-text':'warning-text'}`,alert.level==='critical'?'Nghiêm trọng':'Cảnh báo'),text,button);return row;
   }));
-  if(!alerts.length)$('alert-list').append(el('p','muted','Chưa có thiết bị hỏng hoặc đang bảo trì trong phạm vi của bạn.'));
+  if(!alerts.length)$('alert-list').append(el('p','muted','Chưa có cảnh báo trong phạm vi của bạn.'));
  }
  function filteredAssets() {
   const query=$('asset-search').value.trim().toLocaleLowerCase('vi');
@@ -234,7 +236,7 @@
   document.querySelectorAll('.subtle-tag').forEach(tag=>{tag.textContent=tag.textContent.includes('Chỉ đọc')?'Chỉ đọc':'Dữ liệu hệ thống';});
   document.querySelector('.panel-footnote').textContent='Thống kê trong phạm vi tài sản được cấp quyền.';
   $('load-error').querySelector('h2').textContent='Chưa tải được dữ liệu hệ thống';
-  document.querySelector('#alerts-panel .panel-heading p').textContent='Tối đa 10 thiết bị hỏng hoặc đang bảo trì trong phạm vi của bạn.';
+  document.querySelector('#alerts-panel .panel-heading p').textContent='Thiết bị trong phạm vi và giấy phép dùng chung theo quyền. Danh sách hiển thị có giới hạn; số đếm là tổng cảnh báo.';
   document.querySelector('#assets-panel .panel-heading p').textContent='Tra cứu thiết bị trong phạm vi được cấp quyền';
   document.querySelector('#asset-dialog .dialog-meta').textContent='Hồ sơ tài sản';
   document.querySelector('#asset-dialog>p').textContent='Thông tin thiết bị chỉ đọc. Chức năng cập nhật sẽ được triển khai ở bước tiếp theo.';

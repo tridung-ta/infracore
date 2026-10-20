@@ -1,5 +1,11 @@
 # Quyết định của dự án 5
 
+## 20/10/2026 — Triển khai giấy phép trong schema hiện có
+
+User duyệt #06 kèm Admin-only overage + lý do/audit; reveal POST+CSRF/no-store/rate limit/audit fail-closed và nhập lại mật khẩu; tự ẩn 10 giây. Reauth đọc password_hash/MD5 native theo ID đang đăng nhập, không gọi luồng login có writer dc_users. Không Composer hoặc DDL.
+
+Quyết định an toàn từ code: ita_licenses không có department_id, không thể chứng minh metadata thuộc phạm vi manager. Chỉ Admin sửa catalog/key dùng chung; manager đọc catalog che key, số chỗ toàn store không chứa định danh và cấp/thu hồi máy/bộ phận trong scope. Native user không có membership được xác minh nên chỉ Admin cấp theo user. Không suy từ store_id hoặc user_scopes (trách nhiệm quản trị) thành phòng ban làm việc. Đây là giới hạn local, không tuyên bố đã hỗ trợ manager sửa metadata theo bộ phận.
+
 Chỉ ghi quyết định đã chốt; giả thuyết ghi rõ ở mục «Vấn đề còn mở». Không kế thừa quyết định nghiệp vụ của dự án nguồn nếu chưa xem xét.
 
 | Ngày | Quyết định | Lý do/phạm vi | Nguồn xác nhận | Kiểm chứng/giới hạn |

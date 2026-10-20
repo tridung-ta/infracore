@@ -1,0 +1,34 @@
+<section id="licenses-panel" class="panel" aria-labelledby="license-title" hidden>
+ <div class="panel-heading"><div><h2 id="license-title">Phần mềm &amp; giấy phép</h2><p class="muted">Theo dõi thời hạn, số chỗ và lịch sử cấp phát. Key luôn được che khi tra cứu.</p></div><button id="license-new" type="button" class="primary-button" hidden>Thêm giấy phép</button></div>
+ <p id="license-message" class="admin-message" role="status" tabindex="-1"></p>
+ <div id="license-live" hidden>
+  <form id="license-search-form" class="assignment-controls"><div><label for="license-search">Tên phần mềm</label><input id="license-search" maxlength="100" class="form-control" type="search"></div><button class="secondary-button" type="submit">Tìm giấy phép</button></form>
+  <div class="table-scroll"><table class="license-table"><caption class="visually-hidden">Danh sách giấy phép trong hệ thống</caption><thead><tr><th>Phần mềm</th><th>Số chỗ đã cấp</th><th>Hết hạn</th><th>Cảnh báo</th><th>Thao tác</th></tr></thead><tbody id="license-rows"></tbody></table></div>
+  <div class="table-footer"><span id="license-page"></span><button id="license-prev" type="button" class="secondary-button">Trước</button><button id="license-next" type="button" class="secondary-button">Sau</button></div>
+  <section id="license-record" hidden>
+   <h3 id="license-record-title">Chi tiết giấy phép</h3><dl id="license-details" class="detail-grid"></dl>
+   <p class="muted">Giấy phép dùng chung toàn hệ thống. Chỉ Admin IT sửa danh mục và key; Quản lý hệ thống cấp theo máy/bộ phận phụ trách. Cấp theo người cần Admin IT xác minh.</p>
+   <form id="license-editor" hidden>
+    <h3>Thông tin giấy phép</h3><div class="license-fields">
+     <div><label for="license-name">Tên phần mềm</label><input id="license-name" class="form-control" required maxlength="200"></div>
+     <div><label for="license-vendor">Nhà cung cấp</label><input id="license-vendor" class="form-control" maxlength="200"></div>
+     <div><label for="license-type">Hình thức</label><select id="license-type" class="form-select"><option value="per_device">Theo máy</option><option value="per_user">Theo người</option><option value="per_department">Theo bộ phận</option></select></div>
+     <div><label for="license-seats">Tổng số chỗ</label><input id="license-seats" class="form-control" type="number" min="1" max="1000000" required></div>
+     <div><label for="license-start">Ngày bắt đầu</label><input id="license-start" class="form-control" type="date"></div>
+     <div><label for="license-expire">Ngày hết hạn</label><input id="license-expire" class="form-control" type="date"></div>
+     <div><label for="license-cost">Chi phí (VND)</label><input id="license-cost" class="form-control" type="number" min="0" step="0.01"></div>
+     <div><label for="license-status">Trạng thái</label><select id="license-status" class="form-select"><option value="active">Đang sử dụng</option><option value="inactive">Ngừng sử dụng</option></select></div>
+     <div><label for="license-key-input">Key mới (để trống giữ key cũ)</label><input id="license-key-input" class="form-control" type="password" autocomplete="off" maxlength="4000"></div>
+    </div>
+    <div class="license-override"><label><input id="license-save-over" type="checkbox"> Xác nhận giảm số chỗ xuống dưới số đã cấp</label><label for="license-save-reason">Lý do vượt mức (không nhập key)</label><textarea id="license-save-reason" class="form-control" maxlength="1000"></textarea></div>
+    <button type="submit" class="primary-button">Lưu giấy phép</button>
+   </form>
+   <form id="license-allocate"><h3>Cấp phát một chỗ</h3><p id="license-target-help" class="muted"></p><div class="assignment-controls"><div><label for="license-target">ID máy / tài khoản / bộ phận theo hình thức</label><input id="license-target" class="form-control" type="number" min="1" required></div><button type="submit" class="primary-button">Cấp phát</button></div>
+    <div id="license-allocate-override" class="license-override" hidden><label><input id="license-allocate-over" type="checkbox"> Admin IT xác nhận cấp vượt mức</label><label for="license-allocate-reason">Lý do vượt mức (không nhập key)</label><textarea id="license-allocate-reason" class="form-control" maxlength="1000"></textarea></div>
+   </form>
+   <form id="license-reveal" autocomplete="off" hidden><h3>Xem key đầy đủ</h3><p class="muted">Tối đa 5 lần trong 15 phút. Key tự ẩn sau 10 giây hoặc khi rời trang.</p><div class="assignment-controls"><div><label for="license-password">Nhập lại mật khẩu Admin IT</label><input id="license-password" class="form-control" type="password" autocomplete="current-password" required maxlength="1024"></div><button type="submit" class="secondary-button">Xác nhận &amp; xem key</button><button id="license-hide-key" type="button" class="secondary-button">Ẩn ngay</button></div><output id="license-key-output" class="license-key" hidden aria-live="polite"></output></form>
+   <h3>Lịch sử cấp phát trong phạm vi</h3><div class="table-scroll"><table class="license-table"><thead><tr><th>Đích cấp phát</th><th>Ngày cấp (UTC)</th><th>Thu hồi (UTC)</th><th>Thao tác</th></tr></thead><tbody id="license-allocations"></tbody></table></div>
+   <div class="table-footer"><span id="license-history-page"></span><button id="license-history-prev" type="button" class="secondary-button">Trước</button><button id="license-history-next" type="button" class="secondary-button">Sau</button></div>
+  </section>
+ </div>
+</section>
