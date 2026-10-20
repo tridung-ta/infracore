@@ -7,6 +7,7 @@
  const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Quản lý quyền IT và phạm vi bộ phận cho tài khoản hiện có.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
  const state = {data:null,page:1,pageSize:5,view:'overview'};
  titles.licenses=['Phần mềm & giấy phép','Theo dõi số chỗ, thời hạn và cấp phát trong phạm vi quản lý.'];
+ titles.tickets=['Bảo trì & hỗ trợ','Theo dõi phiếu, người xử lý và lịch bảo trì của thiết bị.'];
  titles.imports=['Import / Export tài sản',liveMode?'Kiểm tra file, nhập theo lô và xuất tài sản theo quyền.':'Chuẩn bị dữ liệu Excel và xem luồng nhập minh họa.'];
  titles.assignments=['Phân bổ & thu hồi',liveMode?'Giao thiết bị, xác nhận nhận và theo dõi thu hồi trong phạm vi của bạn.':'MOCK · Xem trước bàn giao và lịch sử với dữ liệu giả.'];
  let toastTimer;
@@ -62,6 +63,7 @@
   $('imports-panel').hidden = state.view!=='imports';
   $('assignments-panel').hidden = state.view!=='assignments';
   $('licenses-panel').hidden = state.view!=='licenses';
+  $('tickets-panel').hidden = state.view!=='tickets';
   document.querySelectorAll('[data-view]').forEach((link) => {
    if (link.dataset.view===state.view) link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
@@ -114,7 +116,7 @@
   $('notification-button').querySelector('.notification-dot').hidden=liveMode?state.data.summary.alerts_total===0:alerts.length===0;
   $('attention-summary').replaceChildren(...['critical','warning'].map((level)=>{
    const item=el('div','attention-item');
-   const count=liveMode?(state.data.summary.by_status[level==='critical'?'broken':'maintenance']||0)+(state.data.summary.license_counts?.[level]||0)+(level==='warning'?(state.data.summary.maintenance_overdue_total||0):0):alerts.filter((a)=>a.level===level).length;
+   const count=liveMode?(state.data.summary.by_status[level==='critical'?'broken':'maintenance']||0)+(state.data.summary.license_counts?.[level]||0)+(level==='warning'?((state.data.summary.maintenance_overdue_total||0)+(state.data.summary.awaiting_ready_total||0)):0):alerts.filter((a)=>a.level===level).length;
    item.append(el('strong',level==='critical'?'danger-text':'warning-text',String(count).padStart(2,'0')),el('span','',level==='critical'?'Cảnh báo nghiêm trọng':'Cần theo dõi'));return item;
   }));
   $('alert-list').replaceChildren(...alerts.map((alert)=>{

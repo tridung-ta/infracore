@@ -36,6 +36,7 @@ class Adapter05 extends ItaDb
     public bool $roleEnabled = true;
     public bool $failAudit = false;
     public bool $duplicate = false;
+    public bool $pendingTicket = false;
     public string $role = 'admin_it';
     private array $snapshot = [];
     public function __construct() {}
@@ -46,6 +47,7 @@ class Adapter05 extends ItaDb
     {
         expect05(strlen($types)===count($params),'Prepared read parameters match');
         $this->reads[]=[$sql,$params];
+        if (str_contains($sql,'ita_tickets')) return $this->pendingTicket ? ['id'=>9] : null;
         if (str_contains($sql,'ita_user_roles')) return ['role'=>$this->role,'enabled'=>(int) $this->roleEnabled,'auth_revision'=>1];
         if (str_contains($sql,'LAST_INSERT_ID')) return ['id'=>9];
         if (str_contains($sql,'COUNT(*)')) return ['n'=>str_contains($sql,'next_maintenance_due')?1:count($this->history)];
@@ -177,4 +179,10 @@ rejects05(fn()=>$reflection->getMethod('api')->invoke($application),403);
 $_SERVER['HTTP_X_CSRF_TOKEN']='wrong';
 rejects05(fn()=>$reflection->getMethod('api')->invoke($application),403);
 rejects05(fn()=>(new ItaAssignmentService($db,actor05()))->save(array_replace(input05($db),['asset_id'=>[]])),422);
+$db=new Adapter05();$db->pendingTicket=true;
+rejects05(fn()=>(new ItaAssignmentService($db,actor05()))->save(input05($db)),409);
+expect05(!$db->writes,'Pending ticket blocks new assignment despite in_use asset');
+$db=assigned05('support_technician');$db->pendingTicket=true;
+(new ItaAssignmentService($db,actor05('support_technician')))->save(input05($db,'return'));
+expect05($db->active['returned_at']!==null,'Return remains allowed while pending');
 echo "$checks pure/scripted checks passed; no database created or connected.\n";

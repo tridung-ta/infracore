@@ -1,5 +1,14 @@
 #licenses-panel h3 { margin: 1.6rem 0 .75rem; font-size: 1.1rem; }
 #license-live { padding: 0 1.25rem 1.25rem; }
+.ticket-body { padding: 0 1.25rem 1.25rem; }
+#tickets-panel h3 { margin: 1.6rem 0 .75rem; font-size: 1.1rem; }
+#tickets-panel form { margin-bottom: 1.25rem; }
+#tickets-panel textarea { margin-bottom: .75rem; }
+#ticket-details { overflow-wrap: anywhere; }
+#ticket-history pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.asset-ticket-history { margin-top: 1.25rem; }
+.asset-ticket-history pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+#tickets-panel [hidden] { display: none !important; }
 .license-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
 .license-fields label, .license-override > label { display: block; margin-bottom: .4rem; }
 .license-override { margin: 1rem 0; max-width: 65ch; }

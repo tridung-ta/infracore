@@ -69,6 +69,7 @@ class ItaAssetService
         $this->validateReferences($values,$before);
         $values = ItaMaintenanceSchedule::initial($this->db,$this->actor->storeId,$values,$before);
         if ($before && (int) $before['department_id'] !== (int) $values['department_id']) {
+            ItaTicketGuard::clear($this->db,$this->actor->storeId,(int) $before['id']);
             $this->assertUnassigned((int) $before['id']);
         }
         $columns = array_keys($values);
@@ -106,6 +107,7 @@ class ItaAssetService
             throw new ItaHttpError(422, 'Vui lòng nhập lý do hoặc ghi chú.');
         }
         if ($operation === 'delete') {
+            ItaTicketGuard::clear($this->db,$this->actor->storeId,$id);
             $this->assertUnassigned($id);
             $this->db->execute('UPDATE ita_assets SET is_deleted=1,status_reason=?,updated_by=? WHERE store_id=? AND id=?', 'siii', [$reason,$this->actor->id,$this->actor->storeId,$id]);
             return 'asset.soft_delete';
@@ -115,6 +117,12 @@ class ItaAssetService
             return 'asset.update';
         }
         $status = ItaInput::text($input['status'] ?? '', 20);
+        if ($status!=='maintenance') {
+            ItaTicketGuard::clear($this->db,$this->actor->storeId,$id);
+        }
+        if ($status==='in_use' && ItaTicketGuard::waiting($this->db,$this->actor->storeId,$before)) {
+            $this->actor->requireAdmin();
+        }
         ItaAssetValidation::status($before['status'],$status,$this->actor->role);
         if ($status === 'retired') {
             $this->assertUnassigned($id);

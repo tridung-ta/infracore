@@ -7,6 +7,9 @@
  for(const [value,label] of [['license.create','Tạo giấy phép'],['license.update','Sửa giấy phép'],['license.allocate','Cấp phát giấy phép'],['license.release','Thu hồi giấy phép'],['license.overage','Xác nhận vượt mức'],['license.key_view','Xem key giấy phép']]){
   const option=el('option',label);option.value=value;$('audit-action').append(option);
  }
+ for(const [value,label] of [['ticket.create','Tạo phiếu'],['ticket.assign','Gán kỹ thuật viên'],['ticket.transition','Xử lý phiếu'],['ticket.cost','Sửa chi phí phiếu']]){
+  const option=el('option',label);option.value=value;$('audit-action').append(option);
+ }
  let opened=false;
  async function audit(){
   $('audit-message').textContent='Đang tải nhật ký…';

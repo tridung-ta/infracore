@@ -67,6 +67,7 @@ class ItaAssignmentService
 
     private function assign(array $asset, ?array $active, array $input): int
     {
+        ItaTicketGuard::clear($this->db,$this->actor->storeId,(int) $asset['id']);
         ItaAssignmentRules::assignable($asset,$active,$this->actor);
         $target = $this->target($asset,$input);
         $due = ItaAssignmentRules::dueDate($input['due_return'] ?? '');

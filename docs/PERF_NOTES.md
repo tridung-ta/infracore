@@ -14,3 +14,8 @@ Ngày 19/10/2026. Không tạo/kết nối DB trong Phase 3. Không suy diễn m
 | Lookup loại/bộ phận | Bounded 501, báo lỗi vượt 500 | Chưa hoàn toàn đáp ứng quy tắc mọi danh sách phân trang |
 
 Để user test DB sau: EXPLAIN bộ lọc kết hợp, admin/scope list, summary/history; benchmark 500 tài sản, trang sâu và contains search. Ghi key/type/rows/Extra/thời gian thực, không dữ liệu cá nhân/credential. Nhu cầu thêm index phải nêu thay đổi cụ thể, không tự ALTER host.
+# Truy vấn bổ sung Phase 7 — chưa EXPLAIN DB thật
+
+Ticket list theo store/asset/status/opened_at; dùng index hiện có ở migration004, không thêm DDL. Kiểm count/list cùng scope và paging20; thống kê group asset/type/status, range opened_at UTC thay YEAR(column), không JOIN events để tránh nhân COUNT/SUM. Hỗ trợ lọc technician_id.
+
+Lịch sử UNION ALL events và audit gán/cost phải kiểm kế hoạch hai nhánh, paging20 và thứ tự. Waiting-ready dùng correlated latest lifecycle event theo created_at/id, không updated_at; cần EXPLAIN trên số ticket/event thực và xác minh index idx_ita_events_ticket + idx_ita_tickets_asset_status. Cảnh báo lịch fallback dùng DATE_ADD/CONVERT_TZ offset cố định, có thể không dùng range index khi COALESCE; chưa benchmark, không khẳng định tối ưu. Kiểm trước Phase8 cùng DB UAT Phase1–7; nếu cần index/schema mới phải gate SQL riêng.

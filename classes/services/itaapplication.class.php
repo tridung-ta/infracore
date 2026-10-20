@@ -89,6 +89,12 @@ class ItaApplication
 
     private function api(): void
     {
+        if ($this->action==='ticket-save') {
+            $this->requirePost();
+            $data = (new ItaTicketService($this->db,$this->user))->save($this->readJson());
+            $this->json(['success'=>true,'data'=>$data,'message'=>'Đã cập nhật phiếu.']);
+            return;
+        }
         if (in_array($this->action,['license-save','license-key'],true)) {
             header('Cache-Control: no-store, private');
             $this->requirePost();
@@ -134,6 +140,10 @@ class ItaApplication
         }
         $assets = new ItaAssetObjects($this->db,$this->user);
         $data = match ($this->action) {
+            'tickets' => (new ItaTicketObjects($this->db,$this->user))->listing($_GET,$page),
+            'ticket' => (new ItaTicketObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['id'] ?? null),$page),
+            'ticket-technicians' => (new ItaTicketObjects($this->db,$this->user))->technicians(ItaInput::positiveInt($_GET['asset_id'] ?? null),$page),
+            'ticket-statistics' => (new ItaTicketObjects($this->db,$this->user))->statistics($_GET),
             'licenses' => (new ItaLicenseObjects($this->db,$this->user))->listing($_GET,$page),
             'license' => (new ItaLicenseObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['id'] ?? null),$page),
             'data' => $this->overview($assets,$page),
@@ -152,6 +162,10 @@ class ItaApplication
     private function overview(ItaAssetObjects $assets, int $page): array
     {
         $summary = $assets->summary();
+        $ready = (new ItaTicketObjects($this->db,$this->user))->waitingAlerts();
+        $summary['alerts'] = [...$summary['alerts'],...$ready['alerts']];
+        $summary['alerts_total'] += $ready['total'];
+        $summary['awaiting_ready_total'] = $ready['total'];
         if (in_array($this->user->role,['admin_it','system_manager'],true)) {
             $licenses = (new ItaLicenseObjects($this->db,$this->user))->alerts();
             $summary['alerts'] = [...$summary['alerts'],...$licenses['alerts']];

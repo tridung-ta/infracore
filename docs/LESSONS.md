@@ -64,6 +64,12 @@ Các nguyên tắc dưới đây được rút ra từ tình huống đã gặp 
 
 Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu người thật vào tài liệu này.
 
+## ITA-20261020-06 Lịch ban đầu và mốc trạng thái ticket
+
+- Review Phase7 phát hiện source bỏ qua tính lại lịch khi đã có due, dù chưa bảo trì và ngày mua được sửa. Đã phân biệt last_maintenance_at với lịch ban đầu; scripted test ngày mua 31/01 → 28/02 xác minh due đổi tương ứng, còn lịch sau bảo trì được giữ. Chưa chạy DB.
+- Review cũng thấy dùng updated_at chọn phiếu cuối sẽ để sửa cost phiếu cũ tác động cờ chờ Admin. Đây là rủi ro suy ra từ writer và query, chưa tái hiện trên DB thật. Đã dùng mốc/id event lifecycle và loại trừ pending ở cả helper và query cảnh báo; test contract không còn updated_at, UAT phải thử old failed/new resolved rồi sửa cost cũ.
+- Browser form ticket cho phép gõ khi save còn refresh; dữ liệu gõ có thể bị render đọc lại ghi đè. Đã khóa input/select/textarea trong busy state cùng nút, test chờ đúng read-back trước bước tiếp theo. Browser API mock đạt, không suy thành persistence E2E.
+
 ## ITA-20261016-01 PHP lint thư viện mail cũ
 
 - Triệu chứng: php -l trên 1.456 file thất bại ở 5 file liệt kê trong BASELINE.md.

@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 20/10/2026 — Ticket và đầu vào vòng đời
+
+Theo user duyệt #07: số ticket sửa chữa dùng cho Phase 8 đếm ticket ID theo **opened_at, type=repair**, không đếm event hoặc ngày đóng; mở lại failed vẫn cùng ID. Năm/lát cắt thời gian hiển thị theo VN, truy vấn biên UTC. Hỗ trợ/Quản lý tạo theo scope, Admin mọi bộ phận. Chỉ Admin sửa chi phí của resolved/failed, bắt buộc lý do và audit. Không merge Phase 7 trước kiểm thử DB thật Phase 1–7. Cách tính lịch ban đầu từ ngày mua cần duyệt riêng khi sửa Phase 3–5.
+
 ## 20/10/2026 — Triển khai giấy phép trong schema hiện có
 
 User duyệt #06 kèm Admin-only overage + lý do/audit; reveal POST+CSRF/no-store/rate limit/audit fail-closed và nhập lại mật khẩu; tự ẩn 10 giây. Reauth đọc password_hash/MD5 native theo ID đang đăng nhập, không gọi luồng login có writer dc_users. Không Composer hoặc DDL.

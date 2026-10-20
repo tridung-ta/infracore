@@ -4,9 +4,18 @@ Cập nhật 20/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm
 
 ## Trạng thái hiện hành sau đối chiếu Word
 
-### F7.6 — Lịch bảo trì ban đầu local
+### Phase 7 — Đã duyệt kèm chỉnh sửa, đang build local
 
-Gate #07-SCHEDULE được user duyệt. Pure/scripted schedule9 và hồi quy local đạt; không DDL/backfill/DB/deploy. Chưa merge Phase7, chờ DB UAT Phase1–7. CHECK chưa xác minh trên DB thật. Các phần ticket tiếp tục ở working tree.
+Không merge Phase 7 trước khi user kiểm thử DB thật Phase 1–7. Chưa xác minh CHECK trên DB thật; phiên bản host theo ảnh cũ 10.6.28-MariaDB, chưa kết nối lại. Service kiểm transitions độc lập CHECK. User duyệt #07-SCHEDULE riêng; lịch ban đầu từ ngày mua đã nối Phase 3–5, không DDL/backfill/DB/deploy. Không mở Phase 8 trước kiểm thử DB đã thống nhất.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+| --- | --- | --- | --- | --- | --- | --- |
+| F7.1 | Tạo/list/detail phiếu | BE/FE | [~] | local | scripted236 + browser25 | Ba vai trò theo scope; DB chưa chạy |
+| F7.2 | Gán/xử lý/cost | BE/FE | [~] | local | scripted + form mock đạt | Admin-only closed cost, app transitions |
+| F7.3 | Đồng bộ/guard asset | BE/FE | [~] | local | Phase3 39, Phase5 203 | Pending vẫn cho thu hồi; chưa DB locking |
+| F7.4 | Lịch sử gộp | BE/FE | [~] | local | browser inline history đạt | Phân trang20, SQL UNION chưa chạy DB |
+| F7.5 | Thống kê theo asset/năm | BE/FE | [~] | local | tham số/query contract + UI đạt | opened_at/type=repair cho Phase8; EXPLAIN chưa chạy |
+| F7.6 | Lịch bảo trì | BE/FE | [~] | ddc9c87 | cuối tháng, nguồn ngày mua/last đạt | Gate schedule duyệt; DB timezone chưa chạy |
 
 ### Phase 6 — Gate đã duyệt kèm chỉnh sửa, đang build local
 
