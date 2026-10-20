@@ -12,10 +12,10 @@ Giới hạn an toàn từ schema: giấy phép không có bộ phận sở hữ
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- |
-| F6.1 | Danh mục và key mã hóa | BE/FE | [~] | local, chờ Git log | pure32 + scripted159 + browser28 đạt | Không DB; PHASE06_VERIFY.md |
-| F6.2 | Cấp phát/thu hồi | BE/FE | [~] | local, chờ Git log | scripted scope/transaction/overage + browser đạt | DB concurrency chưa chạy |
-| F6.3–F6.4 | Hết hạn/vượt mức | BE/FE | [~] | local, chờ Git log | ngày biên + chuông/dashboard mock đạt | Chưa DB/timezone host |
-| F6.5 | Xem key có reauth/audit | BE/FE | [~] | local, chờ Git log | audit failure/rate/role + browser tự ẩn10s đạt | HTTP/DB host chưa kiểm |
+| F6.1 | Danh mục và key mã hóa | BE/FE | [~] | 068931b | pure32 + scripted159 + browser28 đạt | Không DB; PHASE06_VERIFY.md |
+| F6.2 | Cấp phát/thu hồi | BE/FE | [~] | 068931b | scripted scope/transaction/overage + browser đạt | DB concurrency chưa chạy |
+| F6.3–F6.4 | Hết hạn/vượt mức | BE/FE | [~] | 068931b | ngày biên + chuông/dashboard mock đạt | Chưa DB/timezone host |
+| F6.5 | Xem key có reauth/audit | BE/FE | [~] | 068931b | audit failure/rate/role + browser tự ẩn10s đạt | HTTP/DB host chưa kiểm |
 
 ### Phase 5 — BE và PDF đã duyệt, đã nối local, host UAT chưa chạy
 
