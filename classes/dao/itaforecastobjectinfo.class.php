@@ -38,7 +38,7 @@ class ItaForecastObjectInfo
         $expected=ItaForecastRules::summary($data['rows']);
         if (!empty($data['unassigned_assets'])) { $expected['complete']=false; }
         if ($data['summary']!==$expected) { throw new ItaHttpError(409,'Tổng snapshot không khớp các thành phần.'); }
-        return array_replace($data,['plan_id'=>(int)$plan['id'],'status'=>$plan['status'],'version'=>self::version($plan),
+        return array_replace($data,['plan_id'=>(int)$plan['id'],'department_id'=>(int)$plan['department_id'],'status'=>$plan['status'],'version'=>self::version($plan),
             'planned_headcount_increase'=>(int)$plan['planned_headcount_increase'],'note'=>$plan['note'],'saved'=>true]);
     }
 }

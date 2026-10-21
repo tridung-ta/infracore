@@ -72,4 +72,42 @@ class ItaReportService
         });
     }
 
+    public function export(array $input): array
+    {
+        ItaDashboardRules::access($this->actor);
+        $asOf=ItaInput::text($input['as_of'] ?? '',25);
+        $date=DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:sP',$asOf);
+        if (!$date || $date->format('Y-m-d\TH:i:sP')!==$asOf || !str_ends_with($asOf,'+07:00') || abs(time()-$date->getTimestamp())>900) {
+            throw new ItaHttpError(409,'Bản xem trước hết hạn. Hãy tải lại báo cáo trước khi xuất.');
+        }
+        $doc=$this->read(fn()=>$this->document($input,$asOf));$format=ItaInput::text($input['format'] ?? '',5);
+        $limit=ItaDashboardRules::limit($doc['report'],$format);
+        if ($doc['data_count']>$limit) { throw new ItaHttpError(422,'Báo cáo vượt '.$limit.' dòng. Thu hẹp bộ lọc; không cắt ngầm.'); }
+        if (!hash_equals($this->signature($doc,$input),ItaInput::text($input['token'] ?? '',64))) { throw new ItaHttpError(409,'Số liệu hoặc bộ lọc đã đổi. Hãy tải lại bản xem trước.'); }
+        $title=['inventory'=>'Tồn kho','maintenance'=>'Sắp bảo trì','lifecycle'=>'Vòng đời ngắn','budget'=>'Ngân sách'][$doc['report']];
+        $table=[['Báo cáo',$title,'Số liệu tại',$asOf],['Nguồn',$doc['source']],['Thiếu dữ liệu',$doc['missing'] ?? 0],$doc['headers'],...$doc['rows']];
+        $width=max(array_map('count',$table));
+        $bytes=$format==='xlsx'?ItaExcel::write(array_pad(['Báo cáo hạ tầng CNTT'],$width,''),$table):ItaForecastPdf::render($table,'Báo cáo hạ tầng CNTT');
+        $this->audit($doc,$format);
+        return ['bytes'=>$bytes,'format'=>$format,'report'=>$doc['report']];
+    }
+
+    /** Current locking reads after render: revocation or audit failure prevents all file bytes. */
+    private function audit(array $doc,string $format): void
+    {
+        $this->db->beginTransaction();
+        try {
+            $native=$this->db->fetchOne('SELECT id FROM dc_users WHERE store_id=? AND id=? AND status=1','ii',[$this->actor->storeId,$this->actor->id]);
+            if (!$native) { throw new ItaHttpError(403,'Tài khoản đã ngừng hoạt động. Hãy đăng nhập lại.'); }
+            $r=$this->db->fetchOne('SELECT role,enabled,auth_revision FROM ita_user_roles WHERE store_id=? AND user_id=? FOR UPDATE','ii',[$this->actor->storeId,$this->actor->id]);
+            if (!$r || !(int)$r['enabled'] || $r['role']!==$this->actor->role || (int)$r['auth_revision']!==$this->actor->revision) { throw new ItaHttpError(403,'Quyền đã thay đổi. Hãy đăng nhập lại.'); }
+            if (!$this->actor->isAdmin()) {
+                $rows=$this->db->fetchAll('SELECT department_id FROM ita_user_scopes WHERE store_id=? AND user_id=? AND active=1 ORDER BY department_id FOR UPDATE','ii',[$this->actor->storeId,$this->actor->id]);
+                $current=array_map('intval',array_column($rows,'department_id'));$known=$this->actor->departmentIds;sort($current);sort($known);
+                if ($current!==$known) { throw new ItaHttpError(403,'Phạm vi đã thay đổi. Hãy tải lại báo cáo.'); }
+            }
+            (new ItaAuditService($this->db,$this->actor))->record('report.export','report',0,['after'=>['report_type'=>$doc['report'],'format'=>$format,'total_rows'=>$doc['data_count'],'as_of'=>$doc['as_of'],'snapshot_hash'=>hash('sha256',json_encode($doc,JSON_THROW_ON_ERROR))]]);
+            $this->db->commit();
+        } catch (Throwable $e) { $this->db->rollBack();throw $e; }
+    }
 }

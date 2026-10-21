@@ -65,4 +65,24 @@ foreach($plans as $p){ok10(substr_count($p['sql'],'?')===count($p['params']),'Qu
 $dao->licenses([]);$licenseSql=end($db->calls);ok10(str_contains($licenseSql[0],'EXISTS')&&!str_contains($licenseSql[0],'license_key'),'Manager scoped license without key');
 $dashboard=$dao->dashboard([]);ok10($dashboard['as_of']===$asOf&&$dashboard['summary']['failed_assets']===1,'Shared server asof');ok10($dashboard['summary']['replace']===0,'Raw 0.7996 no replace');
 $filtered=$dao->alerts(['level'=>'critical'],1);ok10($filtered['active_total']===5&&$filtered['total']===3,'Bell independent of list filter');
-echo "PASS: $checks dashboard pure/scripted checks; no DB.\n";
+$service=new ItaReportService($db,$admin,str_repeat('x',32));
+$doc=$service->document(['report'=>'inventory'],$asOf);ok10($doc['data_count']===1&&count($doc['headers'])===7,'Inventory document');
+$maint=(new ItaReportService($db,$support,str_repeat('x',32)))->document(['report'=>'maintenance'],$asOf);ok10($maint['data_count']===1&&!isset($maint['budget']),'Support safe table');
+reject10(fn()=>(new ItaDashboardObjects($db,$support,$asOf))->dashboard([]),403);
+reject10(fn()=>(new ItaReportService($db,$support,str_repeat('x',32)))->document(['report'=>'budget'],$asOf),403);
+reject10(fn()=>(new ItaReportService($db,$support,str_repeat('x',32)))->export([]),403);
+$preview=$service->preview(['report'=>'inventory'],1);ok10(strlen($preview['token'])===64&&$preview['total']===1,'Signed preview');
+reject10(fn()=>(new ItaReportService($db,$manager,str_repeat('x',32)))->export(['report'=>'inventory','as_of'=>$preview['as_of'],'token'=>$preview['token'],'format'=>'pdf']),409);
+reject10(fn()=>$service->export(['report'=>'inventory','department_id'=>'10','as_of'=>$preview['as_of'],'token'=>$preview['token'],'format'=>'pdf']),409);
+reject10(fn()=>$service->export(['report'=>'inventory','as_of'=>'2020-01-01T00:00:00+07:00','format'=>'xlsx']),409);
+reject10(fn()=>$service->export(['report'=>'inventory','as_of'=>$preview['as_of'],'token'=>'bad','format'=>'xlsx']),409);
+$db->isolation='READ-COMMITTED';reject10(fn()=>$service->preview(['report'=>'inventory'],1),503);$db->isolation='REPEATABLE-READ';
+$db->assets=array_fill(0,5001,$a);reject10(fn()=>$service->document(['report'=>'inventory'],$asOf),422);$db->assets=[$a];
+$db->assets=array_fill(0,501,$a);$large=$service->preview(['report'=>'inventory'],1);reject10(fn()=>$service->export(['report'=>'inventory','as_of'=>$large['as_of'],'token'=>$large['token'],'format'=>'pdf']),422);
+$db->assets=array_fill(0,1001,$a);$large=$service->preview(['report'=>'maintenance'],1);reject10(fn()=>$service->export(['report'=>'maintenance','as_of'=>$large['as_of'],'token'=>$large['token'],'format'=>'xlsx']),422);$db->assets=[$a];
+// Exercise post-render audit separately, without pretending a scripted double is InnoDB.
+$audit=new ReflectionMethod(ItaReportService::class,'audit');$db->failAudit=true;
+try{$audit->invoke($service,$doc,'pdf');throw new RuntimeException('Expected audit failure');}catch(RuntimeException $e){ok10($e->getMessage()==='Audit fails'&&$db->rollback,'Audit failure rolls back double');}
+$db->failAudit=false;$db->revision=2;reject10(fn()=>$audit->invoke($service,$doc,'pdf'),403);
+$db->revision=1;$db->nativeActive=false;reject10(fn()=>$audit->invoke($service,$doc,'pdf'),403);
+echo "PASS: $checks pure/scripted checks; no DB.\n";

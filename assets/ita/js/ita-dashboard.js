@@ -137,7 +137,7 @@
   }}
  function activate(){if(!role())return;
   const next=location.hash.slice(1)||'overview';
-  const supported=['overview'].includes(next);
+  const supported=['overview','reports'].includes(next);
   panel.hidden=!supported;
   if(!supported){++sequence;
   request?.abort();

@@ -8,6 +8,7 @@
  const state = {data:null,page:1,pageSize:5,view:'overview'};
  titles.licenses=['Phần mềm & giấy phép','Theo dõi số chỗ, thời hạn và cấp phát trong phạm vi quản lý.'];
  titles.forecast=['Dự báo & ngân sách','Lập dự toán, đối chiếu từng thành phần và lưu kế hoạch theo năm.'];
+ titles.reports=['Báo cáo','Xem trước và xuất báo cáo theo phạm vi được cấp quyền.'];
  titles.lifecycle=['Vòng đời tài sản','Đối chiếu tuổi sử dụng và mức ưu tiên thay thế trong phạm vi quản lý.'];
  titles.tickets=['Bảo trì & hỗ trợ','Theo dõi phiếu, người xử lý và lịch bảo trì của thiết bị.'];
  titles.imports=['Import / Export tài sản',liveMode?'Kiểm tra file, nhập theo lô và xuất tài sản theo quyền.':'Chuẩn bị dữ liệu Excel và xem luồng nhập minh họa.'];
