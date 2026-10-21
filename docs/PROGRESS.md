@@ -367,3 +367,8 @@ User “tiếp tục” trong phạm vi FE/mock đã cho phép, không phải du
 Verify: **46 browser static/mock checks đạt**, viewport1366/768/390, keyboard, clock cố định, dispose khi lọc/rời trang, fallback biểu đồ, escaping, source không timer; node syntax và hash manifest đạt. Rà độc lập sửa bộ lọc vai trò lệch nhãn; có regression. Đã xem ảnh desktop/mobile, sửa legend; detector có19 cảnh báo mẫu theme/font/kicker, giữ thiết kế đã chốt và bỏ kicker, không báo detector sạch. Chi tiết PHASE10_FE_PREVIEW.md.
 
 F10.1 FE prototype local đã có; các biểu đồ F10.2–F10.4 mới minh họa, không nghiệm thu chức năng BE. F10.5/F10.6 chưa build; F10.7 chỉ mock. **BE10 chưa duyệt/chưa bắt đầu; DB1–9 chưa nghiệm thu**, không merge/tag7–9/push/deploy. Nhánh local feature/ita-phase10-dashboard-preview, không merge nhánh9.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F10.1 | Bản xem thử KPI độc lập | FE/MOCK | [x] prototype | 63ca436 | 46 browser static/mock; syntax/hash staged đạt | Không nối layout live; không BE/DB |
+| F10.1–F10.7 | Backend dashboard/báo cáo/cảnh báo | BE | [G] chưa duyệt | Chưa có | Chưa chạy | Gate10 chỉ dự thảo; DB1–9 chưa nghiệm thu |
