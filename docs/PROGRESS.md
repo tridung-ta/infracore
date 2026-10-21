@@ -8,10 +8,10 @@ Cập nhật 21/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
-| F8.1 | Tuổi và tỷ lệ tuổi thọ | BE+FE | [~] | chờ commit | 68 pure/scripted, 37 browser mock, Smarty đạt | Đã build local; DB chưa chạy |
-| F8.2 | Điểm và giải thích | BE+FE | [~] | chờ commit | Biên 0,6/0,8, điểm >1, 3 số lẻ và settings đạt | DECIMAL trên DB chưa kiểm |
-| F8.3 | Tuổi TB và tỷ lệ lỗi theo nhóm | BE+FE | [~] | chờ commit | Query bindings/scope và group mock đạt | 10 câu EXPLAIN chưa chạy |
-| F8.4 | Đề xuất, bộ lọc và phân trang | BE+FE | [~] | chờ commit | Paging mock, ba vai trò, viewport đạt | Chỉ GET, không tự thanh lý |
+| F8.1 | Tuổi và tỷ lệ tuổi thọ | BE+FE | [~] | 0c2e0a7 | 68 pure/scripted, 37 browser mock, Smarty đạt | Đã build local; DB chưa chạy |
+| F8.2 | Điểm và giải thích | BE+FE | [~] | 0c2e0a7 | Biên 0,6/0,8, điểm >1, 3 số lẻ và settings đạt | DECIMAL trên DB chưa kiểm |
+| F8.3 | Tuổi TB và tỷ lệ lỗi theo nhóm | BE+FE | [~] | 0c2e0a7 | Query bindings/scope và group mock đạt | 10 câu EXPLAIN chưa chạy |
+| F8.4 | Đề xuất, bộ lọc và phân trang | BE+FE | [~] | 0c2e0a7 | Paging mock, ba vai trò, viewport đạt | Chỉ GET, không tự thanh lý |
 
 Chi tiết: PHASE08_VERIFY.md, PHASE08_HAND_CALCULATIONS.md, PHASE08_HOST_TEST.md. Hồi quy Phase 7: 236 pure/scripted và 64 browser mock checks đạt. Review Agent chưa phát hiện lỗi backend hoặc FE. Không migration/index mới, DB, deploy, merge hoặc tag.
 
@@ -315,3 +315,6 @@ Verify local: `playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase
 F7.1: thêm tìm/chọn theo mã, tên hoặc seri trong form tạo phiếu; dùng GET data q/page sẵn có (5 dòng/trang), tự điền ID và nhãn thiết bị, vẫn cho nhập ID thủ công. Không chọn thiết bị retired; việc đủ điều kiện/pending/store/scope vẫn do service kiểm khi POST. Enter ở ô tìm không submit phiếu. Kết quả rỗng/lỗi có hướng dẫn, phân trang giữ từ khóa, lỗi xóa kết quả cũ; chọn xong thu gọn phần tìm. Không endpoint/PHP/SQL mới, không Phase8/merge/DB/deploy.
 
 Verify: tests/ita_phase07_browser.js **64 API mock checks đạt**, ba vai trò, picker và form đo tại1366/768/390, Enter/empty/403/escaping/retired/pagination/selected/manual-ID và hồi quy thao tác cũ; node --check JS, Smarty render, diff-check đạt; detector[]. Review độc lập không phát hiện lỗi. Chưa kiểm tìm kiếm trên DB host; API data hiện có tính cả summary nên hiệu năng DB vẫn cần UAT, không thêm lookup endpoint chưa duyệt. Gói runtime cộng dồn giao diện giữ7file, xem PHASE07_UI_VERIFY.md.
+
+
+Checkpoint local #08: `0c2e0a7` — phân tích và giải thích vòng đời thiết bị. Build/verify local đã lưu; DB vẫn CHƯA XÁC NHẬN. Không merge/tag Phase 7 hoặc Phase 8.
