@@ -42,3 +42,17 @@ Khóa vắng dùng mặc định riêng của khóa đó; màn hình báo đang 
 «Phase 1–7 chưa có xác nhận kiểm thử DB chi tiết (CHECK ticket_events, rollback InnoDB, hai phiên đồng thời, phiên bản MySQL/MariaDB, môi trường chưa được cung cấp)»
 
 Phase 7/8 chưa nghiệm thu DB. Không merge/tag hoặc deploy. Chưa chạy CTE, casts, DECIMAL, aggregate và EXPLAIN trên DB thật. Các SELECT riêng có thể thấy cập nhật giữa các lần đọc; đây là dữ liệu hiện tại, không phải snapshot báo cáo chốt. Lookup có giới hạn 501 và trả lỗi khi vượt 500 loại; không âm thầm cắt danh sách. Nếu cần index mới phải dừng ở gate SQL riêng.
+
+
+## Tinh chỉnh giao diện cùng ngày — sau checkpoint 4929140
+
+- Tổng quan chia rõ nhãn/số liệu, ngày ngắn gọn. Ghi chú dùng mặc định chuyển thành dòng thông tin kèm nút mở cách tính, không đổi route.
+- Bộ lọc chính gồm từ khóa và đánh giá; bộ phận/loại nằm trong phần mở rộng, có số bộ lọc đang áp dụng và nút xóa lọc về trang1.
+- Điểm/đánh giá nằm cạnh tên thiết bị. Thanh màu dùng semantic tokens và thang chung trên trang; điểm vẫn đúng3chữ số và giữ raw cho phân loại/server sort.
+- Bảng nhóm chuyển loại/bộ phận bằng button aria-pressed, hỗ trợ bàn phím. Dùng dữ liệu đã trả, không đổi aggregate hoặc phát sinh API.
+- Chi tiết tách ba thành phần, có tên thiết bị, dòng được chọn và phần mở rộng giữ chính xác điểm gốc. Đóng trả focus về nút dòng đã mở.
+- Motion180ms trong ita-motion.css, chỉ transform/opacity; tắt theo cờ hiện có hoặc prefers-reduced-motion. Mục tiêu bấm tối thiểu44px ở mobile.
+
+`playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase08_browser.js`: **63 checks đạt**, API mock/static, không DB. Đã kiểm thao tác mới, read-only retry, quyền ba vai trò, raw score, XSS text và bounds1366/768/390. `node --check assets/ita/js/ita-lifecycle.js`, Smarty thực render/escape, diff-check đạt. Detector[]; xem ảnh desktop/mobile; review độc lập chưa thấy lỗi cần sửa.
+
+Gói `ita-lifecycle-ui-update.zip` là bản cộng dồn Phase8, gồm12runtime files (11file gốc và ita-motion.css), không cần cài gói vòng đời cũ trước. Nền yêu cầu Phase7 qua2aa3c98. Giữ backup/rollback và hướng dẫn PHASE08_HOST_TEST.md; không SQL/config/seed/mock trong runtime. Agent không deploy hoặc đổi trạng thái nghiệm thu DB.

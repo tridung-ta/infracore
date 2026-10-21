@@ -318,3 +318,10 @@ Verify: tests/ita_phase07_browser.js **64 API mock checks đạt**, ba vai trò,
 
 
 Checkpoint local #08: `0c2e0a7` — phân tích và giải thích vòng đời thiết bị. Build/verify local đã lưu; DB vẫn CHƯA XÁC NHẬN. Không merge/tag Phase 7 hoặc Phase 8.
+
+
+### 21/10/2026 — Tối ưu giao diện Vòng đời tài sản
+
+F8.1–F8.4 phần trình bày: tổng quan thành các cặp nhãn/số liệu, rút gọn ngày đánh giá và ghi chú mặc định; bộ lọc bộ phận/loại mở rộng có nút xóa lọc. Ưu tiên điểm/đánh giá ngay sau tên thiết bị, màu thanh theo đánh giá, hiển thị thang điểm của trang. Bảng nhóm chuyển giữa loại/bộ phận từ cùng response, không gọi thêm API. Chi tiết có ba thành phần dễ đọc; điểm gốc và dữ liệu đối chiếu giữ nguyên trong phần mở rộng. Đóng chi tiết trả focus về dòng vừa mở. Motion ngắn chỉ transform/opacity, tôn trọng cờ hiện có và reduced-motion.
+
+Verify: `tests/ita_phase08_browser.js` đạt **63 browser API mock/static checks**, ba vai trò, bộ lọc nâng cao/reset, chuyển nhóm bàn phím không fetch, raw/3 số lẻ, lỗi và retry, focus, reduced-motion, viewport1366/768/390. JS syntax, Smarty render và diff-check đạt; detector[]; đã xem ảnh desktop/mobile. Review Agent không phát hiện lỗi cần sửa. Không đổi PHP/API/công thức/quyền hoặc trạng thái DB. Gói cộng dồn mới: artifacts/ita-phase08/ita-lifecycle-ui-update.zip; chưa upload/deploy, merge hoặc tag.
