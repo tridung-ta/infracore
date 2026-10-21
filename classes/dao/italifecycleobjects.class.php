@@ -72,6 +72,7 @@ class ItaLifecycleObjects
         $plan=fn(string $sql,string $extraTypes='',array $extra=[])=>['sql'=>$prefix.$sql,'types'=>$bindTypes.$extraTypes,'params'=>[...$bind,...$extra]];
         $aggregate="COUNT(*) total,SUM(CASE WHEN repair_count>0 THEN 1 ELSE 0 END) failed_assets,COUNT(age_years) age_known,AVG(age_years) average_age_years,SUM(CASE WHEN tier='missing' THEN 1 ELSE 0 END) missing_scores";
         return ['count'=>$plan('SELECT COUNT(*) n FROM graded'.$tail),
+            'report'=>$plan('SELECT * FROM graded'.$tail.' ORDER BY score_raw IS NULL,score_raw DESC,id ASC LIMIT 5001'),
             'list'=>$plan('SELECT * FROM graded'.$tail.' ORDER BY score_raw IS NULL,score_raw DESC,id ASC LIMIT 20 OFFSET ?','i',[(max(1,$page)-1)*20]),
             'summary'=>$plan('SELECT '.$aggregate.' FROM graded'.$tail),
             'category'=>$plan('SELECT category_id group_id,category_name group_name,'.$aggregate.' FROM graded'.$tail.' GROUP BY category_id,category_name ORDER BY category_name,category_id'),

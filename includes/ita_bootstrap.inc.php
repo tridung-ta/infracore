@@ -13,6 +13,7 @@ foreach (['database/itadb','security/itahttperror','security/itainput','security
     'services/italicenseservice','services/italicensereveal','services/itamaintenanceschedule',
     'services/itaticketrules','services/itaticketguard','dao/itaticketobjectinfo','dao/itaticketobjects','services/itaticketservice',
     'services/italifecyclerules','dao/italifecycleobjectinfo','dao/italifecycleobjects','services/itaforecastmoney','services/itaforecastrules','dao/itaforecastobjectinfo','dao/itaforecastobjects',
-    'services/itaforecastservice','services/itaforecastpdf','services/itaforecastexport','services/itaapplication'] as $itaClassFile) {
+    'services/itaforecastservice','services/itaforecastpdf','services/itaforecastexport',
+    'services/itadashboardrules','dao/itadashboardobjectinfo','dao/itadashboardobjects','services/itareportservice','services/itaapplication'] as $itaClassFile) {
     require_once ROOT_PATH . 'classes/' . $itaClassFile . '.class.php';
 }

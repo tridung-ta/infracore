@@ -89,6 +89,9 @@ class ItaApplication
 
     private function api(): void
     {
+        if (in_array($this->action,['dashboard','dashboard-charts','report-preview'],true)) {
+            $this->reportApi();return;
+        }
         if (str_starts_with($this->action,'forecast')) { header('Cache-Control: no-store, private'); }
         if (in_array($this->action,['forecast-config-save','forecast-plan-save','forecast-export'],true)) {
             $this->requirePost();
@@ -183,6 +186,20 @@ class ItaApplication
             'audit' => (new ItaAuditService($this->db,$this->user))->listing($_GET,$page),
             default => throw new ItaHttpError(404, 'Không tìm thấy chức năng.'),
         };
+        $this->json(['success'=>true,'data'=>$data,'message'=>'']);
+    }
+
+    private function reportApi(): void
+    {
+        header('Cache-Control: no-store, private');
+        $service=new ItaReportService($this->db,$this->user,(string)$this->config['auth_key']);
+        if ($this->action==='report-preview' && ($_GET['report'] ?? '')!=='maintenance') { throw new ItaHttpError(403,'Báo cáo này chưa được mở.'); }
+        if ($_SERVER['REQUEST_METHOD']!=='GET') { throw new ItaHttpError(405,'Chỉ hỗ trợ GET.'); }
+        $page=ItaInput::positiveInt($_GET['page'] ?? '1');
+        $data=$this->action==='report-preview'?$service->preview($_GET,$page):$service->read(function() use ($page) {
+            $dao=new ItaDashboardObjects($this->db,$this->user,ItaReportService::now());
+            return $this->action==='alerts'?$dao->alerts($_GET,$page):$dao->dashboard($_GET);
+        });
         $this->json(['success'=>true,'data'=>$data,'message'=>'']);
     }
 

@@ -1,5 +1,15 @@
 # Tiến độ dự án 5
 
+## 21/10/2026 — BE #10 đã được duyệt, triển khai local
+
+User nguyên văn: «tôi duyệt bạn hãy bắt đầu BUILD». Các ghi chú chưa duyệt #10 bên dưới là lịch sử trước phê duyệt. DB Phase 1–9 vẫn **chưa nghiệm thu**, không merge/tag7–9/push/deploy. Agent tự kiểm local, user kiểm host sau upload.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F10.1 | KPI dashboard theo phạm vi, mốc giờ VN chung | FE/BE | [x] build local | Commit chức năng kèm mục này | 35 pure/scripted; 9 browser API mock; Smarty/syntax đạt | Đọc RR/SERIALIZABLE; tối đa 5.000 asset, từ chối vượt; chưa DB/EXPLAIN/UAT |
+
+Lớp đọc dùng lại điểm DECIMAL của vòng đời, transaction đọc nhất quán và helper chung cho các báo cáo tiếp theo. SQL đọc xuất tại PHASE10_EXPLAIN.sql; generator không thực thi SQL, không DDL.
+
 ### 21/10/2026 — Agent tự kiểm local theo chỉ đạo mới
 
 User giao agent tự kiểm local, user kiểm thủ công sau upload host. Chạy lại ba suite FE/MOCK #10 trên source sau 0c64089: dashboard 46, reports 50, alerts 37, tổng **133 đạt**; node syntax hai controller đạt. Kiểm tiến trình preview node.exe và entrypoint static localhost:18766. Không phát hiện lỗi mới trong phạm vi test; không sửa product code. Chi tiết PHASE10_REVIEW_CHECKLIST.md. Không yêu cầu user chạy checklist local; không thay kết quả mock bằng PASS DB/host. BE10 chưa duyệt, DB1–9 chưa nghiệm thu; không merge/tag7–9/push/deploy.

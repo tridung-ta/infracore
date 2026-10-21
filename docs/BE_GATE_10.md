@@ -1,4 +1,8 @@
-# BE-GATE #10 — Dashboard và báo cáo (dự thảo, chưa duyệt)
+# BE-GATE #10 — Dashboard và báo cáo (đã duyệt build local)
+
+## Phê duyệt mới nhất — 21/10/2026
+
+User xác nhận nguyên văn: «tôi duyệt bạn hãy bắt đầu BUILD». Cho phép triển khai toàn bộ phạm vi #10 và các chỉnh sửa 1–9 bên dưới, kể cả bắt đầu BE ngay. Các câu «chưa duyệt/chưa build» bên dưới là trạng thái dự thảo trước phê duyệt, không còn là điểm chặn triển khai local. Không tạo/kết nối DB, không deploy; DB Phase 1–9 vẫn chưa nghiệm thu, không merge/tag Phase 7–9. Test local do agent thực hiện; user kiểm thủ công sau upload host.
 
 Chỉ chuẩn bị phạm vi theo PLAN_FINAL.md. **Chưa bắt đầu BE Phase 10, không build trong bước này.** DB Phase 1–9 vẫn **chưa nghiệm thu**, chờ xác nhận chi tiết từ user; không merge/tag Phase 7, 8, 9. Phê duyệt #09 không bao gồm #10.
 

@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 21/10/2026 — Duyệt backend dashboard và báo cáo
+
+User: «tôi duyệt bạn hãy bắt đầu BUILD». Mở BE-GATE #10 theo toàn bộ phạm vi và chỉnh sửa hiện có: Hỗ trợ chỉ bảng bảo trì, giới hạn Excel tồn kho 5.000/khác 1.000/PDF 500, vòng đời ngắn 12 tháng lịch, chuông hiệu lực, mốc thời gian chung, không polling nặng và dispose biểu đồ. Agent tự kiểm local bằng pure/scripted/browser mock, không tạo/kết nối DB. Không coi phê duyệt build là nghiệm thu DB Phase 1–9 hoặc quyền merge/tag7–9/deploy.
+
 ## 20/10/2026 — Ticket và đầu vào vòng đời
 
 Theo user duyệt #07: số ticket sửa chữa dùng cho Phase 8 đếm ticket ID theo **opened_at, type=repair**, không đếm event hoặc ngày đóng; mở lại failed vẫn cùng ID. Năm/lát cắt thời gian hiển thị theo VN, truy vấn biên UTC. Hỗ trợ/Quản lý tạo theo scope, Admin mọi bộ phận. Chỉ Admin sửa chi phí của resolved/failed, bắt buộc lý do và audit. Không merge Phase 7 trước kiểm thử DB thật Phase 1–7. Cách tính lịch ban đầu từ ngày mua cần duyệt riêng khi sửa Phase 3–5.
