@@ -25,28 +25,40 @@ Chỉ ghi quyết định đã chốt; giả thuyết ghi rõ ở mục «Vấn 
 | 16/10/2026 | Quyền Git: được commit local theo chức năng và merge local `--no-ff` vào nhánh tích hợp sau mỗi phase đã verify | Suy ra từ yêu cầu quy trình tự chủ và commit theo chức năng | User (suy ra, **cần xác nhận rõ**) | Không bao gồm push, merge vào nhánh chính, đổi remote, deploy |
 | 16/10/2026 | Deploy production do user thực hiện bằng FileZilla | Quy trình hiện tại của user | User | Agent chỉ chuẩn bị gói và checklist |
 
+## Các mục đã giải quyết, chuyển khỏi danh sách còn mở
+
+Ngày trong bảng là ngày rà/ghi hồ sơ21/10/2026; nguồn bên cạnh chỉ rõ quyết định hoặc phê duyệt gốc, không suy ra đã nghiệm thu DB.
+
+| Mục cũ | Ngày ghi | Quyết định đã có | Nguồn / giới hạn |
+|---|---|---|---|
+| 1 | 21/10/2026 | Origin tridung-ta/infracore và push nhánh làm việc đợt Phase5 đã được user cho phép | Trả lời user “Liên kết origin và push nhánh đang làm”, yêu cầu push đợt đó; checkpoint bfe3539 ghi bên dưới. Không tự suy thành yêu cầu push đợt7–9 hiện tại |
+| 2 | 21/10/2026 | Dọn sạch là trạng thái Git và rác sinh tự động theo danh sách trắng, không xóa chức năng cũ | AGENTS.md mục7 của user; không tự chạy dọn ở bước này |
+| 3 | 21/10/2026 | Vai trò ITA và scope quản trị theo user; Admin toàn store, Quản lý/Hỗ trợ theo phạm vi server | Gate #02/#06/#07 đã duyệt; metadata/key giấy phép dùng chung chỉ Admin sửa theo giới hạn triển khai #06, không suy user_scopes thành bộ phận làm việc |
+| 4 | 21/10/2026 | Dùng credential dc_users hiện có, role/scope/session ITA riêng; bảng mới ita_, migrations trong database/migrations | User duyệt #02, code/audit và quyết định16/10 bên dưới; không tạo lại user native |
+| 5 | 21/10/2026 | Kiến trúc không giả transaction/FK với native MyISAM; bảng ita_ khai báo InnoDB | Audit/schema và duyệt #01/#02; xác minh DB host đầy đủ vẫn ở O1 bên dưới |
+| 6 | 21/10/2026 | Audit vào ita_audit_logs theo allowlist, không lưu raw IP vào audit; limiter dùng HMAC | Gate #02 và các gate writer đã duyệt, code hiện có; không thay bằng log native |
+| 7 | 21/10/2026 | Giấy phép per_device/per_user/per_department; vượt mức khi allocation hiệu lực lớn hơn tổng chỗ | User duyệt #06; chỉ Admin xác nhận vượt mức, lý do và audit |
+| 8 | 21/10/2026 | Ẩn legacy qua layout riêng và guard có cờ/allowlist, không xóa source | User/AGENTS mục7, #01 và audit entrypoint |
+| 9 | 21/10/2026 | Excel import16 cột, bảy cột đầu bắt buộc; tối đa5MB/5.000 dòng; xuất tài sản5.000 dòng | User duyệt #04, PHASE04_VERIFY và contract ItaExcel; giới hạn PDF/báo cáo #10 mới là dự thảo |
+| 10 | 21/10/2026 | Ngưỡng giấy phép/bảo hành theo config; chu kỳ mặc định6 tháng, lịch #07-SCHEDULE; vòng đời theo #08 | Gate #03/#06/#07/#07-SCHEDULE/#08 đã duyệt, DECISIONS các mục tương ứng; giá trị host cần kiểm O1 |
+| 11 | 21/10/2026 | Ba thành phần ngân sách và dự phòng10%; định mức/giá do Admin cấu hình, thiếu không đoán | User duyệt #09 kèm snapshot và xác nhận công thức21/10, phần chốt cuối file |
+| 12 | 21/10/2026 | Xác nhận bàn giao trong ứng dụng, PDF có khung ký tay; Admin không ký thay người nhận | User duyệt #05 và #05-PDF; không chữ ký số |
+| 13 | 21/10/2026 | Phạm vi hiện tại chỉ cảnh báo trong ứng dụng, không cron/email mới | Gate #06/#07/#09; #10 dự thảo cũng loại trừ; yêu cầu mới sau này cần gate riêng |
+| 14 | 21/10/2026 | Xác minh hash native, nâng cấp dần password_hash khi hợp lệ; MD5 dài hơn72 byte hoãn bcrypt để không cắt suffix | Gate #02 và quyết định16/10; không đổi credential để xử lý lỗi ITA |
+| 15 | 21/10/2026 | JS đặt cục bộ, ghim phiên bản, không CDN production | User/AGENTS mục1 và mục5.1; được duyệt dùng không đồng nghĩa mọi dependency đã tracked hoặc đã cài |
+| 16 (phạm vi) | 21/10/2026 | Trang hạ tầng2D/3D ở Phase13, làm sau cùng | Quyết định thiết kế16/10 và PLAN_FINAL; nguồn topology thật vẫn mở ở O5 |
+
 ## Vấn đề còn mở
 
 Mỗi mục ghi phần việc phụ thuộc. Không coi im lặng là phê duyệt thao tác không thể đảo ngược.
 
-| # | Câu hỏi | Phần việc phụ thuộc | Mặc định tạm dùng (chưa phải quyết định) |
-| --- | --- | --- | --- |
-| 1 | Có cho phép `git push` không, và push lên remote nào, nhánh nào? | Mọi commit, bàn giao | Không push cho đến khi user xác nhận |
-| 2 | «Dọn sạch thư mục» có nghĩa là working tree sạch và bỏ file rác sinh tự động (không xóa mã nguồn chức năng cũ) hay nghĩa khác? | F0.1 | Hiểu theo nghĩa trước; chỉ xóa theo danh sách trắng |
-| 3 | Phân biệt Admin IT và Quản lý hệ thống; phạm vi bộ phận phụ trách gắn với user hay vai trò | Phase 2 | Ma trận ở `PLAN_FINAL` 4.1 |
-| 4 | Dùng lại bảng user/role của Derasoft hay tạo mới; đường dẫn migration; tiền tố bảng | Phase 1 | Dùng lại user/role, thêm `ita_user_scopes`; theo audit |
-| 5 | Storage engine của bảng cũ (có MyISAM không) và ảnh hưởng tới transaction/FK | Phase 0, 1, 4 | Bảng `ita_` InnoDB; không giả định transaction với bảng cũ |
-| 6 | Log thao tác: dùng tracking data sẵn có hay `ita_audit_logs`; có lưu IP không | Phase 2 | `ita_audit_logs`, lưu user_id, chưa lưu IP |
-| 7 | Giấy phép tính chỗ theo máy, người hay phòng ban; cách tính vượt mức | Phase 6 | Cả ba kiểu; vượt mức = bản ghi chưa thu hồi > tổng chỗ |
-| 8 | Mức ẩn route cũ: chỉ ẩn menu hay chuyển hướng cả URL cũ | Phase 1 | Mức 2 (chuyển hướng, có cờ) |
-| 9 | Cột file Excel import, giới hạn dung lượng/số dòng | Phase 4 | 5 MB, 5.000 dòng, cột theo `PLAN_FINAL` 4.6 |
-| 10 | Ngưỡng cảnh báo, tuổi thọ chuẩn, chu kỳ bảo trì theo loại | Phase 3, 7, 8 | `PLAN_FINAL` 4.3 và 4.4 |
-| 11 | Công thức dự báo ngân sách và định mức thiết bị/người | Phase 9 | `PLAN_FINAL` 4.5 |
-| 12 | Ký biên bản bàn giao trên hệ thống hay ký tay | Phase 5 | Xác nhận trên hệ thống và PDF có khung ký |
-| 13 | Gửi mail hoặc cron nhắc việc | Phase 6, 7 | Chưa làm, chỉ cảnh báo trong ứng dụng |
-| 14 | Hash mật khẩu của nền hiện tại và cách nâng cấp | Phase 2 | Nâng cấp dần sang `password_hash` khi đăng nhập |
-| 15 | Thư viện JS đặt cục bộ hay CDN | Phase 1, 12 | Đặt cục bộ, ghim phiên bản |
-| 16 | Có làm Phase 13 (hạ tầng mạng 2D/3D) và dữ liệu kết nối lấy từ đâu | Phase 13 | Làm sau cùng, dữ liệu mẫu |
+| # | Việc thật sự còn mở | Phụ thuộc / trạng thái |
+|---|---|---|
+| O1 | Xác nhận DB Phase1–9 và gói/commit host đang chạy | **Chưa nghiệm thu**; chờ user ghi môi trường, phiên bản, engine/CHECK, rollback/audit, hai phiên và mục chưa kiểm. Không suy từ ảnh lẻ thành PASS hoặc commit upload |
+| O2 | Bàn giao/push đợt7–9 và thời điểm triển khai tiếp | Chưa có yêu cầu thực hiện đợt này; không push/deploy, không merge/tag7/8/9 |
+| O3 | Duyệt BE-GATE #10 sau chỉnh tài liệu | **Chưa duyệt**, chưa BE; các điểm còn đề xuất trong gate cần xác nhận. FE/mock độc lập nhãn MOCK được phép |
+| O4 | Nguồn/phiên bản upstream Excel legacy và font Inter; bản dependency phục hồi đã kiểm | PDF có lock tracked; Excel/font chưa đủ provenance phiên bản. Đề xuất trong DEPLOY_LOG, chưa dựng lại/cài dependency hoặc coi vendor đã tracked |
+| O5 | Nguồn topology, dữ liệu kết nối và quyền BE Phase13 | Chưa có dữ liệu thật/duyệt BE cụ thể; không tự dò mạng hoặc kết nối thiết bị |
 
 ## Quyết định tự chọn và xác nhận trong phiên 16/10/2026
 

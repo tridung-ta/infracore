@@ -1,5 +1,49 @@
 # Nhật ký thao tác hosting
 
+## Trạng thái host hiện tại — rà hồ sơ 21/10/2026
+
+Không kết nối host trong lần rà này. “Ngày bằng chứng” là ngày lời báo/ảnh hoặc ngày tạo gói local, **không tự coi là ngày upload**. Chưa có inventory/hash source đang chạy trên host. Các ghi chú lịch sử bên dưới không thay thế bảng trạng thái này.
+
+| Hạng mục / gói hoặc commit | Ngày bằng chứng / upload | Trạng thái xác nhận | Chưa upload hoặc chưa biết |
+|---|---|---|---|
+| Đăng nhập/đăng xuất ITA trên host, username và Gmail | User báo16/10; ngày upload chính xác chưa cung cấp | User xác nhận thao tác host thành công | Gói/commit đã upload chưa xác định; không coi là DB UAT1–9 |
+| Ticket trên host: tạo/gán/resolved/xác nhận sẵn sàng/thống kê | Ảnh user21/10; ngày upload chưa xác định | Có bằng chứng thao tác và đọc lại một thiết bị/phiếu | Chưa xác nhận commit/gói hiện chạy; không suy toàn bộ source trùng commit local |
+| infracore-host-through-phase07-80929beff9bb.zip; source80929beff9bb | Gói local ghi20/10 | Đã chuẩn bị/kiểm gói trong lịch sử | Chưa nhận xác nhận user upload đúng ZIP/hash này |
+| ita-ticket-picker-update.zip; source2aa3c98179e5 | Gói local21/10, source đọc lại từ MANIFEST | Có gói local | Chưa có xác nhận upload đúng gói; agent không upload |
+| ita-lifecycle-update.zip (gói cũ), thay bằng ita-lifecycle-ui-update.zip; source1691c43bd37d | Gói local21/10; manifest gói UI đã đối chiếu | Gói UI là bản bàn giao local mới hơn | Chưa có xác nhận upload/hash host của Phase8; không upload cả hai gói |
+| Ngân sách source2e95245; docs checkpoint9b32bae | Commit local21/10 | Đã build/verify local | Chưa tạo gói Phase9 trong phiên này; chưa có xác nhận upload |
+| Phase10 | Chỉ tài liệu gate, cập nhật21/10 | **BE chưa duyệt, chưa build** | Không có runtime Phase10 để upload |
+
+DB Phase1–9 **chưa nghiệm thu**; không merge/tag7/8/9. Để cập nhật bảng, user cung cấp gói/commit/hash và ngày upload thực; nếu không biết ghi chưa xác định, không dựng ngược từ ảnh UI hoặc kết quả mock. Việc đăng nhập hoặc một luồng ticket thành công không xác nhận CHECK/rollback/concurrency.
+
+## Đề xuất dựng lại dependency Excel/PDF/font — chưa thực hiện
+
+Đã kiểm tra local và `git ls-files` ngày21/10/2026. Đây là hồ sơ đề xuất, không cài/cập nhật dependency, không đổi loader/Composer hoặc tạo gói mới trong bước tài liệu này.
+
+| Thành phần | Bằng chứng hiện có | Git thực tế | Cách dựng lại đề xuất / phần còn thiếu |
+|---|---|---|---|
+| PDF | classes/ita-pdf/composer.json ghim mpdf/mpdf8.3.1, composer.lock khóa8 package; README ghi platform host8.3.33 | composer.json, lock, README được tracked; vendor hiện có local nhưng **không tracked** | Dùng đúng json/lock tại source commit, Composer install trên máy build với đúng PHP/extensions; so package name/version/source-ref/dist-ref với lock, kiểm platform/audit, kiểm file thật; đóng vendor/font/license vào gói offline có hash |
+| Excel legacy | classes/PhpSpreadSheet có566 file ở bốn namespace PhpOffice/MyCLabs/Psr/ZipStream; không tìm thấy composer.json/lock/installed metadata trong cây này | **Chưa tracked** qua git ls-files; không gán phiên bản upstream từ phỏng đoán | Trước mắt đề xuất lưu bản baseline legacy đã kiểm trong kho artifact riêng với inventory SHA256/file, archive hash và nguồn lấy. Bản baseline định danh bằng tree hash, không phải phiên bản upstream. Cần truy ra bản phát hành/commit và license tương ứng; nếu không truy được thì ghi unknown. Chuyển sang Composer hoặc nâng bản là gate riêng, không làm ở đây |
+| Font Inter | assets/fonts/inter/InterVariable.woff2 + OFL.txt có local; OFL nêu The Inter Project Authors và github.com/rsms/inter | Hai file **chưa tracked**; phiên bản/tag/commit nguồn chưa xác minh | Đề xuất hồ sơ nguồn gồm tên font, tag/commit thực đã kiểm, URL artifact, SHA256 font/archive và license. Có thể phục hồi baseline từ artifact được hash hiện tại; chưa đủ dữ kiện để hứa tải lại đúng byte từ upstream. Không dùng latest hoặc thay font im lặng |
+| Font PDF DejaVu | DejaVuSans.ttf đang trong vendor mPDF; font đi cùng runtime đã khóa | Vendor/font này **không tracked** | Phục hồi theo package mPDF đã khóa và đối chiếu hash font/license trong manifest, không lấy bản font hệ thống khác thay thế |
+
+Các hash **quan sát local**, không chứng minh host đang có cùng file hoặc nguồn upstream đã được xác minh:
+
+| File / bộ | SHA256 |
+|---|---|
+| classes/ita-pdf/composer.json | d3691a3f94f2d38193f814b26c2649b7cd63385acbd942f0cfcb956dd04e0cd1 |
+| classes/ita-pdf/composer.lock | 2e8a16cf22e5d0e54efb8109a6404db97058679aea87b9668fcc9d466d4581aa |
+| assets/fonts/inter/InterVariable.woff2 | 693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3 |
+| assets/fonts/inter/OFL.txt | b3195af0fb14368d1b3b10fb9d3fe503b7163ea083859d2ee553bc74da07c320 |
+| vendor mPDF ttfonts/DejaVuSans.ttf | 08ca98e69d9d8fa1065584b4f9ab7d49b6205abea6572b90e171b254845bb990 |
+| Manifest cây Excel566 file, quy tắc bên dưới | 888154326da0fc145d3e6d0d6810818c63881882fa0819ad7f77f93ef2dbe797 |
+
+Quy tắc tree hash Excel: lấy mọi file trong classes/PhpSpreadSheet, sắp xếp đường dẫn tương đối POSIX theo thứ tự chuỗi; mỗi dòng là `sha256_hex_thường` + hai dấu cách + `relative_path` + LF. SHA256 của chuỗi manifest UTF-8 đó là hash bảng trên. Đây không phải hash ZIP. Bản source/dependency mới cần manifest riêng, không sửa baseline cũ.
+
+Quy trình đề xuất trên máy build tách biệt: lấy source commit và lock cố định → khôi phục baseline Excel/font đúng hash → chạy Composer trong classes/ita-pdf với `install --no-dev --prefer-dist --no-scripts --no-plugins`, `check-platform-reqs --no-dev`, `audit --locked --no-dev --no-plugins` → so lock với installed → chạy render/reopen Excel/PDF tiếng Việt và kiểm formula-like STRING → gom license/font/runtime, tạo manifest phiên bản/nguồn/kích thước/SHA256 từng file và hash ZIP → đọc lại gói kiểm hash → user giữ gói/manifest/backup ở kho riêng trước upload. Không Composer trên production, không ignore-platform-reqs, không mang config/key/dump/session vào gói.
+
+File ghi nguồn đề xuất (chưa tạo/cài runtime): dependency name, version hoặc unknown, source URL/commit hoặc nguồn baseline legacy, lock SHA256, artifact SHA256, inventory path/hash, license path/hash, ngày thu thập, source commit, lệnh build/verify và giới hạn. Có thể track hồ sơ và lock trong Git, còn payload binary/vendor giữ artifact riêng có checksum; chỉ công bố phục hồi đầy đủ khi đã thực sự dựng lại và kiểm. Script package_ita_pdf.py hiện có chỉ là delta PDF, không thay quy trình phục hồi toàn app hoặc tự chứa Excel/Inter.
+
 ## 21/10/2026 — Checklist host trước kiểm thử Phase 1–9 (chưa thực hiện)
 
 Đây là checklist cho user/quản trị host, không phải kết quả kiểm tra hoặc quyền deploy. Phase 1–9 giữ trạng thái DB **chưa nghiệm thu**; không merge/tag Phase 7, 8, 9 trong lúc chờ xác nhận cụ thể. Không import lại migration hoặc tạo DB từ checklist này.

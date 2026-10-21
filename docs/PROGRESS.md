@@ -352,3 +352,10 @@ Checkpoint: quy trình Ruflo `50e71c2`; ngân sách local `2e95245`. Lần tiế
 - **Phase 1–9: DB chưa nghiệm thu.** Chờ user cung cấp xác nhận kiểm thử DB cụ thể rồi mới cập nhật trạng thái. Không merge/tag Phase7/8/9; không push/deploy.
 - **Phase10 BE chưa bắt đầu.** BE_GATE_10.md chỉ là dự thảo theo F10.1–F10.7; chưa viết PHP, endpoint, SQL hoặc nối dữ liệu mới. Chưa cần bổ sung FE/mock trong bước tài liệu này.
 - Verify tài liệu: đối chiếu PLAN_FINAL, code nguồn hợp đồng hiện có và diff/UTF-8; không chạy DB/host. Dự thảo gate cần duyệt riêng khi user sẵn sàng; không coi yêu cầu chuẩn bị gate là phê duyệt build.
+
+### 21/10/2026 — Chỉnh gate10 và dọn hồ sơ theo user, chỉ tài liệu
+
+- Gate10 vẫn **chưa duyệt**, BE chưa bắt đầu. Đã ghi Hỗ trợ không export/chỉ bảng bảo trì trong ứng dụng; Excel tồn kho5.000/PDF500/Excel khác1.000, từ chối vượt; định nghĩa vòng đời ngắn12 tháng kèm điểm/tier; chuông là cảnh báo hiệu lực; chung as_of và “số liệu tại HH:mm”; không polling dưới60giây/không tự refresh biểu đồ nặng; dispose ECharts khi đổi lọc/rời trang, mỗi chart kèm bảng.
+- DECISIONS chuyển16 mục cũ sang quyết định đã có, ghi ngày rà và nguồn cụ thể; chỉ giữ vấn đề thực còn mở (DB/host, bàn giao, gate10, dependency provenance, nguồn topology13). Không xóa lịch sử hoặc suy các quan sát thành nghiệm thu.
+- DEPLOY_LOG thêm bảng host: các thao tác đã thấy được tách khỏi commit/gói upload chưa xác định; gói chỉ local không coi là đã triển khai. Có đề xuất phục hồi PDF từ lock và Excel/font từ baseline/nguồn có hash; kiểm git ls-files cho thấy vendor PDF, Excel legacy và Inter chưa tracked, không nói chúng nằm trong Git.
+- Verify chỉ đọc file/schema metadata local, lock, manifest ZIP, git ls-files, hash file/cây và diff/UTF-8. Chưa dựng lại dependency, chưa cài package, chưa chạy code/DB/host hoặc làm FE/mock mới. DB Phase1–9 **chưa nghiệm thu**, không merge/tag7/8/9, không push/deploy.
