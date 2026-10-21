@@ -2,7 +2,7 @@ async(page)=>{
  const browser=page.context().browser(),checks=[],errors=[];
  const check=(ok,label)=>{if(!ok)throw new Error(label);checks.push(label);};
  async function scenario(role){
-  const context=await browser.newContext({viewport:{width:1366,height:1000}}),p=await context.newPage(),posts=[];
+  const context=await browser.newContext({viewport:{width:1366,height:1000}}),p=await context.newPage(),posts=[],lookups=[];
   let fail='',ticket=null,waiting=false,statsCost='120.25';
   const asset=()=>({id:7,asset_code:'QA-7',name:'QA <img src=x>',status:ticket?'maintenance':'in_use',current_user_id:null,department_id:10,category_id:2,version:'asset-v',awaiting_ready:waiting});
   p.on('pageerror',e=>errors.push(e.message));
@@ -13,6 +13,12 @@ async(page)=>{
    if(url.pathname!=='/admin.php')return route.continue();
    const act=url.searchParams.get('act');
    if(act==='categories')return json(route,[]);
+   if(act==='data'&&url.searchParams.has('q')&&!url.searchParams.has('department_id')){
+    const q=url.searchParams.get('q'),requested=Number(url.searchParams.get('page'));lookups.push({q,page:requested});
+    if(q==='deny')return json(route,null,403,'QA lookup denied');
+    const found=q==='none'?[]:Array.from({length:6},(_,i)=>({...asset(),id:7+i,code:`QA-${7+i}`,name:i===0?'QA <img src=x>':'Thiết bị kiểm thử '+i,department:'QA',status:i===1?'retired':'in_use'}));
+    return json(route,{assets:found.slice((requested-1)*5,requested*5),pagination:{page:requested,per_page:5,total:found.length}});
+   }
    if(act==='data')return json(route,{assets:[{...asset(),code:'QA-7',category:'QA',department:'QA',serial:'QA',specs:'QA',warranty:'QA',location:'QA'}],departments:[{value:'10',label:'QA'}],pagination:{page:1,per_page:5,total:1},user:{id:111,role,display_name:'QA',role_label:role},summary:{total:1,by_status:{in_use:1},by_department:[],alerts:[],alerts_total:0}});
    if(act==='asset')return json(route,{...asset(),code:'QA-7',category:'QA',department:'QA',serial:'QA',specs:'QA',warranty:'QA',location:'QA',fields:asset(),history:[],history_has_more:false});
    if(act==='tickets')return json(route,{rows:ticket?[{...ticket,asset_code:'QA-7'}]:[],page:1,total:ticket?1:0,per_page:20});
@@ -32,7 +38,29 @@ async(page)=>{
    return json(route,null,404);
   });
   await p.goto('http://127.0.0.1:18766/#tickets');await p.locator('#ticket-live').waitFor({state:'visible'});
-  await p.locator('#ticket-create-section summary').click();await p.locator('#ticket-asset').fill('7');await p.locator('#ticket-issue').fill('QA <img src=x> issue');await p.locator('#ticket-create button').click();await p.locator('#ticket-record').waitFor({state:'visible'});
+  await p.locator('#ticket-create-section>summary').click();
+  if(role==='admin_it'){
+   await p.locator('#ticket-asset-search').fill('none');await p.locator('#ticket-asset-search').press('Enter');await p.waitForFunction(()=>document.getElementById('ticket-picker-status').textContent.includes('Không tìm thấy'));
+   check(await p.locator('#ticket-picker-results li').count()===0,'Empty asset lookup explains recovery');
+   await p.locator('#ticket-asset-search').fill('deny');await p.locator('#ticket-asset-find').click();await p.waitForFunction(()=>document.getElementById('ticket-picker-status').textContent.includes('Chưa tải được'));
+   check((await p.locator('#ticket-message').textContent()).includes('HTTP 403'),'Asset lookup denial is visible');
+  }
+  await p.locator('#ticket-asset-search').fill('QA');await p.locator('#ticket-asset-search').press('Enter');await p.waitForFunction(()=>document.querySelectorAll('#ticket-picker-results li').length===5&&!document.getElementById('ticket-live').hasAttribute('aria-busy'));
+  check(posts.length===0,`Enter in lookup never submits ticket ${role}`);
+  check(await p.locator('#ticket-picker-results img').count()===0,`Asset lookup escapes text ${role}`);
+  check(await p.locator('#ticket-picker-results [data-unavailable]').isDisabled(),`Retired asset cannot be selected ${role}`);
+  if(role==='admin_it')for(const width of [1366,768,390]){
+   await p.setViewportSize({width,height:1000});
+   check(await p.locator('#ticket-picker').evaluate(n=>{const r=n.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&document.documentElement.scrollWidth<=innerWidth;}),`Open asset picker bounds ${width}`);
+   await p.screenshot({path:`.playwright-cli/phase07-picker-${width}.png`,fullPage:true});
+  }
+  await p.locator('#ticket-picker-next').click();await p.waitForFunction(()=>document.getElementById('ticket-picker-page').textContent.includes('Trang 2'));
+  check(lookups.at(-1).q==='QA'&&lookups.at(-1).page===2,`Asset lookup pagination preserves search ${role}`);
+  await p.locator('#ticket-picker-prev').click();await p.waitForFunction(()=>document.querySelectorAll('#ticket-picker-results li').length===5);
+  await p.locator('#ticket-picker-results li').first().locator('button').click();
+  check(await p.locator('#ticket-asset').inputValue()==='7'&&await p.locator('#ticket-selected-asset').isVisible(),`Selected asset fills ticket ID ${role}`);
+  if(role==='admin_it'){await p.locator('#ticket-asset').fill('7');check(await p.locator('#ticket-selected-asset').isHidden(),'Manual ID entry clears previous selection label');}
+  await p.locator('#ticket-issue').fill('QA <img src=x> issue');await p.locator('#ticket-create button[type=submit]').click();await p.locator('#ticket-record').waitFor({state:'visible'});
   return {context,p,posts,fail:value=>fail=value,statsCost:value=>statsCost=value};
  }
  for(const role of ['admin_it','system_manager','support_technician']){
@@ -67,7 +95,7 @@ async(page)=>{
     await p.waitForFunction(()=>document.querySelector('.asset-ticket-history').textContent.includes('Gán người xử lý'));
     check((await p.locator('.asset-ticket-history').textContent()).includes('Đang chờ xử lý'),'Inline asset history merges state and assignment audit');
     await p.locator('#asset-dialog .dialog-close').count().then(async count=>{if(count)await p.locator('#asset-dialog .dialog-close').click();else await p.evaluate(()=>document.getElementById('asset-dialog').close());});
-    await p.evaluate(()=>location.hash='tickets');await p.locator('.ticket-create-link').click();s.fail('server');await p.locator('#ticket-create button').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('HTTP 503'));
+    await p.evaluate(()=>location.hash='tickets');await p.locator('.ticket-create-link').click();s.fail('server');await p.locator('#ticket-create button[type=submit]').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('HTTP 503'));
     check((await p.locator('#ticket-message').textContent()).includes('QA backend unavailable'),'Backend rejection shown with HTTP status');
     const writes=s.posts.length;await p.locator('#ticket-retry').click();await p.waitForFunction(()=>!document.getElementById('ticket-live').hasAttribute('aria-busy'));
     check(s.posts.length===writes,'Recovery reload never repeats a write');

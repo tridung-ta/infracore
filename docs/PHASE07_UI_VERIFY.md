@@ -32,3 +32,14 @@ Gói FE gồm7file runtime: ita-tokens.css, ita-tickets.css, ita-motion.css, ita
 User sao lưu7file tương ứng (file mới ghi nhận chưa có), giải nén gói rồi upload **nội dung runtime/** vào public_html bằng FileZilla; không upload MANIFEST/ZIP. Ctrl+F5. Không SQL. Kiểm tải danh sách, mở/đóng phiếu, bộ lọc, thông báo, form theo vai trò và thống kê. Thao tác ghi test dùng phiếu UAT đã chọn, tránh tạo trùng phiếu đang pending.
 
 Rollback: khôi phục7file tương ứng từ backup; file mới có thể để lại không được layout cũ gọi. Giữ nguyên DB và config/keys, không restore đè dữ liệu mới. Agent không upload/deploy.
+
+
+## Bổ sung cùng ngày — Tìm và chọn thiết bị
+
+- Trong Tạo phiếu mới, tìm theo mã/tên/seri, chọn kết quả để tự điền ID. Native details tự thu gọn sau chọn; ô ID vẫn dùng được nếu biết sẵn.
+- Tái sử dụng GET `/admin.php?op=ita&act=data&q=...&page=...`; trả assets + pagination5dòng đã có scope tại server. Không PHP/SQL/API mới. Endpoint này còn tải summary; chưa benchmark DB, không phát sinh endpoint lookup riêng.
+- Thiết bị retired có nút disabled và giữ disabled sau loading; guard/pending vẫn kiểm lại ở service, FE không cam kết thiết bị chưa có phiếu chờ.
+- Empty và403 có hướng dẫn tìm lại; kết quả cũ bị xóa khi tìm/tải lỗi. Enter tại search chỉ tìm, không submit ticket. Nhập ID thủ công xóa nhãn lựa chọn cũ, không dùng localStorage.
+- Browser API mock mở rộng:64checks đạt, bao gồm21checks mới so với43trước; ba vai trò, pager giữ query, escaping, retired, Enter, empty,403, chọnID, xóa nhãn và bounds1366/768/390. Ảnh `.playwright-cli/phase07-picker-{width}.png` đã xem desktop/mobile. Node syntax + Smarty thực + detector[] đạt; review độc lập không phát hiện lỗi.
+- Host UAT bổ sung: mở Tạo phiếu mới → tìm UAT-IT-001 → chọn → kiểm ID1 và tên đúng; thử tìm không khớp; đối chiếu scope từng vai trò. Chưa cần tạo phiếu mới chỉ để xác nhận picker; test ghi theo checklist ticket còn mở.
+- Gói `artifacts/ita-phase07/ita-ticket-picker-update.zip` gồm cả cải tiến giao diện trước đó (7file), không cần cài gói UI cũ trước. Cần routing60f4f49 trên host. Backup/upload/rollback giống hướng dẫn trên; không SQL, chưa deploy.

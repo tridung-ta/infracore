@@ -83,3 +83,6 @@ Mỗi mục ghi phần việc phụ thuộc. Không coi im lặng là phê duy�
 
 - User “OK PDF Phase 5” ngày 19/10: cho phép mPDF8.3.1 và dependency khóa riêng classes/ita-pdf; GD chỉ bật per-process local, không php.ini toàn cục. Build/verify tiếp ngày 20/10. Biên bản ghi rõ tên/thông tin thiết bị là hồ sơ hiện tại, không giả snapshot bất biến; kiểm scope/actor/version sau render và audit trước bytes. Package vendor/font/license riêng, không commit cache/vendor/PDF giả hoặc chạy Composer trên production.
 - User chọn “Liên kết origin và push nhánh đang làm”, sau đó yêu cầu push đợt hiện tại trước rồi push cải tiến sau: cho phép origin https://github.com/tridung-ta/infracore.git và push nhánh làm việc. Checkpoint bfe3539 đã push feature/ita-phase05-pdf, tag backup/pre-ita-20261019 chỉ local. Không bao gồm merge main, force push hoặc deploy. Commit F5.4 riêng theo git-feature-commit, giữ DB UAT chưa chạy rõ ràng.
+
+
+- 21/10/2026, tiếp tục FE ticket theo yêu cầu BUILD: bộ chọn thiết bị dùng GET data q/page đã có, explicit search và5kết quả/trang, không tải toàn bộ danh sách hoặc thêm endpoint. Không suy quyền từ FE; server vẫn quyết định scope và guard pending khi tạo. Native input ID giữ làm đường nhập trực tiếp; chọn thiết bị có nhãn rõ, sửa ID xóa nhãn. Không mở Phase8 trước UAT DB đã thống nhất.

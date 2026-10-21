@@ -1,10 +1,10 @@
 (() => {
  'use strict';
  const $=id=>document.getElementById(id),live=document.body.dataset.mode==='live';
- let current=null,page=1,total=0,busy=false,stale=false,started=false,techPage=1,techTotal=0,feedbackTimer;
+ let current=null,page=1,total=0,busy=false,stale=false,started=false,techPage=1,techTotal=0,feedbackTimer,pickerPage=1,pickerTotal=0,pickerPerPage=5,pickerQuery='';
  const role=()=>window.itaLiveContext?.user.role,admin=()=>role()==='admin_it';
  const el=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
- const labels={pending:'Đang chờ xử lý',resolved:'Đã hoàn tất',failed:'Chưa khắc phục',repair:'Sửa chữa',periodic:'Bảo trì định kỳ',low:'Thấp',medium:'Vừa',high:'Cao',critical:'Nghiêm trọng','ticket.assign':'Gán người xử lý','ticket.cost':'Điều chỉnh chi phí'};
+ const labels={pending:'Đang chờ xử lý',resolved:'Đã hoàn tất',failed:'Chưa khắc phục',repair:'Sửa chữa',periodic:'Bảo trì định kỳ',low:'Thấp',medium:'Vừa',high:'Cao',critical:'Nghiêm trọng','ticket.assign':'Gán người xử lý','ticket.cost':'Điều chỉnh chi phí',in_use:'Đang sử dụng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Đã thanh lý'};
  const displayLabel=value=>labels[value]||value;
  function money(value){
   const text=String(value??'0'),match=/^(\d+)(?:\.(\d{1,2}))?$/.exec(text);
@@ -54,6 +54,9 @@
   $('ticket-prev').disabled=busy||page<=1;$('ticket-next').disabled=busy||page*20>=total;
   $('ticket-history-prev').disabled=busy||!current||current.page<=1;$('ticket-history-next').disabled=busy||!current||current.page*20>=current.total;
   $('ticket-tech-prev').disabled=busy||techPage<=1;$('ticket-tech-next').disabled=busy||techPage*20>=techTotal;
+  $('ticket-picker-prev').disabled=busy||pickerPage<=1;
+  $('ticket-picker-next').disabled=busy||pickerPage*pickerPerPage>=pickerTotal;
+  $('ticket-picker-results').querySelectorAll('[data-unavailable]').forEach(n=>n.disabled=true);
   if(stale)$('ticket-record').querySelectorAll('button[type=submit]').forEach(n=>n.disabled=true);
  }
  async function task(fn){if(busy)return;busy=true;controls();$('ticket-live').setAttribute('aria-busy','true');message('Đang thực hiện yêu cầu…');try{await fn();if($('ticket-message').textContent==='Đang thực hiện yêu cầu…')message('Đã tải dữ liệu.');}catch(e){message(e.message,true);}finally{busy=false;controls();$('ticket-live').removeAttribute('aria-busy');}}
@@ -67,10 +70,36 @@
    const cost=el('td',money(row.cost));cost.dataset.label='Chi phí (VND)';cost.className='ticket-money';tr.append(identity,category,status,cost);
    const td=el('td',''),button=el('button','Mở phiếu');button.type='button';button.className='secondary-button';button.setAttribute('aria-label',`Mở phiếu ${row.ticket_no}`);button.addEventListener('click',()=>task(async()=>{await detail(row.id);selectRecord(row.id,true);}));td.append(button);tr.append(td);return tr;
   }));
-  if(!data.rows.length){const tr=el('tr',''),td=el('td','Chưa có phiếu phù hợp. Thử đổi bộ lọc hoặc tạo phiếu cho thiết bị cần xử lý.');td.colSpan=5;tr.append(td);$('ticket-rows').append(tr);}
+  if(!data.rows.length){const tr=el('tr',''),td=el('td','Chưa có phiếu phù hợp. Thử đổi bộ lọc hoặc tạo phiếu cho thiết bị cần xử lý.');td.className='ticket-empty';td.colSpan=5;tr.append(td);$('ticket-rows').append(tr);}
   $('ticket-page').textContent=`Trang ${page} · ${total} phiếu`;selectRecord(current?.ticket.id);
   message(`Đã tải danh sách: ${total} phiếu. ${total?'Chọn Mở phiếu để xem chi tiết.':'Chưa có phiếu phù hợp với bộ lọc.'}`);
  }
+ function chooseAsset(asset){
+  $('ticket-asset').value=asset.id;
+  const selected=$('ticket-selected-asset');selected.textContent=`Đã chọn: ${asset.code||asset.asset_code||'#'+asset.id} · ${asset.name||'Thiết bị'} · ID ${asset.id}`;selected.hidden=false;
+  $('ticket-picker').open=false;$('ticket-type').focus();
+ }
+ async function findAssets(nextPage=1){
+  $('ticket-picker-status').textContent='Đang tìm thiết bị…';$('ticket-picker-results').replaceChildren();$('ticket-picker-pagination').hidden=true;
+  try{
+   const data=await api('data',{q:pickerQuery,page:nextPage});
+   pickerPage=data.pagination.page;pickerTotal=data.pagination.total;pickerPerPage=data.pagination.per_page;
+   $('ticket-picker-results').replaceChildren(...data.assets.map(asset=>{
+    const row=el('li',''),info=el('div','');info.append(el('strong',`${asset.code} · ${asset.name}`),el('small',`${asset.department} · ${displayLabel(asset.status)} · ID ${asset.id}`));
+    const select=el('button',asset.status==='retired'?'Đã thanh lý':'Chọn thiết bị');select.type='button';select.className='secondary-button';select.setAttribute('aria-label',`Chọn ${asset.code} · ${asset.name}`);
+    if(asset.status==='retired'){select.dataset.unavailable='true';select.disabled=true;}else select.addEventListener('click',()=>chooseAsset(asset));
+    row.append(info,select);return row;
+   }));
+   $('ticket-picker-status').textContent=pickerTotal?`Tìm thấy ${pickerTotal} thiết bị. Chọn thiết bị để điền vào phiếu.`:'Không tìm thấy thiết bị. Thử mã, tên hoặc số seri khác.';
+   $('ticket-picker-page').textContent=`Trang ${pickerPage} · ${pickerTotal} thiết bị`;$('ticket-picker-pagination').hidden=!pickerTotal;
+  }catch(error){$('ticket-picker-status').textContent='Chưa tải được thiết bị. Bấm Tìm thiết bị để thử lại.';throw error;}
+ }
+ function startAssetSearch(){pickerQuery=$('ticket-asset-search').value.trim();return task(()=>findAssets(1));}
+ $('ticket-asset-find').addEventListener('click',startAssetSearch);
+ $('ticket-asset-search').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();startAssetSearch();}});
+ $('ticket-picker-prev').addEventListener('click',()=>task(()=>findAssets(pickerPage-1)));
+ $('ticket-picker-next').addEventListener('click',()=>task(()=>findAssets(pickerPage+1)));
+ $('ticket-asset').addEventListener('input',()=>{$('ticket-selected-asset').hidden=true;$('ticket-selected-asset').textContent='';});
  async function technicians(nextPage=1){
   const data=await api('ticket-technicians',{asset_id:current.ticket.asset_id,page:nextPage});techPage=data.page;techTotal=data.total;
   $('ticket-technician').replaceChildren(new Option('Chọn kỹ thuật viên',''),...data.rows.map(r=>new Option(`${r.fullname||r.username} (#${r.id})`,r.id)));
@@ -123,7 +152,7 @@
    $('ticket-statistics').replaceChildren(data.rows.length?table:el('p','Chưa có phiếu trong năm này.'));message(`Đã tải thống kê năm ${$('ticket-year').value}.`);});});
  addEventListener('ita:asset',event=>{
   const dialog=$('asset-dialog');dialog.querySelector('.asset-ticket-link')?.remove();dialog.querySelector('.asset-ticket-history')?.remove();
-  const link=el('button','Phiếu & lịch sử bảo trì');link.type='button';link.className='secondary-button asset-ticket-link';link.addEventListener('click',()=>{dialog.close();$('ticket-filter-asset').value=event.detail.id;$('ticket-asset').value=event.detail.id;location.hash='tickets';if(started)task(async()=>{page=1;await listing();});});dialog.append(link);
+  const link=el('button','Phiếu & lịch sử bảo trì');link.type='button';link.className='secondary-button asset-ticket-link';link.addEventListener('click',()=>{dialog.close();$('ticket-filter-asset').value=event.detail.id;$('ticket-asset').value=event.detail.id;$('ticket-selected-asset').hidden=true;location.hash='tickets';if(started)task(async()=>{page=1;await listing();});});dialog.append(link);
   const history=el('details','');history.className='asset-ticket-history';history.append(el('summary','Xem lịch sử bảo trì của thiết bị'));
   const content=el('div',''),feedback=el('p','');feedback.setAttribute('role','status');history.append(feedback,content);dialog.append(history);
   let loaded=false,loading=false;

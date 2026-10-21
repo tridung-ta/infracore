@@ -66,3 +66,8 @@ Gói local đã tạo và đọc lại toàn bộ 710 mục từ commit `5f1e6ea
 - Đã kiểm Smarty +43browser API mock checks, viewport1366/768/390 và reduced-motion; không đồng nhất với DB UAT.
 - Agent chỉ chuẩn bị gói. User backup7file, upload nội dung runtime vào public_html, Ctrl+F5; không upload ZIP/manifest. Không migration.
 - Rollback source khôi phục backup tương ứng, giữ DB/config/keys; chi tiết PHASE07_UI_VERIFY.md. Phase7 chưa merge.
+
+
+## 21/10/2026 — Bổ sung bộ chọn thiết bị cho form ticket, chưa upload
+
+Gói artifacts/ita-phase07/ita-ticket-picker-update.zip:7runtime FE cộng dồn, gồm cải tiến fcbef20; source commit và SHA256 từng file trong MANIFEST. Không PHP/SQL/config/dump/vendor, không cần gói UI trước. Cần routing60f4f49 đã kiểm host.64browser mock checks và Smarty/syntax/detector/review đạt; user kiểm picker bằng DB host sau upload. Backup7file, upload nội dung runtime, Ctrl+F5; không upload ZIP/manifest/handoff; rollback source giữ DB/config. Agent chưa deploy hoặc merge Phase7.
