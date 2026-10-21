@@ -7,7 +7,7 @@ class ItaForecastPdf
         return is_file(ROOT_PATH.'classes/ita-pdf/vendor/autoload.php') && extension_loaded('gd') && extension_loaded('mbstring');
     }
 
-    public static function render(array $document): string
+    public static function render(array $document,string $title='Dự báo ngân sách CNTT'): string
     {
         if (!self::available()) {
             throw new ItaHttpError(503,'Chưa sẵn sàng xuất PDF. Cần bộ thư viện PDF và PHP GD/mbstring.');
@@ -25,20 +25,20 @@ class ItaForecastPdf
                 'margin_left'=>18,'margin_right'=>18,'margin_top'=>18,'margin_bottom'=>18,'tempDir'=>$directory,
                 'whitelistStreamWrappers'=>[],'showImageErrors'=>false],
                 new \Mpdf\Container\SimpleContainer(['httpClient'=>$http,'localContentLoader'=>$local]));
-            $pdf->SetTitle('Dự báo ngân sách CNTT');
+            $pdf->SetTitle($title);
             $pdf->SetAuthor('InfraCore');
             $pdf->SetHTMLFooter('<div style="font-size:8pt;text-align:right">InfraCore | Trang {PAGENO}/{nbpg}</div>');
-            $pdf->WriteHTML(self::html($document,$directory));
+            $pdf->WriteHTML(self::html($document,$directory,$title));
             return $pdf->Output('','S');
         } finally {
             self::clean($directory,$directory);
         }
     }
 
-    public static function html(array $document, string $compileDirectory): string
+    public static function html(array $document, string $compileDirectory,string $title='Dự báo ngân sách CNTT'): string
     {
         $escape=fn($v)=>htmlspecialchars((string)$v,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');
-        $html='<h1>Dự báo ngân sách CNTT</h1><p>Đơn vị: VND. Kế hoạch đã lưu giữ nguyên snapshot.</p><table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;font-size:8pt">';
+        $html='<h1>'.$escape($title).'</h1><p>Đơn vị tiền tệ (nếu có): VND. Nguồn số liệu ghi trong bảng.</p><table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;font-size:8pt">';
         foreach ($document as $row) {
             $html.='<tr>';
             foreach ($row as $value) { $html.='<td>'.$escape($value).'</td>'; }

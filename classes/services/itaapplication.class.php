@@ -194,7 +194,7 @@ class ItaApplication
         header('Cache-Control: no-store, private');
         $service=new ItaReportService($this->db,$this->user,(string)$this->config['auth_key']);
         if ($this->action==='report-export') {
-            $this->requirePost();$input=$this->readJson();if (($input['format'] ?? '')!=='xlsx') { throw new ItaHttpError(422,'Hiện chỉ mở xuất Excel.'); }$file=$service->export($input);
+            $this->requirePost();$file=$service->export($this->readJson());
             header('X-Content-Type-Options: nosniff');
             header('Content-Type: '.($file['format']==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'));
             header('Content-Disposition: attachment; filename="ita-'.$file['report'].'.'.$file['format'].'"');

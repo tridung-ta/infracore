@@ -10,4 +10,6 @@ file_put_contents($directory.'/inventory.xlsx',$file['bytes']);
 $reader=new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();$book=$reader->load($directory.'/inventory.xlsx');$found=false;
 foreach($book->getActiveSheet()->getRowIterator() as $row){foreach($row->getCellIterator() as $cell){if(str_starts_with((string)$cell->getValue(),'=HYPERLINK')){if($cell->getDataType()!=='s')throw new RuntimeException('Formula injection');$found=true;}}}
 $book->disconnectWorksheets();if(!$found)throw new RuntimeException('Missing text');
-echo "Real inventory XLSX reopened as STRING; no DB.\n";
+$input['format']='pdf';$pdf=$service->export($input);if(!str_starts_with($pdf['bytes'],'%PDF-'))throw new RuntimeException('PDF signature');file_put_contents($directory.'/inventory.pdf',$pdf['bytes']);
+$db->assets[0]['name']='Đã đổi';reject10(fn()=>$service->export($input),409);
+echo "Real inventory XLSX reopened, formula-like STRING; Vietnamese PDF created; changed data rejected. No DB.\n";
