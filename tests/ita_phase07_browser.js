@@ -3,7 +3,7 @@ async(page)=>{
  const check=(ok,label)=>{if(!ok)throw new Error(label);checks.push(label);};
  async function scenario(role){
   const context=await browser.newContext({viewport:{width:1366,height:1000}}),p=await context.newPage(),posts=[];
-  let fail='',ticket=null,waiting=false;
+  let fail='',ticket=null,waiting=false,statsCost='120.25';
   const asset=()=>({id:7,asset_code:'QA-7',name:'QA <img src=x>',status:ticket?'maintenance':'in_use',current_user_id:null,department_id:10,category_id:2,version:'asset-v',awaiting_ready:waiting});
   p.on('pageerror',e=>errors.push(e.message));
   const json=(route,data,status=200,message='')=>route.fulfill({status,contentType:'application/json',body:JSON.stringify({success:status===200,data,message})});
@@ -18,7 +18,7 @@ async(page)=>{
    if(act==='tickets')return json(route,{rows:ticket?[{...ticket,asset_code:'QA-7'}]:[],page:1,total:ticket?1:0,per_page:20});
    if(act==='ticket')return json(route,{ticket,asset:asset(),history:[{id:1,kind:'status',created_at:'2026-10-20 00:00:00',user_id:111,from_status:null,to_status:'pending',note:'QA <script>'},{id:2,kind:'ticket.assign',created_at:'2026-10-20 01:00:00',user_id:111,before_json:'{"technician_id":null}',after_json:'{"technician_id":222}'}],page:1,total:2,per_page:20});
    if(act==='ticket-technicians')return json(route,{rows:[{id:222,username:'qa-tech',fullname:'QA Tech'}],page:1,total:1,per_page:20});
-   if(act==='ticket-statistics')return json(route,{year:2026,rows:[{type:'repair',status:'resolved',n:1,cost:'120.25'}]});
+   if(act==='ticket-statistics')return json(route,{year:2026,rows:[{type:'repair',status:'resolved',n:1,cost:statsCost}]});
    if(act==='ticket-save'){
     const body=req.postDataJSON();posts.push({body,csrf:req.headers()['x-csrf-token'],method:req.method()});
     if(fail==='network'){fail='';return route.abort();}if(fail==='conflict'){fail='';return json(route,null,409,'Thiết bị đã có phiếu pending khác.');}if(fail==='server'){fail='';return json(route,null,503,'QA backend unavailable');}
@@ -33,18 +33,26 @@ async(page)=>{
   });
   await p.goto('http://127.0.0.1:18766/#tickets');await p.locator('#ticket-live').waitFor({state:'visible'});
   await p.locator('#ticket-create-section summary').click();await p.locator('#ticket-asset').fill('7');await p.locator('#ticket-issue').fill('QA <img src=x> issue');await p.locator('#ticket-create button').click();await p.locator('#ticket-record').waitFor({state:'visible'});
-  return {context,p,posts,fail:value=>fail=value};
+  return {context,p,posts,fail:value=>fail=value,statsCost:value=>statsCost=value};
  }
  for(const role of ['admin_it','system_manager','support_technician']){
   const s=await scenario(role),p=s.p;
   try{
    check(s.posts[0].body.operation==='create'&&s.posts[0].csrf==='qa-token',`Scoped create form ${role}`);
    check(await p.locator('#ticket-details img').count()===0&&await p.locator('#ticket-history script').count()===0,`Escaped text ${role}`);
-   check((await p.locator('#ticket-history').textContent()).includes('ticket.assign'),`Merged assignment audit ${role}`);
+   check((await p.locator('#ticket-history').textContent()).includes('Gán người xử lý'),`Merged assignment audit ${role}`);
    await p.locator('#ticket-filter button').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('Đã tải danh sách:'));
    check((await p.locator('#ticket-message').textContent()).includes('1 phiếu'),`List reload completion feedback ${role}`);
+   check((await p.locator('#ticket-rows').textContent()).includes('Đang chờ xử lý'),`Localized ticket state ${role}`);
+   await p.locator('#ticket-dismiss').click();check(await p.locator('#ticket-feedback').isHidden(),`Dismissible feedback ${role}`);
    if(role==='admin_it'){
     for(const width of [1366,768,390]){await p.setViewportSize({width,height:1000});check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`No page overflow ${width}`);check(await p.locator('#ticket-cost').evaluate(n=>{const r=n.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;}),`Form bounds ${width}`);await p.screenshot({path:`.playwright-cli/phase07-${width}.png`,fullPage:true});}
+    await p.locator('#ticket-close-record').click();check(await p.locator('#ticket-record').isHidden(),'Close detail without leaving list');
+    await p.locator('#ticket-rows button').click();await p.locator('#ticket-record').waitFor({state:'visible'});
+    check(await p.locator('#ticket-rows tr.is-selected').count()===1,'Selected ticket remains identifiable');check(!await p.locator('#ticket-create-section').evaluate(n=>n.open),'Successful creation collapses draft form');
+    await p.emulateMedia({reducedMotion:'reduce'});
+    check(await p.locator('#ticket-feedback').evaluate(n=>getComputedStyle(n).animationName)==='none','Reduced motion suppresses feedback animation');
+    await p.emulateMedia({reducedMotion:'no-preference'});
     await p.locator('#ticket-technician').selectOption('222');await p.locator('#ticket-assign-note').fill('QA assign');await p.locator('#ticket-assign button[type=submit]').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('đọc lại phiếu.'));
     await p.waitForFunction(()=>document.getElementById('ticket-details').textContent.includes('222')&&!document.getElementById('ticket-live').hasAttribute('aria-busy'));
     check(s.posts.at(-1).body.technician_id==='222','Technician assignment payload');
@@ -52,14 +60,18 @@ async(page)=>{
     check(await p.locator('#ticket-ready').isVisible(),'Unassigned resolved awaits Admin ready');
     await p.locator('#ticket-correct-cost').fill('130.25');await p.locator('#ticket-cost-reason').fill('QA invoice correction');await p.locator('#ticket-cost-form button').click();await p.waitForFunction(()=>document.getElementById('ticket-correct-cost').value==='130.25');check(s.posts.at(-1).body.operation==='cost'&&s.posts.at(-1).body.note==='QA invoice correction','Closed cost reason payload');
     await p.locator('#ticket-ready-reason').fill('QA inspected');await p.locator('#ticket-ready button').click();await p.locator('#ticket-ready-badge').waitFor({state:'hidden'});check(s.posts.at(-1).body.asset_version==='asset-v','Ready uses asset version');
-    await p.locator('#ticket-stat-form button').click();await p.waitForFunction(()=>document.getElementById('ticket-statistics').textContent.includes('120.25'));check((await p.locator('#ticket-statistics').textContent()).includes('1 phiếu'),'Year report distinct ticket output');
+    await p.locator('#ticket-stat-form button').click();await p.waitForFunction(()=>document.getElementById('ticket-statistics').textContent.includes('120,25'));check((await p.locator('#ticket-statistics').textContent()).includes('1 phiếu'),'Year report distinct ticket output');
+    s.statsCost('9999999999999999.99');await p.locator('#ticket-stat-form button').click();await p.waitForFunction(()=>document.getElementById('ticket-statistics').textContent.includes('9.999.999.999.999.999,99'));check(true,'Exact DECIMAL display without floating point rounding');
     await p.evaluate(()=>location.hash='assets');await p.locator('#asset-rows .detail-button').click();await p.locator('#asset-dialog').waitFor({state:'visible'});
     await p.locator('.asset-ticket-history summary').click();await p.locator('.asset-ticket-history button').filter({hasText:'QA-TICKET-9'}).click();
-    await p.waitForFunction(()=>document.querySelector('.asset-ticket-history').textContent.includes('ticket.assign'));
-    check((await p.locator('.asset-ticket-history').textContent()).includes('pending'),'Inline asset history merges state and assignment audit');
+    await p.waitForFunction(()=>document.querySelector('.asset-ticket-history').textContent.includes('Gán người xử lý'));
+    check((await p.locator('.asset-ticket-history').textContent()).includes('Đang chờ xử lý'),'Inline asset history merges state and assignment audit');
     await p.locator('#asset-dialog .dialog-close').count().then(async count=>{if(count)await p.locator('#asset-dialog .dialog-close').click();else await p.evaluate(()=>document.getElementById('asset-dialog').close());});
-    await p.evaluate(()=>location.hash='tickets');s.fail('server');await p.locator('#ticket-create button').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('HTTP 503'));
+    await p.evaluate(()=>location.hash='tickets');await p.locator('.ticket-create-link').click();s.fail('server');await p.locator('#ticket-create button').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('HTTP 503'));
     check((await p.locator('#ticket-message').textContent()).includes('QA backend unavailable'),'Backend rejection shown with HTTP status');
+    const writes=s.posts.length;await p.locator('#ticket-retry').click();await p.waitForFunction(()=>!document.getElementById('ticket-live').hasAttribute('aria-busy'));
+    check(s.posts.length===writes,'Recovery reload never repeats a write');
+    await p.locator('#ticket-history details').nth(1).locator('summary').click();check((await p.locator('#ticket-history').textContent()).includes('Người xử lý:'),'Assignment history uses readable labels');
    }else if(role==='system_manager'){check(await p.locator('#ticket-transition').isHidden()&&await p.locator('#ticket-assign').isVisible(),'Manager assign but no transition');}
    else{
     check(await p.locator('#ticket-assign').isHidden()&&await p.locator('#ticket-transition').isVisible(),'Support processes without reassign');

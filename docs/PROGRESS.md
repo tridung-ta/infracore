@@ -6,7 +6,7 @@ Cập nhật 21/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm
 
 ### Phase 7 — Đã duyệt kèm chỉnh sửa, đang build local
 
-**UAT host đang có lỗi mở:** user tạo được asset UAT-IT-001/id1, next_due2027-04-20; đã mở trang ticket nhưng báo tạo phiếu/tải danh sách không thấy phản hồi. Chưa chứng minh INSERT ticket thành công. Đã tái hiện/sửa FE phản hồi ngoài viewport và thiếu completion; chuẩn bị hotfix2file. Nguyên nhân ghi DB host chưa xác minh, Phase7 tiếp tục chưa nghiệm thu/merge.
+**UAT host đã xác nhận luồng bảo trì cơ bản ngày 21/10:** tạo/list/read-back phiếu, gán #111, periodic pending → resolved, chi phí 100.000 VND; SQL xác nhận asset maintenance, last_maintenance_at 2026-10-20 17:00:00 UTC (21/10 VN), next_due 2027-04-21. Admin xác nhận sẵn sàng, SQL asset in_use và giữ lịch; thống kê 2026 đúng 1 periodic resolved/100.000 VND. Lỗi POST403 đã sửa ở 60f4f49. Chưa có bằng chứng đầy đủ về quyền ngoài scope, đồng thời, guard pending, failed/reopen và điều chỉnh chi phí; chưa nghiệm thu toàn bộ/merge.
 
 Đã chuẩn bị gói upload cộng dồn từ source80929be theo yêu cầu user, 1.340 runtime files; manifest/CRC/hash đọc lại đạt, chi tiết DEPLOY_LOG.md và HOST_UPLOAD_PHASE07.md. Agent chưa upload. User đã gửi metadata DB dung_infracore/MariaDB10.6.28, 5 bảng chính InnoDB, CHECK=ON ở phiên phpMyAdmin; nghiệp vụ DB Phase1–7 vẫn chưa nghiệm thu.
 
@@ -281,3 +281,10 @@ User yêu cầu chưa upload, không tạo DB và hoàn thành trong phạm vi l
 ### 21/10/2026 — Sửa POST bị chặn trước dispatcher
 
 [~] F7.1: xác định includes/ita_mode.inc.php thiếu ticket-save trong POST allowlist, trả plain-text 403 trước application. Bổ sung ticket-save và hai endpoint đã duyệt #06 license-save/license-key. Không đổi quyền/CSRF, SQL hoặc config. Verify: php tests/ita_write_routes.php đạt 12 pure routing checks; php tests/ita_phase07_unit.php đạt 236 pure/scripted checks; php -l hai file PHP đạt. Chưa kiểm ghi DB thật, chưa xác định lỗi GET danh sách trên host; Phase 1–7 chưa nghiệm thu DB, không merge Phase7 hoặc bắt đầu Phase8.
+
+
+### 21/10/2026 — Cải tiến giao diện Bảo trì & hỗ trợ (FE)
+
+[~] F7.1–F7.5 phần trình bày: danh sách rõ mã thiết bị/phiếu, trạng thái Việt hóa, số tiền định dạng chính xác chuỗi DECIMAL; phiếu đang chọn có nền nhấn. Form tạo có lối vào riêng, thu gọn sau lưu thành công. Chi tiết hai cột desktop, một cột mobile; lịch sử giờ VN và mô tả thay đổi dễ đọc; thống kê dạng bảng. Thông báo cố định không kéo màn hình, thành công tự ẩn sau 6 giây khi không có focus, lỗi giữ lại và nút tải lại chỉ GET. Motion 150–180ms tách file, hỗ trợ UI_MOTION_ENABLED=false và prefers-reduced-motion.
+
+Verify local: `playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase07_browser.js` **43 browser API mock checks đạt**, ba vai trò, viewport1366/768/390 (không tràn và bounds đạt), escaping, payload/CSRF, read-only recovery, giảm motion, DECIMAL lớn. `node --check` hai JS đạt; `php tests/ita_phase03_render.php` Smarty thật render/escape đạt, không DB. Impeccable detector `[]`; đã xem ảnh desktop/mobile. Review Agent phát hiện làm tròn Number ở chi phí lớn, đã sửa định dạng chuỗi và thêm regression. Không PHP/SQL/auth mới, chưa upload/deploy và không dùng mock thay nghiệm thu DB. Chi tiết: docs/PHASE07_UI_VERIFY.md.

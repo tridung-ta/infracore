@@ -124,3 +124,12 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Sửa: chỉ thêm ba endpoint đã duyệt, giữ deny cho action lạ và kiểm quyền/CSRF ở application.
 - Kiểm tra: tests/ita_write_routes.php 12 checks đạt; ticket pure/scripted 236 đạt, không DB.
 - Phạm vi: kiểm routing gate ngoài cùng khi thêm endpoint; mock fetch không chứng minh request qua gate. GET danh sách host vẫn cần response để chẩn đoán riêng.
+
+
+### 21/10/2026 — Hiển thị DECIMAL khi Việt hóa chi phí
+- Triệu chứng: giá trị lớn có nguy cơ bị làm tròn khi định dạng giao diện.
+- Phân loại: FE numeric precision.
+- Bằng chứng: review chỉ ra Number('9999999999999999.99') làm mất phần lẻ và đổi giá trị nguyên.
+- Sửa: nhóm chữ số và dấu thập phân trực tiếp trên chuỗi, không Number/float; đầu ra dùng textContent.
+- Kiểm tra: browser mock thống kê xác nhận 9.999.999.999.999.999,99; bộ43checks đạt, không DB.
+- Phạm vi: formatter hiển thị tiền ticket/list/detail/history/stats; không sửa payload hoặc logic tính chi phí backend.

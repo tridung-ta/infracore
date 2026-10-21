@@ -6,7 +6,7 @@
  <meta name="ita-csrf" content="{$itaCsrf|default:''|escape:'html'}">
  <link rel="icon" href="data:,">
  <link rel="stylesheet" href="/assets/ita/vendor/bootstrap/5.3.8/bootstrap.min.css">
- <link rel="stylesheet" href="/assets/ita/css/ita-tokens.css">
+ <link rel="stylesheet" href="/assets/ita/css/ita-tokens.css?v=20261021-ticket-ui1">
  <link rel="stylesheet" href="/assets/ita/css/ita-licenses.css?v=20261020-ticket1">
  <link rel="stylesheet" href="/assets/ita/css/ita-shell.css?v=20261019-phase5-live">
  <script src="/assets/ita/js/ita-shell.js?v=20261020-ticket1" defer></script>
@@ -19,7 +19,10 @@
  <script src="/assets/ita/js/ita-assignments.js?v=20261019-phase5" defer></script>
  <script src="/assets/ita/js/ita-assignments-live.js?v=20261020-pdf1" defer></script>
  <script src="/assets/ita/js/ita-licenses.js?v=20261020-license1" defer></script>
- <script src="/assets/ita/js/ita-tickets.js?v=20261020-ticket-feedback2" defer></script>
+ <script src="/assets/ita/js/ita-tickets.js?v=20261021-ticket-ui1" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-tickets.css?v=20261021-ticket-ui1">
+ <link rel="stylesheet" href="/assets/ita/css/ita-motion.css?v=20261021-ticket-ui1">
+ <script src="/assets/ita/js/motion/ita-tickets.js?v=20261021-ticket-ui1" defer></script>
 </head>
 <body data-renderer="{$itaRenderer|default:'static'|escape:'html'}" data-mode="{$itaMode|default:'mock'|escape:'html'}">
  {include file="admin/ita/partials/icons.tpl.html"}

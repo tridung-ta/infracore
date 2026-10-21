@@ -1,0 +1,7 @@
+/* Opt in only; no continuous decorative motion. */
+@media(prefers-reduced-motion:no-preference){
+ body[data-ticket-motion="on"] #tickets-panel .ticket-feedback:not([hidden]) { animation:ticket-feedback-in 180ms ease-out; }
+ body[data-ticket-motion="on"] #tickets-panel button { transition:transform 150ms ease-out; }
+ body[data-ticket-motion="on"] #tickets-panel button:active:not(:disabled) { transform:translateY(1px); }
+}
+@keyframes ticket-feedback-in { from { opacity:.5; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
