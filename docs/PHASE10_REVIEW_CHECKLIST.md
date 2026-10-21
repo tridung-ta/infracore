@@ -1,6 +1,20 @@
 # Kiểm thử giao diện mẫu dashboard và báo cáo
 
-Ngày chuẩn bị: 21/10/2026. Chỉ kiểm FE/MOCK độc lập, không cần DB. BE-GATE #10 chưa duyệt; DB Phase 1–9 chưa nghiệm thu. Các ô dưới đây để user đánh dấu sau khi tự kiểm, không phải kết quả đã chạy.
+Ngày chuẩn bị: 21/10/2026. Chỉ kiểm FE/MOCK độc lập, không cần DB. BE-GATE #10 chưa duyệt; DB Phase 1–9 chưa nghiệm thu. Theo chỉ đạo mới của user, agent tự kiểm local; user kiểm thủ công sau khi tự upload host. Các ô dưới đây là kịch bản tham chiếu, không phải yêu cầu user phải kiểm local hoặc bằng chứng host đã đạt.
+
+## Lần chạy local ngày 21/10/2026
+
+Agent đã chạy lại trên source sau commit 0c64089, preview localhost:18766, tiến trình node.exe chạy assets/ita/preview/serve-preview.cjs. Ba lệnh thực tế:
+
+```powershell
+playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase10_preview_browser.js
+playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase10_reports_browser.js
+playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase10_alerts_browser.js
+```
+
+Kết quả: **46 + 50 + 37 = 133 kiểm tra browser static/mock đạt**, không lỗi JavaScript runtime. Có kiểm luồng lọc, phân trang, ba vai trò mô phỏng, trạng thái lỗi/rỗng, ngày biên, ngân sách giả/snapshot giả, giới hạn dòng giả và bounds 1366/768/390. Node syntax của hai controller đạt. Không phát hiện lỗi mới trong các kịch bản này, không sửa mã sản phẩm trong lượt kiểm này.
+
+Chưa chạy DB integration, quyền server, xuất Excel/PDF thật của #10 hoặc host UAT. Mô phỏng vai trò không chứng minh bảo mật server; giới hạn dòng giả không chứng minh exporter thật. Không dùng kết quả local để cập nhật nghiệm thu DB.
 
 Nếu chưa có preview server, chạy tại thư mục dự án:
 
