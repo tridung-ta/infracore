@@ -78,6 +78,7 @@
   }$('dash-output').append(grid,node('p','Tỷ lệ lỗi: phần cứng chưa thanh lý có ít nhất một phiếu repair mở trong 12 tháng lịch / phần cứng đang phân tích. Sổ tài sản gồm cả thanh lý.'));
   if(d.config?.using_defaults)$('dash-output').append(node('p','Đang dùng giá trị mặc định'));
   const g=d.groups;
+  chart('Tình trạng theo nhóm',g.map(r=>r.name),g.map(r=>r.total),['Nhóm','Tổng','Đang dùng','Bảo trì','Hỏng','Thanh lý'],g.map(r=>[r.name,r.total,r.by_status.in_use,r.by_status.maintenance,r.by_status.broken,r.by_status.retired]));
   }
  function render(d){dispose();
   $('dash-output').replaceChildren();

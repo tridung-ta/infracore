@@ -10,6 +10,8 @@ User nguyên văn: «tôi duyệt bạn hãy bắt đầu BUILD». Các ghi chú
 
 Lớp đọc dùng lại điểm DECIMAL của vòng đời, transaction đọc nhất quán và helper chung cho các báo cáo tiếp theo. SQL đọc xuất tại PHASE10_EXPLAIN.sql; generator không thực thi SQL, không DDL.
 
+| F10.2 | Biểu đồ tình trạng theo loại/bộ phận/năm mua, bảng đối chiếu | FE/BE | [x] build local | Commit chức năng kèm dòng này | 35 pure/scripted; 9 browser API mock; JS syntax đạt | ECharts 4 trạng thái xếp chồng, không animation/polling; chưa DB |
+
 ### 21/10/2026 — Agent tự kiểm local theo chỉ đạo mới
 
 User giao agent tự kiểm local, user kiểm thủ công sau upload host. Chạy lại ba suite FE/MOCK #10 trên source sau 0c64089: dashboard 46, reports 50, alerts 37, tổng **133 đạt**; node syntax hai controller đạt. Kiểm tiến trình preview node.exe và entrypoint static localhost:18766. Không phát hiện lỗi mới trong phạm vi test; không sửa product code. Chi tiết PHASE10_REVIEW_CHECKLIST.md. Không yêu cầu user chạy checklist local; không thay kết quả mock bằng PASS DB/host. BE10 chưa duyệt, DB1–9 chưa nghiệm thu; không merge/tag7–9/push/deploy.
