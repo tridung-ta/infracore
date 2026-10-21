@@ -29,6 +29,6 @@ Impeccable detector ban đầu nêu19 mẫu (chủ yếu màu/font của theme �
 
 ## Giới hạn và việc còn chờ
 
-Chưa có KPI/query/permission server, dữ liệu thật, export500/1.000/5.000 dòng, report preview thực, short-life report hoặc snapshot ngân sách #10. Điểm/cảnh báo là dữ liệu giả đầu vào, không phải chạy lại nghiệp vụ lifecycle trên DB. Không có DB integration, EXPLAIN hoặc UAT. Các ngưỡng/định nghĩa còn đề xuất trong gate10 chưa được duyệt chỉ vì UI này tồn tại.
+Chưa có KPI/query/permission server, dữ liệu thật hoặc export500/1.000/5.000 dòng. Đã có bản báo cáo FE/MOCK riêng (PHASE10_REPORT_PREVIEW.md), gồm vòng đời ngắn, ngân sách và snapshot giả; cảnh báo có lọc/phân trang (PHASE10_ALERT_PREVIEW.md). Các bản này không phải báo cáo hoặc snapshot từ DB. Điểm/cảnh báo là dữ liệu giả đầu vào, không phải chạy lại nghiệp vụ lifecycle trên DB. Không có DB integration, EXPLAIN hoặc UAT. Các ngưỡng/định nghĩa còn đề xuất trong gate10 chưa được duyệt chỉ vì UI này tồn tại. User có thể đối chiếu theo PHASE10_REVIEW_CHECKLIST.md.
 
 Runtime ECharts6.1.0 nằm cục bộ; SOURCE.json ghi URL tag/hash/kích thước và LICENSE/NOTICE. Đây là dependency UI đã được AGENTS cho phép, không Composer mới; không nói rằng bộ Excel/PDF/font legacy đã được dựng lại hoặc tracked nhờ bước này.

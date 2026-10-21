@@ -4,7 +4,9 @@
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
-| F10.7 (trình bày) | Lọc mức độ/lý do/tìm thiết bị, phân trang cảnh báo | FE/MOCK | [x] prototype | Commit chức năng kèm mục này | 37 browser mock mới; hồi quy dashboard 46 và báo cáo 50; syntax/diff đạt; xem ảnh 1366/768/390; rà độc lập không finding | Chuông giữ tổng hiệu lực trong scope; không đổi mốc số liệu hoặc fetch khi lọc; xem PHASE10_ALERT_PREVIEW.md |
+| F10.7 (trình bày) | Lọc mức độ/lý do/tìm thiết bị, phân trang cảnh báo | FE/MOCK | [x] prototype | 11f6adc | 37 browser mock mới; hồi quy dashboard 46 và báo cáo 50; syntax/diff đạt; xem ảnh 1366/768/390; rà độc lập không finding | Chuông giữ tổng hiệu lực trong scope; không đổi mốc số liệu hoặc fetch khi lọc; xem PHASE10_ALERT_PREVIEW.md |
+
+Tiếp tục ngày 21/10: đã gom PHASE10_REVIEW_CHECKLIST.md với URL, kết quả kỳ vọng tính tay và các ô user tự kiểm; chỉnh ghi chú dashboard cũ để phản ánh report/cảnh báo prototype hiện có. Chỉ sửa tài liệu, không chạy lại browser cho thay đổi tài liệu; đối chiếu fixture/test hiện có và diff. Không coi checklist chưa đánh dấu là UAT đạt.
 
 BE #10 vẫn **chưa duyệt/chưa build**. DB Phase 1–9 **chưa nghiệm thu**. Không merge/tag Phase 7–9, push hoặc deploy. Prototype không chứng minh quyền server hoặc kết quả DB.
 
