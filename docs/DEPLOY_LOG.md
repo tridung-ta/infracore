@@ -1,5 +1,18 @@
 # Nhật ký thao tác hosting
 
+## 21/10/2026 — Checklist host trước kiểm thử Phase 1–9 (chưa thực hiện)
+
+Đây là checklist cho user/quản trị host, không phải kết quả kiểm tra hoặc quyền deploy. Phase 1–9 giữ trạng thái DB **chưa nghiệm thu**; không merge/tag Phase 7, 8, 9 trong lúc chờ xác nhận cụ thể. Không import lại migration hoặc tạo DB từ checklist này.
+
+- [ ] Ghi môi trường đích, ngày kiểm, **phiên bản PHP thực của site/PHP-FPM** và phiên bản PHP CLI nếu dùng CLI. Đối chiếu khả năng chạy source và thư viện hiện có; CLI chạy được không chứng minh PHP-FPM có cùng cấu hình.
+- [ ] **display_errors tắt khi tải Excel/PDF** trên đúng site/PHP-FPM; lỗi ghi vào log riêng được bảo vệ, không chen cảnh báo/HTML vào bytes tải. Kiểm MIME/chữ ký và mở lại file thật. Cảnh báo deprecation PhpSpreadsheet/ZipStream local còn được ghi nhận, chưa nâng vendor; không tắt toàn bộ error_reporting để che lỗi.
+- [ ] **gd + mbstring** được nạp trong PHP-FPM phục vụ site để xuất PDF tiếng Việt; kiểm thêm dependency hiện có của Excel và OpenSSL/AES-256-GCM cho giấy phép. Bật GD per-process local trước đây không xác nhận extension trên host.
+- [ ] Ghi phiên bản MySQL/MariaDB, engine các bảng liên quan và **transaction isolation của kết nối ứng dụng: REPEATABLE READ hoặc SERIALIZABLE**. Writer ngân sách từ chối isolation khác trước ghi. Không tự đổi cấu hình DB server. Kiểm rollback khi audit lỗi và hai phiên đồng thời trong môi trường/phạm vi user đã xác nhận phù hợp; ghi kết quả, không suy từ mock.
+- [ ] **ITA_LICENSE_KEY** đã đặt cho đúng PHP-FPM pool/site, là base64 giải mã đúng32 byte và OpenSSL hỗ trợ AES-256-GCM. Dùng hướng dẫn PHASE06_HOST_TEST.md và script check_ita_license.php; kết quả CLI không thay kiểm môi trường PHP-FPM. Không in khóa vào chat, ảnh, Git, HTML hoặc log; không tạo khóa production tự động hay thay khóa đang dùng để chữa lỗi.
+- [ ] Backup khóa giấy phép riêng, ngoài Git/document root và tách khỏi dump DB; backup source/DB trước triển khai. Kiểm khả năng khôi phục khóa tương ứng với ciphertext, không dùng khóa dev cho host.
+
+User gửi xác nhận kiểm thử DB cụ thể Phase1–9 (môi trường, phiên bản, engine, CHECK ticket_events, rollback/audit, hai phiên, các mục chưa kiểm) rồi mới cập nhật nghiệm thu. Agent chưa chạy checklist, chưa đọc secret, chưa deploy. Phase10 chỉ có tài liệu BE-GATE, chưa bắt đầu BE.
+
 ## 20/10/2026 — Gói upload cộng dồn đến Phase7 theo yêu cầu user
 
 User xác nhận chỉ kiểm được trên host với DB hiện có, yêu cầu bắt đầu chuẩn bị gói. Agent chỉ đóng gói local, không upload/DB/merge/push. Source runtime cố định `80929beff9bb0675b19428df63d6f4316a706caf`, dùng cho host Phase2 đã đăng nhập được.

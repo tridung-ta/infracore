@@ -344,3 +344,11 @@ Giữ nguyên xác nhận: «Phase 1–7 chưa có xác nhận kiểm thử DB c
 Ruflo: đã đọc skill gốc và xác nhận CLI3.59.3 bằng --help. Duy trì tài liệu/bài học đã làm sạch; không bật hooks/daemon/swarm hoặc tuyên bố tự học nền. Xem RUFLO_WORKFLOW.md. Lần commit trước không chạy được vì bộ duyệt tự động chạm giới hạn sử dụng, không phải kết luận thao tác không an toàn.
 
 Checkpoint: quy trình Ruflo `50e71c2`; ngân sách local `2e95245`. Lần tiếp tục đã lưu commit thành công. Nhánh feature/ita-phase09-forecast, chưa push/merge/tag/deploy. Không có xác nhận DB mới từ user.
+
+### 21/10/2026 — Yêu cầu trước bước tiếp theo của user
+
+- Đã ghi công thức bảo trì ba năm/chia3 và hai giới hạn (thiết bị mới kéo thấp bình quân, thiết bị sắp thay vẫn tính cả bảo trì và thay thế), mua thêm ceil không trừ tồn kho, dự phòng cố định10% và phê duyệt #09 vào DECISIONS.md.
+- Đã thêm checklist host vào DEPLOY_LOG.md: PHP thực của site, display_errors khi xuất, gd/mbstring, isolation RR/SERIALIZABLE và ITA_LICENSE_KEY. Tất cả mục checklist **chưa kiểm**, không coi tài liệu là kết quả host.
+- **Phase 1–9: DB chưa nghiệm thu.** Chờ user cung cấp xác nhận kiểm thử DB cụ thể rồi mới cập nhật trạng thái. Không merge/tag Phase7/8/9; không push/deploy.
+- **Phase10 BE chưa bắt đầu.** BE_GATE_10.md chỉ là dự thảo theo F10.1–F10.7; chưa viết PHP, endpoint, SQL hoặc nối dữ liệu mới. Chưa cần bổ sung FE/mock trong bước tài liệu này.
+- Verify tài liệu: đối chiếu PLAN_FINAL, code nguồn hợp đồng hiện có và diff/UTF-8; không chạy DB/host. Dự thảo gate cần duyệt riêng khi user sẵn sàng; không coi yêu cầu chuẩn bị gate là phê duyệt build.

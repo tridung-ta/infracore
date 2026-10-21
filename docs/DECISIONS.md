@@ -100,3 +100,12 @@ User cho tiếp tục build8 nhưng KHÔNG merge/tag7. Nguyên văn xác nhậnD
 User xác nhận “Duyệt bổ sung và BUILD”: mỗi lần lưu draft giữ snapshot đầu vào và số tiền. Tính lại cần xác nhận và version; finalized chỉ đọc. Dự phòng cố định 10%, ba thành phần độc lập, không DDL. Giá 0 nhập rõ khác null. Thiếu lịch sử chỉ fallback theo tỷ lệ Admin đã đặt, không đoán. Cấu hình forecast_category_parameters theo category; đơn giá lưu default_replacement_cost. Snapshot giữ đầu vào thiết bị/cohort chi phí, ngưỡng, giá/định mức/nhân sự và tổng; không ghi bù hoặc tự tính lại bản cũ. Writer cần RR/SERIALIZABLE; không tự đổi isolation server. DB/EXPLAIN/host UAT chưa chạy; không merge/tag. Xem PHASE09_VERIFY.md.
 
 User yêu cầu Ruflo xuyên suốt: duy trì tiến độ, quyết định và bài học có bằng chứng; CLI --help trả 3.59.3. Không bật hooks, daemon, swarm, provider hoặc tuyên bố tự học nền. Xem RUFLO_WORKFLOW.md.
+
+## 21/10/2026 — Chốt công thức và giới hạn ngân sách theo user
+
+- Gate #09 đã được user duyệt, gồm bổ sung snapshot khi lưu và dự phòng cố định 10%.
+- Bảo trì = chi phí hiện tại của phiếu repair/periodic có trạng thái resolved/failed, mở trong ba năm lịch hoàn chỉnh trước năm hiện tại, theo tập thiết bị hiện tại của bộ phận/loại, chia 3. Không phải mô hình tồn kho lịch sử. Giới hạn: thiết bị mới mua kéo thấp mức bình quân theo thiết bị; thiết bị sắp thay vẫn được tính chi phí bảo trì và thay thế trong cùng dự toán. Không tự loại chi phí bảo trì của nhóm sắp thay.
+- Mua thêm = ceil(nhân sự tăng × định mức thiết bị/người) × đơn giá. Không trừ tồn kho.
+- Dự phòng cố định 10% tổng ba thành phần thay thế, bảo trì, mua thêm đã làm tròn; giữ từng thành phần để cộng tay đối chiếu. Dữ liệu thiếu được đánh dấu, không đoán giá trị.
+- Phase 1–9 giữ trạng thái DB **chưa nghiệm thu** đến khi user cung cấp xác nhận kiểm thử DB cụ thể. Các bằng chứng local/mock và ảnh kiểm thử trước đó không thay xác nhận này. Không merge/tag Phase 7, 8, 9.
+- Phase 10 chưa bắt đầu BE. Chỉ chuẩn bị BE_GATE_10.md theo plan; tài liệu gate không phải phê duyệt, không tự tạo endpoint/PHP/SQL mới. FE/mock độc lập có thể làm nếu cần, phải đánh dấu MOCK.
