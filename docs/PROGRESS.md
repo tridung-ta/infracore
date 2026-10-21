@@ -4,6 +4,26 @@ Cập nhật 21/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm
 
 ## Trạng thái hiện hành sau đối chiếu Word
 
+### Phase 8 — Đã duyệt backend, đang build local
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F8.1 | Tuổi và tỷ lệ tuổi thọ | BE+FE | [~] | chờ commit | 68 pure/scripted, 37 browser mock, Smarty đạt | Đã build local; DB chưa chạy |
+| F8.2 | Điểm và giải thích | BE+FE | [~] | chờ commit | Biên 0,6/0,8, điểm >1, 3 số lẻ và settings đạt | DECIMAL trên DB chưa kiểm |
+| F8.3 | Tuổi TB và tỷ lệ lỗi theo nhóm | BE+FE | [~] | chờ commit | Query bindings/scope và group mock đạt | 10 câu EXPLAIN chưa chạy |
+| F8.4 | Đề xuất, bộ lọc và phân trang | BE+FE | [~] | chờ commit | Paging mock, ba vai trò, viewport đạt | Chỉ GET, không tự thanh lý |
+
+Chi tiết: PHASE08_VERIFY.md, PHASE08_HAND_CALCULATIONS.md, PHASE08_HOST_TEST.md. Hồi quy Phase 7: 236 pure/scripted và 64 browser mock checks đạt. Review Agent chưa phát hiện lỗi backend hoặc FE. Không migration/index mới, DB, deploy, merge hoặc tag.
+
+**Xác nhận kiểm thử DB theo user (nguyên văn ngày 21/10/2026):**
+
+«Phase 1–7 chưa có xác nhận kiểm thử DB chi tiết (CHECK ticket_events, rollback InnoDB, hai phiên đồng thời, phiên bản MySQL/MariaDB, môi trường chưa được cung cấp)»
+
+Không ghi PASS cho phần này; Phase 7 và Phase 8 chưa được coi là nghiệm thu DB. User yêu cầu tiếp tục build #08 nhưng KHÔNG merge, KHÔNG tag Phase7. Khi user cung cấp xác nhận kiểm thử cụ thể, ghi nguyên văn rồi mới cập nhật trạng thái. Ảnh/luồng host từng phần bên dưới chỉ là bằng chứng từng ca, không thay thế xác nhận đầy đủ.
+
+Gate #08 duyệt kèm cập nhật mới nhất: điểm hiển thị đúng3chữ số, raw compare/sort, thanh hỗ trợ>1; settings thiếu key dùng mặc định có ghi chú, key sai lỗi; bắt buộc ví dụ tính tay và query EXPLAIN; không SQL/index mới nếu chưa gate riêng. Không tạo/kết nối DB hoặc deploy.
+
+
 ### Phase 7 — Đã duyệt kèm chỉnh sửa, đang build local
 
 **UAT host đã xác nhận luồng bảo trì cơ bản ngày 21/10:** tạo/list/read-back phiếu, gán #111, periodic pending → resolved, chi phí 100.000 VND; SQL xác nhận asset maintenance, last_maintenance_at 2026-10-20 17:00:00 UTC (21/10 VN), next_due 2027-04-21. Admin xác nhận sẵn sàng, SQL asset in_use và giữ lịch; thống kê 2026 đúng 1 periodic resolved/100.000 VND. Lỗi POST403 đã sửa ở 60f4f49. Chưa có bằng chứng đầy đủ về quyền ngoài scope, đồng thời, guard pending, failed/reopen và điều chỉnh chi phí; chưa nghiệm thu toàn bộ/merge.

@@ -53,7 +53,10 @@ desktop.ini
 /artifacts/ita-phase03/
 /artifacts/ita-phase05/
 /artifacts/ita-phase07/
+/artifacts/ita-phase08/
 /.cache/composer-ita-pdf/
 /.cache/composer-ita-home/
 /tmp/pdfs/
 /classes/ita-pdf/vendor/
+# Synthetic read-only EXPLAIN plans generated from lifecycle query builder.
+!docs/PHASE08_EXPLAIN.sql

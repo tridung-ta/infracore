@@ -19,3 +19,12 @@ Ngày 19/10/2026. Không tạo/kết nối DB trong Phase 3. Không suy diễn m
 Ticket list theo store/asset/status/opened_at; dùng index hiện có ở migration004, không thêm DDL. Kiểm count/list cùng scope và paging20; thống kê group asset/type/status, range opened_at UTC thay YEAR(column), không JOIN events để tránh nhân COUNT/SUM. Hỗ trợ lọc technician_id.
 
 Lịch sử UNION ALL events và audit gán/cost phải kiểm kế hoạch hai nhánh, paging20 và thứ tự. Waiting-ready dùng correlated latest lifecycle event theo created_at/id, không updated_at; cần EXPLAIN trên số ticket/event thực và xác minh index idx_ita_events_ticket + idx_ita_tickets_asset_status. Cảnh báo lịch fallback dùng DATE_ADD/CONVERT_TZ offset cố định, có thể không dùng range index khi COALESCE; chưa benchmark, không khẳng định tối ưu. Kiểm trước Phase8 cùng DB UAT Phase1–7; nếu cần index/schema mới phải gate SQL riêng.
+
+
+## Phase 8 — Truy vấn EXPLAIN chính xác, chưa chạy DB
+
+`php scripts/ita_phase08_explain.php` sinh PHASE08_EXPLAIN.sql từ chính ItaLifecycleObjects::queryPlans, không kết nối DB. Có 10 câu: admin/system_manager × count/list/summary/category/department. Ngày mẫu 21/10/2026, store 1, phạm vi Quản lý là bộ phận 1; cần đổi theo môi trường thật trước khi chạy.
+
+CTE chung: cfg (ngày/trọng số/ngưỡng) → eligible (store, chưa xóa/thanh lý, phần cứng, scope và bộ lọc) → repair (COUNT/SUM theo type và opened_at, JOIN eligible) → base → ratios DECIMAL → score_raw → graded. Tất cả kế hoạch dùng cùng tier filter nếu được chọn. Detail thêm ID vào eligible, dùng list plan sau kiểm ownership. Tìm từ khóa dùng contains LIKE có escape ký tự %, _ và =; không hứa B-tree tối ưu.
+
+Các query settings và lookup không phải aggregate. Cần kiểm EXPLAIN thực tế cho CTE materialization, GROUP BY, sort và index ngày mở phiếu; không coi việc có index trong migration là bằng chứng hiệu năng. Nếu cần index mới: gate SQL riêng, không tự ALTER hoặc tạo DB test.

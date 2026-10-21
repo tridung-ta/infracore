@@ -71,3 +71,13 @@ Gói local đã tạo và đọc lại toàn bộ 710 mục từ commit `5f1e6ea
 ## 21/10/2026 — Bổ sung bộ chọn thiết bị cho form ticket, chưa upload
 
 Gói artifacts/ita-phase07/ita-ticket-picker-update.zip:7runtime FE cộng dồn, gồm cải tiến fcbef20; source commit và SHA256 từng file trong MANIFEST. Không PHP/SQL/config/dump/vendor, không cần gói UI trước. Cần routing60f4f49 đã kiểm host.64browser mock checks và Smarty/syntax/detector/review đạt; user kiểm picker bằng DB host sau upload. Backup7file, upload nội dung runtime, Ctrl+F5; không upload ZIP/manifest/handoff; rollback source giữ DB/config. Agent chưa deploy hoặc merge Phase7.
+
+
+## 21/10/2026 — Vòng đời tài sản, chuẩn bị gói nhưng chưa upload
+
+- Gói: artifacts/ita-phase08/ita-lifecycle-update.zip. Nền là bản Phase7 qua 2aa3c98, gồm giao diện ticket và bộ chọn thiết bị trước đó. Source cố định và hash từng file trong MANIFEST.json.
+- Runtime 11 file: hai DAO lifecycle, rules, ItaApplication, bootstrap, JS shell/lifecycle, CSS lifecycle, layout/sidebar/partial lifecycle. Không config, SQL, seed, fixture MOCK, session, dump hoặc vendor mới.
+- Không migration. User backup các file tương ứng và DB trước triển khai theo quy trình; upload nội dung runtime/ vào public_html, không upload ZIP/manifest/handoff. Ctrl+F5, mở #lifecycle.
+- Handoff gồm hướng dẫn kiểm host, tính tay và EXPLAIN; chỉ EXPLAIN đọc, không ALTER. Không chạy trên DB nếu chưa xác định môi trường.
+- Rollback source khôi phục file backup; giữ dữ liệu/config/keys. File mới có thể để lại không được layout/bootstrap cũ gọi; không DROP hoặc restore đè dữ liệu mới.
+- Agent chưa upload/deploy, chưa merge/tag Phase7 hoặc8. Phần DB giữ CHƯA XÁC NHẬN đúng nguyên văn user trong PROGRESS.

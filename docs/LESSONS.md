@@ -133,3 +133,13 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Sửa: nhóm chữ số và dấu thập phân trực tiếp trên chuỗi, không Number/float; đầu ra dùng textContent.
 - Kiểm tra: browser mock thống kê xác nhận 9.999.999.999.999.999,99; bộ43checks đạt, không DB.
 - Phạm vi: formatter hiển thị tiền ticket/list/detail/history/stats; không sửa payload hoặc logic tính chi phí backend.
+
+
+### 21/10/2026 — Nhãn ẩn trong bảng cuộn vẫn có thể làm tràn trang
+
+- Triệu chứng: vòng đời ở 768px có document scrollWidth 816px; ở 390px là 730px.
+- Phân loại: FE responsive, không phải dữ liệu DB.
+- Bằng chứng: nhãn visually-hidden nằm trong ô tiêu đề của bảng min-width 790px; bounding box vượt viewport, vùng bảng chưa có overflow riêng.
+- Sửa: overflow-x:auto cho vùng bảng, position:relative cho ô tiêu đề để chứa nhãn ẩn; bảng thiết bị trên mobile dùng khối thông tin, bảng nhóm giữ scroll cục bộ.
+- Kiểm tra: browser mock đo document width và form bounds ở 1366/768/390 đạt; điểm mobile nằm trong viewport. Bộ 37 checks đạt; đã xem ảnh desktop/mobile.
+- Phạm vi: bảng có nội dung ẩn truy cập được và độ rộng tối thiểu lớn; không chữa bằng cách ẩn tràn toàn body.

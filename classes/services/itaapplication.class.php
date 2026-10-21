@@ -140,6 +140,8 @@ class ItaApplication
         }
         $assets = new ItaAssetObjects($this->db,$this->user);
         $data = match ($this->action) {
+            'lifecycle' => (new ItaLifecycleObjects($this->db,$this->user))->listing($_GET,$page),
+            'lifecycle-detail' => (new ItaLifecycleObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['id'] ?? null)),
             'tickets' => (new ItaTicketObjects($this->db,$this->user))->listing($_GET,$page),
             'ticket' => (new ItaTicketObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['id'] ?? null),$page),
             'ticket-technicians' => (new ItaTicketObjects($this->db,$this->user))->technicians(ItaInput::positiveInt($_GET['asset_id'] ?? null),$page),

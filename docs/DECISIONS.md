@@ -86,3 +86,10 @@ Mỗi mục ghi phần việc phụ thuộc. Không coi im lặng là phê duy�
 
 
 - 21/10/2026, tiếp tục FE ticket theo yêu cầu BUILD: bộ chọn thiết bị dùng GET data q/page đã có, explicit search và5kết quả/trang, không tải toàn bộ danh sách hoặc thêm endpoint. Không suy quyền từ FE; server vẫn quyết định scope và guard pending khi tạo. Native input ID giữ làm đường nhập trực tiếp; chọn thiết bị có nhãn rõ, sửa ID xóa nhãn. Không mở Phase8 trước UAT DB đã thống nhất.
+
+
+## 21/10/2026 — #08 duyệt kèm chỉnh sửa mới nhất
+
+User cho tiếp tục build8 nhưng KHÔNG merge/tag7. Nguyên văn xác nhậnDB: «Phase 1–7 chưa có xác nhận kiểm thử DB chi tiết (CHECK ticket_events, rollback InnoDB, hai phiên đồng thời, phiên bản MySQL/MariaDB, môi trường chưa được cung cấp)». Chỉ thay trạng thái saukhi ghixácnhậnchitiếtnguyênvăn.
+
+Điểm hiển thị đúng3lẻ (thay phươngánrawgầnngưỡngởphản hồitrước),rawgiữ đểso/sort/detail,meterhỗtrợ>1. Cấu hìnhvắngkeydùngplan0.5/0.3/0.2và0.8/0.6cóghichú;keysaitrả422. Đãchọncontract5keylifecycle_*ởPHASE08_VERIFY,chỉđọc,khôngtựghi. Querypreaggregate repair theoasset/storevàopened_at,tấtcảstatus;groupsmẫusốtheotậplọccùngscope. NếucầnindexmớidừngSQLgate.68pure/scripted +37browsermock đạt,DB/EXPLAINchưa chạy; khôngseed,cron,packagehoặccấu hìnhservermới.
