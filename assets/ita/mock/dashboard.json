@@ -12,10 +12,10 @@
   {"id":9,"code":"MOCK-009","name":"Máy in dùng chung","department":null,"category":"Máy in","purchase_date":"2024-08-01","status":"in_use","score_raw":"0.250","repairs":[],"maintenance_due":null}
  ],
  "alerts":[
-  {"asset_id":1,"reason":"maintenance_due","label":"Sắp bảo trì","active":true},
-  {"asset_id":1,"reason":"warranty","label":"Bảo hành sắp hết","active":true},
-  {"asset_id":3,"reason":"maintenance_overdue","label":"Quá hạn bảo trì","active":true},
-  {"asset_id":7,"reason":"maintenance_overdue","label":"Quá hạn bảo trì","active":true},
+  {"asset_id":1,"reason":"maintenance_due","label":"Sắp bảo trì","severity":"warning","active":true},
+  {"asset_id":1,"reason":"warranty","label":"Bảo hành sắp hết","severity":"warning","active":true},
+  {"asset_id":3,"reason":"maintenance_overdue","label":"Quá hạn bảo trì","severity":"critical","active":true},
+  {"asset_id":7,"reason":"maintenance_overdue","label":"Quá hạn bảo trì","severity":"critical","active":true},
   {"asset_id":2,"reason":"old_warning","label":"Cảnh báo cũ, đã hết hiệu lực","active":false}
  ]
 }

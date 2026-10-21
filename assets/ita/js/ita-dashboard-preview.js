@@ -2,7 +2,7 @@
 (() => {
  'use strict';
  const $=id=>document.getElementById(id),statusNames={in_use:'Đang dùng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Thanh lý'},departmentNames={it:'Công nghệ thông tin',ops:'Vận hành'};
- let source=null,asOf=null,instances=[],observer=null,loaded=false,sequence=0;
+ let source=null,asOf=null,instances=[],observer=null,loaded=false,sequence=0,alertPage=1,lastModel=null;
  const lifetime=new AbortController(),signal=lifetime.signal;
  const el=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
  const vnDate=date=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).map(p=>[p.type,p.value]));return `${p.year}-${p.month}-${p.day}`;};
@@ -24,6 +24,16 @@
   t.append(head,body);$(target).replaceChildren(t);$(target).tabIndex=0;$(target).setAttribute('role','region');$(target).setAttribute('aria-label',caption+' — có thể cuộn ngang');
  }
  function dispose(){for(const c of instances)c.dispose();instances=[];observer?.disconnect();observer=null;}
+ function renderAlerts(m){
+  const query=$('preview-alert-search').value.trim().toLocaleLowerCase('vi'),severity=$('preview-alert-severity').value,reason=$('preview-alert-reason').value,size=Number($('preview-alert-size').value),rank={critical:0,warning:1};
+  const assets=new Map(m.rows.map(a=>[a.id,a]));
+  const rows=m.alerts.filter(a=>{const asset=assets.get(a.asset_id);return (!severity||a.severity===severity)&&(!reason||a.reason===reason)&&(!query||(asset.code+' '+asset.name).toLocaleLowerCase('vi').includes(query));})
+   .sort((a,b)=>(rank[a.severity]??2)-(rank[b.severity]??2)||assets.get(a.asset_id).code.localeCompare(assets.get(b.asset_id).code)||a.reason.localeCompare(b.reason));
+  const pages=Math.max(1,Math.ceil(rows.length/size));alertPage=Math.min(Math.max(1,alertPage),pages);
+  table('preview-alert-table','Cảnh báo đang hiệu lực trong phạm vi · bảng có thể cuộn ngang', ['Mức độ','Mã thiết bị','Thiết bị','Lý do'],rows.slice((alertPage-1)*size,alertPage*size).map(a=>{const asset=assets.get(a.asset_id);return [{critical:'Khẩn cấp',warning:'Cần theo dõi'}[a.severity]||'Chưa phân loại',asset.code,asset.name,a.label];}));
+  $('preview-alert-summary').textContent=`${rows.length} / ${m.alerts.length} cảnh báo hiệu lực khớp bộ lọc. Chuông vẫn đếm ${m.alerts.length} trong phạm vi.`;
+  $('preview-alert-page').textContent=`Trang ${alertPage}/${pages}`;$('preview-alert-previous').disabled=alertPage<=1;$('preview-alert-next').disabled=alertPage>=pages;
+ }
  function colors(){const css=getComputedStyle(document.documentElement),get=k=>css.getPropertyValue('--ita-'+k).trim();return {text:get('text'),muted:get('text-muted'),border:get('border'),accent:get('accent'),status:[get('success'),get('warning'),get('danger'),get('text-muted')]};}
  function chart(id,groups,series,max){
   if(!window.echarts){$(id).textContent='Không tải được biểu đồ. Bảng đối chiếu vẫn có đầy đủ số liệu.';return;}
@@ -51,6 +61,7 @@
   if(!source)return;dispose();
   if($('preview-role').value!=='admin_it')$('preview-department').value='it';
   const support=$('preview-role').value==='support_technician',view=support?'maintenance':(['alerts','maintenance'].includes(location.hash.slice(1))?location.hash.slice(1):'dashboard'),m=model(selection());
+  lastModel=m;
   for(const v of ['dashboard','alerts','maintenance'])$('preview-'+v).hidden=v!==view;
   for(const a of document.querySelectorAll('.preview-tabs a')){if(a.hash==='#'+view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
   for(const id of ['preview-dashboard-tab','preview-alerts-tab','preview-bell','preview-department-field','preview-group-field'])$(id).hidden=support;
@@ -64,18 +75,23 @@
   $('preview-kpis').replaceChildren(...metrics.map(([label,n,note])=>{const d=el('div','');d.append(el('dt',label),el('dd',n),el('small',note));return d;}));
   const maintenance=m.active.filter(a=>a.maintenance_due||a.status==='maintenance'||a.status==='broken');
   table('preview-maintenance-table','Bảng bảo trì minh họa trong phạm vi vai trò', ['Mã','Thiết bị','Trạng thái','Lịch bảo trì'],maintenance.map(a=>[a.code,a.name,statusNames[a.status],a.maintenance_due||'Chưa ghi nhận']));
-  table('preview-alert-table','Cảnh báo đang hiệu lực trong phạm vi', ['Mã thiết bị','Thiết bị','Lý do'],m.alerts.map(a=>{const asset=m.rows.find(r=>r.id===a.asset_id);return [asset.code,asset.name,a.label];}));
+  renderAlerts(m);
   if(view==='dashboard')renderCharts(m);
   $('preview-message').textContent=support?'MOCK · Hỗ trợ chỉ xem bảng bảo trì CNTT trong bản xem thử. Không có export.':'MOCK · Đã áp dụng cùng một mốc thời gian cho toàn màn hình. Không tự làm mới.';
  }
  async function load(){
   const seq=++sequence;$('preview-refresh').disabled=true;$('preview-message').textContent='Đang tải dữ liệu giả…';
-  try{const r=await fetch('/assets/ita/mock/dashboard.json',{cache:'no-store',signal});if(!r.ok)throw new Error();const data=await r.json();if(data.mock!==true||!Array.isArray(data.assets)||!Array.isArray(data.alerts))throw new Error();if(seq!==sequence)return;source=data;asOf=new Date();loaded=true;render();}
+  try{const r=await fetch('/assets/ita/mock/dashboard.json',{cache:'no-store',signal});if(!r.ok)throw new Error();const data=await r.json();if(data.mock!==true||!Array.isArray(data.assets)||!Array.isArray(data.alerts))throw new Error();if(seq!==sequence)return;source=data;asOf=new Date();loaded=true;alertPage=1;render();}
   catch(e){if(e.name==='AbortError')return;$('preview-message').textContent='Không tải được dữ liệu MOCK. Bấm làm mới để thử lại.';}
   finally{$('preview-refresh').disabled=false;}
  }
- $('preview-filters').addEventListener('submit',e=>{e.preventDefault();render();},{signal});
- $('preview-role').addEventListener('change',render,{signal});$('preview-refresh').addEventListener('click',load,{signal});
+ $('preview-filters').addEventListener('submit',e=>{e.preventDefault();alertPage=1;render();},{signal});
+ $('preview-role').addEventListener('change',()=>{alertPage=1;render();},{signal});$('preview-refresh').addEventListener('click',load,{signal});
+ $('preview-alert-filters').addEventListener('submit',e=>{e.preventDefault();if(!lastModel)return;alertPage=1;renderAlerts(lastModel);},{signal});
+ $('preview-alert-clear').addEventListener('click',()=>{for(const id of ['preview-alert-severity','preview-alert-reason','preview-alert-search'])$(id).value='';alertPage=1;if(lastModel)renderAlerts(lastModel);},{signal});
+ $('preview-alert-size').addEventListener('change',()=>{alertPage=1;if(lastModel)renderAlerts(lastModel);},{signal});
+ $('preview-alert-previous').addEventListener('click',()=>{alertPage--;if(lastModel)renderAlerts(lastModel);},{signal});
+ $('preview-alert-next').addEventListener('click',()=>{alertPage++;if(lastModel)renderAlerts(lastModel);},{signal});
  addEventListener('hashchange',render,{signal});addEventListener('pagehide',()=>{dispose();lifetime.abort();},{once:true});
  addEventListener('pageshow',e=>{if(e.persisted)location.reload();});
  // Narrow diagnostic surface for local browser checks. Contains no live data or auth mechanism.

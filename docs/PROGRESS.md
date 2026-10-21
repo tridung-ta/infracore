@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 21/10/2026 — F10.7 trung tâm cảnh báo FE/MOCK
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F10.7 (trình bày) | Lọc mức độ/lý do/tìm thiết bị, phân trang cảnh báo | FE/MOCK | [x] prototype | Commit chức năng kèm mục này | 37 browser mock mới; hồi quy dashboard 46 và báo cáo 50; syntax/diff đạt; xem ảnh 1366/768/390; rà độc lập không finding | Chuông giữ tổng hiệu lực trong scope; không đổi mốc số liệu hoặc fetch khi lọc; xem PHASE10_ALERT_PREVIEW.md |
+
+BE #10 vẫn **chưa duyệt/chưa build**. DB Phase 1–9 **chưa nghiệm thu**. Không merge/tag Phase 7–9, push hoặc deploy. Prototype không chứng minh quyền server hoặc kết quả DB.
+
 Cập nhật 21/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm nào trong 10 yêu cầu. Bảng đầu là kế hoạch gốc; các mục cập nhật cuối tài liệu ghi trạng thái build/verify mới nhất, không tính audit thành phần trăm chức năng.
 
 ## Trạng thái hiện hành sau đối chiếu Word
