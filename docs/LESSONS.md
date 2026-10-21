@@ -115,3 +115,12 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Bằng chứng: stylesheet inline chứa dấu ngoặc nhọn không có khoảng trắng, Smarty diễn giải thành tag. Lệnh `php -d extension=gd tests/ita_phase05_pdf.php` tái hiện được.
 - Sửa: chỉ bọc stylesheet tĩnh bằng literal, giữ toàn bộ dữ liệu biên bản dùng escape html và nl2br sau escape. Không bọc literal quanh dữ liệu để bỏ escape.
 - Kiểm tra: render PDF thật 1/2 trang, kiểm injection template, pypdf/pdfplumber và nhìn ảnh Poppler đạt. Múi giờ VN, seri 0 đầu, tiếng Việt và chữ ký đọc được; không DB.
+
+
+### 21/10/2026 — POST allowlist thiếu endpoint mới
+- Triệu chứng: tạo phiếu nhận HTTP403 không phải JSON dù trang đăng nhập và giao diện mở được.
+- Phân loại: routing trước application.
+- Nguyên nhân có bằng chứng: itaRequestDecision từ chối ticket-save; dispatcher có endpoint nhưng allowlist chưa cập nhật. Tương tự license-save/license-key.
+- Sửa: chỉ thêm ba endpoint đã duyệt, giữ deny cho action lạ và kiểm quyền/CSRF ở application.
+- Kiểm tra: tests/ita_write_routes.php 12 checks đạt; ticket pure/scripted 236 đạt, không DB.
+- Phạm vi: kiểm routing gate ngoài cùng khi thêm endpoint; mock fetch không chứng minh request qua gate. GET danh sách host vẫn cần response để chẩn đoán riêng.

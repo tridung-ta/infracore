@@ -1,6 +1,6 @@
 # Tiến độ dự án 5
 
-Cập nhật 20/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm nào trong 10 yêu cầu. Bảng đầu là kế hoạch gốc; các mục cập nhật cuối tài liệu ghi trạng thái build/verify mới nhất, không tính audit thành phần trăm chức năng.
+Cập nhật 21/10/2026. Chưa nghiệm thu đầy đủ yêu cầu sản phẩm nào trong 10 yêu cầu. Bảng đầu là kế hoạch gốc; các mục cập nhật cuối tài liệu ghi trạng thái build/verify mới nhất, không tính audit thành phần trăm chức năng.
 
 ## Trạng thái hiện hành sau đối chiếu Word
 
@@ -276,3 +276,8 @@ Kết quả: 33 pure/scripted checks, 28 browser API mock checks, Smarty render/
 ### Chốt local theo chỉ đạo bổ sung
 
 User yêu cầu chưa upload, không tạo DB và hoàn thành trong phạm vi local; các việc cần DB để user test thủ công sau. Đã bổ sung chặn trạng thái trống tại form, tách tải loại khỏi ghi chú/trạng thái và giữ thông báo lưu khi danh mục tải lỗi. Browser API mock lần cuối **30 checks đạt**; pure/scripted vẫn **33 checks**, Smarty render đạt. Hoàn tất phạm vi local; không tuyên bố DB/production đạt. Snapshot cũ `b965bd30a9b4` không còn cập nhật, chưa dùng để deploy. Chưa mở Phase 4 hoặc yêu cầu thêm DB.
+
+
+### 21/10/2026 — Sửa POST bị chặn trước dispatcher
+
+[~] F7.1: xác định includes/ita_mode.inc.php thiếu ticket-save trong POST allowlist, trả plain-text 403 trước application. Bổ sung ticket-save và hai endpoint đã duyệt #06 license-save/license-key. Không đổi quyền/CSRF, SQL hoặc config. Verify: php tests/ita_write_routes.php đạt 12 pure routing checks; php tests/ita_phase07_unit.php đạt 236 pure/scripted checks; php -l hai file PHP đạt. Chưa kiểm ghi DB thật, chưa xác định lỗi GET danh sách trên host; Phase 1–7 chưa nghiệm thu DB, không merge Phase7 hoặc bắt đầu Phase8.
