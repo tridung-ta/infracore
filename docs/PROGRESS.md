@@ -359,3 +359,11 @@ Checkpoint: quy trình Ruflo `50e71c2`; ngân sách local `2e95245`. Lần tiế
 - DECISIONS chuyển16 mục cũ sang quyết định đã có, ghi ngày rà và nguồn cụ thể; chỉ giữ vấn đề thực còn mở (DB/host, bàn giao, gate10, dependency provenance, nguồn topology13). Không xóa lịch sử hoặc suy các quan sát thành nghiệm thu.
 - DEPLOY_LOG thêm bảng host: các thao tác đã thấy được tách khỏi commit/gói upload chưa xác định; gói chỉ local không coi là đã triển khai. Có đề xuất phục hồi PDF từ lock và Excel/font từ baseline/nguồn có hash; kiểm git ls-files cho thấy vendor PDF, Excel legacy và Inter chưa tracked, không nói chúng nằm trong Git.
 - Verify chỉ đọc file/schema metadata local, lock, manifest ZIP, git ls-files, hash file/cây và diff/UTF-8. Chưa dựng lại dependency, chưa cài package, chưa chạy code/DB/host hoặc làm FE/mock mới. DB Phase1–9 **chưa nghiệm thu**, không merge/tag7/8/9, không push/deploy.
+
+### 21/10/2026 — F10.1 bản xem thử dashboard FE/mock độc lập
+
+User “tiếp tục” trong phạm vi FE/mock đã cho phép, không phải duyệt BE10. Đã làm trang riêng assets/ita/mock/dashboard.html: KPI/ba biểu đồ có bảng, lọc nhóm/bộ phận và vai trò minh họa, chuông cảnh báo hiệu lực, bảng bảo trì Hỗ trợ, mốc chung giờ VN và làm mới thủ công. Không đổi layout live/PHP/endpoint/SQL. ECharts6.1.0 cục bộ ghim phiên bản, license/notice, nguồn/hash; không CDN runtime. Không polling/export.
+
+Verify: **46 browser static/mock checks đạt**, viewport1366/768/390, keyboard, clock cố định, dispose khi lọc/rời trang, fallback biểu đồ, escaping, source không timer; node syntax và hash manifest đạt. Rà độc lập sửa bộ lọc vai trò lệch nhãn; có regression. Đã xem ảnh desktop/mobile, sửa legend; detector có19 cảnh báo mẫu theme/font/kicker, giữ thiết kế đã chốt và bỏ kicker, không báo detector sạch. Chi tiết PHASE10_FE_PREVIEW.md.
+
+F10.1 FE prototype local đã có; các biểu đồ F10.2–F10.4 mới minh họa, không nghiệm thu chức năng BE. F10.5/F10.6 chưa build; F10.7 chỉ mock. **BE10 chưa duyệt/chưa bắt đầu; DB1–9 chưa nghiệm thu**, không merge/tag7–9/push/deploy. Nhánh local feature/ita-phase10-dashboard-preview, không merge nhánh9.

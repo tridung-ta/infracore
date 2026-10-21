@@ -121,3 +121,7 @@ User yêu cầu Ruflo xuyên suốt: duy trì tiến độ, quyết định và 
 - Dự phòng cố định 10% tổng ba thành phần thay thế, bảo trì, mua thêm đã làm tròn; giữ từng thành phần để cộng tay đối chiếu. Dữ liệu thiếu được đánh dấu, không đoán giá trị.
 - Phase 1–9 giữ trạng thái DB **chưa nghiệm thu** đến khi user cung cấp xác nhận kiểm thử DB cụ thể. Các bằng chứng local/mock và ảnh kiểm thử trước đó không thay xác nhận này. Không merge/tag Phase 7, 8, 9.
 - Phase 10 chưa bắt đầu BE. Chỉ chuẩn bị BE_GATE_10.md theo plan; tài liệu gate không phải phê duyệt, không tự tạo endpoint/PHP/SQL mới. FE/mock độc lập có thể làm nếu cần, phải đánh dấu MOCK.
+
+## 21/10/2026 — Tự chọn cho bản FE/mock dashboard được phép
+
+Tách HTML mock khỏi layout live, chỉ static GET fixture; không tự nối API hoặc thay màn hình production khi BE10 chưa duyệt. ECharts6.1.0 ghim cục bộ theo quyền thư viện UI trong AGENTS, có nguồn/hash/LICENSE/NOTICE; không cài Composer hoặc dựng lại dependency legacy. Mọi số liệu/vai trò là minh họa, một mốc browser chung, chỉ refresh do người dùng; không polling hoặc export giả. Không coi user “tiếp tục” là phê duyệt BE10/DB hoặc merge/tag7–9.
