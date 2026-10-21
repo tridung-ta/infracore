@@ -325,3 +325,20 @@ Checkpoint local #08: `0c2e0a7` — phân tích và giải thích vòng đời t
 F8.1–F8.4 phần trình bày: tổng quan thành các cặp nhãn/số liệu, rút gọn ngày đánh giá và ghi chú mặc định; bộ lọc bộ phận/loại mở rộng có nút xóa lọc. Ưu tiên điểm/đánh giá ngay sau tên thiết bị, màu thanh theo đánh giá, hiển thị thang điểm của trang. Bảng nhóm chuyển giữa loại/bộ phận từ cùng response, không gọi thêm API. Chi tiết có ba thành phần dễ đọc; điểm gốc và dữ liệu đối chiếu giữ nguyên trong phần mở rộng. Đóng chi tiết trả focus về dòng vừa mở. Motion ngắn chỉ transform/opacity, tôn trọng cờ hiện có và reduced-motion.
 
 Verify: `tests/ita_phase08_browser.js` đạt **63 browser API mock/static checks**, ba vai trò, bộ lọc nâng cao/reset, chuyển nhóm bàn phím không fetch, raw/3 số lẻ, lỗi và retry, focus, reduced-motion, viewport1366/768/390. JS syntax, Smarty render và diff-check đạt; detector[]; đã xem ảnh desktop/mobile. Review Agent không phát hiện lỗi cần sửa. Không đổi PHP/API/công thức/quyền hoặc trạng thái DB. Gói cộng dồn mới: artifacts/ita-phase08/ita-lifecycle-ui-update.zip; chưa upload/deploy, merge hoặc tag.
+
+
+### 21/10/2026 — BUILD dự báo/ngân sách local, #09 đã duyệt
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F9.1 | Cấu hình đơn giá/định mức | FE/BE | [x] local | Chưa commit | 134 pure/scripted, browser mock | Chỉ Admin; không DDL/DB thật |
+| F9.2 | Ba thành phần và dự phòng 10% | FE/BE | [x] local | Chưa commit | Tính tay tổng 135,3 triệu; decimal chuỗi | Thiếu khác 0; không đếm trùng |
+| F9.3 | Mở rộng nhân sự và snapshot | FE/BE | [x] local | Chưa commit | Scripted freeze/recalc/409/audit failure | Finalized chỉ đọc; rollback là double |
+| F9.4 | Lọc năm/bộ phận/loại | FE/BE | [x] local | Chưa commit | 42 browser mock tổng, bounds1366/768/390 | Snapshot lọc JSON, không đọc giá mới |
+| F9.5 | Excel/PDF ngân sách | FE/BE | [x] local | Chưa commit | XLSX reopen STRING; PDF render/text/ảnh | Host/FPM chưa chạy; vendor deprecation |
+
+134 pure/scripted +42 browser mock/static đạt. Hồi quy 236 ticket +68 lifecycle +12 route, Smarty/syntax/diff-check đạt; browser vòng đời 63 checks đạt. EXPLAIN đã xuất 4 query đọc, chưa thực thi. Rà độc lập đã sửa metadata snapshot/số0/cấu trúc/lọc và tải nhầm HTML. Không tạo/kết nối DB, upload/deploy, merge hoặc tag. DB Phase7/8/9 chưa nghiệm thu. Xem PHASE09_VERIFY.md và PHASE09_HOST_TEST.md.
+
+Giữ nguyên xác nhận: «Phase 1–7 chưa có xác nhận kiểm thử DB chi tiết (CHECK ticket_events, rollback InnoDB, hai phiên đồng thời, phiên bản MySQL/MariaDB, môi trường chưa được cung cấp)». Chỉ cập nhật khi user cung cấp chi tiết.
+
+Ruflo: đã đọc skill gốc và xác nhận CLI3.59.3 bằng --help. Duy trì tài liệu/bài học đã làm sạch; không bật hooks/daemon/swarm hoặc tuyên bố tự học nền. Xem RUFLO_WORKFLOW.md. Lần commit trước không chạy được vì bộ duyệt tự động chạm giới hạn sử dụng, không phải kết luận thao tác không an toàn.

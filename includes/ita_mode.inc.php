@@ -35,7 +35,7 @@ function itaRequestDecision(string $path, array $query, string $method, array $f
         return 'bad_request';
     }
     if ($path === '/admin.php' && ($query['op'] ?? '') === 'ita') {
-        if ($method==='POST' && !in_array($query['act'] ?? null, ['login','logout','access','asset-save','category-save','import-upload','import-confirm','assignment-save','license-save','license-key','ticket-save'], true)) {
+        if ($method==='POST' && !in_array($query['act'] ?? null, ['login','logout','access','asset-save','category-save','import-upload','import-confirm','assignment-save','license-save','license-key','ticket-save','forecast-config-save','forecast-plan-save','forecast-export'], true)) {
             return 'denied';
         }
         return 'shell';

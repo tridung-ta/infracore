@@ -60,3 +60,7 @@ desktop.ini
 /classes/ita-pdf/vendor/
 # Synthetic read-only EXPLAIN plans generated from lifecycle query builder.
 !docs/PHASE08_EXPLAIN.sql
+
+# Read-only generated forecast EXPLAIN contract
+!docs/PHASE09_EXPLAIN.sql
+/artifacts/ita-phase09/

@@ -143,3 +143,28 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Sửa: overflow-x:auto cho vùng bảng, position:relative cho ô tiêu đề để chứa nhãn ẩn; bảng thiết bị trên mobile dùng khối thông tin, bảng nhóm giữ scroll cục bộ.
 - Kiểm tra: browser mock đo document width và form bounds ở 1366/768/390 đạt; điểm mobile nằm trong viewport. Bộ 37 checks đạt; đã xem ảnh desktop/mobile.
 - Phạm vi: bảng có nội dung ẩn truy cập được và độ rộng tối thiểu lớn; không chữa bằng cách ẩn tràn toàn body.
+
+
+### 21/10/2026 — Metadata snapshot phải ghi đè dữ liệu lưu
+
+- Triệu chứng: JSON lưu có saved=false, đọc lại vẫn bị gắn nhãn dự báo hiện tại và bỏ qua kiểm version export.
+- Bằng chứng: union mảng PHP giữ giá trị bên trái. Review độc lập xác định; test save/read tái hiện.
+- Sửa: array_replace cho metadata đáng tin, kiểm cấu trúc/tiền/tổng; lọc loại từ snapshot.
+- Kiểm: scripted save/read, đổi giá không đổi snapshot, explicit recalc, stale export409 và snapshot sai409 đạt. Chưa DB thật.
+- Phạm vi: DTO ghép payload lưu với metadata server.
+
+### 21/10/2026 — HTTP200 chưa đủ xác nhận tải báo cáo
+
+- Triệu chứng: HTML đăng nhập/lỗi có thể bị lưu thành PDF và báo thành công.
+- Bằng chứng: FE chấp nhận mọi 200 không JSON; review phát hiện, browser mock tái hiện HTML200 và MIME PDF có chữ ký sai.
+- Sửa: kiểm MIME và signature %PDF-/ZIP trước tạo download.
+- Kiểm: 38 browser mock checks đạt, gồm hai lỗi trên cho Admin/Quản lý. Chưa kiểm host.
+- Phạm vi: tải Excel/PDF qua fetch.
+
+### 21/10/2026 — Pipeline shell có thể làm mất dấu trong script Unicode
+
+- Triệu chứng: phần bổ sung docs và nhãn menu có ký tự ? thay dấu tiếng Việt.
+- Bằng chứng: đọc UTF-8 và git diff thấy dữ liệu đã mất dấu; nội dung đi qua here-string PowerShell pipe vào Python.
+- Sửa: dùng apply_patch hoặc file script UTF-8 rồi chạy bằng đường dẫn; không đổi locale toàn cục. Khôi phục chỉ các đoạn vừa thêm và kiểm lại file thật.
+- Kiểm: đối chiếu docs, nhãn menu và browser regression; không lấy việc file giải mã được UTF-8 làm bằng chứng đủ dấu.
+- Phạm vi: ghi source/tài liệu Unicode qua shell pipeline.

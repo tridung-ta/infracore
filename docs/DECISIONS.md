@@ -93,3 +93,10 @@ Mỗi mục ghi phần việc phụ thuộc. Không coi im lặng là phê duy�
 User cho tiếp tục build8 nhưng KHÔNG merge/tag7. Nguyên văn xác nhậnDB: «Phase 1–7 chưa có xác nhận kiểm thử DB chi tiết (CHECK ticket_events, rollback InnoDB, hai phiên đồng thời, phiên bản MySQL/MariaDB, môi trường chưa được cung cấp)». Chỉ thay trạng thái saukhi ghixácnhậnchitiếtnguyênvăn.
 
 Điểm hiển thị đúng3lẻ (thay phươngánrawgầnngưỡngởphản hồitrước),rawgiữ đểso/sort/detail,meterhỗtrợ>1. Cấu hìnhvắngkeydùngplan0.5/0.3/0.2và0.8/0.6cóghichú;keysaitrả422. Đãchọncontract5keylifecycle_*ởPHASE08_VERIFY,chỉđọc,khôngtựghi. Querypreaggregate repair theoasset/storevàopened_at,tấtcảstatus;groupsmẫusốtheotậplọccùngscope. NếucầnindexmớidừngSQLgate.68pure/scripted +37browsermock đạt,DB/EXPLAINchưa chạy; khôngseed,cron,packagehoặccấu hìnhservermới.
+
+
+## 21/10/2026 — Ngân sách được duyệt kèm snapshot
+
+User xác nhận “Duyệt bổ sung và BUILD”: mỗi lần lưu draft giữ snapshot đầu vào và số tiền. Tính lại cần xác nhận và version; finalized chỉ đọc. Dự phòng cố định 10%, ba thành phần độc lập, không DDL. Giá 0 nhập rõ khác null. Thiếu lịch sử chỉ fallback theo tỷ lệ Admin đã đặt, không đoán. Cấu hình forecast_category_parameters theo category; đơn giá lưu default_replacement_cost. Snapshot giữ đầu vào thiết bị/cohort chi phí, ngưỡng, giá/định mức/nhân sự và tổng; không ghi bù hoặc tự tính lại bản cũ. Writer cần RR/SERIALIZABLE; không tự đổi isolation server. DB/EXPLAIN/host UAT chưa chạy; không merge/tag. Xem PHASE09_VERIFY.md.
+
+User yêu cầu Ruflo xuyên suốt: duy trì tiến độ, quyết định và bài học có bằng chứng; CLI --help trả 3.59.3. Không bật hooks, daemon, swarm, provider hoặc tuyên bố tự học nền. Xem RUFLO_WORKFLOW.md.

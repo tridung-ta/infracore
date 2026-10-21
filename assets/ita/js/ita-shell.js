@@ -7,6 +7,7 @@
  const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Quản lý quyền IT và phạm vi bộ phận cho tài khoản hiện có.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
  const state = {data:null,page:1,pageSize:5,view:'overview'};
  titles.licenses=['Phần mềm & giấy phép','Theo dõi số chỗ, thời hạn và cấp phát trong phạm vi quản lý.'];
+ titles.forecast=['Dự báo & ngân sách','Lập dự toán, đối chiếu từng thành phần và lưu kế hoạch theo năm.'];
  titles.lifecycle=['Vòng đời tài sản','Đối chiếu tuổi sử dụng và mức ưu tiên thay thế trong phạm vi quản lý.'];
  titles.tickets=['Bảo trì & hỗ trợ','Theo dõi phiếu, người xử lý và lịch bảo trì của thiết bị.'];
  titles.imports=['Import / Export tài sản',liveMode?'Kiểm tra file, nhập theo lô và xuất tài sản theo quyền.':'Chuẩn bị dữ liệu Excel và xem luồng nhập minh họa.'];
@@ -65,6 +66,7 @@
   $('assignments-panel').hidden = state.view!=='assignments';
   $('licenses-panel').hidden = state.view!=='licenses';
   $('tickets-panel').hidden = state.view!=='tickets';
+  $('forecast-panel').hidden = state.view!=='forecast';
   $('lifecycle-panel').hidden = state.view!=='lifecycle';
   document.querySelectorAll('[data-view]').forEach((link) => {
    if (link.dataset.view===state.view) link.setAttribute('aria-current','page');

@@ -89,6 +89,27 @@ class ItaApplication
 
     private function api(): void
     {
+        if (str_starts_with($this->action,'forecast')) { header('Cache-Control: no-store, private'); }
+        if (in_array($this->action,['forecast-config-save','forecast-plan-save','forecast-export'],true)) {
+            $this->requirePost();
+            $input=$this->readJson();
+            $service=new ItaForecastService($this->db,$this->user);
+            header('Cache-Control: no-store, private');
+            if ($this->action==='forecast-export') {
+                $dao=new ItaForecastObjects($this->db,$this->user);
+                $document=!empty($input['plan_id']) ? $dao->saved(ItaInput::positiveInt($input['plan_id']),empty($input['category_id'])?0:ItaInput::positiveInt($input['category_id'])) : $dao->calculate($input);
+                $format=ItaInput::text($input['format'] ?? '',5);
+                $bytes=ItaForecastExport::render($document,$format);
+                $service->auditExport($document);
+                header('Content-Type: '.($format==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'));
+                header('Content-Disposition: attachment; filename="ita-budget-'.$document['year'].'.'.$format.'"');
+                echo $bytes;
+            } else {
+                $data=$this->action==='forecast-config-save' ? $service->configure($input) : $service->save($input);
+                $this->json(['success'=>true,'data'=>$data,'message'=>'Đã lưu. Snapshot kế hoạch chỉ đổi khi bạn yêu cầu tính lại.']);
+            }
+            return;
+        }
         if ($this->action==='ticket-save') {
             $this->requirePost();
             $data = (new ItaTicketService($this->db,$this->user))->save($this->readJson());
@@ -140,6 +161,10 @@ class ItaApplication
         }
         $assets = new ItaAssetObjects($this->db,$this->user);
         $data = match ($this->action) {
+            'forecast' => (new ItaForecastObjects($this->db,$this->user))->calculate($_GET),
+            'forecast-config' => (new ItaForecastObjects($this->db,$this->user))->configuration(),
+            'forecast-plans' => (new ItaForecastObjects($this->db,$this->user))->plans($_GET),
+            'forecast-plan' => (new ItaForecastObjects($this->db,$this->user))->saved(ItaInput::positiveInt($_GET['id'] ?? null),empty($_GET['category_id'])?0:ItaInput::positiveInt($_GET['category_id'])),
             'lifecycle' => (new ItaLifecycleObjects($this->db,$this->user))->listing($_GET,$page),
             'lifecycle-detail' => (new ItaLifecycleObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['id'] ?? null)),
             'tickets' => (new ItaTicketObjects($this->db,$this->user))->listing($_GET,$page),

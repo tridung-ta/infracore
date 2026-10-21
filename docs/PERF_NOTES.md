@@ -28,3 +28,8 @@ Lịch sử UNION ALL events và audit gán/cost phải kiểm kế hoạch hai 
 CTE chung: cfg (ngày/trọng số/ngưỡng) → eligible (store, chưa xóa/thanh lý, phần cứng, scope và bộ lọc) → repair (COUNT/SUM theo type và opened_at, JOIN eligible) → base → ratios DECIMAL → score_raw → graded. Tất cả kế hoạch dùng cùng tier filter nếu được chọn. Detail thêm ID vào eligible, dùng list plan sau kiểm ownership. Tìm từ khóa dùng contains LIKE có escape ký tự %, _ và =; không hứa B-tree tối ưu.
 
 Các query settings và lookup không phải aggregate. Cần kiểm EXPLAIN thực tế cho CTE materialization, GROUP BY, sort và index ngày mở phiếu; không coi việc có index trong migration là bằng chứng hiệu năng. Nếu cần index mới: gate SQL riêng, không tự ALTER hoặc tạo DB test.
+
+
+## Ngân sách #09 — local, chưa EXPLAIN thật
+
+PHASE09_EXPLAIN.sql xuất 4 truy vấn chính xác từ queryPlans (hai vai trò × nguồn vòng đời và preaggregate lịch sử). Không JOIN event/audit vào SUM chi phí. Cửa sổ ba năm lịch hoàn chỉnh trước năm hiện tại, UTC nửa mở. Giới hạn 1.000 dòng/2.000 thiết bị không cắt ngầm; cần đo host trước khi nới. Snapshot giữ mọi loại của bộ phận; export bản đã lưu chỉ đọc JSON. Chưa thêm index; cần index mới phải gate SQL riêng.

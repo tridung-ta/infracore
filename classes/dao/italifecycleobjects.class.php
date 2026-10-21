@@ -18,6 +18,8 @@ class ItaLifecycleObjects
         $this->config=ItaLifecycleRules::settings($values);
     }
 
+    public function configuration(): array { return $this->config; }
+
     private function eligible(array $input): array
     {
         $where="a.store_id=? AND a.is_deleted=0 AND a.status<>'retired' AND c.is_software=0";

@@ -1,0 +1,117 @@
+{
+    "schema_version": 1,
+    "formula_version": "forecast-1",
+    "year": 2026,
+    "as_of": "2026-10-21T10:47:12+07:00",
+    "history_window": {
+        "start_utc": "2022-12-31 17:00:00",
+        "end_utc": "2025-12-31 17:00:00"
+    },
+    "rows": [
+        {
+            "department_id": 10,
+            "department_name": "CNTT",
+            "category_id": 1,
+            "category_name": "Máy tính",
+            "asset_count": 1,
+            "replacement_count": 1,
+            "unknown_replacement": 0,
+            "history_count": 2,
+            "history_missing": 0,
+            "history_cents": "900000000",
+            "missing": [],
+            "asset_inputs": [
+                {
+                    "id": 1,
+                    "asset_code": "MOCK-1",
+                    "purchase_date": "2015-01-01",
+                    "lifespan_years": "5",
+                    "tier": "replace",
+                    "score_raw": "1.2",
+                    "history": {
+                        "asset_id": 1,
+                        "n": 2,
+                        "known": 2,
+                        "cost": "9000000.00"
+                    },
+                    "replacement_eligible": true
+                }
+            ],
+            "replacement": "20000000.00",
+            "maintenance": "3000000.00",
+            "growth": "100000000.00",
+            "growth_quantity": "5",
+            "inputs": {
+                "id": 1,
+                "name": "Máy tính",
+                "price": "20000000.00",
+                "units_per_person": "1.5",
+                "maintenance_percent": "10",
+                "headcount": 3
+            },
+            "issues": []
+        }
+    ],
+    "summary": {
+        "replacement": "20000000.00",
+        "maintenance": "3000000.00",
+        "growth": "100000000.00",
+        "subtotal": "123000000.00",
+        "contingency": "12300000.00",
+        "contingency_percent": "10",
+        "total": "135300000.00",
+        "complete": true
+    },
+    "unassigned_assets": 0,
+    "saved": false,
+    "config": {
+        "categories": [
+            {
+                "id": 1,
+                "name": "Máy tính",
+                "price": "20000000.00",
+                "units_per_person": "1.5",
+                "maintenance_percent": "10"
+            }
+        ],
+        "version": "ae0e471cf9e282709042a25be0eef3149939302332027d1ed773fc0433a5811a",
+        "contingency_percent": "10",
+        "departments": [
+            {
+                "id": 10,
+                "name": "CNTT"
+            }
+        ],
+        "can_configure": true
+    },
+    "plans": [
+        {
+            "id": 1,
+            "department_id": 10,
+            "year": 2026,
+            "planned_headcount_increase": 3,
+            "note": "Dữ liệu giả, không dùng cho kế hoạch thật",
+            "status": "draft",
+            "version": "3347620768226a369c7d584243c7cc8670a166a887c4855951cd567f99d896ec",
+            "has_snapshot": true
+        }
+    ],
+    "lifecycle_config": {
+        "values": {
+            "lifecycle_weight_age": "0.5",
+            "lifecycle_weight_repairs": "0.3",
+            "lifecycle_weight_cost": "0.2",
+            "lifecycle_replace_threshold": "0.8",
+            "lifecycle_watch_threshold": "0.6"
+        },
+        "default_keys": [
+            "lifecycle_weight_age",
+            "lifecycle_weight_repairs",
+            "lifecycle_weight_cost",
+            "lifecycle_replace_threshold",
+            "lifecycle_watch_threshold"
+        ],
+        "using_defaults": true
+    },
+    "mock": true
+}
