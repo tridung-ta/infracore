@@ -378,3 +378,7 @@ F10.1 FE prototype local đã có; các biểu đồ F10.2–F10.4 mới minh h�
 Tiếp tục theo phạm vi FE/mock, không suy duyệt BE10. Trang riêng assets/ita/mock/reports.html đọc reports.json: bốn bảng, lọc/phân trang, vai trò minh họa, vòng đời ngắn12 tháng có điểm/tier; ngân sách mẫu riêng để đổi giá trong bộ nhớ và so với snapshot giả; bộ kiểm giới hạn5.000/1.000/500 không sinh/tải tệp. Không đổi dashboard live, PHP, SQL hoặc service export9.
 
 Verify: **50 browser static/mock checks đạt**, tính tay/current/snapshot, biên số dòng/ngày, lỗi/retry, missing/0, keyboard/escaping, bounds1366/768/390 và chỉ GET local; node syntax đạt, đã xem ảnh desktop/mobile, rà độc lập không còn finding. Xem PHASE10_REPORT_PREVIEW.md. F10.5/F10.6 chỉ thêm presentation prototype, chưa build xuất Excel/PDF thật; BE10 vẫn [G], DB1–9 chưa nghiệm thu, không merge/tag7–9/push/deploy.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F10.5/F10.6 (trình bày) | Xem trước báo cáo và thử giới hạn | FE/MOCK | [x] prototype | 1a7abc0 | 50 browser static/mock + syntax/diff/review đạt | Không sinh tệp; không phải nghiệm thu export hoặc BE |
