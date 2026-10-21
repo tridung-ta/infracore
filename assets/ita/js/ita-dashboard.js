@@ -137,7 +137,7 @@
   }}
  function activate(){if(!role())return;
   const next=location.hash.slice(1)||'overview';
-  const supported=['overview','reports'].includes(next);
+  const supported=['overview','alerts','reports'].includes(next);
   panel.hidden=!supported;
   if(!supported){++sequence;
   request?.abort();
@@ -221,7 +221,7 @@
   document.querySelector('[data-view="reports"]').hidden=true;
   $('notification-button').hidden=true;
   $('dash-bell-label').hidden=true;
-  }
+  }if(!['','overview','alerts'].includes(location.hash.slice(1)))initialBell();
   activate();
   });
   addEventListener('pageshow',e=>{if(e.persisted){view='';

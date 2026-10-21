@@ -60,7 +60,7 @@
   document.title = `InfraCore — ${title}`;
   $('overview-panel').hidden = liveMode || state.view!=='overview';
   $('assets-panel').hidden = liveMode?state.view!=='assets':!['overview','assets'].includes(state.view);
-  $('alerts-panel').hidden = state.view!=='alerts';
+  $('alerts-panel').hidden = liveMode || state.view!=='alerts';
   $('users-panel').hidden = state.view!=='users';
   $('audit-panel').hidden = state.view!=='audit';
   $('imports-panel').hidden = state.view!=='imports';
@@ -195,7 +195,7 @@
    const department=$('department-filter').value;
    $('department-filter').replaceChildren(new Option('Tất cả bộ phận',''),...data.departments.map((d)=>liveMode?new Option(d.label,d.value):new Option(d,d)));
    $('department-filter').value=department;
-   if(!liveMode){renderKpis();renderDepartments();renderAlerts();}else{$('nav-asset-count').textContent=data.summary.total;renderAlerts();}renderTable();
+   if(!liveMode){renderKpis();renderDepartments();renderAlerts();}else{$('nav-asset-count').textContent=data.summary.total;}renderTable();
    if(liveMode){window.itaLiveContext={user:data.user,departments:data.departments};document.querySelectorAll('.admin-only').forEach(link=>{link.hidden=data.user.role!=='admin_it';});dispatchEvent(new CustomEvent('ita:data'));}
   } catch(error) {
    if(sequence!==loadSequence)return;

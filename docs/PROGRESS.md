@@ -12,6 +12,7 @@ User nguyên văn: «tôi duyệt bạn hãy bắt đầu BUILD». Các ghi chú
 | F10.4 | Biểu đồ đề xuất thay thế, bảng điểm 3 số lẻ | FE/BE | [x] build local | Commit chức năng kèm dòng này | 35 pure/scripted; 72 hồi quy vòng đời; 9 browser API mock; JS syntax đạt | Sort/tier theo DECIMAL gốc; giữ điểm >1; chưa DB |
 | F10.5 | Preview và Excel tồn kho/bảo trì/vòng đời ngắn/ngân sách | FE/BE | [x] build local | Commit chức năng kèm dòng này | 52 pure/scripted +7 ngân sách; 15 browser API mock; XLSX thật mở lại STRING; route13 đạt | HMAC preview 15 phút, dữ liệu đổi trả409; audit trước bytes; native actor/scope kiểm lại; chưa DB |
 | F10.6 | PDF bốn báo cáo, tối đa 500 dòng dữ liệu | FE/BE | [x] build local | Commit chức năng kèm dòng này | PDF thật tiếng Việt đã render/xem; 52 pure/scripted, 134 hồi quy ngân sách; 15 browser báo cáo đạt | Font/runtime PDF dùng lại; không package mới; chưa PHP-FPM/DB/host |
+| F10.7 | Trung tâm cảnh báo live và chuông hiệu lực | FE/BE | [x] build local | Commit chức năng kèm dòng này | 52 pure/scripted +7 ngân sách, 60 browser API mock; hồi quy browser8:63/9:42 đạt | Phân trang/lọc, nhiều lý do riêng; manager license theo allocation scope; không lưu đã đọc; chưa DB |
 
 Lớp đọc dùng lại điểm DECIMAL của vòng đời, transaction đọc nhất quán và helper chung cho các báo cáo tiếp theo. SQL đọc xuất tại PHASE10_EXPLAIN.sql; generator không thực thi SQL, không DDL.
 

@@ -89,7 +89,7 @@ class ItaApplication
 
     private function api(): void
     {
-        if (in_array($this->action,['dashboard','dashboard-charts','report-preview','report-export'],true)) {
+        if (in_array($this->action,['dashboard','dashboard-charts','alerts','report-preview','report-export'],true)) {
             $this->reportApi();return;
         }
         if (str_starts_with($this->action,'forecast')) { header('Cache-Control: no-store, private'); }
