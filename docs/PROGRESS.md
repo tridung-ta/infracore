@@ -9,6 +9,7 @@ User nguyên văn: «tôi duyệt bạn hãy bắt đầu BUILD». Các ghi chú
 | F10.1 | KPI dashboard theo phạm vi, mốc giờ VN chung | FE/BE | [x] build local | Commit chức năng kèm mục này | 35 pure/scripted; 9 browser API mock; Smarty/syntax đạt | Đọc RR/SERIALIZABLE; tối đa 5.000 asset, từ chối vượt; chưa DB/EXPLAIN/UAT |
 | F10.2 | Biểu đồ tình trạng theo loại/bộ phận/năm mua, bảng đối chiếu | FE/BE | [x] build local | 86ba2bd | 35 pure/scripted; 9 browser API mock; JS syntax đạt | ECharts 4 trạng thái xếp chồng, không animation/polling; chưa DB |
 | F10.3 | Biểu đồ tỷ lệ lỗi, bảng tử số/mẫu số | FE/BE | [x] build local | Commit chức năng kèm dòng này | 35 pure/scripted; 9 browser API mock; JS syntax đạt | Đếm distinct asset repair trong cửa sổ 12 tháng; không đếm event; chưa DB |
+| F10.4 | Biểu đồ đề xuất thay thế, bảng điểm 3 số lẻ | FE/BE | [x] build local | Commit chức năng kèm dòng này | 35 pure/scripted; 72 hồi quy vòng đời; 9 browser API mock; JS syntax đạt | Sort/tier theo DECIMAL gốc; giữ điểm >1; chưa DB |
 
 Lớp đọc dùng lại điểm DECIMAL của vòng đời, transaction đọc nhất quán và helper chung cho các báo cáo tiếp theo. SQL đọc xuất tại PHASE10_EXPLAIN.sql; generator không thực thi SQL, không DDL.
 

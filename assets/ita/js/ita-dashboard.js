@@ -80,6 +80,8 @@
   const g=d.groups;
   chart('Tình trạng theo nhóm',g.map(r=>r.name),g.map(r=>r.total),['Nhóm','Tổng','Đang dùng','Bảo trì','Hỏng','Thanh lý'],g.map(r=>[r.name,r.total,r.by_status.in_use,r.by_status.maintenance,r.by_status.broken,r.by_status.retired]));
   chart('Tỷ lệ lỗi (%)',g.map(r=>r.name),g.map(r=>r.fault_rate===null?null:r.fault_rate*100),['Nhóm','Có sửa chữa','Mẫu số','Tỷ lệ lỗi'],g.map(r=>[r.name,r.failed_assets,r.analyzed,r.fault_rate===null?'Chưa có mẫu số':(r.fault_rate*100).toFixed(1)+'%']));
+  chart('Thiết bị đề xuất thay thế',g.map(r=>r.name),g.map(r=>r.replace),['Nhóm','Thay thế','Thiếu điểm'],g.map(r=>[r.name,r.replace,r.missing_scores]));
+  $('dash-output').append(table(['Mã','Thiết bị','Điểm','Nhóm'],d.replacements.map(r=>[r.asset_code,r.name,r.score_display,tiers[r.tier]]),'Đề xuất theo điểm gốc, hiển thị 3 số lẻ; điểm có thể vượt 1'));
   }
  function render(d){dispose();
   $('dash-output').replaceChildren();
