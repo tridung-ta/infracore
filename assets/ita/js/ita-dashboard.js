@@ -79,6 +79,7 @@
   if(d.config?.using_defaults)$('dash-output').append(node('p','Đang dùng giá trị mặc định'));
   const g=d.groups;
   chart('Tình trạng theo nhóm',g.map(r=>r.name),g.map(r=>r.total),['Nhóm','Tổng','Đang dùng','Bảo trì','Hỏng','Thanh lý'],g.map(r=>[r.name,r.total,r.by_status.in_use,r.by_status.maintenance,r.by_status.broken,r.by_status.retired]));
+  chart('Tỷ lệ lỗi (%)',g.map(r=>r.name),g.map(r=>r.fault_rate===null?null:r.fault_rate*100),['Nhóm','Có sửa chữa','Mẫu số','Tỷ lệ lỗi'],g.map(r=>[r.name,r.failed_assets,r.analyzed,r.fault_rate===null?'Chưa có mẫu số':(r.fault_rate*100).toFixed(1)+'%']));
   }
  function render(d){dispose();
   $('dash-output').replaceChildren();
