@@ -1,0 +1,18 @@
+{
+ "mock":true,"as_of":"2026-10-21T10:00:00+07:00",
+ "assets":[
+  {"id":1,"code":"MOCK-001","name":"Máy tính thiết kế","department":"it","category":"Máy tính","purchase_date":"2020-10-01","lifespan_years":5,"status":"in_use","score_raw":"1.250","maintenance_due":"2026-10-25"},
+  {"id":2,"code":"MOCK-002","name":"Máy tính văn phòng","department":"it","category":"Máy tính","purchase_date":"2024-04-12","lifespan_years":5,"status":"in_use","score_raw":"0.350","maintenance_due":"2026-11-10"},
+  {"id":3,"code":"MOCK-003","name":"Thiết bị lưu trữ","department":"it","category":"Lưu trữ","purchase_date":"2021-10-15","lifespan_years":5,"status":"maintenance","score_raw":"0.800","maintenance_due":"2026-10-15"},
+  {"id":4,"code":"MOCK-004","name":"Máy tính kỹ thuật","department":"it","category":"Máy tính","purchase_date":"2023-06-10","lifespan_years":4,"status":"broken","score_raw":"0.7996","maintenance_due":null},
+  {"id":5,"code":"MOCK-005","name":"Máy in cũ","department":"it","category":"Máy in","purchase_date":"2018-02-01","lifespan_years":5,"status":"retired","score_raw":"1.400","maintenance_due":null},
+  {"id":6,"code":"MOCK-006","name":"Máy tính vận hành","department":"ops","category":"Máy tính","purchase_date":"2022-01-15","lifespan_years":5,"status":"in_use","score_raw":"0.600","maintenance_due":"2026-12-01"},
+  {"id":7,"code":"MOCK-007","name":"Máy in vận hành","department":"ops","category":"Máy in","purchase_date":"2020-10-20","lifespan_years":5,"status":"broken","score_raw":"0.900","maintenance_due":"2026-10-18"},
+  {"id":8,"code":"MOCK-008","name":"Thiết bị lưu trữ kho","department":"ops","category":"Lưu trữ","purchase_date":null,"lifespan_years":5,"status":"in_use","score_raw":null,"maintenance_due":null},
+  {"id":9,"code":"MOCK-009","name":"Máy in dùng chung","department":null,"category":"Máy in","purchase_date":"2024-08-01","lifespan_years":5,"status":"in_use","score_raw":"0.250","maintenance_due":null}
+ ],
+ "budget":{
+  "year":2026,"department":"it","replacement_count":1,"headcount":3,"units_per_person":"1.5","growth_quantity":5,"maintenance":"3000000.00",
+  "snapshot":{"id":"MOCK-PLAN-2026-IT","saved_at":"2026-10-20T15:00:00+07:00","price":"20000000.00","replacement":"20000000.00","maintenance":"3000000.00","growth":"100000000.00","subtotal":"123000000.00","contingency":"12300000.00","total":"135300000.00"}
+ }
+}

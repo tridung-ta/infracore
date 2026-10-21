@@ -372,3 +372,9 @@ F10.1 FE prototype local đã có; các biểu đồ F10.2–F10.4 mới minh h�
 |---|---|---|---|---|---|---|
 | F10.1 | Bản xem thử KPI độc lập | FE/MOCK | [x] prototype | 63ca436 | 46 browser static/mock; syntax/hash staged đạt | Không nối layout live; không BE/DB |
 | F10.1–F10.7 | Backend dashboard/báo cáo/cảnh báo | BE | [G] chưa duyệt | Chưa có | Chưa chạy | Gate10 chỉ dự thảo; DB1–9 chưa nghiệm thu |
+
+### 21/10/2026 — Xem trước báo cáo FE/mock độc lập
+
+Tiếp tục theo phạm vi FE/mock, không suy duyệt BE10. Trang riêng assets/ita/mock/reports.html đọc reports.json: bốn bảng, lọc/phân trang, vai trò minh họa, vòng đời ngắn12 tháng có điểm/tier; ngân sách mẫu riêng để đổi giá trong bộ nhớ và so với snapshot giả; bộ kiểm giới hạn5.000/1.000/500 không sinh/tải tệp. Không đổi dashboard live, PHP, SQL hoặc service export9.
+
+Verify: **50 browser static/mock checks đạt**, tính tay/current/snapshot, biên số dòng/ngày, lỗi/retry, missing/0, keyboard/escaping, bounds1366/768/390 và chỉ GET local; node syntax đạt, đã xem ảnh desktop/mobile, rà độc lập không còn finding. Xem PHASE10_REPORT_PREVIEW.md. F10.5/F10.6 chỉ thêm presentation prototype, chưa build xuất Excel/PDF thật; BE10 vẫn [G], DB1–9 chưa nghiệm thu, không merge/tag7–9/push/deploy.
