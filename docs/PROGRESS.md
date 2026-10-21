@@ -331,14 +331,16 @@ Verify: `tests/ita_phase08_browser.js` đạt **63 browser API mock/static check
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
-| F9.1 | Cấu hình đơn giá/định mức | FE/BE | [x] local | Chưa commit | 134 pure/scripted, browser mock | Chỉ Admin; không DDL/DB thật |
-| F9.2 | Ba thành phần và dự phòng 10% | FE/BE | [x] local | Chưa commit | Tính tay tổng 135,3 triệu; decimal chuỗi | Thiếu khác 0; không đếm trùng |
-| F9.3 | Mở rộng nhân sự và snapshot | FE/BE | [x] local | Chưa commit | Scripted freeze/recalc/409/audit failure | Finalized chỉ đọc; rollback là double |
-| F9.4 | Lọc năm/bộ phận/loại | FE/BE | [x] local | Chưa commit | 42 browser mock tổng, bounds1366/768/390 | Snapshot lọc JSON, không đọc giá mới |
-| F9.5 | Excel/PDF ngân sách | FE/BE | [x] local | Chưa commit | XLSX reopen STRING; PDF render/text/ảnh | Host/FPM chưa chạy; vendor deprecation |
+| F9.1 | Cấu hình đơn giá/định mức | FE/BE | [x] local | 2e95245 | 134 pure/scripted, browser mock | Chỉ Admin; không DDL/DB thật |
+| F9.2 | Ba thành phần và dự phòng 10% | FE/BE | [x] local | 2e95245 | Tính tay tổng 135,3 triệu; decimal chuỗi | Thiếu khác 0; không đếm trùng |
+| F9.3 | Mở rộng nhân sự và snapshot | FE/BE | [x] local | 2e95245 | Scripted freeze/recalc/409/audit failure | Finalized chỉ đọc; rollback là double |
+| F9.4 | Lọc năm/bộ phận/loại | FE/BE | [x] local | 2e95245 | 42 browser mock tổng, bounds1366/768/390 | Snapshot lọc JSON, không đọc giá mới |
+| F9.5 | Excel/PDF ngân sách | FE/BE | [x] local | 2e95245 | XLSX reopen STRING; PDF render/text/ảnh | Host/FPM chưa chạy; vendor deprecation |
 
 134 pure/scripted +42 browser mock/static đạt. Hồi quy 236 ticket +68 lifecycle +12 route, Smarty/syntax/diff-check đạt; browser vòng đời 63 checks đạt. EXPLAIN đã xuất 4 query đọc, chưa thực thi. Rà độc lập đã sửa metadata snapshot/số0/cấu trúc/lọc và tải nhầm HTML. Không tạo/kết nối DB, upload/deploy, merge hoặc tag. DB Phase7/8/9 chưa nghiệm thu. Xem PHASE09_VERIFY.md và PHASE09_HOST_TEST.md.
 
 Giữ nguyên xác nhận: «Phase 1–7 chưa có xác nhận kiểm thử DB chi tiết (CHECK ticket_events, rollback InnoDB, hai phiên đồng thời, phiên bản MySQL/MariaDB, môi trường chưa được cung cấp)». Chỉ cập nhật khi user cung cấp chi tiết.
 
 Ruflo: đã đọc skill gốc và xác nhận CLI3.59.3 bằng --help. Duy trì tài liệu/bài học đã làm sạch; không bật hooks/daemon/swarm hoặc tuyên bố tự học nền. Xem RUFLO_WORKFLOW.md. Lần commit trước không chạy được vì bộ duyệt tự động chạm giới hạn sử dụng, không phải kết luận thao tác không an toàn.
+
+Checkpoint: quy trình Ruflo `50e71c2`; ngân sách local `2e95245`. Lần tiếp tục đã lưu commit thành công. Nhánh feature/ita-phase09-forecast, chưa push/merge/tag/deploy. Không có xác nhận DB mới từ user.
