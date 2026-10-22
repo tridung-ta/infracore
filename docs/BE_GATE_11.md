@@ -11,6 +11,12 @@ Theo chỉ đạo22/10: **chỉ soạn tài liệu, chưa build BE**. Không coi
 
 ## Thay đổi dự kiến (chưa thực hiện)
 
+### Phát hiện từ rà chỉ đọc F11.2 ngày22/10 — chưa sửa
+
+S11-01 (PHASE11_SECURITY_REVIEW.md): forecast-export render xong chỉ kiểm lại mapping ITA/revision/scope qua ItaForecastService::lock/auditExport, chưa kiểm lại dc_users active cùng store trước audit/bytes. Đề xuất bổ sung recheck native tại ranh giới export tương tự report-export/handover, từ chối nếu tài khoản bị disable trong lúc render; test scripted giả lập thay đổi trong render và DB thật sau khi được duyệt. Không coi rollback InnoDB bảo vệ bảng native MyISAM. Chưa đổi PHP, chưa thực hiện gate này.
+
+F11.4 chỉ **một phần FE**. Phần BE còn lại cần thiết kế trang lỗi HTTP404/500/JSON theo loại request, mã HTTP thật, correlation/log vận hành không chứa secret và chính sách display_errors/log_errors (kể cả lỗi trước bootstrap). ITA module đã có display_errors=0, CSP/no-store/nosniff/X-Robots-Tag; không thêm lại như thể đang thiếu. Header cuối và cấu hình log host chưa xác minh. Không tự thay .htaccess/PHP/server config trong bước tài liệu.
+
 - PHP DAO/services/controllers liên quan ticket statistics, asset history, lookup/aggregate/report pagination; ItaApplication/outer allowlist chỉ nếu thực sự cần endpoint mới và đã liệt kê action cụ thể trước build.
 - ItaSession/auth/config middleware và entrypoints nếu kiểm chứng cần sửa cookie/security headers. CSP phải kiểm asset local/ECharts/PDF/download và form; không tự bật một policy gây chặn UI. HSTS chỉ sau xác nhận HTTPS/chứng chỉ/subdomain; không tin X-Forwarded-Proto từ nguồn chưa được xác minh.
 - Không đổi compiler/vendor, không Composer mới trong gate dự kiến này. Instrumentation đo PHP memory phải private/tắt mặc định, được duyệt rõ; không tạo endpoint debug công khai.

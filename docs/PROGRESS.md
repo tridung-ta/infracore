@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+F11.2: đã rà bảo mật **chỉ đọc source**, báo cáo PHASE11_SECURITY_REVIEW.md gồm HTML/JSON/PDF/Excel,15 action POST/CSRF, SQL động/prepared, upload, route×3 vai trò (cả GET lẻ), cookie/header/log hiện có. Finding S11-01: forecast-export thiếu recheck native active sau render; đưa BE_GATE_11 **nháp**, chưa sửa PHP. Không phải chứng nhận an toàn toàn legacy hoặc PASS DB/host. Runtime header/cookie/thu hồi quyền đồng thời chưa chạy.
+
 F11.3/F11.4 đã kiểm local: 58 responsive +14 admin/login trình bày +61 trạng thái lỗi đạt tại1366/768/390; Smarty/syntax và hồi quy browser3–10 đạt bằng static/API mock. Chi tiết PHASE11_FE_VERIFY.md. Không sửa PHP/DB. F11.3 sửa nhãn cuộn ngân sách bị lỗi ký tự; F11.4 giữ HTTP status khi phản hồi khôngJSON, không tự gửi lại POST. Test5/6 đã cập nhật theo vùng cảnh báo Phase10, giữ kiểm tra quyền/CSRF/key. Review Agent rà cuối không còn finding trong phạm vi FE.
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
