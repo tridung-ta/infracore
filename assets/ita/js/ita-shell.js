@@ -189,7 +189,9 @@
    }
    const response=await fetch(liveMode?`/admin.php?${query}`:'/assets/ita/mock/overview.json',{cache:'no-store',signal:controller.signal});
    if(response.status===401&&liveMode){location.assign('/admin.php?op=ita&act=login');return;}
-   const result=await response.json();if(!response.ok)throw new Error(result.message||'Chưa tải được dữ liệu.');
+   let result;
+   try{result=await response.json();}catch{throw Object.assign(new Error('Máy chủ trả phản hồi không hợp lệ. Chưa tải được dữ liệu mới.'),{status:response.ok?500:response.status});}
+   if(!response.ok)throw Object.assign(new Error(result.message||'Chưa tải được dữ liệu.'),{status:response.status});
    const data=liveMode?result.data:result;if(liveMode)data.alerts=data.summary.alerts;
    if(sequence!==loadSequence)return;validateData(data);state.data=data;
    const department=$('department-filter').value;
@@ -200,7 +202,8 @@
   } catch(error) {
    if(sequence!==loadSequence)return;
    $('load-error').hidden=false;$('data-content').hidden=true;
-   if(liveMode)$('load-error').querySelector('p').textContent=error.message||'Hãy kiểm tra kết nối rồi thử lại.';
+   if(window.ItaFeedback)window.ItaFeedback.show({status:error.status||0,message:error instanceof SyntaxError?'Máy chủ trả phản hồi không hợp lệ. Chưa tải được dữ liệu mới.':(error.status?error.message:'')});
+   else if(liveMode)$('load-error').querySelector('p').textContent=error.message||'Hãy kiểm tra kết nối rồi thử lại.';
   } finally {
    clearTimeout(timeout);if(sequence===loadSequence){$('data-content').setAttribute('aria-busy','false');$('retry-button').disabled=false;}
   }

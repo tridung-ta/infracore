@@ -2,6 +2,16 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+F11.3/F11.4 đã kiểm local: 58 responsive +14 admin/login trình bày +61 trạng thái lỗi đạt tại1366/768/390; Smarty/syntax và hồi quy browser3–10 đạt bằng static/API mock. Chi tiết PHASE11_FE_VERIFY.md. Không sửa PHP/DB. F11.3 sửa nhãn cuộn ngân sách bị lỗi ký tự; F11.4 giữ HTTP status khi phản hồi khôngJSON, không tự gửi lại POST. Test5/6 đã cập nhật theo vùng cảnh báo Phase10, giữ kiểm tra quyền/CSRF/key. Review Agent rà cuối không còn finding trong phạm vi FE.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.3 | Responsive cuối và nhãn cuộn ngân sách | FE | [x] local | Commit F11.3 riêng | 58+14 browser static/API mock | Không xác thực login thật; không DB |
+| F11.4 | Trạng thái lỗi tải trang chuẩn | FE | [x] local | Commit F11.4 riêng | 61 browser mock; Smarty/syntax | Không thêm HTTP route hoặc sửa auth |
+| F11.6 | Hướng dẫn sử dụng | Docs | [x] tài liệu | d1201d3 | Đối chiếu contract/source | Host chưa nghiệm thu |
+
+PHP local8.5.10; host8.3.33; chưa chạy8.3. F11.1 kiểm tải chưa chạy; index/cookie/headers/phân trang BE chỉ bản nháp BE_GATE_11.md, chưa duyệt/chưa build. Không merge/tag Phase7–10, không push/deploy. Phase11 chưa hoàn tất toàn bộ BE/hiệu năng/host.
+
 F11.6: USER_GUIDE.md đã soạn theo template/contract hiện có, có phân biệt MOCK/local với host chưa nghiệm thu, quyền3 vai trò, snapshot và giới hạn từng trang. Verify đọc source/nhãn form và diff; chưa kiểm người dùng trên host. Không thêm chức năng BE hoặc tuyên bố tất cả danh sách đã phân trang.
 
 Rà phân trang chỉ đọc đã xong tại PHASE11_PAGINATION_AUDIT.md, có Review Agent đối chiếu source/UI. Phân biệt SQL COUNT/LIMIT/OFFSET, array pagination sau fetch, fail-overflow và topN; ưu tiên thống kê ticket/lịch sử asset. BE_GATE_11.md **nháp, chưa duyệt/chưa build** cho index, cookie/security headers và phân trang bổ sung. Không sửa PHP/DB hoặc dùng báo cáo thay PASS DB.
