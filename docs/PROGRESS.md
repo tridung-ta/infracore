@@ -7,10 +7,12 @@ F11.3/F11.4 đã kiểm local: 58 responsive +14 admin/login trình bày +61 tr�
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
 | F11.3 | Responsive cuối và nhãn cuộn ngân sách | FE | [x] local | 424dfb3 | 58+14 browser static/API mock | Không xác thực login thật; không DB |
-| F11.4 | Trạng thái lỗi tải trang chuẩn | FE | [x] local | 3b3403c | 61 browser mock; Smarty/syntax | Không thêm HTTP route hoặc sửa auth |
+| F11.4 | Trạng thái lỗi tải trang chuẩn | FE/BE | [~] một phần | 3b3403c (FE) | 61 browser mock; Smarty/syntax | HTTP404/500, log và display_errors thuộc BE_GATE_11 nháp, chưa build |
 | F11.6 | Hướng dẫn sử dụng | Docs | [x] tài liệu | d1201d3 | Đối chiếu contract/source | Host chưa nghiệm thu |
 
 PHP local8.5.10; host8.3.33; chưa chạy8.3. F11.1 kiểm tải chưa chạy; index/cookie/headers/phân trang BE chỉ bản nháp BE_GATE_11.md, chưa duyệt/chưa build. Không merge/tag Phase7–10, không push/deploy. Phase11 chưa hoàn tất toàn bộ BE/hiệu năng/host.
+
+Đính chính phạm vi22/10 theo user: F11.3 xong **FE local trên trang tĩnh MOCK**, chưa đo layout PHP thật; cần chạy lại host sau deploy bằng tài khoản thật3 vai trò. Chạy lại ita_phase04_browser.js: **30 check đạt**; ita_phase05_browser.js: **29 check đạt**, API mock. F11.4 **một phần** như bảng, không coi61 check FE là hoàn tất trang lỗi HTTP/log/display_errors. Đối chiếu diff test5/6 tại PHASE11_TEST_DIFF_REVIEW.md: không xóa/nới assertion quyền/CSRF/version/reauth/tự ẩn key/audit lỗi; đã thay kiểm tra nút cảnh báo cũ bằng nội dung bảng mới.
 
 F11.3 lưu riêng cùng bộ đo responsive và generator login MOCK; file HTML sinh không stage hoặc đóng gói. Commit bảo trì test cảnh báo3513f60 chỉ thay fixture/selector theo contract Phase10; không thêm lại nút điều hướng cũ. Hồ sơ host e716784, rà phân trang/gate nháp e273fa3, runtime/số test9fccd97.
 
