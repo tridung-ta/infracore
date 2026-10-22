@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+F11.6: USER_GUIDE.md đã soạn theo template/contract hiện có, có phân biệt MOCK/local với host chưa nghiệm thu, quyền3 vai trò, snapshot và giới hạn từng trang. Verify đọc source/nhãn form và diff; chưa kiểm người dùng trên host. Không thêm chức năng BE hoặc tuyên bố tất cả danh sách đã phân trang.
+
 Rà phân trang chỉ đọc đã xong tại PHASE11_PAGINATION_AUDIT.md, có Review Agent đối chiếu source/UI. Phân biệt SQL COUNT/LIMIT/OFFSET, array pagination sau fetch, fail-overflow và topN; ưu tiên thống kê ticket/lịch sử asset. BE_GATE_11.md **nháp, chưa duyệt/chưa build** cho index, cookie/security headers và phân trang bổ sung. Không sửa PHP/DB hoặc dùng báo cáo thay PASS DB.
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
