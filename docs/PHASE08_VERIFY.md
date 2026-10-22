@@ -15,7 +15,7 @@ SQL dùng CTE: eligible → repair → base → ratios → scored → graded. Ch
 
 | Lệnh | Loại / kết quả |
 |---|---|
-| `php tests/ita_phase08_unit.php` | 68 pure/scripted checks đạt, adapter giả, không DB |
+| `php tests/ita_phase08_unit.php` | 72 pure/scripted checks đạt khi chạy lại22/10/2026 trên PHP local8.5.10, adapter giả, không DB. Số68 là checkpoint trước khi thêm query plan report ở #10 |
 | `php tests/ita_phase07_unit.php` | 236 pure/scripted checks đạt |
 | `php tests/ita_phase03_render.php` | Smarty thật render/escape đạt, không private config/DB |
 | `playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase08_browser.js` | 37 browser API mock/static checks đạt |

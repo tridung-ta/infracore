@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
+
+User ghi nhận Phase10 build local, DB/host **chưa nghiệm thu**; **không merge/tag Phase7–10**, không push/deploy. Chỉ FE và tài liệu #11 được làm; index/EXPLAIN, cookie/session, security headers, SQL và phân trang backend chỉ soạn gate nháp, chưa build.
+
+Đã chạy lại `php tests/ita_phase08_unit.php`: **72 pure/scripted check đạt**, sửa PHASE08_VERIFY.md khớp. Runtime kiểm bằng `php -v`: **PHP CLI local8.5.10**. Host theo thông tin đã cung cấp: **8.3.33**; **chưa chạy test trên8.3**. PATH và thư mục runtime D:/Hoc_PHP/php chỉ xác minh được8.5.10; các đường dẫn C:/xampp/php/php.exe và C:/tools/php83/php.exe không có. Không cài hoặc tải runtime mới; không coi kết quả8.5 là chứng nhận8.3.
+
 ### 22/10/2026 — Chốt hồ sơ kiểm chứng #10
 
 Rà cuối phát hiện chart bị trống khi Tổng quan → Tài sản → Tổng quan do cache còn hợp lệ trong khi chart đã dispose. Đã xóa view/documentData khi rời trang; browser thêm4 check cho Admin/Quản lý, toàn suite **64 đạt**. Phiên browser/server cũ đã đóng; lần đầu không chạy được do ECONNREFUSED. Đã khởi động lại đúng static server workspace rồi kiểm, không coi lỗi môi trường là lỗi sản phẩm. Commit fix0ce2166; không DB/host.
