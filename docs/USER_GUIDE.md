@@ -14,6 +14,42 @@ Mở địa chỉ HTTPS do quản trị viên cung cấp, nhập tên tài kho�
 
 Bộ phận phụ trách là phạm vi quản lý đã được cấp, không tự suy từ tài khoản cùng store. Đường dẫn trực tiếp vẫn phải qua kiểm quyền server; thấy một nút không đồng nghĩa thao tác sẽ được cho phép.
 
+## Theo vai trò — Admin IT
+
+1. Mở **Tài khoản & phân quyền**, chọn tài khoản hiện có, vai trò, bộ phận phụ trách và trạng thái cấp quyền. Lưu rồi đọc lại thông tin/nhật ký. Hệ thống chặn thu hồi Admin IT cuối cùng; không sửa SQL để vượt chặn.
+2. Tại **Tài sản CNTT**, quản lý hồ sơ và danh mục; trước xóa mềm/thanh lý, đối chiếu người nhận, lượt giao và phiếu pending. Không có luồng tự động thanh lý từ điểm vòng đời.
+3. Tại **Phân bổ & thu hồi**, chọn đối tượng nhận từ danh sách; người nhận tự xác nhận, Admin không ký thay. Chỉ tải PDF nếu nút khả dụng và đã đọc lại hồ sơ.
+4. Tại **Phần mềm & giấy phép**, lưu thông tin/key, cấp hoặc thu hồi chỗ. Nếu cần cấp vượt, đọc số đã cấp/tổng chỗ, xác nhận và nhập lý do; không tự tăng tổng chỗ cho khớp. Xem key cần nhập lại mật khẩu và tự ẩn sau10 giây.
+5. Tại **Bảo trì & hỗ trợ**, tạo/gán/xử lý phiếu; sửa chi phí phiếu đã đóng cần lý do. Với cảnh báo chờ sẵn sàng, kiểm tra thiết bị và nhập kết quả/lý do trước xác nhận.
+6. Xem vòng đời, dự báo và báo cáo; quản lý đơn giá/định mức, lưu kế hoạch theo bộ phận. So đúng nguồn hiện tại/snapshot và dữ liệu thiếu. Không có nút chốt/mở lại kế hoạch trong phạm vi đã build.
+
+Các bước trên mô tả code local hiện có. Lưu DB, phân quyền đồng thời, file tải và khóa trên PHP-FPM host **chưa nghiệm thu**; không hiểu hướng dẫn là xác nhận vận hành thành công.
+
+## Theo vai trò — Quản lý hệ thống
+
+1. Đăng nhập và kiểm bộ phận có thể chọn. Tìm/mở tài sản trong phạm vi; tạo/sửa hồ sơ, import và export theo quyền. Chọn đúng bộ phận đích khi điều chuyển; không có quyền xóa mềm/thanh lý hoặc sửa danh mục dùng chung.
+2. Giao/thu hồi thiết bị trong phạm vi; người nhận vẫn tự xác nhận. Nếu dữ liệu đã đổi, tải lại trước khi thao tác.
+3. Xem giấy phép che key; cấp/thu hồi cho máy hoặc bộ phận trong phạm vi. Không sửa catalog/key, không xem key đầy đủ, không xác nhận vượt chỗ; cấp theo user hiện chỉ Admin thực hiện.
+4. Tạo phiếu và gán/gán lại kỹ thuật viên trong phạm vi, có lý do. Quản lý không trực tiếp chuyển kết quả xử lý phiếu; kỹ thuật viên Hỗ trợ hoặc Admin thực hiện theo quyền.
+5. Xem vòng đời, dự báo, báo cáo theo bộ phận được cấp; lưu kế hoạch mở rộng của bộ phận. Không lưu đơn giá/định mức; liên hệ Admin khi thiếu cấu hình. Khi tính lại bản nháp, đối chiếu snapshot/version và xác nhận, không làm đổi bản đã chốt.
+
+Nếu danh sách trống hoặc403, kiểm bộ lọc và nhờ Admin đối chiếu phạm vi; không thay URL/ID để mở dữ liệu bộ phận khác. Không có quyền quản trị tài khoản hoặc xem trang nhật ký toàn hệ thống.
+
+## Theo vai trò — Hỗ trợ kỹ thuật
+
+1. Tra cứu thiết bị trong bộ phận phụ trách, xem hồ sơ/lịch sử; ghi chú và đổi trạng thái theo chuyển đổi hợp lệ. Không tạo/sửa thông tin hồ sơ đầy đủ, xóa mềm/thanh lý hoặc import/export tài sản.
+2. Thu hồi thiết bị trong phạm vi khi có lượt giao hiệu lực, nhập tình trạng thu hồi. Không giao mới; nếu là người nhận được chỉ định thì xác nhận biên bản bằng tài khoản của mình.
+3. Tạo phiếu cho thiết bị trong phạm vi, nhập nội dung/mức độ/loại; không tự gán lại kỹ thuật viên. Xử lý phiếu theo quyền: nhập ngày xử lý, chi phí và kết quả rồi hoàn tất/thất bại. Không sửa chi phí phiếu đã đóng hoặc xác nhận sẵn sàng thay Admin.
+4. Xem bảng bảo trì trong ứng dụng; thống kê ticket của Hỗ trợ giới hạn phiếu có người xử lý là mình trong scope. Không có quyền biểu đồ tổng quan, trung tâm cảnh báo riêng, giấy phép/key, vòng đời, ngân sách hoặc xuất báo cáo.
+
+Code hiện giới hạn xử lý theo scope thiết bị; không suy rằng mọi endpoint chỉ cho người được gán nhìn thấy. Nếu công ty cần siết chỉ người được gán mới xử lý, phải thống nhất nghiệp vụ và gate riêng trước thay đổi.
+
+## Ảnh minh họa và kiểm lại trên host
+
+Tài liệu này dùng hướng dẫn chữ, **không nhúng ảnh**. Khi bổ sung ảnh từ trang tĩnh phải giữ badge **MOCK** trong ảnh và chú thích “MOCK — dữ liệu minh họa, không chứng minh đã lưu DB”; không lấy ảnh minh họa làm bằng chứng nghiệm thu. Không chụp key, password, token hoặc thông tin cá nhân thật.
+
+Sau khi user deploy, cần kiểm lại layout PHP thật tại1366/768/390 bằng tài khoản thật từng vai trò, cả danh sách/form/lỗi và URL trái quyền. Phép đo static MOCK/API mock local hiện có chưa thay bước này. DB Phase7–10 vẫn chưa nghiệm thu; hướng dẫn không hứa phần BE11 chưa build.
+
 ## Tổng quan và cảnh báo
 
 - Kiểm “Số liệu tại HH:mm” theo giờ Việt Nam. Bấm **Làm mới** khi muốn lấy số mới; biểu đồ không tự làm mới liên tục.
@@ -41,11 +77,11 @@ Lịch sử tài sản hiện chỉ có50 thao tác mới nhất và ghi chú n�
 
 Chọn thiết bị, người hoặc bộ phận nhận theo danh sách được phép; đối chiếu ngày giao/hạn trả và nội dung biên bản. Thiết bị phải thỏa điều kiện giao, không có lượt giao hiệu lực/phiếu pending khác gây chặn.
 
-Người nhận xác nhận bằng chính tài khoản được chỉ định; Admin không ký thay. Có thể tải biên bản PDF khi môi trường đủ thư viện/font. Thu hồi ghi nội dung và ngày theo form, giữ lại lịch sử thay vì tạo lại hồ sơ.
+Người nhận xác nhận bằng chính tài khoản được chỉ định; Admin không ký thay. Có thể tải biên bản PDF khi môi trường đủ thư viện/font. Thu hồi ghi tình trạng/nội dung theo form, giữ lại lịch sử thay vì tạo lại hồ sơ.
 
 ## Phần mềm và giấy phép
 
-Admin quản lý catalog/key; các vai trò khác chỉ thấy thông tin che key theo quyền. Cấp/thu hồi chỗ cho máy/bộ phận phải đúng phạm vi; cấp theo user chỉ khi có quyền và phạm vi được xác minh (hiện Admin thực hiện).
+Admin quản lý catalog/key; Quản lý thấy thông tin che key, Hỗ trợ không được mở chức năng giấy phép. Cấp/thu hồi chỗ cho máy/bộ phận phải đúng phạm vi; cấp theo user hiện chỉ Admin thực hiện.
 
 Vượt số chỗ chỉ Admin được xác nhận, bắt buộc lý do. Xem key đầy đủ cần nhập lại mật khẩu, có giới hạn tần suất, ghi nhật ký và tự ẩn sau10 giây. Không sao chép key vào ghi chú/báo lỗi; nếu thiếu cấu hình mã hóa, liên hệ quản trị, không tự tạo khóa mới để thay dữ liệu cũ.
 

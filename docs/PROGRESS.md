@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+F11.6: USER_GUIDE bổ sung lộ trình riêng Admin/Quản lý/Hỗ trợ, phân biệt tạo/gán/xử lý phiếu, giấy phép/key, snapshot và báo cáo. Không dùng ảnh; quy định ảnh MOCK phải giữ badge/chú thích nếu bổ sung sau. Chỉ mô tả chức năng local hiện có, DB/host chưa nghiệm thu; cần kiểm layout PHP thật bằng tài khoản thật sau deploy. Verify đối chiếu source/ma trận server trong PHASE11_SECURITY_REVIEW, không UAT host.
+
 F11.5 **chuẩn bị**: DEPLOY_LOG bổ sung allowlist/exclusions runtime (toàn MOCK/tests/tmp/artifacts/preview), contract manifest/path/size/SHA256/provenance và rollback source giữ dữ liệu mới. Chưa tạo gói/manifest file inventory thực tế hoặc hash ZIP #11; chưa upload/rollback host. Không dùng hash baseline dependency thay hash release.
 
 F11.2: đã rà bảo mật **chỉ đọc source**, báo cáo PHASE11_SECURITY_REVIEW.md gồm HTML/JSON/PDF/Excel,15 action POST/CSRF, SQL động/prepared, upload, route×3 vai trò (cả GET lẻ), cookie/header/log hiện có. Finding S11-01: forecast-export thiếu recheck native active sau render; đưa BE_GATE_11 **nháp**, chưa sửa PHP. Không phải chứng nhận an toàn toàn legacy hoặc PASS DB/host. Runtime header/cookie/thu hồi quyền đồng thời chưa chạy.
