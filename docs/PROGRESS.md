@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+Theo hướng dẫn user, HOST_INVENTORY_TEMPLATE bổ sung cách gửi listing theo nhóm thư mục tương đối thay nhập từng dòng; size/mtime tùy có, hash không bắt buộc, Codex đối chiếu khi nhận listing. Không mở/xóa file lạ hoặc tự đổi marker legacy; chưa thu thập host, chưa deploy, kiểm DB thật Phase1–10 vẫn còn mở. Chỉ sửa tài liệu.
+
 Bổ sung tài liệu theo user: BE_GATE_11 vẫn **nháp/chưa build**, tách(a)–(g) S11-01/S11-02, project-start guard có chống lặp, deny nhạy cảm, auto_prepend rủi ro cao/.user.ini cache, HTTP/log và header/HSTS có điều kiện; mỗi mục có thay đổi/rủi ro/host test/rollback. HOST_INVENTORY_TEMPLATE chưa có dữ liệu host; checklist thêm GET/HEAD/POST rỗng scripts/license/database/project-start, không directory listing. DEPLOY_LOG đề xuất vhost riêng và runtime DB không DDL/DELETE; source ITA+PmAuth không thấy bảng nào cần DELETE, chưa kiểm grants host. Không sửa PHP/.htaccess/.user.ini/DB, không tạo gói/merge/tag7–10/push/deploy; host chưa chạy.
 
 F11.2 **rà soát source xong, kiểm thử trên host chưa chạy**. Bổ sung inventory2.092 PHP local/7 root, ops admin/ajax/mobile không có file riêng, upload/module cũ và guard có điều kiện tại PHASE11_LEGACY_SURFACE/CSV. Không kết luận legacy an toàn: rewrite/marker/host chưa xác minh, MOCK JSON allowlist, tests/artifacts chưa deny prefix, project-start không có gate riêng. Gate11 thêm bản sửa/test S11-01 cụ thể và rà6 đường export (asset-export/import-errors còn thiếu post-render recheck; mẫu trống rủi ro thấp). **Chưa sửa code**. PHASE11_HOST_TEST/DEPLOY_LOG có checklist cookie/header cuối/deny đường nhạy cảm/legacy/staging private; tất cả host chưa chạy. Không merge/tag7–10/push/deploy.

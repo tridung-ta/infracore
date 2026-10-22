@@ -2,6 +2,21 @@
 
 User điền bằng File Manager/FTP/quyền đọc được phép; không chạy PHP/cron/fixture/SQL trên host để lập inventory. Mẫu này chưa xác nhận tệp thực tế hoặc upload. Không gửi nội dung config, credential, key, session, dump hoặc raw log. Danh sách tên tệp cũng nên được bàn giao private nếu có dữ liệu nhạy cảm.
 
+## Cách thu thập nhanh — không phải điền từng dòng
+
+Chỉ chuẩn bị lúc này; thu thập khi user sẵn sàng, không yêu cầu deploy sớm để điền mẫu. Nếu host đã có source cũ, listing chỉ mô tả trạng thái quan sát, không chứng minh gói mới đã upload.
+
+1. Dùng File Manager/FileZilla mở đúng thư mục gốc vhost InfraCore, bật hiển thị file ẩn. Nếu công cụ hỗ trợ xuất/copy listing hoặc tên tệp, lưu danh sách vào văn bản; không cần nhập lại từng dòng bảng. Không mặc định mọi phiên bản FileZilla có cùng thao tác copy tên.
+2. Thu lần lượt: root và PHP root (chú ý mobile.php/project-start.php nếu có); modules/admin; modules/admin/manage; thư mục upload thật; các thư mục còn lại. Ghi rõ nhóm nào chưa thu thập, không coi thiếu listing là file không tồn tại.
+3. Tên tệp là đủ để bắt đầu đối chiếu; kích thước/ngày sửa thêm khi có. Hash tùy chọn, không chạy PHP hoặc mở config để lấy hash. Ngày sửa không chứng minh nội dung giống commit local.
+4. Gửi listing đã bỏ thông tin nhạy cảm cùng mục “Xác nhận cuối”. Codex đối chiếu với PHASE11_PHP_SURFACE.csv, phân loại cả hai/chỉ host/chỉ local/chưa rõ; không yêu cầu user điền thủ công2.092 dòng.
+
+Giữ nhãn thư mục **tương đối** cho mỗi khối listing, ví dụ `modules/admin/manage`, để phân biệt tệp trùng tên. Không gửi đường dẫn tuyệt đối host, tài khoản hoặc nội dung tệp. Nếu tên upload chứa thông tin cá nhân, che phần đó và ghi đã che; kết quả đối chiếu tương ứng sẽ là chưa rõ. Listing không đầy đủ chỉ cho phép đối chiếu phần đã cung cấp.
+
+File tên lạ/ngẫu nhiên, trình tải lên, *.php.jpg hoặc mới sửa gần đây: ghi tên/size/mtime, **không mở, chạy hoặc xóa**. Không tự kết luận mã độc; cần quản trị viên Derasoft đối chiếu nguồn. Nếu thấy `.ita-legacy-enabled`, báo lại, không tự xóa vì đó là thay đổi trạng thái chạy.
+
+Inventory không thay kiểm deny HTTP, không coi403 là bằng chứng file không tồn tại. Kiểm thử DB thật Phase1–10 vẫn là việc còn mở riêng; chưa có listing hoặc test mới trong bước bổ sung hướng dẫn này.
+
 ## Môi trường và bằng chứng
 
 | Mục | Giá trị user điền |
