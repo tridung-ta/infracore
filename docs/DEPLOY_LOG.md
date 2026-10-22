@@ -1,5 +1,41 @@
 # Nhật ký thao tác hosting
 
+## F11.5 — Chuẩn bị bàn giao, chưa tạo gói (22/10/2026)
+
+Đây là **đặc tả inventory/manifest/rollback**, không phải gói đã tạo hoặc lệnh cho phép deploy. Không có SHA256 ZIP #11 vì chưa tạo ZIP; không điền hash giả. Source bàn giao tương lai phải chốt một commit cụ thể sau review; các commit tài liệu không chứng minh host đang chạy chúng. Không merge/tag Phase7–10/push/deploy. S11-01 và phần BE11 chưa sửa, DB/host chưa nghiệm thu; không mô tả gói là đã sẵn sàng production.
+
+### Danh sách bao gồm/loại trừ dự kiến
+
+| Nhóm | Bao gồm khi có trong inventory nguồn cố định | Loại trừ / kiểm trước đóng gói |
+|---|---|---|
+| Entrypoint/guard | admin.php, project-start/service worker và các entrypoint hiện có thực sự cần; project_gate/ita_mode/bootstrap, module ITA; .ita-enabled/.htaccess phiên bản đã duyệt nếu gói cần | Không ghi đè config host hoặc tự bật .ita-legacy-enabled; thay config/rewrite mới phải gate. Không suy chỉ copy CSS/JS là đủ runtime |
+| PHP ứng dụng | ITA DAO/service/security, adapter dùng chung và transitive dependencies theo bootstrap; Smarty/runtime cần thiết | Không zip toàn classes/modules theo mặc định. Giữ source legacy đang dùng trên host, không xóa để làm gọn. Dependency legacy dùng chung phải liệt kê cụ thể |
+| Giao diện | templates/admin/ita; CSS/JS production assets/ita/css, assets/ita/js; SVG tĩnh; font và vendor UI ghim phiên bản/license | Không đưa assets/ita/mock/**, assets/ita/preview/**; kể cả login-preview.html, dashboard.html, reports.html, mọi fixture/JSON/HTML MOCK |
+| Excel/PDF/font | Bộ runtime theo hồ sơ provenance phía dưới, composer.json/lock PDF, vendor/font/license cần thiết từ nguồn đã đối chiếu hash | Không giả định Git clone có vendor Excel/PDF/font. Không Composer install trên host; không đổi version hoặc dùng latest im lặng |
+| Hồ sơ bàn giao | MANIFEST.json, SHA256SUMS.txt, hướng dẫn release/rollback đặt ngoài webroot hoặc kênh bàn giao riêng | Không đưa docs/database/tests vào webroot để người dùng tải trực tiếp |
+| Tệp phát triển/sinh tự động | Không | tests/**, tmp/**, .playwright-cli/**, artifacts/**, cache/templates_c, node_modules, .git/.agents/.codex, log/session, screenshot, seed/dump, file kiểm thử Excel/PDF, backup/ZIP cũ |
+| Riêng tư/dữ liệu sống | Không lấy từ workspace vào gói runtime | includes/ita_database.local.php, .env, khóa/credential/ITA_LICENSE_KEY, dump DB, uploads/dữ liệu người dùng, session và raw log. Host giữ riêng; không xóa khi rollback |
+
+“Loại MOCK” áp dụng **cả đường dẫn lẫn nội dung runtime**: từ chối preview/fixture trong inventory, rà mọi tệp có nhãn MOCK và mọi basename dashboard.html/reports.html. Nếu production JS có nhánh hỗ trợ mock/nhãn, phải xác minh entrypoint live không bật nhánh đó; không xóa chuỗi hàng loạt hoặc sửa code trong bước này. Giữ cây legacy trên host theo yêu cầu chỉ ẩn; không dùng lệnh sync/delete loại tệp ngoài inventory.
+
+### Contract manifest và hash cho bước đóng gói sau
+
+1. Chốt source_commit đầy đủ40 ký tự, git status/diff, danh tính và danh sách runtime tường minh; không build từ working tree lẫn thay đổi chưa review. Chụp inventory dependency ngoài Git với nguồn/version hoặc baseline tree hash, license và tình trạng xác minh.
+2. MANIFEST.json ghi release_id, source_commit, thời gian UTC, môi trường build/PHP, danh sách file `{path, size_bytes, sha256, origin, version_or_ref}`. Path tương đối POSIX, không absolute/.., không trùng tên kể cả khác hoa thường; không symlink/junction ra ngoài nguồn. Mọi hash là SHA256 byte thật,64 ký tự hex thường, không hash timestamp hoặc nội dung đã chuẩn hóa.
+3. SHA256SUMS.txt sắp path, mỗi dòng `sha256  relative/path` và LF, UTF-8. Kiểm lại từng file sau giải nén staging ngoài webroot; số file/size/hash phải khớp và không có file ngoài manifest. Không self-hash MANIFEST/SHA256SUMS trong chính chúng; hash hai file metadata và ZIP ở checksum sidecar ngoài gói để tránh vòng lặp.
+4. Soát inventory có0 đường dẫn loại trừ nêu trên và0 secret/dữ liệu thật; kiểm dependency/font bằng nguồn đã pin, không chỉ hash source Git. Hash ZIP riêng sau khi đóng gói; ZIP hash khác tree hash. Hai lần ZIP có thể khác byte dù cùng cây nên không so thay cho file hash.
+5. Ghi kết quả thật và hash vào bảng host **chỉ khi có bằng chứng upload đúng gói**. Hiện chưa tạo inventory thực tế #11, chưa tính/verify hash của gói #11, chưa upload. Hash baseline dependency phía dưới là quan sát cũ, không thay manifest release mới.
+
+Không cần dựng gói để chuẩn bị contract trên. Khi được giao đóng gói, nếu thiếu dependency/provenance thì báo thiếu, không tự tải bản khác hoặc coi “đã có Git” là đủ.
+
+### Rollback source, user thực hiện khi triển khai sau
+
+- Trước upload: xác nhận source/commit/gói **đang chạy** (hiện chưa biết), backup toàn bộ source/config riêng ngoài webroot; user backup DB và khóa giấy phép tách riêng. Ghi manifest/hash baseline và gói mới. Không đưa secret vào Git hoặc manifest nội dung.
+- Kiểm đầu tiên trên kết nối ứng dụng: isolation RR/SERIALIZABLE. Sau đó PHP8.3.33/extensions, dependency/font, key/config, HTTPS/cookie/headers/display_errors Off/log_errors On; checklist host bên dưới. Không dùng phpMyAdmin session thay bằng chứng kết nối ứng dụng.
+- Nếu lỗi sau upload: ngừng thao tác ghi trong thời gian rollback theo quy trình vận hành được user chọn; phục hồi **đúng tệp đã thay** từ backup và marker/config chỉ nếu đã thay, không ghi đè config/khóa/dữ liệu sống. Làm mới cache/opcache bằng cơ chế hosting được phép, không xóa tùy tiện cache/session đang dùng.
+- Giữ DB, audit, tickets, allocations, snapshot và dữ liệu phát sinh; rollback source **không** DROP/restore dump đè hoặc đảo dữ liệu mới. Không DDL trong gói FE/tài liệu này; nếu code cũ không đọc được dữ liệu mới thì dừng để đối chiếu tương thích, không ép restore DB.
+- User kiểm login/ba vai trò, đọc hồ sơ, file export và mốc số liệu sau rollback; ghi thời điểm, source/hash đã khôi phục và mục chưa kiểm. Chưa thực hành rollback host/DB trong bước này.
+
 ## Trạng thái host hiện tại — cập nhật22/10/2026
 
 | Gói/source | Ngày upload | Đã upload được xác nhận | Chưa upload/chưa biết |
