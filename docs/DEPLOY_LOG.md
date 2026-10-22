@@ -1,5 +1,11 @@
 # Nhật ký thao tác hosting
 
+## Checklist bảo mật host bổ sung22/10 — chưa chạy
+
+Xem PHASE11_HOST_TEST.md: bước đầu vẫn isolation kết nối ứng dụng RR/SERIALIZABLE. Kiểm ITA_SESSION HttpOnly/Secure/SameSite=Lax, headers cuối sau proxy/Apache/PHP-FPM (kể cả lỗi/file), display_errors/log_errors và log private; .ita-enabled đúng document root, **không có .ita-legacy-enabled**. Mở trực tiếp docs/tests/.git/artifacts/assets/ita/mock và file cấu hình phải403/404, không chỉ không có listing; không in/tải body config để kiểm. Thử vài URL legacy GET/POST theo checklist an toàn; staging import ngoài public_html, không symlink về webroot, ACL riêng.
+
+**Điểm source còn mở:** JSON MOCK hiện được allowlist static nếu file còn trên host; tests/artifacts GET có thể303, chưa đạt policy deny403/404. Không coi loại khỏi gói là đã bảo vệ file dư trên host. Inventory/guard tại PHASE11_LEGACY_SURFACE.md và PHASE11_PHP_SURFACE.csv. Chưa kiểm host, chưa sửa rule/PHP, chưa tạo gói hoặc deploy; S11-01/S11-02 vẫn chỉ gate nháp.
+
 ## F11.5 — Chuẩn bị bàn giao, chưa tạo gói (22/10/2026)
 
 Đây là **đặc tả inventory/manifest/rollback**, không phải gói đã tạo hoặc lệnh cho phép deploy. Không có SHA256 ZIP #11 vì chưa tạo ZIP; không điền hash giả. Source bàn giao tương lai phải chốt một commit cụ thể sau review; các commit tài liệu không chứng minh host đang chạy chúng. Không merge/tag Phase7–10/push/deploy. S11-01 và phần BE11 chưa sửa, DB/host chưa nghiệm thu; không mô tả gói là đã sẵn sàng production.
