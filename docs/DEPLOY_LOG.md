@@ -1,5 +1,7 @@
 # Nhật ký thao tác hosting
 
+**Chỉ đạo mới22/10/2026:** user sẽ kiểm DB thủ công trên host sau; agent **không tự tạo/kết nối DB test**, không chạy host/DB và không yêu cầu DB test để tiếp tục local trong phạm vi được duyệt. Các kế hoạch thử DB test trong tài liệu được giữ để truy vết, **không còn là bước bắt buộc user phải thực hiện**. Không ghi PASS/nghiệm thu DB khi chưa có xác nhận cụ thể. Quyền build BE/merge/tag7–10/push/deploy không được mở bởi chỉ đạo này.
+
 Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguyên nội dung lịch sử; chỉ hạ mức heading để gom bốn phần. Mục lịch sử có ngày xếp mới trước, cùng ngày giữ thứ tự cũ; mục không ghi ngày để cuối theo thứ tự cũ, không tự gán ngày. Các ghi chú cũ là bằng chứng tại thời điểm đó, không thay bảng trạng thái hiện tại.
 
 ## A. Trạng thái host hiện tại

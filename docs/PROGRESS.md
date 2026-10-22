@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## Chỉ đạo hiện hành22/10/2026 — Không tạo DB test
+
+User nguyên văn: «à phần test DB thì không cần thiết tôi sẽ test kiểm thử thủ công trên host sau không tự í tạo DB test ở local bạn chỉ cần test trong phạm vi tôi cho phép là được rồi».
+
+Agent không tự tạo/kết nối DB test hoặc chạy DB/host. Local chỉ kiểm trong phạm vi đã duyệt (pure/scripted/static/browser API mock/render không DB); không bắt user chọn DB test để tiếp tục phần local được phép. Các kế hoạch DB test đã soạn là lịch sử/không phải yêu cầu thực hiện hiện hành; kiểm DB thật do user thực hiện thủ công trên host khi sẵn sàng. DB/host vẫn chưa nghiệm thu đến khi có kết quả cụ thể, không chuyển mock thành PASS DB. Không tự merge/tag7–10/push/deploy; BE_GATE_11 vẫn nháp/chưa duyệt, không suy thay đổi cách test thành quyền build BE.
+
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
 DEPLOY_LOG mụcC lưu nguyên văn phản hồi checksum local của user với các placeholder [phiên bản]/[số file]/[có/chưa]/[khớp/khác/chưa làm] còn chưa điền. Chờ số liệu/xác nhận cụ thể, không ghi read-back khớp hoặc restore đã kiểm; agent không chạy checksum/kho ngoài/gói/host/DB. Không thay trạng thái inventory CHƯA THU THẬP hoặc nghiệm thu DB.

@@ -1,5 +1,7 @@
 # BE-GATE #11 — Tối ưu, bảo mật, hoàn thiện (NHÁP, CHƯA DUYỆT)
 
+**Cập nhật chỉ đạo22/10:** không tự tạo/kết nối DB test. User kiểm DB thủ công trên host sau; local chỉ pure/scripted/mock/render trong phạm vi đã duyệt. Các tham chiếu “cần DB test” bên dưới là phương án kiểm đã soạn trước, không buộc user tạo DB test hoặc cho phép agent chạy DB/host. Kết quả DB thật vẫn chưa nghiệm thu; cách kiểm thủ công phù hợp sẽ bàn giao khi user sẵn sàng. Gate vẫn chưa được duyệt/build, không merge/tag7–10/push/deploy.
+
 Theo chỉ đạo22/10: **chỉ soạn tài liệu, chưa build BE**. Không coi việc làm FE/tài liệu hoặc user duyệt #10 là duyệt gate này. Không tự chạy DB/EXPLAIN, cài package, sửa PHP/session/server config. Không merge/tag Phase7–10/push/deploy. DB/host Phase1–10 chưa nghiệm thu.
 
 ## Phạm vi đề xuất
