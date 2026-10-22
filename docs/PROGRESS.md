@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+Rà phân trang chỉ đọc đã xong tại PHASE11_PAGINATION_AUDIT.md, có Review Agent đối chiếu source/UI. Phân biệt SQL COUNT/LIMIT/OFFSET, array pagination sau fetch, fail-overflow và topN; ưu tiên thống kê ticket/lịch sử asset. BE_GATE_11.md **nháp, chưa duyệt/chưa build** cho index, cookie/security headers và phân trang bổ sung. Không sửa PHP/DB hoặc dùng báo cáo thay PASS DB.
+
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
 | F11.5 (chuẩn bị) | Hồ sơ host/isolation và loại MOCK khỏi gói | Docs | [~] | Commit tài liệu kèm dòng này | Đọc source PmDb/gate10, đối chiếu host log và diff; không DB | Chưa tạo gói/deploy; isolation phải kiểm trên kết nối ứng dụng |
