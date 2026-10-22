@@ -120,6 +120,28 @@ Nếu dữ liệu/bộ lọc đã đổi hoặc preview quá15 phút, tải lạ
 
 ## Xử lý thông báo
 
+### Đọc đúng kết quả thao tác
+
+| Trạng thái nhìn thấy | Ý nghĩa / bước tiếp |
+|---|---|
+| Danh sách tải xong nhưng không có dòng | Kiểm bộ lọc, trang hiện tại và phạm vi; không tự kết luận DB đã mất dữ liệu |
+| Đã lưu và đã đọc lại hồ sơ | Đối chiếu mã hồ sơ, giá trị mới và lịch sử; đây là phản hồi của request hiện tại, không phải nghiệm thu cả chức năng |
+| Đã lưu nhưng tải lại hồ sơ thất bại | Không bấm lưu lần nữa; tải lại danh sách/hồ sơ để đối chiếu trước thao tác mới |
+| Chưa xác nhận đã lưu / mất phản hồi | Không đoán thành công hoặc thất bại; giữ nội dung cần đối chiếu, dùng tải lại/kiểm trạng thái thủ công. Import dùng kiểm trạng thái lô, không upload/xác nhận lại mù |
+| Bản hiện tại / snapshot đã lưu | Dữ liệu hiện tại có thể đổi theo giá/phiếu; snapshot giữ số liệu lúc lưu. Kiểm nguồn, năm, bộ phận trước so hoặc xuất |
+| Đang dùng giá trị mặc định | Một số cấu hình vòng đời chưa có, đang dùng số mặc định được ghi rõ; khác với dữ liệu tài sản thiếu và khác với cấu hình sai |
+| Chưa đủ dữ liệu | Không thay bằng0 để quyết định; nhờ người có quyền bổ sung thông tin/cấu hình, rồi chủ động tính lại nếu cần |
+
+Phản hồi trong bản MOCK chỉ minh họa; không tạo hồ sơ thật. Không dùng nút giao diện đang bị vô hiệu hóa làm bằng chứng server cho phép/từ chối. Khi đổi vai trò/phạm vi hoặc tài khoản bị khóa, mở lại phiên theo hướng dẫn; không cố gửi lại request cũ.
+
+### Tự đối chiếu một vòng công việc theo vai trò
+
+- **Admin:** kiểm quyền/bộ phận tài khoản → mở đúng thiết bị → tạo/gán/xử lý phiếu → đọc lại trạng thái/lịch bảo trì → nếu có chờ sẵn sàng thì kiểm tra và xác nhận → đối chiếu nhật ký. Quyền cuối cùng do server quyết định; chưa có chức năng tự phê duyệt mua sắm/chốt kế hoạch.
+- **Quản lý:** chọn bộ phận phụ trách → tìm tài sản hoặc xem vòng đời → tạo phiếu/gán kỹ thuật viên nếu cần → xem ngân sách đúng nguồn hiện tại/snapshot. Không trực tiếp xử lý kết quả phiếu, sửa key hoặc đơn giá.
+- **Hỗ trợ:** tìm thiết bị trong scope → đọc nội dung phiếu → nhập kết quả/ngày/chi phí khi xử lý → đọc lại kết quả. Nếu cần đổi kỹ thuật viên, sửa chi phí phiếu đóng hoặc xác nhận sẵn sàng, chuyển thông tin cho người có quyền; không sửa SQL để bỏ chặn.
+
+Đây là hướng dẫn thao tác từ source đã build, không yêu cầu user chạy trên host lúc này. Các phép thử DB, rollback và hai phiên đồng thời vẫn theo checklist riêng; không suy đã đạt chỉ vì hoàn thành một vòng giao diện.
+
 | Tình huống | Việc nên làm |
 |---|---|
 | Hết phiên / yêu cầu đăng nhập | Đăng nhập lại, mở đúng trang rồi kiểm dữ liệu trước khi lưu |

@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+F11.6 bổ sung cách đọc phản hồi lưu/tải lại thất bại/kết quả chưa rõ, nguồn hiện tại/snapshot/mặc định/thiếu dữ liệu và vòng thao tác ba vai trò. Đối chiếu với luồng FE/service hiện có; không mô tả chốt kế hoạch/mua sắm hoặc BE11 chưa build là đã có. Không dùng ảnh mới, không yêu cầu UAT host lúc này; DB/host chưa nghiệm thu.
+
 Rà chỉ đọc3 script package_ita_phase03/pdf/host: selection hiện không gom tmp/ root; DEPLOY_LOG ghi loại toàn tmp/host-inventory khỏi mọi payload/manifest deploy, kiểm ZIP thật khi được giao đóng gói sau. Chưa chạy script/tạo gói hoặc sửa script. BE_GATE_11 thêm bảng điều kiện duyệt theo từng mục, chưa build. Inventory vẫn **CHƯA THU THẬP**, không đối chiếu host, không merge/tag7–10/push/deploy.
 
 Chuẩn bị nơi lưu inventory private: thêm ignore `/tmp/host-inventory/`, hướng dẫn listing.txt không commit/deploy; chưa tạo/đọc listing. User xác nhận **CHƯA THU THẬP**, chưa điền “Xác nhận cuối”, không đối chiếu hoặc suy nội dung host. Verify check-ignore và ls-files cho path dự kiến, không host/DB.
