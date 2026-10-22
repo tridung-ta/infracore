@@ -64,3 +64,6 @@ desktop.ini
 # Read-only generated forecast EXPLAIN contract
 !docs/PHASE09_EXPLAIN.sql
 /artifacts/ita-phase09/
+
+# Private host listings: never commit or package.
+/tmp/host-inventory/

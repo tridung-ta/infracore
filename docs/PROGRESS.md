@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+Chuẩn bị nơi lưu inventory private: thêm ignore `/tmp/host-inventory/`, hướng dẫn listing.txt không commit/deploy; chưa tạo/đọc listing. User xác nhận **CHƯA THU THẬP**, chưa điền “Xác nhận cuối”, không đối chiếu hoặc suy nội dung host. Verify check-ignore và ls-files cho path dự kiến, không host/DB.
+
 Theo hướng dẫn user, HOST_INVENTORY_TEMPLATE bổ sung cách gửi listing theo nhóm thư mục tương đối thay nhập từng dòng; size/mtime tùy có, hash không bắt buộc, Codex đối chiếu khi nhận listing. Không mở/xóa file lạ hoặc tự đổi marker legacy; chưa thu thập host, chưa deploy, kiểm DB thật Phase1–10 vẫn còn mở. Chỉ sửa tài liệu.
 
 Bổ sung tài liệu theo user: BE_GATE_11 vẫn **nháp/chưa build**, tách(a)–(g) S11-01/S11-02, project-start guard có chống lặp, deny nhạy cảm, auto_prepend rủi ro cao/.user.ini cache, HTTP/log và header/HSTS có điều kiện; mỗi mục có thay đổi/rủi ro/host test/rollback. HOST_INVENTORY_TEMPLATE chưa có dữ liệu host; checklist thêm GET/HEAD/POST rỗng scripts/license/database/project-start, không directory listing. DEPLOY_LOG đề xuất vhost riêng và runtime DB không DDL/DELETE; source ITA+PmAuth không thấy bảng nào cần DELETE, chưa kiểm grants host. Không sửa PHP/.htaccess/.user.ini/DB, không tạo gói/merge/tag7–10/push/deploy; host chưa chạy.

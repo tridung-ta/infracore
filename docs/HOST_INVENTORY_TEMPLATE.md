@@ -4,6 +4,21 @@ User điền bằng File Manager/FTP/quyền đọc được phép; không chạ
 
 ## Cách thu thập nhanh — không phải điền từng dòng
 
+### Nơi lưu riêng, không commit/đóng gói
+
+Listing và “Xác nhận cuối” có thể lưu tại `tmp/host-inventory/listing.txt`. Ngày22/10 đã bổ sung ignore riêng `/tmp/host-inventory/` vì đường dẫn này chưa được rule hiện có bỏ qua. Kiểm bằng `git check-ignore -v -- tmp/host-inventory/listing.txt`; kiểm thêm `git ls-files -- tmp/host-inventory` phải không có file tracked. Ignore không gỡ file đã tracked và không ngăn force-add, nên không stage listing. Toàn tmp vẫn bị loại khỏi deploy theo DEPLOY_LOG; Git ignore không thay quy tắc đóng gói.
+
+Không tạo listing cho đến khi có dữ liệu thật. Chỉ lưu tên/size/mtime theo khối có nhãn đường dẫn tương đối; không đường dẫn tuyệt đối, tài khoản, nội dung config hoặc dữ liệu cá nhân (che và ghi “đã che”). Khi sẵn sàng, gửi thông tin sau, không cần commit file:
+
+```text
+Listing và «Xác nhận cuối» ở: tmp/host-inventory/listing.txt (đã bỏ thông tin nhạy cảm, không commit).
+Đã liệt kê: [root / modules/admin / manage / ajax / upload / thư mục khác].
+Chưa liệt kê: [ghi rõ]. Đã bật hiển thị file ẩn: [có/không].
+Đối chiếu với PHASE11_PHP_SURFACE.csv theo PHASE11_LEGACY_SURFACE.md (chỉ đọc, không chạy gì trên host).
+```
+
+Hiện **CHƯA THU THẬP**, chưa có listing hoặc “Xác nhận cuối” được điền; mẫu trả lời trên không phải xác nhận đã thu thập.
+
 Chỉ chuẩn bị lúc này; thu thập khi user sẵn sàng, không yêu cầu deploy sớm để điền mẫu. Nếu host đã có source cũ, listing chỉ mô tả trạng thái quan sát, không chứng minh gói mới đã upload.
 
 1. Dùng File Manager/FileZilla mở đúng thư mục gốc vhost InfraCore, bật hiển thị file ẩn. Nếu công cụ hỗ trợ xuất/copy listing hoặc tên tệp, lưu danh sách vào văn bản; không cần nhập lại từng dòng bảng. Không mặc định mọi phiên bản FileZilla có cùng thao tác copy tên.
