@@ -183,3 +183,18 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Sửa: dùng apply_patch hoặc file script UTF-8 rồi chạy bằng đường dẫn; không đổi locale toàn cục. Khôi phục chỉ các đoạn vừa thêm và kiểm lại file thật.
 - Kiểm: đối chiếu docs, nhãn menu và browser regression; không lấy việc file giải mã được UTF-8 làm bằng chứng đủ dấu.
 - Phạm vi: ghi source/tài liệu Unicode qua shell pipeline.
+
+### 22/10/2026 — Giữ HTTP status trước khi giải mã JSON
+
+- Triệu chứng/phân loại: lỗi HTML403/404/503 bị trình bày như mất kết nối ở FE tải trang.
+- Bằng chứng: review phát hiện response.json có thể throw trước nhánh response.ok; browser mock tái hiện phản hồi HTML theo từng mã.
+- Sửa: lỗi giải mã giữ response.status; HTTP200 khôngJSON dùng500. Không thêm retry POST hoặc thay quyền server.
+- Kiểm: 61 kiểm tra browser error-state đạt, gồm HTML403/404/503 và chính sách retry. Chưa kiểm HTTP server host.
+- Phạm vi: shell tải dữ liệu, không thay thông báo form các chức năng khác.
+
+### 22/10/2026 — Đo vùng cuộn bảng khi kiểm responsive
+
+- Triệu chứng/phân loại: test bounds báo nhầm nút bảng lifecycle/admin vượt viewport dù bảng cuộn nội bộ đúng thiết kế.
+- Bằng chứng: đo ancestor overflow-x=auto, scrollWidth>clientWidth và khung nằm trong viewport; document không tràn ngang.
+- Sửa: chỉ chấp nhận phần tử ngoài vùng nhìn khi có ancestor cuộn được đo thật, không bỏ qua theo tên class. Giữ kiểm overflow toàn trang và form ngoài bảng.
+- Kiểm: 58 static responsive và14 admin/login mock đạt tại1366/768/390; đã xem ảnh. Không suy thành nghiệm thu mọi dữ liệu host.

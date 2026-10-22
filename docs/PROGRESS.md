@@ -6,7 +6,7 @@ F11.3/F11.4 đã kiểm local: 58 responsive +14 admin/login trình bày +61 tr�
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
-| F11.3 | Responsive cuối và nhãn cuộn ngân sách | FE | [x] local | Commit F11.3 riêng | 58+14 browser static/API mock | Không xác thực login thật; không DB |
+| F11.3 | Responsive cuối và nhãn cuộn ngân sách | FE | [x] local | 424dfb3 | 58+14 browser static/API mock | Không xác thực login thật; không DB |
 | F11.4 | Trạng thái lỗi tải trang chuẩn | FE | [x] local | 3b3403c | 61 browser mock; Smarty/syntax | Không thêm HTTP route hoặc sửa auth |
 | F11.6 | Hướng dẫn sử dụng | Docs | [x] tài liệu | d1201d3 | Đối chiếu contract/source | Host chưa nghiệm thu |
 
