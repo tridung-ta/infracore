@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+**Bổ sung22/10 sau duyệt riêng:** S11-01/S11-02 đã sửa và kiểm local không DB (PHASE11_EXPORT_VERIFY.md); chưa upload, chưa tạo gói hoặc kiểm host. Chỉ hai finding export được duyệt, các mục khác BE11 vẫn nháp. Những dòng lịch sử “S11-01/02 chưa sửa” bên dưới giữ trạng thái trước phê duyệt, không thay cập nhật này.
+
 ### Trạng thái host hiện tại — cập nhật22/10/2026
 
 | Gói/source | Ngày upload | Đã upload được xác nhận | Chưa upload/chưa biết |
@@ -15,7 +17,7 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 | Phase8 UI source1691c43bd37d | Chưa xác nhận | Chưa xác nhận upload đúng gói | Chỉ có gói local được ghi trong hồ sơ |
 | Phase9 source2e95245; docs9b32bae | Chưa xác nhận | Chưa xác nhận | Build local, chưa có bằng chứng host |
 | Phase10 source0ce2166; docs2f05ea3 | Chưa upload theo hồ sơ hiện có | Không | 7 chức năng +fix chỉ local; chưa tạo gói deploy #10 |
-| Phase11 FE/tài liệu | Chưa upload | Không | Chỉ bắt đầu FE/tài liệu; BE chưa duyệt |
+| Phase11 FE/tài liệu +S11-01/S11-02 | Chưa upload | Không | FE và hai sửa export local; phần BE11 còn lại chưa duyệt, host chưa kiểm |
 
 **Bước kiểm đầu tiên trước nghiệm thu #10: transaction isolation của chính kết nối ứng dụng.** Dashboard, alerts và report-preview đều đi qua điều kiện RR/SERIALIZABLE, không riêng thao tác lưu ngân sách. Giá trị đọc trong phpMyAdmin là kết nối khác, không đủ chứng minh session PHP-FPM. Dùng công cụ/quan sát được phép của môi trường để kiểm kết nối ITA thực tế; khi chưa có cách quan sát, ghi **chưa xác nhận**, không thêm PHP endpoint chẩn đoán hoặc đổi config để vượt chặn trong bước này. Có thể dùng `@@transaction_isolation` (MariaDB cũ: `@@tx_isolation`) qua kết nối đó; nhánh fallback hiện có trong PmDb. READ-COMMITTED/READ-UNCOMMITTED chưa đạt điều kiện ứng dụng. Không tự đổi isolation toàn server.
 

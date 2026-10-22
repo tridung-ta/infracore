@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Duyệt BUILD giới hạn export S11-01/S11-02
 
+S11-02 build local: import controller kiểm actor/native/role/revision/effective scopes sau render, asset-export refetch tập dòng hiện tại và chặn thay đổi409; import-errors fingerprint owner-bound batch/source trước/sau, expiry410. Giữ GET/không thêm audit, không đổi template trống/report-export. Verify48 scripted controller +88 import/XLSX +13 routes +21 S11-01 +134 forecast đạt, lint/review đạt; PHASE11_EXPORT_VERIFY.md. HTTP/PHP8.3/DB/host chưa chạy. Không config/rewrite/auto_prepend/gói/merge/tag7–10/push/deploy.
+
 User «Duyệt BUILD S11-01 và S11-02 trước». S11-01 native recheck sau render đã build local:21 scripted export +134 hồi quy ngân sách đạt, lint/review đạt; PHASE11_EXPORT_VERIFY.md. Không DB/host, không đổi config/headers/auto_prepend hoặc mở các mục khác gate11. Không merge/tag7–10/push/deploy; DB chưa nghiệm thu. Các ghi chú gate11 hoàn toàn chưa duyệt ở lịch sử dưới không thay phê duyệt giới hạn này.
 
 ## Chỉ đạo hiện hành22/10/2026 — Không tạo DB test

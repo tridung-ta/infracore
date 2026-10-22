@@ -50,6 +50,6 @@ Tình trạng tất cả mục trên: **CHƯA CHẠY**. Sau khi gate được du
 
 ## Quyền, export và việc chưa được sửa
 
-Đối chiếu route×vai trò trong PHASE11_SECURITY_REVIEW.md: GET ID ngoài scope, POST thiếu/sai CSRF và vai trò bị từ chối; file không có quyền không trả bytes. S11-01/S11-02 **chưa sửa**; test “disable trong render→không bytes, không audit thành công” chỉ thực hiện sau khi gate được duyệt và có môi trường DB test phù hợp, không tự thay tài khoản production giữa request.
+Đối chiếu route×vai trò trong PHASE11_SECURITY_REVIEW.md: GET ID ngoài scope, POST thiếu/sai CSRF và vai trò bị từ chối; file không có quyền không trả bytes. S11-01/S11-02 **đã sửa/kiểm local sau phê duyệt riêng**, chưa kiểm host; PHASE11_EXPORT_VERIFY.md. User kiểm DB thủ công trên host khi sẵn sàng, agent không tạo/kết nối DB test. Không tự disable tài khoản production giữa request; kiểm concurrent/revocation cần phạm vi kiểm thủ công an toàn do user xác nhận. S11-01 lỗi native/audit không bytes và không audit thành công; S11-02 giữ chính sách không audit export hiện có, không áp assertion audit mới cho hai GET đó.
 
 Mỗi mục ghi PASS/FAIL/CHƯA CHẠY cùng bằng chứng đã che thông tin nhạy cảm; chỉ cập nhật PROGRESS khi có xác nhận cụ thể. Không coi toàn bộ checklist đã chạy vì đăng nhập hoặc một file tải được. Không thay đổi config/headers/DB trong bước kiểm nếu chưa được duyệt.

@@ -47,6 +47,16 @@ class ItaImportService
         return ItaExcel::write(['line',...ItaExcel::HEADERS,'error'],array_map(fn($row)=>[$row['line'],...array_values($row['values']),$row['error']],array_values($errors)));
     }
 
+    /** Fingerprint immutable source and owner-bound batch before/after rendering error downloads. */
+    public function errorsVersion(int $id): string
+    {
+        $batch = $this->batch($id);
+        if (!(int)$batch['available']) {
+            throw new ItaHttpError(410,'Lô import đã hết hạn. Hãy tải lại file.');
+        }
+        return hash('sha256',json_encode([$batch,$this->source($batch)],JSON_THROW_ON_ERROR));
+    }
+
     /** Batch lock makes retries idempotent; all asset rows, audits and completion share one transaction. */
     public function confirm(array $input): array
     {

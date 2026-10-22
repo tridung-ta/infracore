@@ -1,5 +1,7 @@
 # F11.2 — Rà soát bảo mật chỉ đọc, 22/10/2026
 
+**Cập nhật sau review22/10:** user đã duyệt BUILD riêng S11-01/S11-02; hai bản sửa đã kiểm local không DB, xem PHASE11_EXPORT_VERIFY.md. S11-01 native recheck và S11-02 actor/scope/dataset/batch recheck sau render đã có trong code hiện tại. Nội dung finding/bảng source dưới đây giữ làm bằng chứng **trước sửa**, không mô tả trạng thái runtime mới. Không thêm audit GET, không đổi import-template/report-export; các rủi ro đó vẫn mở. Host/DB chưa kiểm/nghiệm thu, các phần khác gate11 chưa build.
+
 ## Kết luận và phát hiện
 
 **S11-01 — Mức trung bình: forecast-export thiếu kiểm lại tài khoản native sau render.** `classes/services/itaapplication.class.php:101–109` lấy dữ liệu, render, gọi auditExport rồi trả bytes. `classes/services/itaforecastservice.class.php:7–21,97–110` kiểm lại mapping ITA/revision/scope nhưng không đọc lại dc_users.status/store như `itareportservice.class.php:100` và luồng handover hiện có. Nếu tài khoản native bị ngừng trong lúc render, mapping ITA còn bật, request đang chạy vẫn có thể nhận file ngân sách. Đầu request đã kiểm native qua current(), nên đây là khoảng thời gian thu hồi quyền, không phải truy cập vô danh. Đề xuất kiểm lại native active cùng store trước audit/bytes, lỗi fail-closed; cần test actor bị disable trong render, không bytes/audit thành công. **Chưa sửa, chưa tái hiện DB/concurrency**, đã đưa BE_GATE_11 nháp. Review Agent độc lập xác nhận đường gọi này.

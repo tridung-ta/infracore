@@ -1,8 +1,10 @@
-# BE-GATE #11 — Tối ưu, bảo mật, hoàn thiện (NHÁP, CHƯA DUYỆT)
+# BE-GATE #11 — Duyệt riêng S11-01/S11-02; phần còn lại NHÁP
 
 ## Phê duyệt giới hạn22/10/2026 — chỉ S11-01 và S11-02
 
 User nguyên văn: «Duyệt BUILD S11-01 và S11-02 trước». Chỉ hai bản sửa kiểm quyền sau render được mở để build/test local không DB; các mục khác trong draft **chưa duyệt/chưa build**. Không sửa auto_prepend/.htaccess/.user.ini/header hoặc tạo/kết nối DB test, không merge/tag7–10/push/deploy. Các mô tả “chưa sửa/chưa duyệt” bên dưới là trạng thái trước lần duyệt này đối với hai finding; không suy thành duyệt toàn gate.
+
+Kết quả local: S11-01 commit b879282; S11-02 kiểm48 scripted controller,21 forecast,88 import/XLSX,134 forecast hồi quy và13 routing đạt. PHASE11_EXPORT_VERIFY.md ghi phạm vi và giới hạn. **Host/DB chưa kiểm**, không đánh dấu gate11 hoàn tất.
 
 Lựa chọn S11-02 trong phạm vi này: giữ GET và không thêm export audit mới; chặn khi actor/scope đổi, đọc lại tập dòng export sau render và từ chối409 nếu khác; import-errors đối chiếu batch/source/version/expiry. Vì chưa chốt chính sách audit GET riêng, không tự thêm side effect. report-export/template trống không đổi trong bước này; thiếu audit/semantics report ownership được giữ là rủi ro riêng chưa giải quyết.
 
