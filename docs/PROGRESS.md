@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+F11.2 **rà soát source xong, kiểm thử trên host chưa chạy**. Bổ sung inventory2.092 PHP local/7 root, ops admin/ajax/mobile không có file riêng, upload/module cũ và guard có điều kiện tại PHASE11_LEGACY_SURFACE/CSV. Không kết luận legacy an toàn: rewrite/marker/host chưa xác minh, MOCK JSON allowlist, tests/artifacts chưa deny prefix, project-start không có gate riêng. Gate11 thêm bản sửa/test S11-01 cụ thể và rà6 đường export (asset-export/import-errors còn thiếu post-render recheck; mẫu trống rủi ro thấp). **Chưa sửa code**. PHASE11_HOST_TEST/DEPLOY_LOG có checklist cookie/header cuối/deny đường nhạy cảm/legacy/staging private; tất cả host chưa chạy. Không merge/tag7–10/push/deploy.
+
 F11.6: USER_GUIDE bổ sung lộ trình riêng Admin/Quản lý/Hỗ trợ, phân biệt tạo/gán/xử lý phiếu, giấy phép/key, snapshot và báo cáo. Không dùng ảnh; quy định ảnh MOCK phải giữ badge/chú thích nếu bổ sung sau. Chỉ mô tả chức năng local hiện có, DB/host chưa nghiệm thu; cần kiểm layout PHP thật bằng tài khoản thật sau deploy. Verify đối chiếu source/ma trận server trong PHASE11_SECURITY_REVIEW, không UAT host.
 
 F11.5 **chuẩn bị**: DEPLOY_LOG bổ sung allowlist/exclusions runtime (toàn MOCK/tests/tmp/artifacts/preview), contract manifest/path/size/SHA256/provenance và rollback source giữ dữ liệu mới. Chưa tạo gói/manifest file inventory thực tế hoặc hash ZIP #11; chưa upload/rollback host. Không dùng hash baseline dependency thay hash release.

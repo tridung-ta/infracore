@@ -40,7 +40,7 @@ Toàn bộ15 action POST được outer allowlist `ita_mode.inc.php:37` liệt k
 
 requirePost: application:255–260 kiểm POST rồi token header hoặc form. Token phiên32 byte random, so hash_equals; login xoay token/session. Các method khác bị405 hoặc không vào nhánh ghi. GET lẻ không có cơ chế đổi quyền bằng query.
 
-GET **có side effect audit**: assignment-pdf và các GET tải file import/export hiện có không qua CSRF; không phải POST bị thiếu token. Chưa đánh giá tải cưỡng bức/audit amplification qua navigation; SameSite=Lax không chặn top-level GET. Nếu đổi chính sách GET tải file phải trình gate, không tự đổi route trong lần rà này.
+GET tải file hiện có không qua CSRF; **assignment-pdf có audit**, asset-export/import-template/import-errors **không có audit export** trong đường gọi đã đọc. Không gộp các GET này thành đều có audit. Không phải POST bị thiếu token. Chưa đánh giá tải cưỡng bức/audit amplification qua navigation; SameSite=Lax không chặn top-level GET. Nếu đổi chính sách GET tải file phải trình gate, không tự đổi route trong lần rà này.
 
 ## C. SQL ghép chuỗi / prepared statement
 
@@ -113,5 +113,30 @@ GET import-upload không thực hiện upload (trả405). Đối chiếu trực 
 - application catch Throwable log “ITA request unavailable.”, lỗi kiểm soát không có log vận hành chi tiết; audit nghiệp vụ riêng, không đồng nhất với error log. log_errors/đường log/ACL/rotation trên host chưa xác minh. display_errors tại module không bảo vệ fatal/parse trước khi vào module; cần cấu hình host Off/On theo checklist. Trang HTTP404/500 chuẩn và chính sách log/display_errors vẫn là phần BE F11.4 chưa duyệt.
 
 ## Việc còn mở
+
+### Đối chiếu các đường xuất sau render — bổ sung22/10
+
+| Action | Kiểm trước render | Kiểm lại sau render, trước bytes | Audit export |
+|---|---|---|---|
+| forecast-export | Native current, role/scope; document/snapshot | ForecastService:7–21,97–110 chỉ role/revision/scope; **thiếu native active/store** (S11-01) | Có, nhưng cần chặn trước audit nếu native đã disable |
+| report-export | Auth, report quyền, preview token/version/document | ReportService:88–109 kiểm native active/store, role/revision, scope ID; **không đọc lại từng asset đổi bộ phận sau render** | Có, trước bytes, lỗi fail-closed |
+| assignment-pdf | Auth/scoped document | HandoverService:31–38 currentActor/native active/role/revision/scope, đọc lại asset/document/version | Có, trước bytes |
+| asset-export | Auth.current và AssetObjects::export role/filter/scope | ImportController:19–21,70 không có post-render recheck | Không |
+| import-errors | ImportService:42–47 batch store/user/revision/session trước tạo workbook | Không có post-render recheck | Không |
+| import-template | ImportService ctor A/M trước render; mẫu trống | Không có post-render recheck; ít dữ liệu nhạy cảm hơn hai đường trên | Không |
+
+Đề xuất S11-02 cho asset-export/import-errors để chốt recheck/audit sau khi user duyệt gate; không coi chúng có mức bảo vệ giống report-export hiện tại. MyISAM native không tạo bảo đảm thu hồi quyền nguyên tử với transaction InnoDB. Luồng report snapshot cũng cần xác định ownership khi thiết bị đổi bộ phận; chỉ kiểm lại scope IDs của actor không đồng nghĩa đọc lại mọi đối tượng. Chưa chạy test thời điểm thu hồi quyền/DB thật.
+
+### Hạn chế chấp nhận được và rủi ro còn lại
+
+“Chấp nhận được” ở đây là giới hạn tương thích đã được mô tả để chờ quyết định/kiểm host, **không phải phê duyệt nghiệm thu hoặc bỏ qua finding**.
+
+- **Hash native MD5 cũ:** PmAuth còn xác minh khi password_hash rỗng; đăng nhập thành công nâng dần sang password_hash. Tài khoản chưa đăng nhập có thể còn MD5 yếu nếu DB bị lộ. Credential legacy dài>72 byte không được nâng bcrypt gây cắt suffix; không tự reset password/schema. Cần chính sách chuyển đổi do user duyệt, không tuyên bố toàn bộ tài khoản đã nâng hash.
+- **CSP style-src 'unsafe-inline':** giữ tương thích style hiện có/ECharts; script-src vẫn self trong ITA module. Cho phép inline style làm CSP yếu hơn policy nonce/hash chặt; không tự bỏ làm hỏng UI. Project-start có CSP khác, không lấy policy module suy cho mọi URL.
+- **GET tải file không CSRF:** assignment-pdf có audit nên top-level navigation có thể phát sinh audit/tải cưỡng bức; các GET import/export nói trên chưa có audit export. SameSite=Lax không giải quyết top-level GET. Quyền server vẫn bắt buộc; đổi method/token là thay đổi BE cần duyệt.
+- **Referrer-Policy/Permissions-Policy/HSTS:** chưa thấy header riêng trong đường ITA được rà; không kết luận host không thêm qua proxy. Chưa đặt HSTS khi domain chưa ổn định HTTPS/chứng chỉ; includeSubDomains chỉ cân nhắc khi mọi subdomain liên quan đều HTTPS ổn định, không tự preload. frame-ancestors none đã tồn tại, không gọi thiếu X-Frame-Options là không có chống iframe.
+- **Phụ thuộc host:** AllowOverride/rewrite, DOCUMENT_ROOT/marker, proxy TLS, PHP-FPM display_errors/log_errors/extensions, temp ACL và deny config/artifact. .user.ini không có auto_prepend bảo vệ toàn bộ PHP. Static MOCK JSON hiện được allowlist nếu file còn. Các điểm mở chi tiết tại PHASE11_LEGACY_SURFACE.md; không kết luận legacy an toàn.
+
+**Trạng thái F11.2: rà soát source xong; kiểm thử trên host chưa chạy.** Inventory PHP/ops và checklist host bổ sung tại PHASE11_LEGACY_SURFACE.md, PHASE11_PHP_SURFACE.csv và PHASE11_HOST_TEST.md. Không thay kết quả source review thành PASS host.
 
 Đưa S11-01 và phần HTTP/log/header vào BE_GATE_11 nháp, không tự sửa. Cần kiểm PHP8.3.33/HTTPS thật, tài khoản thật từng vai trò, CSRF sai/thiếu, GET ngoài scope, upload xấu, header/cookie cuối, thu hồi quyền lúc render, log không lộ secret. Lần này chỉ đọc source và rà độc lập; không gắn PASS cho các kiểm tra đó. DB/host chưa nghiệm thu; không merge/tag7–10/push/deploy.
