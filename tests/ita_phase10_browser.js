@@ -36,6 +36,7 @@ async(page)=>{
     delaySupport=true;await p.evaluate(()=>location.hash='overview');for(let i=0;i<50&&!releaseSupport;i++)await p.waitForTimeout(20);check(!!releaseSupport,'Delayed maintenance request captured');await p.evaluate(()=>location.hash='reports');await p.locator('#dash-message').filter({hasText:'Hỗ trợ chỉ xem'}).waitFor();await releaseSupport();await p.waitForTimeout(100);check((await p.locator('#dash-message').textContent()).includes('Hỗ trợ chỉ xem'),'Late response cannot overwrite denied view');continue;
    }
    check(await p.locator('#dash-output .dash-chart svg').count()===3,'Three real chart SVG '+role);
+   const beforeReturn=requests.filter(r=>r.act==='dashboard').length;await p.locator('[data-view="assets"]').click();await p.locator('#dashboard-live-panel').waitFor({state:'hidden'});check(await p.locator('.dash-chart svg').count()===0,'Dispose when leaving to assets '+role);await p.locator('[data-view="overview"]').click();await p.locator('#dash-output .dash-chart svg').nth(2).waitFor({state:'visible'});check(requests.filter(r=>r.act==='dashboard').length===beforeReturn+1,'Returning overview reloads disposed charts '+role);
    check((await p.locator('#dash-output').textContent()).includes('1.250'),'Score >1 displayed '+role);
    check((await p.locator('#dash-output').textContent()).includes('Đang dùng giá trị mặc định'),'Default note '+role);
    check(await p.locator('#dash-output img').count()===0,'Server text escaped '+role);

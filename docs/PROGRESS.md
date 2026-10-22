@@ -1,18 +1,24 @@
 # Tiến độ dự án 5
 
+### 22/10/2026 — Chốt hồ sơ kiểm chứng #10
+
+Rà cuối phát hiện chart bị trống khi Tổng quan → Tài sản → Tổng quan do cache còn hợp lệ trong khi chart đã dispose. Đã xóa view/documentData khi rời trang; browser thêm4 check cho Admin/Quản lý, toàn suite **64 đạt**. Phiên browser/server cũ đã đóng; lần đầu không chạy được do ECONNREFUSED. Đã khởi động lại đúng static server workspace rồi kiểm, không coi lỗi môi trường là lỗi sản phẩm. Commit fix kèm mục này; không DB/host.
+
+Đã có7 commit riêng F10.1–F10.7; đối chiếu hash trong bảng bên dưới. PHASE10_VERIFY.md ghi lệnh/kết quả và giới hạn; PHASE10_HOST_TEST.md dành cho user kiểm sau upload. Kiểm lại local22/10: 52 pure/scripted +7 ngân sách, route13 và Smarty/syntax đạt; không chạy DB. DB Phase1–10 **chưa nghiệm thu**, chưa EXPLAIN/index thật, concurrency/rollback thật hoặc PHP-FPM export. Không merge/tag7–9/push/deploy. Vendor Excel vẫn có deprecation PHP local, chưa nâng dependency.
+
 ## 21/10/2026 — BE #10 đã được duyệt, triển khai local
 
 User nguyên văn: «tôi duyệt bạn hãy bắt đầu BUILD». Các ghi chú chưa duyệt #10 bên dưới là lịch sử trước phê duyệt. DB Phase 1–9 vẫn **chưa nghiệm thu**, không merge/tag7–9/push/deploy. Agent tự kiểm local, user kiểm host sau upload.
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
-| F10.1 | KPI dashboard theo phạm vi, mốc giờ VN chung | FE/BE | [x] build local | Commit chức năng kèm mục này | 35 pure/scripted; 9 browser API mock; Smarty/syntax đạt | Đọc RR/SERIALIZABLE; tối đa 5.000 asset, từ chối vượt; chưa DB/EXPLAIN/UAT |
+| F10.1 | KPI dashboard theo phạm vi, mốc giờ VN chung | FE/BE | [x] build local | a017327 | 35 pure/scripted; 9 browser API mock; Smarty/syntax đạt | Đọc RR/SERIALIZABLE; tối đa 5.000 asset, từ chối vượt; chưa DB/EXPLAIN/UAT |
 | F10.2 | Biểu đồ tình trạng theo loại/bộ phận/năm mua, bảng đối chiếu | FE/BE | [x] build local | 86ba2bd | 35 pure/scripted; 9 browser API mock; JS syntax đạt | ECharts 4 trạng thái xếp chồng, không animation/polling; chưa DB |
-| F10.3 | Biểu đồ tỷ lệ lỗi, bảng tử số/mẫu số | FE/BE | [x] build local | Commit chức năng kèm dòng này | 35 pure/scripted; 9 browser API mock; JS syntax đạt | Đếm distinct asset repair trong cửa sổ 12 tháng; không đếm event; chưa DB |
-| F10.4 | Biểu đồ đề xuất thay thế, bảng điểm 3 số lẻ | FE/BE | [x] build local | Commit chức năng kèm dòng này | 35 pure/scripted; 72 hồi quy vòng đời; 9 browser API mock; JS syntax đạt | Sort/tier theo DECIMAL gốc; giữ điểm >1; chưa DB |
-| F10.5 | Preview và Excel tồn kho/bảo trì/vòng đời ngắn/ngân sách | FE/BE | [x] build local | Commit chức năng kèm dòng này | 52 pure/scripted +7 ngân sách; 15 browser API mock; XLSX thật mở lại STRING; route13 đạt | HMAC preview 15 phút, dữ liệu đổi trả409; audit trước bytes; native actor/scope kiểm lại; chưa DB |
-| F10.6 | PDF bốn báo cáo, tối đa 500 dòng dữ liệu | FE/BE | [x] build local | Commit chức năng kèm dòng này | PDF thật tiếng Việt đã render/xem; 52 pure/scripted, 134 hồi quy ngân sách; 15 browser báo cáo đạt | Font/runtime PDF dùng lại; không package mới; chưa PHP-FPM/DB/host |
-| F10.7 | Trung tâm cảnh báo live và chuông hiệu lực | FE/BE | [x] build local | Commit chức năng kèm dòng này | 52 pure/scripted +7 ngân sách, 60 browser API mock; hồi quy browser8:63/9:42 đạt | Phân trang/lọc, nhiều lý do riêng; manager license theo allocation scope; không lưu đã đọc; chưa DB |
+| F10.3 | Biểu đồ tỷ lệ lỗi, bảng tử số/mẫu số | FE/BE | [x] build local | 38adbbe | 35 pure/scripted; 9 browser API mock; JS syntax đạt | Đếm distinct asset repair trong cửa sổ 12 tháng; không đếm event; chưa DB |
+| F10.4 | Biểu đồ đề xuất thay thế, bảng điểm 3 số lẻ | FE/BE | [x] build local | 477d9f9 | 35 pure/scripted; 72 hồi quy vòng đời; 9 browser API mock; JS syntax đạt | Sort/tier theo DECIMAL gốc; giữ điểm >1; chưa DB |
+| F10.5 | Preview và Excel tồn kho/bảo trì/vòng đời ngắn/ngân sách | FE/BE | [x] build local | a0b5b16 | 52 pure/scripted +7 ngân sách; 15 browser API mock; XLSX thật mở lại STRING; route13 đạt | HMAC preview 15 phút, dữ liệu đổi trả409; audit trước bytes; native actor/scope kiểm lại; chưa DB |
+| F10.6 | PDF bốn báo cáo, tối đa 500 dòng dữ liệu | FE/BE | [x] build local | d607518 | PDF thật tiếng Việt đã render/xem; 52 pure/scripted, 134 hồi quy ngân sách; 15 browser báo cáo đạt | Font/runtime PDF dùng lại; không package mới; chưa PHP-FPM/DB/host |
+| F10.7 | Trung tâm cảnh báo live và chuông hiệu lực | FE/BE | [x] build local | 0ca9a7e | 52 pure/scripted +7 ngân sách, 60 browser API mock; hồi quy browser8:63/9:42 đạt | Phân trang/lọc, nhiều lý do riêng; manager license theo allocation scope; không lưu đã đọc; chưa DB |
 
 Lớp đọc dùng lại điểm DECIMAL của vòng đời, transaction đọc nhất quán và helper chung cho các báo cáo tiếp theo. SQL đọc xuất tại PHASE10_EXPLAIN.sql; generator không thực thi SQL, không DDL.
 

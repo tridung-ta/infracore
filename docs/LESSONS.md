@@ -1,5 +1,20 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 22/10/2026 — Dispose biểu đồ phải vô hiệu hóa cache view
+
+- Triệu chứng: Tổng quan → Tài sản → Tổng quan giữ KPI/bảng nhưng chart trống.
+- Nguyên nhân có bằng chứng: nhánh rời trang dispose chart nhưng giữ view/documentData; khi quay lại, điều kiện cache return sớm bỏ qua render.
+- Sửa: xóa trạng thái view/documentData lúc rời trang, lần quay lại tải/render lại theo thao tác điều hướng của user, không thêm polling.
+- Kiểm: browser API mock64 check đạt, có4 check mới rời/quay lại trên Admin/Quản lý. Chưa DB/host; phạm vi controller dashboard có dispose/cached view.
+
+## 22/10/2026 — Mốc giờ, actor và phản hồi muộn trong báo cáo
+
+- Triệu chứng/phân loại: token ngân sách có thể lệch vì timestamp được tạo hai lần; tài khoản native bị vô hiệu hóa trong lúc render chưa được kiểm lại; trang server clamp khác biến page local; phản hồi maintenance cũ có thể ghi đè trang từ chối quyền.
+- Bằng chứng: review source chỉ rõ các đường đi; scripted budget giữ as_of cũ kiểm token ổn định, double native-disabled bị403; browser tái hiện trang3 trả về2 và delayed request chuyển sang trang bị từ chối.
+- Sửa: forecast hiện tại dùng as_of chung trước ký; snapshot giữ giờ gốc; đọc lại native active/store trước audit/bytes; đồng bộ page từ response, vô hiệu nút khi tải; abort và sequence guard trên mọi lần chuyển view.
+- Kiểm: 52 pure/scripted,7 budget và60 browser API mock đạt trong đợt #10. Không dùng double để tuyên bố native MyISAM race hoặc rollback InnoDB thật đã đạt.
+- Phạm vi: preview/export có chữ ký và UI bất đồng bộ; phải tái hiện lại trước khi áp dụng vào trang khác.
+
 ## ITA-20261020-07 Ticket thiếu phản hồi nhìn thấy khi UAT host
 
 User báo tạo phiếu/tải danh sách không có thông báo; chưa có response/log để xác định nguyên nhân ghi DB host. Đã tái hiện local: lỗi mạng đặt text nhưng thông báo có bbox top=-365px dù đang focus; scroll-behavior smooth chưa đưa nó vào viewport ở thời điểm phản hồi. Tải danh sách thành công cũng không có thông báo hoàn tất khi kết quả không đổi.

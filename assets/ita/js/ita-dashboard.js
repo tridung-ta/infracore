@@ -142,6 +142,8 @@
   if(!supported){++sequence;
   request?.abort();
   exportRequest?.abort();
+  view='';
+  documentData=null;
   dispose();
   return;
   }if(next===view&&documentData)return;
