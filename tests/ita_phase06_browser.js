@@ -14,6 +14,7 @@ async(page)=>{
    const action=url.searchParams.get('act');
    if(action==='data')return json(route,{assets:[],departments:[{value:'10',label:'QA'}],pagination:{page:1,per_page:5,total:0},user:{id:111,role,display_name:'QA',role_label:role},summary:{total:0,by_status:{},by_department:[],license_counts:{critical:1,warning:0},alerts:[{license_id:7,level:'critical',title:'Giấy phép QA',description:'QA alert'}],alerts_total:1}});
    if(action==='categories')return json(route,[]);
+   if(action==='alerts')return json(route,{as_of:'2026-10-22T00:00:00Z',rows:[{level:'critical',code:'LIC-7',name:'Giấy phép QA',title:'Giấy phép hết hạn'}],total:1,active_total:1,page:1,per_page:20});
    if(action==='licenses')return json(route,{rows:[license()],total:1,page:1,per_page:20});
    if(action==='license')return json(route,{license:license(),allocations:[{id:9,asset_id:9,user_id:null,department_id:null,allocated_at:'2026-10-20 00:00:00',released_at:null}],total:1,page:1,per_page:20});
    if(['license-save','license-key'].includes(action)){
@@ -39,9 +40,9 @@ async(page)=>{
   const p=admin.p;await p.locator('#license-rows button').click();await p.locator('#license-editor').waitFor({state:'visible'});
   check(await p.locator('#license-details img').count()===0,'HTML injection escaped');
   check((await p.locator('#license-details').textContent()).includes('Hết hạn trong 0 ngày'),'Expiry boundary displayed');
-  await p.evaluate(()=>location.hash='alerts');await p.locator('#alert-list button').waitFor();
-  check((await p.locator('#alert-list button').textContent())==='Xem giấy phép','License alert action in notification center');
-  await p.locator('#alert-list button').click();await p.locator('#licenses-panel').waitFor({state:'visible'});
+  await p.evaluate(()=>location.hash='alerts');await p.locator('#dash-output').getByText('Giấy phép hết hạn',{exact:true}).waitFor();
+  check((await p.locator('#dash-output').textContent()).includes('Giấy phép QA'),'License alert shown in current notification center');
+  await p.evaluate(()=>location.hash='licenses');await p.locator('#licenses-panel').waitFor({state:'visible'});
   await p.locator('#license-name').fill('QA updated');await p.locator('#license-key-input').fill('QA-new-key');await p.locator('#license-editor button[type=submit]').click();
   await p.waitForFunction(()=>document.getElementById('license-message').textContent.includes('đọc lại hồ sơ.'));
   check(admin.posts.at(-1).body.software_name==='QA updated'&&admin.posts.at(-1).body.license_key==='QA-new-key','Metadata form sends name and new key');

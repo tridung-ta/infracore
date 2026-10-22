@@ -16,6 +16,7 @@ async(page)=>{
    if(url.pathname!=='/admin.php')return route.continue();
    const action=url.searchParams.get('act');reads.push({action,query:Object.fromEntries(url.searchParams)});
    if(action==='categories')return json(route,[]);
+   if(action==='alerts')return json(route,{as_of:'2026-10-22T08:00:00+07:00',page:1,per_page:20,total:1,active_total:1,rows:[{entity_type:'asset',entity_id:7,level:'warning',code:'QA-7',name:'QA',title:'Quá hạn bảo trì: QA'}]});
    if(action==='data')return json(route,{assets:[{...asset,serial:'QA',category:'PC',department:'QA',warranty:'QA',specs:'QA',location:'QA'}],departments:[{value:'10',label:'QA Dept'}],pagination:{page:1,per_page:5,total:1},user:{id:111,role,display_name:'QA',role_label:role},summary:{total:1,by_status:{in_use:1},by_department:[],alerts:[{asset_id:7,level:'warning',title:'Quá hạn bảo trì: QA',description:'QA'}],alerts_total:1}});
    if(action==='assignments'){
     if(getFailure){getFailure=false;return json(route,null,503,'QA reload unavailable');}
@@ -46,8 +47,8 @@ async(page)=>{
   check((await p.locator('#handover-details').textContent()).includes('Quá hạn từ 2020-01-01'),'Maintenance overdue shown');
   await p.evaluate(()=>location.hash='assets');await p.locator('#assets-panel').waitFor({state:'visible'});
   check((await p.locator('#asset-rows').textContent()).includes('Quá hạn bảo trì'),'Maintenance badge in asset list');
-  await p.evaluate(()=>location.hash='alerts');await p.locator('#alerts-panel').waitFor({state:'visible'});
-  check((await p.locator('#alert-list').textContent()).includes('Quá hạn bảo trì: QA'),'Maintenance alert in notification center');
+  await p.evaluate(()=>location.hash='alerts');await p.locator('#dashboard-live-panel').waitFor({state:'visible'});await p.locator('#dash-output').filter({hasText:'Quá hạn bảo trì: QA'}).waitFor();
+  check((await p.locator('#dash-output').textContent()).includes('Quá hạn bảo trì: QA'),'Maintenance alert in notification center');
   await p.evaluate(()=>location.hash='assignments');await p.locator('#assignment-live').waitFor({state:'visible'});
   check(await p.locator('#handover-assign').isDisabled(),'Recipient must be selected');
   await p.locator('#handover-target').selectOption('111');
