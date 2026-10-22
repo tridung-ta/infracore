@@ -2,6 +2,11 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.5 (chuẩn bị) | Hồ sơ host/isolation và loại MOCK khỏi gói | Docs | [~] | Commit tài liệu kèm dòng này | Đọc source PmDb/gate10, đối chiếu host log và diff; không DB | Chưa tạo gói/deploy; isolation phải kiểm trên kết nối ứng dụng |
+| F11.1 (kế hoạch) | Kiểm tải5.000 asset/PDF500 trên DB test | Docs | [~] | Commit tài liệu kèm dòng này | Soạn PHASE11_LOAD_TEST_PLAN.md, chưa chạy | Chưa có DB test được xác nhận; không seed/instrument/index |
+
 User ghi nhận Phase10 build local, DB/host **chưa nghiệm thu**; **không merge/tag Phase7–10**, không push/deploy. Chỉ FE và tài liệu #11 được làm; index/EXPLAIN, cookie/session, security headers, SQL và phân trang backend chỉ soạn gate nháp, chưa build.
 
 Đã chạy lại `php tests/ita_phase08_unit.php`: **72 pure/scripted check đạt**, sửa PHASE08_VERIFY.md khớp. Runtime kiểm bằng `php -v`: **PHP CLI local8.5.10**. Host theo thông tin đã cung cấp: **8.3.33**; **chưa chạy test trên8.3**. PATH và thư mục runtime D:/Hoc_PHP/php chỉ xác minh được8.5.10; các đường dẫn C:/xampp/php/php.exe và C:/tools/php83/php.exe không có. Không cài hoặc tải runtime mới; không coi kết quả8.5 là chứng nhận8.3.

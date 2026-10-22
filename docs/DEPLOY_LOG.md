@@ -1,12 +1,29 @@
 # Nhật ký thao tác hosting
 
+## Trạng thái host hiện tại — cập nhật22/10/2026
+
+| Gói/source | Ngày upload | Đã upload được xác nhận | Chưa upload/chưa biết |
+|---|---|---|---|
+| Source hiện chạy trên host | Chưa được cung cấp | Chỉ có lời báo/ảnh đăng nhập và ticket trong lịch sử | Chưa xác định commit/hash; không suy từ UI |
+| through-phase07 source80929beff9bb; picker2aa3c98179e5 | Chưa xác nhận | Chưa có xác nhận đúng gói/hash | Có gói local; upload thực chưa biết |
+| Phase8 UI source1691c43bd37d | Chưa xác nhận | Chưa xác nhận upload đúng gói | Chỉ có gói local được ghi trong hồ sơ |
+| Phase9 source2e95245; docs9b32bae | Chưa xác nhận | Chưa xác nhận | Build local, chưa có bằng chứng host |
+| Phase10 source0ce2166; docs2f05ea3 | Chưa upload theo hồ sơ hiện có | Không | 7 chức năng +fix chỉ local; chưa tạo gói deploy #10 |
+| Phase11 FE/tài liệu | Chưa upload | Không | Chỉ bắt đầu FE/tài liệu; BE chưa duyệt |
+
+**Bước kiểm đầu tiên trước nghiệm thu #10: transaction isolation của chính kết nối ứng dụng.** Dashboard, alerts và report-preview đều đi qua điều kiện RR/SERIALIZABLE, không riêng thao tác lưu ngân sách. Giá trị đọc trong phpMyAdmin là kết nối khác, không đủ chứng minh session PHP-FPM. Dùng công cụ/quan sát được phép của môi trường để kiểm kết nối ITA thực tế; khi chưa có cách quan sát, ghi **chưa xác nhận**, không thêm PHP endpoint chẩn đoán hoặc đổi config để vượt chặn trong bước này. Có thể dùng `@@transaction_isolation` (MariaDB cũ: `@@tx_isolation`) qua kết nối đó; nhánh fallback hiện có trong PmDb. READ-COMMITTED/READ-UNCOMMITTED chưa đạt điều kiện ứng dụng. Không tự đổi isolation toàn server.
+
+**Gói runtime phải loại mọi MOCK**: `assets/ita/mock/**` (đặc biệt dashboard.html, reports.html, JSON/HTML khác), `assets/ita/preview/**`, test/fixture, ảnh kiểm thử và tmp. Dùng danh sách runtime cho phép và manifest/hash, không zip toàn workspace. Quét lại inventory ZIP để bảo đảm không có MOCK; chỉ grep chữ MOCK không đủ, vì mã production có thể chứa nhánh preview/label và không được tự xóa source đang dùng. Chưa tạo/kiểm ZIP #11 trong bước này.
+
+PHP kiểm local8.5.10; host theo hồ sơ8.3.33; **chưa chạy test trên8.3**. Giữ DB/host chưa nghiệm thu, không merge/tag7–10/push/deploy. Kế hoạch tải chưa chạy tại PHASE11_LOAD_TEST_PLAN.md.
+
 ## 22/10/2026 — Dashboard/báo cáo #10 chỉ có trên local
 
 Source a017327 → 0ca9a7e gồm7 commit F10.1–F10.7, kèm fix điều hướng0ce2166 đã build/tự kiểm; xem PHASE10_VERIFY.md. **Chưa upload, chưa tạo gói deploy #10, chưa xác nhận source host.** Không DDL/seed mới. Cần đủ PHP/bootstrap/ita_mode/audit/Smarty/JS/CSS và ECharts6.1.0, không chỉ giao diện.
 
 Checklist host tại PHASE10_HOST_TEST.md: PHP/GD/mbstring, display_errors Off/log_errors On, RR/SERIALIZABLE, auth_key/ITA_LICENSE_KEY private; kiểm dependency/font theo hồ sơ nguồn bên dưới. Chưa chạy Composer hoặc đổi server config. Rollback source giữ dữ liệu/audit mới, không restore đè DB. DB Phase1–10 chưa nghiệm thu; không merge/tag7–9/push/deploy.
 
-## Trạng thái host hiện tại — rà hồ sơ 21/10/2026
+## Hồ sơ host đã rà21/10/2026 — đối chiếu lịch sử
 
 Không kết nối host trong lần rà này. “Ngày bằng chứng” là ngày lời báo/ảnh hoặc ngày tạo gói local, **không tự coi là ngày upload**. Chưa có inventory/hash source đang chạy trên host. Các ghi chú lịch sử bên dưới không thay thế bảng trạng thái này.
 
@@ -18,9 +35,9 @@ Không kết nối host trong lần rà này. “Ngày bằng chứng” là ng�
 | ita-ticket-picker-update.zip; source2aa3c98179e5 | Gói local21/10, source đọc lại từ MANIFEST | Có gói local | Chưa có xác nhận upload đúng gói; agent không upload |
 | ita-lifecycle-update.zip (gói cũ), thay bằng ita-lifecycle-ui-update.zip; source1691c43bd37d | Gói local21/10; manifest gói UI đã đối chiếu | Gói UI là bản bàn giao local mới hơn | Chưa có xác nhận upload/hash host của Phase8; không upload cả hai gói |
 | Ngân sách source2e95245; docs checkpoint9b32bae | Commit local21/10 | Đã build/verify local | Chưa tạo gói Phase9 trong phiên này; chưa có xác nhận upload |
-| Phase10 | Chỉ tài liệu gate, cập nhật21/10 | **BE chưa duyệt, chưa build** | Không có runtime Phase10 để upload |
+| Phase10 source0ce2166; docs2f05ea3 | Build local21/10, chốt22/10; chưa upload | BE đã duyệt/build local; **chưa nghiệm thu DB/host** | Chưa tạo gói deploy #10, chưa upload |
 
-DB Phase1–9 **chưa nghiệm thu**; không merge/tag7/8/9. Để cập nhật bảng, user cung cấp gói/commit/hash và ngày upload thực; nếu không biết ghi chưa xác định, không dựng ngược từ ảnh UI hoặc kết quả mock. Việc đăng nhập hoặc một luồng ticket thành công không xác nhận CHECK/rollback/concurrency.
+DB Phase1–10 **chưa nghiệm thu**; không merge/tag7–10. Để cập nhật bảng, user cung cấp gói/commit/hash và ngày upload thực; nếu không biết ghi chưa xác định, không dựng ngược từ ảnh UI hoặc kết quả mock. Việc đăng nhập hoặc một luồng ticket thành công không xác nhận CHECK/rollback/concurrency.
 
 ## Đề xuất dựng lại dependency Excel/PDF/font — chưa thực hiện
 
