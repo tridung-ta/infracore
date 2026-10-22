@@ -7,10 +7,12 @@ F11.3/F11.4 đã kiểm local: 58 responsive +14 admin/login trình bày +61 tr�
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
 | F11.3 | Responsive cuối và nhãn cuộn ngân sách | FE | [x] local | Commit F11.3 riêng | 58+14 browser static/API mock | Không xác thực login thật; không DB |
-| F11.4 | Trạng thái lỗi tải trang chuẩn | FE | [x] local | Commit F11.4 riêng | 61 browser mock; Smarty/syntax | Không thêm HTTP route hoặc sửa auth |
+| F11.4 | Trạng thái lỗi tải trang chuẩn | FE | [x] local | 3b3403c | 61 browser mock; Smarty/syntax | Không thêm HTTP route hoặc sửa auth |
 | F11.6 | Hướng dẫn sử dụng | Docs | [x] tài liệu | d1201d3 | Đối chiếu contract/source | Host chưa nghiệm thu |
 
 PHP local8.5.10; host8.3.33; chưa chạy8.3. F11.1 kiểm tải chưa chạy; index/cookie/headers/phân trang BE chỉ bản nháp BE_GATE_11.md, chưa duyệt/chưa build. Không merge/tag Phase7–10, không push/deploy. Phase11 chưa hoàn tất toàn bộ BE/hiệu năng/host.
+
+F11.3 lưu riêng cùng bộ đo responsive và generator login MOCK; file HTML sinh không stage hoặc đóng gói. Commit bảo trì test cảnh báo3513f60 chỉ thay fixture/selector theo contract Phase10; không thêm lại nút điều hướng cũ. Hồ sơ host e716784, rà phân trang/gate nháp e273fa3, runtime/số test9fccd97.
 
 F11.6: USER_GUIDE.md đã soạn theo template/contract hiện có, có phân biệt MOCK/local với host chưa nghiệm thu, quyền3 vai trò, snapshot và giới hạn từng trang. Verify đọc source/nhãn form và diff; chưa kiểm người dùng trên host. Không thêm chức năng BE hoặc tuyên bố tất cả danh sách đã phân trang.
 
