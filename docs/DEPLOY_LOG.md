@@ -33,6 +33,10 @@ Bước bắt buộc sau khi tạo gói trong tương lai, trước bàn giao: *
 4. Đối chiếu ZIP ↔ manifest: cùng tập file được duyệt, không thiếu/thừa, size và SHA256 từng entry khớp; kiểm CRC, metadata manifest/checksum theo contract không self-hash. Vượt giới hạn hoặc không đọc được ZIP/entry → từ chối, không bỏ qua entry lỗi. Tệp bị loại xuất hiện trong manifest dù không có trong ZIP cũng là lỗi.
 5. Chỉ ghi “đạt kiểm ZIP” sau khi validator thật chạy trên ZIP thật và lưu kết quả đã che private; hash ZIP riêng sau kiểm. Quét secret theo nội dung là lớp bổ sung, không dùng regex tên để hứa phát hiện mọi secret.
 
+**Bổ sung deny/allowlist22/10:** luôn từ chối `.ita-legacy-enabled`, kể cả khác hoa thường/ở handoff. Từ chối basename `dashboard.html`, `reports.html`, `login-preview.html` **ở mọi đường dẫn**, không chỉ assets/ita/mock. `.htaccess`, `.user.ini` và mọi marker `.ita-*` khác chỉ được qua khi **đúng path và byte/hash** trong allowlist đã duyệt; không có ngoại lệ cho `.ita-legacy-enabled`. Mọi *.php trong thư mục upload/staging bị từ chối, không phân biệt hoa thường; dùng danh sách path upload/staging đã xác định cho release, không chỉ tìm một tên folder giả định. Chưa có inventory host thì không tuyên bố đã biết tất cả thư mục upload.
+
+**Case bổ sung (chưa viết/chạy):** runtime/.ITA-LEGACY-ENABLED hoặc handoff/.ita-legacy-enabled→từ chối dù có allowlist; nested/Dashboard.HTML, handoff/reports.html, runtime/other/login-preview.html→từ chối; .htaccess/.user.ini/.ita-enabled không allowlist, sai path hoặc hash→từ chối; uploads/a.PHP và staging/sub/a.php→từ chối. Case đối chứng không được chặn nhầm: template dashboard.tpl.html, JS reports.js đúng allowlist→qua nếu các kiểm khác đạt; .htaccess/.user.ini/.ita-enabled đúng path+hash được duyệt→qua; file nằm ngoài upload/staging không tự bị từ chối chỉ vì là PHP, vẫn phải qua allowlist runtime. Đánh giá link/path chuẩn hóa trước các ngoại lệ để không bypass bằng alias.
+
 **Ma trận test validator dự kiến, chưa viết/chạy:** gói tối thiểu allowlist hợp lệ→đạt; mỗi prefix cấm có file con và directory entry→từ chối; TMP/Host-Inventory, Runtime/Tests, ASSETS/ITA/MOCK, .GIT/HEAD→từ chối; config/.env/dump trong gốc/runtime/handoff→từ chối; absolute/../backslash/duplicate-case/link→từ chối; manifest thiếu/thừa/sai size/sai hash/CRC hỏng→từ chối. Case âm tính: tên gần giống như templates không bị coi là tmp; dependency hợp lệ chỉ qua khi được allowlist. Test bản sao listing đổi tên/private content phải bị từ chối qua review inventory/content, không coi blacklist path là đủ.
 
 ### Xác định source host bằng file đại diện — chưa thực hiện
@@ -50,6 +54,10 @@ Khớp vài file chỉ chứng minh **những file đó**; cùng file có thể 
 ### Thử tài khoản DB runtime mới trên DB test — kế hoạch chưa chạy
 
 Chỉ sau user xác nhận **DB test cô lập**, dữ liệu giả/đã khử nhạy cảm và backup; không tạo DB test hay GRANT trong bước này. Không đổi credential host để thử. Quản trị tạo tài khoản runtime test với quyền dự kiến và tài khoản DDL riêng; không dùng tài khoản quản trị để chạy ứng dụng rồi coi quyền runtime đã đạt.
+
+**Rà source chỉ đọc22/10:** tìm LOCK TABLES/UNLOCK TABLES, CREATE TEMPORARY TABLE/CREATE TABLE/ALTER TABLE/DROP TABLE trong ITA DAO/service/security/database/bootstrap và PmDb/PmAuth dùng chung không thấy câu lệnh khớp. Không chạy ứng dụng/DB; không suy kết quả này cho migration, fixture, legacy hoặc vendor ngoài luồng ITA đã rà. `SELECT … FOR UPDATE` và CTE `WITH` hiện có không phải LOCK TABLES hoặc tạo bảng tạm bằng DDL. Vì vậy **chưa đề xuất cấp LOCK TABLES hoặc CREATE TEMPORARY TABLES**. Nếu sau này runtime thực sự cần: xác định đúng query/tính năng và phạm vi bảng/schema rồi trình quyền riêng tối thiểu; không cấp CREATE/ALTER/DROP để thay CREATE TEMPORARY TABLES, không cấp LOCK TABLES toàn server để chữa lỗi không rõ nguồn.
+
+**Lượt “app không phát sinh DDL” trên DB test — chưa chạy:** khởi động ứng dụng dưới credential runtime mới không có DDL, đăng nhập rồi mở shell/data/tài sản/danh mục/import/phân bổ/giấy phép/ticket/vòng đời/ngân sách/dashboard/cảnh báo/báo cáo theo3 vai trò. Quan sát DB audit/query log hiện có bằng tài khoản quản trị quan sát được phép, giới hạn đúng user/schema/thời điểm; không tự bật general log toàn server hoặc ghi dữ liệu nhạy cảm. Kiểm không có CREATE/ALTER (kể cả CREATE TEMPORARY TABLE) được thử rồi bị từ chối; cũng rà DROP/TRUNCATE/LOCK TABLES bất ngờ. Không có log phù hợp thì ghi **chưa xác nhận không DDL**, không suy từ màn hình200. Lỗi DDL bị code nuốt vẫn là không đạt; truy nguyên query, không tăng grant. Không đưa bước migration/fixture vào lượt runtime này.
 
 - Ghi `SELECT CURRENT_USER()` và `SHOW GRANTS FOR CURRENT_USER()` qua đúng kết nối **tài khoản runtime test** bằng công cụ được phép; che tên user/host nhạy cảm trong hồ sơ. Kiểm effective grants/role được kích hoạt nếu DB hỗ trợ role, không chỉ grant trực tiếp. Không có CREATE/ALTER/DROP/GRANT OPTION/FILE/quyền rộng toàn server, không DELETE khi chưa có nhu cầu xác nhận. Chưa cấp/thu quyền hoặc chạy lệnh trên host.
 - Chạy lại login username/email, hash upgrade/last_login và logout/limiter; ba vai trò, đọc/đổi quyền/phạm vi và audit. Kiểm SELECT/UPDATE dc_users đúng cột cần thiết; role mapping và scope không suy từ store.
@@ -135,6 +143,8 @@ Không cần dựng gói để chuẩn bị contract trên. Khi được giao đ
 ## C. Hồ sơ dependency
 
 ### Sao lưu dependency ngoài Git ra ngoài máy dev — kế hoạch chưa thực hiện
+
+Mẫu lệnh Windows tạo ba bộ SHA256SUMS và bảng vị trí lưu ngoài máy dev tại **DEPENDENCY_CHECKSUM_WINDOWS.md**. Chỉ là tài liệu PowerShell/Get-FileHash; chưa chạy lệnh, tạo checksum hoặc copy/archive dependency. Mẫu giữ path tương đối root dự án, khác quy tắc path manifest Excel lịch sử nêu bên dưới; không so trực tiếp hash hai manifest khác convention.
 
 Phạm vi: Excel legacy **566 file theo baseline đã ghi**, InterVariable.woff2 +OFL, vendor mPDF đã khóa cùng DejaVu/font/license và composer.json/lock. Số566 là quan sát baseline, phải đếm lại khi sao lưu thực tế; sai lệch cần đối chiếu, không tự bỏ file để khớp số. Không tạo archive/backup hoặc upload trong bước tài liệu này.
 
@@ -244,6 +254,7 @@ Gói artifacts/ita-phase07/ita-ticket-picker-update.zip:7runtime FE cộng dồn
 Gói artifacts/ita-phase08/ita-lifecycle-ui-update.zip gồm12runtime files cộng dồn Phase8 (11file đã duyệt và CSS motion), source cố định/hash từng file trong manifest. Gói thay thế ita-lifecycle-update.zip; không cần upload cả hai. Nền vẫn là Phase7 qua2aa3c98. Không SQL/config/fixture/dump/vendor mới; backend giữ nguyên commit0c2e0a7.
 
 User backup file tương ứng, upload nội dung runtime vào public_html rồi Ctrl+F5; không upload handoff/manifest/ZIP. Kiểm bộ lọc/xóa lọc, chuyển nhóm, xem/đóng lý do và số liệu gốc theo hướng dẫn host. Rollback khôi phục source backup, giữ DB/config/keys.63browser mock checks và review đạt; không có xác nhận DB mới, không merge/tag/deploy.
+
 ### 20/10/2026 — Gói upload cộng dồn đến Phase7 theo yêu cầu user
 
 User xác nhận chỉ kiểm được trên host với DB hiện có, yêu cầu bắt đầu chuẩn bị gói. Agent chỉ đóng gói local, không upload/DB/merge/push. Source runtime cố định `80929beff9bb0675b19428df63d6f4316a706caf`, dùng cho host Phase2 đã đăng nhập được.
@@ -287,15 +298,19 @@ User đã duyệt BE-GATE #04. Code F4.1–F4.5 có trong working tree; không t
 ### Xác nhận từ user sau import SQL host
 
 Ngày 16/10/2026: user báo «đã thành công» sau hướng dẫn chạy phase01_verify.sql. Ghi nhận user xác nhận tạo bảng trên dung_infracore/MariaDB hosting thành công; agent không kết nối host và chưa nhận ảnh bộ đếm 12/12/12 hoặc danh sách đủ 11 khóa ngoại sau lần import cuối. Không suy diễn xác nhận này thành quyền seed, sửa PHP/routing hoặc deploy. Migration F1.1–F1.4 đã bàn giao và được user xác nhận chạy; ứng dụng chưa tích hợp DB.
+
 ### Đính chính xác nhận hosting
 
 Ảnh user gửi tiếp theo cho thấy selected_database=dung_infracore nhưng truy vấn metadata dùng DATABASE() trả 0/NULL/NULL, không thấy FK. Chưa xác nhận tạo đủ 12 bảng trên host; kết luận thành công trước đó chỉ dựa trên lời báo của user và được thay bằng «chờ chẩn đoán». Trước đó import có thông báo #1050 ita_departments already exists. Chưa rõ nguyên nhân hai quan sát khác nhau; không mặc định bảng bị mất hoặc migration thất bại. Đã thay bộ lọc metadata trong preflight/verify bằng tên schema cố định để giảm phụ thuộc ngữ cảnh truy vấn. Cần SHOW TABLES và SHOW CREATE TABLE với schema chỉ định rõ. Không chạy lại CREATE hoặc xóa bảng khi chưa đối chiếu.
+
 ### Bằng chứng SHOW TABLES trên host
 
 User gửi ảnh SHOW TABLES FROM dung_infracore LIKE 'ita%': liệt kê đủ 12 tên bảng đúng migration. SHOW CREATE TABLE dung_infracore.ita_departments trả về cấu trúc nhưng ảnh bị rút gọn. Đã xác nhận tồn tại đủ bảng; không chạy lại CREATE. Chưa xác nhận toàn bộ cột/engine/collation/11 FK qua ảnh này. Nguyên nhân truy vấn information_schema trước đó dùng DATABASE() trả 0 chưa xác minh; không kết luận bảng chưa được tạo. File verify đã dùng tên schema cố định.
+
 ### Xác nhận số lượng khóa ngoại trên host
 
 Ảnh mới từ user cho thấy truy vấn information_schema.TABLE_CONSTRAINTS với CONSTRAINT_SCHEMA='dung_infracore' và loại FOREIGN KEY trả tổng 11 dòng. Kết hợp SHOW TABLES trước đó: đã xác nhận đủ 12 tên bảng và 11 khóa ngoại trên MariaDB host. Chưa có ảnh bộ đếm engine/collation 12/12/12 hoặc toàn bộ định nghĩa cột. Không yêu cầu chạy lại CREATE. Quyền PHP/routing và seed vẫn chưa được user phê duyệt.
+
 ### File kết quả ita_settings.sql từ user
 
 Đã đọc tests/ita_settings.sql, không thực thi: có 6 cặp setting_key/setting_value khớp danh mục khởi tạo (budget_contingency_percent=10, currency=VND, display_timezone=Asia/Ho_Chi_Minh, license_critical_days=7, license_warning_days=30, warranty_warning_days=30). INSERT chỉ xuất setting_key và setting_value, không có store_id trong khi CREATE định nghĩa store_id NOT NULL không default; file này không đủ để xác nhận scope store_id=1 hoặc dùng như bản backup phục hồi nguyên bảng. DDL xuất cũng không thể hiện đầy đủ engine/collation/CHECK. Không import lại file. Chưa nhận kết quả categories/departments sau chạy catalog; cần SELECT đếm ba nhóm theo store_id=1.
