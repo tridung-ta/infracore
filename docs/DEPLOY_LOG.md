@@ -1,5 +1,21 @@
 # Nhật ký thao tác hosting
 
+## Xác nhận loại tmp khỏi đóng gói — rà source22/10, không tạo gói
+
+Đã đọc ba script đóng gói hiện có, **không chạy script**:
+
+| Script | Cách chọn payload hiện tại | tmp/host-inventory có được chọn? |
+|---|---|---|
+| scripts/package_ita_phase03.py | RUNTIME và DOCS là danh sách tệp cố định, manifest chỉ từ payload đó | Không; không lấy thư mục tmp/ |
+| scripts/package_ita_pdf.py | RUNTIME cố định + cây classes/ita-pdf/vendor | Không; không lấy tmp/ ở root workspace |
+| scripts/package_ita_host.py | Prefix/exact runtime cho phép + các cây dependency/font/handoff chỉ định, manifest từ payload | Không; tmp/ không thuộc prefix/exact hoặc cây nguồn được gom |
+
+**Toàn bộ `tmp/`, bao gồm `tmp/host-inventory/`, phải bị loại khỏi mọi gói deploy và inventory file trong manifest release.** Không chỉ listing.txt: không đưa bất kỳ bản sao listing hay tệp private đã đổi tên vào payload/handoff. Git ignore chỉ bảo vệ stage mặc định, không phải cơ chế đóng gói.
+
+Xác nhận trên là **đọc đường chọn tệp hiện tại**, không phải đã kiểm ZIP mới hoặc bảo đảm script tương lai không đổi. Ba script lịch sử không phải công cụ release Phase11 đã được nghiệm thu. Khi có yêu cầu tạo gói sau này: rà lại selection, kiểm inventory và ZIP thực tế không có path tmp/ hoặc runtime/tmp/ (kể cả khác hoa thường), không listing private ở path khác; từ chối gói nếu vi phạm. Không zip toàn workspace hoặc thêm tmp vào handoff. Chưa thêm/sửa script đóng gói, chưa tạo manifest/ZIP mới.
+
+Inventory host vẫn **CHƯA THU THẬP**; chưa có listing và “Xác nhận cuối”, không đối chiếu host. Không merge/tag7–10/push/deploy.
+
 ## Khuyến nghị cô lập vhost và quyền DB runtime — chỉ tài liệu
 
 Chỉ đề xuất triển khai vào **vhost InfraCore riêng** (`infracore.dung.derasoft.com` theo hồ sơ), document root/marker/PHP-FPM scope riêng được host xác minh; không áp .htaccess/.user.ini/auto_prepend lên domain cha hoặc web khác dùng chung. Inventory thật user điền HOST_INVENTORY_TEMPLATE.md; agent chưa thu thập/chạy gì trên host. Vhost riêng không tự thay thế DB grants, ACL và deny static/legacy.

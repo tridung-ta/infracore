@@ -89,6 +89,20 @@ Rủi ro: aggregate/count lệch scope, pagination làm đổi tổng/snapshot, 
 
 ## Điểm cần xác nhận trước khi trình duyệt chính thức
 
+### Điều kiện sẵn sàng cho duyệt — không phải phê duyệt
+
+| Hạng mục | Đã có trong draft | Còn phải chốt trước build |
+|---|---|---|
+| S11-01 | Ranh giới native active/store sau render, không bytes/audit thành công khi lỗi, test và rollback | User duyệt sửa; DB test/thời điểm thu hồi quyền thật chưa có bằng chứng |
+| S11-02 | Định danh rõ asset-export/import-errors, actor/batch recheck và giới hạn mẫu trống | Có thêm audit hay không; semantics asset chuyển bộ phận trong render, scope snapshot; không tự đổi GET thành POST |
+| project-start guard | Chống lặp, worker/legacy-hidden compatibility, hoàn tác file đồng bộ | Cơ chế reentrancy cụ thể phải được review trước triển khai |
+| Deny nhạy cảm | Prefix/method/status, mẫu Apache trước allowlist, không listing | Webserver/AllowOverride/DOCUMENT_ROOT thực tế, inventory host **CHƯA THU THẬP** |
+| auto_prepend | Rủi ro cao, phạm vi vhost riêng, TTL/cache/khôi phục ngoài app | Tùy chọn riêng, không mặc định bật cùng deny; cần xác nhận PHP-FPM/user_ini/cache và kênh rollback |
+| HTTP/log/header | Phân biệt HTML/API/file/error, log private, HSTS có điều kiện | ErrorDocument/proxy/log ACL và policy cuối chưa kiểm host |
+| Phân trang/index/hiệu năng | Inventory và kế hoạch tải có giới hạn | Chọn danh sách/contract cụ thể, EXPLAIN và gate SQL riêng nếu có index; không tự bổ sung tất cả vì duyệt security |
+
+User có thể duyệt từng hạng mục hoặc chỉnh scope; việc hoàn thiện tài liệu không mở quyền build toàn bộ draft. Không yêu cầu deploy/thu listing sớm để hoàn thành phần tài liệu. Không đóng mục chưa có bằng chứng bằng kết quả static/mock. Giữ F11.4 một phần, F11.2 source review xong/host chưa chạy.
+
 1. Môi trường DB test và nguồn xác nhận PHP8.3.33; có sẵn runtime tương thích hoặc cách test CI/build, không tự cài runtime.
 2. Thứ tự/lượng danh sách cần bổ sung theo inventory; số dòng/trang/search và total thống nhất. Không mở rộng scope hoặc quyền của3 vai trò.
 3. Nguồn bằng chứng isolation của **kết nối ứng dụng**, EXPLAIN/query timings/memory; chưa đo thì ghi chưa đo.

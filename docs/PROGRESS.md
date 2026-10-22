@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+Rà chỉ đọc3 script package_ita_phase03/pdf/host: selection hiện không gom tmp/ root; DEPLOY_LOG ghi loại toàn tmp/host-inventory khỏi mọi payload/manifest deploy, kiểm ZIP thật khi được giao đóng gói sau. Chưa chạy script/tạo gói hoặc sửa script. BE_GATE_11 thêm bảng điều kiện duyệt theo từng mục, chưa build. Inventory vẫn **CHƯA THU THẬP**, không đối chiếu host, không merge/tag7–10/push/deploy.
+
 Chuẩn bị nơi lưu inventory private: thêm ignore `/tmp/host-inventory/`, hướng dẫn listing.txt không commit/deploy; chưa tạo/đọc listing. User xác nhận **CHƯA THU THẬP**, chưa điền “Xác nhận cuối”, không đối chiếu hoặc suy nội dung host. Verify check-ignore và ls-files cho path dự kiến, không host/DB.
 
 Theo hướng dẫn user, HOST_INVENTORY_TEMPLATE bổ sung cách gửi listing theo nhóm thư mục tương đối thay nhập từng dòng; size/mtime tùy có, hash không bắt buộc, Codex đối chiếu khi nhận listing. Không mở/xóa file lạ hoặc tự đổi marker legacy; chưa thu thập host, chưa deploy, kiểm DB thật Phase1–10 vẫn còn mở. Chỉ sửa tài liệu.
