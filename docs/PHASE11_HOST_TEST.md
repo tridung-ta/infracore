@@ -31,6 +31,23 @@ GET `/admin.php?op=login`, `?op=pm`, `?op=editorial`, `/ajax.php?op=search_sugge
 
 POST chỉ dùng payload rỗng ở URL legacy **sau khi đã xác minh rewrite/gate bằng GET**, không dùng upload/xóa/thanh toán; mong403 và không đến handler. Nếu GET cho thấy handler cũ đang hoạt động, dừng probe POST và báo cấu hình, không thử ghi dữ liệu. Ghi rõ URL/method/status/redirect đầu tiên và có/không nội dung legacy; không suy303 là kiểm quyền của chính legacy.
 
+## Probe bổ sung scripts/license/database/project-start — chưa chạy
+
+Không bật directory listing để kiểm. `Options -Indexes` có đang hiệu lực hay không phải xác minh bằng cấu hình/response; không thấy listing **không chứng minh** file con bị chặn. Không đưa test/fixture/scripts vào runtime để phục vụ probe.
+
+| URL | GET và HEAD mong đợi | POST rỗng mong đợi | Tiêu chí không đạt |
+|---|---|---|---|
+| /scripts/ |403/404; không listing/file |403/404 |200, listing, download;303 chưa đạt deny tường minh |
+| /license/ |403/404 theo deny hiện có |403/404 |Nội dung thư mục/file hoặc redirect thay deny |
+| /database/ |403/404, không dump/SQL/test |403/404 |200/download/nội dung hoặc redirect thay deny |
+| /project-start.php |Không thực thi landing legacy/bypass; theo contract gate có thể303→ITA, HEAD không có body |403/405, không landing200 |200 landing/worker trực tiếp, redirect loop, POST vào nội dung cũ |
+
+Ghi status **đầu tiên**, Location, Content-Type và có/không body cho HEAD; không chỉ status sau follow redirect. Hỗ trợ HEAD không được làm lộ nội dung hoặc bỏ qua deny. Mỗi method có kết quả riêng, không suy GET đạt thì POST/HEAD đạt. Source hiện tại dự đoán /scripts GET/HEAD303 (chưa đạt deny tường minh); project-start có thể trả200 nếu rewrite không hoạt động, gate riêng chưa được bổ sung.
+
+Trước POST rỗng, xác minh GET/HEAD và rewrite/deny trên URL thư mục an toàn. Nếu dấu hiệu handler cũ đang chạy, dừng, không POST vào upload/fixture. Không probe trực tiếp script PHP có tác vụ DB hoặc kích hoạt worker bằng query để chứng minh deny. Với file con, chọn tệp văn bản không nhạy cảm đã có trong inventory được phép, không tạo/upload file mới; nếu không có thì ghi chưa kiểm file con. Probe không thay xác nhận cấu hình và inventory host.
+
+Tình trạng tất cả mục trên: **CHƯA CHẠY**. Sau khi gate được duyệt/triển khai mới đối chiếu contract cuối; không tự áp rule/auto_prepend trong lúc kiểm.
+
 ## Quyền, export và việc chưa được sửa
 
 Đối chiếu route×vai trò trong PHASE11_SECURITY_REVIEW.md: GET ID ngoài scope, POST thiếu/sai CSRF và vai trò bị từ chối; file không có quyền không trả bytes. S11-01/S11-02 **chưa sửa**; test “disable trong render→không bytes, không audit thành công” chỉ thực hiện sau khi gate được duyệt và có môi trường DB test phù hợp, không tự thay tài khoản production giữa request.

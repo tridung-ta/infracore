@@ -1,5 +1,21 @@
 # Nhật ký thao tác hosting
 
+## Khuyến nghị cô lập vhost và quyền DB runtime — chỉ tài liệu
+
+Chỉ đề xuất triển khai vào **vhost InfraCore riêng** (`infracore.dung.derasoft.com` theo hồ sơ), document root/marker/PHP-FPM scope riêng được host xác minh; không áp .htaccess/.user.ini/auto_prepend lên domain cha hoặc web khác dùng chung. Inventory thật user điền HOST_INVENTORY_TEMPLATE.md; agent chưa thu thập/chạy gì trên host. Vhost riêng không tự thay thế DB grants, ACL và deny static/legacy.
+
+DB dùng tài khoản runtime riêng cho ứng dụng, giới hạn đúng schema/host kết nối cần thiết. **Không có ALTER/DROP/CREATE**, không GRANT OPTION/FILE hoặc quyền quản trị; migration không chạy bằng tài khoản runtime. Tài khoản DDL riêng chỉ user dùng khi tự chạy migration đã duyệt, credential không đặt trong config ứng dụng/Git/gói. Không phát hành GRANT/REVOKE hoặc đổi user DB trong bước này.
+
+| Nhóm | Quyền runtime dự kiến theo source ITA hiện có | Giới hạn |
+|---|---|---|
+| ita_ tables được runtime tham chiếu | SELECT/INSERT/UPDATE theo bảng thực sự đọc/ghi | Có thể tách read-only table/audit append-only sau đối chiếu schema/grants; không cấp schema wildcard cho DB khác |
+| dc_users | SELECT và UPDATE cần cho password_hash/last_login của PmAuth/ITA auth | Không cần INSERT/DELETE trong luồng ITA; cân nhắc column-level UPDATE nếu hosting hỗ trợ, kiểm FOR UPDATE/grant thực tế trước siết |
+| DELETE | **Chưa đề xuất cấp cho bất kỳ bảng nào** | Rà ITA DAO/services/security và PmAuth không có DELETE FROM/REPLACE/TRUNCATE; xóa asset là UPDATE is_deleted, scope/allocations thu hồi bằng UPDATE. Không suy cleanup/rate limit cần DELETE |
+
+Danh sách bảng cần DELETE theo code runtime đã rà: **không có**. Nếu sau này thêm cleanup/clear trash hoặc phát hiện dependency thực sự yêu cầu DELETE, phải liệt kê chính xác bảng/câu lệnh/phạm vi và trình gate, không cấp toàn schema để chữa lỗi. Hạn chế trên áp dụng runtime ITA/legacy tắt, không cam kết chức năng legacy khi khôi phục sẽ chạy với cùng quyền. Không dùng credential DDL làm lối tắt khi runtime bị denied.
+
+Quyền effective/SHOW GRANTS chưa kiểm trên host; DB/host chưa nghiệm thu. SELECT/INSERT/UPDATE mô tả nhu cầu hiện tại, không phải quyền đã cấp. Mọi thay đổi grants phải do user/quản trị thực hiện sau xác nhận môi trường và kế hoạch hoàn tác riêng.
+
 ## Checklist bảo mật host bổ sung22/10 — chưa chạy
 
 Xem PHASE11_HOST_TEST.md: bước đầu vẫn isolation kết nối ứng dụng RR/SERIALIZABLE. Kiểm ITA_SESSION HttpOnly/Secure/SameSite=Lax, headers cuối sau proxy/Apache/PHP-FPM (kể cả lỗi/file), display_errors/log_errors và log private; .ita-enabled đúng document root, **không có .ita-legacy-enabled**. Mở trực tiếp docs/tests/.git/artifacts/assets/ita/mock và file cấu hình phải403/404, không chỉ không có listing; không in/tải body config để kiểm. Thử vài URL legacy GET/POST theo checklist an toàn; staging import ngoài public_html, không symlink về webroot, ACL riêng.
