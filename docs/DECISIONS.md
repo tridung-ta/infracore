@@ -1,5 +1,11 @@
 # Quyết định của dự án 5
 
+## 22/10/2026 — Ghi nhận lựa chọn triển khai trong gate #10
+
+Một transaction đọc RR/SERIALIZABLE, không tự đổi isolation; tối đa5.000 tài sản/giấy phép và500 nhóm biểu đồ, vượt trả lỗi. Nhóm KPI tính PHP trên tập đã scope, điểm/repair preaggregate dùng SQL vòng đời hiện có. PHASE10_EXPLAIN.sql ghi6 source query cho hai vai trò, chưa thực thi.
+
+Export dùng HMAC auth_key hiện có gắn actor/revision/scope, bộ lọc, document và mốc chung, hết hạn15 phút. Dữ liệu đổi buộc preview lại, không lưu snapshot báo cáo mới. Snapshot ngân sách vẫn #09. Native active được đọc lại trước bytes; không giả locking xuyên MyISAM. Cảnh báo license Quản lý chỉ lấy license có allocation máy/bộ phận trong scope; không thay quyền catalog/key #06. Các lựa chọn này nằm trong gate đã duyệt, chưa UAT DB.
+
 ## 21/10/2026 — Duyệt backend dashboard và báo cáo
 
 User: «tôi duyệt bạn hãy bắt đầu BUILD». Mở BE-GATE #10 theo toàn bộ phạm vi và chỉnh sửa hiện có: Hỗ trợ chỉ bảng bảo trì, giới hạn Excel tồn kho 5.000/khác 1.000/PDF 500, vòng đời ngắn 12 tháng lịch, chuông hiệu lực, mốc thời gian chung, không polling nặng và dispose biểu đồ. Agent tự kiểm local bằng pure/scripted/browser mock, không tạo/kết nối DB. Không coi phê duyệt build là nghiệm thu DB Phase 1–9 hoặc quyền merge/tag7–9/deploy.

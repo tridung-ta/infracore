@@ -1,5 +1,7 @@
 # Kiểm thử giao diện mẫu dashboard và báo cáo
 
+**Cập nhật22/10 sau khi BUILD #10 được duyệt:** backend và layout live đã xây dựng local, xem PHASE10_VERIFY.md. Nội dung bên dưới mô tả HTML MOCK độc lập tại thời điểm chuẩn bị. Agent tự kiểm local; user không cần chạy checklist local. Kiểm host sau upload theo PHASE10_HOST_TEST.md; DB Phase1–10 chưa nghiệm thu.
+
 Ngày chuẩn bị: 21/10/2026. Chỉ kiểm FE/MOCK độc lập, không cần DB. BE-GATE #10 chưa duyệt; DB Phase 1–9 chưa nghiệm thu. Theo chỉ đạo mới của user, agent tự kiểm local; user kiểm thủ công sau khi tự upload host. Các ô dưới đây là kịch bản tham chiếu, không phải yêu cầu user phải kiểm local hoặc bằng chứng host đã đạt.
 
 ## Lần chạy local ngày 21/10/2026

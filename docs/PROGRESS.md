@@ -2,7 +2,7 @@
 
 ### 22/10/2026 — Chốt hồ sơ kiểm chứng #10
 
-Rà cuối phát hiện chart bị trống khi Tổng quan → Tài sản → Tổng quan do cache còn hợp lệ trong khi chart đã dispose. Đã xóa view/documentData khi rời trang; browser thêm4 check cho Admin/Quản lý, toàn suite **64 đạt**. Phiên browser/server cũ đã đóng; lần đầu không chạy được do ECONNREFUSED. Đã khởi động lại đúng static server workspace rồi kiểm, không coi lỗi môi trường là lỗi sản phẩm. Commit fix kèm mục này; không DB/host.
+Rà cuối phát hiện chart bị trống khi Tổng quan → Tài sản → Tổng quan do cache còn hợp lệ trong khi chart đã dispose. Đã xóa view/documentData khi rời trang; browser thêm4 check cho Admin/Quản lý, toàn suite **64 đạt**. Phiên browser/server cũ đã đóng; lần đầu không chạy được do ECONNREFUSED. Đã khởi động lại đúng static server workspace rồi kiểm, không coi lỗi môi trường là lỗi sản phẩm. Commit fix0ce2166; không DB/host.
 
 Đã có7 commit riêng F10.1–F10.7; đối chiếu hash trong bảng bên dưới. PHASE10_VERIFY.md ghi lệnh/kết quả và giới hạn; PHASE10_HOST_TEST.md dành cho user kiểm sau upload. Kiểm lại local22/10: 52 pure/scripted +7 ngân sách, route13 và Smarty/syntax đạt; không chạy DB. DB Phase1–10 **chưa nghiệm thu**, chưa EXPLAIN/index thật, concurrency/rollback thật hoặc PHP-FPM export. Không merge/tag7–9/push/deploy. Vendor Excel vẫn có deprecation PHP local, chưa nâng dependency.
 

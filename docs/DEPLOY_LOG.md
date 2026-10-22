@@ -1,5 +1,11 @@
 # Nhật ký thao tác hosting
 
+## 22/10/2026 — Dashboard/báo cáo #10 chỉ có trên local
+
+Source a017327 → 0ca9a7e gồm7 commit F10.1–F10.7, kèm fix điều hướng0ce2166 đã build/tự kiểm; xem PHASE10_VERIFY.md. **Chưa upload, chưa tạo gói deploy #10, chưa xác nhận source host.** Không DDL/seed mới. Cần đủ PHP/bootstrap/ita_mode/audit/Smarty/JS/CSS và ECharts6.1.0, không chỉ giao diện.
+
+Checklist host tại PHASE10_HOST_TEST.md: PHP/GD/mbstring, display_errors Off/log_errors On, RR/SERIALIZABLE, auth_key/ITA_LICENSE_KEY private; kiểm dependency/font theo hồ sơ nguồn bên dưới. Chưa chạy Composer hoặc đổi server config. Rollback source giữ dữ liệu/audit mới, không restore đè DB. DB Phase1–10 chưa nghiệm thu; không merge/tag7–9/push/deploy.
+
 ## Trạng thái host hiện tại — rà hồ sơ 21/10/2026
 
 Không kết nối host trong lần rà này. “Ngày bằng chứng” là ngày lời báo/ảnh hoặc ngày tạo gói local, **không tự coi là ngày upload**. Chưa có inventory/hash source đang chạy trên host. Các ghi chú lịch sử bên dưới không thay thế bảng trạng thái này.
