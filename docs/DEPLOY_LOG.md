@@ -156,9 +156,15 @@ Phạm vi: Excel legacy **566 file theo baseline đã ghi**, InterVariable.woff2
 
 | Bộ | Storage reference/version | Số file +SHA256SUMS/archive hash | Copy đọc lại | Restore +runtime/test | Trạng thái |
 |---|---|---|---|---|---|
-| Excel baseline566 | Chưa chọn | Chưa tạo mới | Chưa chạy | Chưa chạy | Kế hoạch |
-| Inter +license | Chưa chọn | Chưa tạo mới | Chưa chạy | Chưa chạy | Kế hoạch |
-| mPDF vendor/DejaVu/lock/license | Chưa chọn | Chưa tạo mới | Chưa chạy | Chưa chạy | Kế hoạch |
+| Excel baseline566 | [mã tham chiếu kho ngoài, không credential] — chưa xác nhận | excel [số file]; checksum mới chưa có bằng chứng | [khớp/khác/chưa làm] — chưa xác nhận đã so | [chưa làm]; không ghi đã kiểm | Chờ số liệu cụ thể |
+| Inter +license | [mã tham chiếu kho ngoài, không credential] — chưa xác nhận | inter [số file]; checksum mới chưa có bằng chứng | [khớp/khác/chưa làm] — chưa xác nhận đã so | [chưa làm]; không ghi đã kiểm | Chờ số liệu cụ thể |
+| mPDF vendor/DejaVu/lock/license | [mã tham chiếu kho ngoài, không credential] — chưa xác nhận | pdf [số file]; checksum mới chưa có bằng chứng | [khớp/khác/chưa làm] — chưa xác nhận đã so | [chưa làm]; không ghi đã kiểm | Chờ số liệu cụ thể |
+
+**Phản hồi user ngày22/10/2026, nguyên văn:**
+
+> Tôi đã chạy mẫu SHA256SUMS trên máy local (PowerShell [phiên bản]). Kết quả: excel [số file], inter [số file], pdf [số file]; checksum lưu tại [mã tham chiếu kho ngoài, không credential]. Đã copy dependency sang kho ngoài: [có/chưa]; đã đọc lại và so checksum bản copy: [khớp/khác/chưa làm]; restore thử: [chưa làm].
+
+Các dấu ngoặc vuông còn nguyên trong thông tin nhận được, chưa phải phiên bản/số đếm/kho lưu hoặc xác nhận copy/read-back cụ thể. Ghi nhận lời báo, **không xác nhận kết quả chạy**, không ghi “đã đọc lại”, “khớp” hoặc “restore đã kiểm”. Phần mô tả “chưa thực hiện” phía trên là trạng thái trước phản hồi; trạng thái hiện tại chờ user điền giá trị thật. Agent không chạy mẫu, không đọc checksum/kho ngoài, không tạo gói hoặc thao tác host từ phản hồi này.
 
 ### Đề xuất dựng lại dependency Excel/PDF/font — chưa thực hiện
 

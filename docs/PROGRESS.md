@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+DEPLOY_LOG mụcC lưu nguyên văn phản hồi checksum local của user với các placeholder [phiên bản]/[số file]/[có/chưa]/[khớp/khác/chưa làm] còn chưa điền. Chờ số liệu/xác nhận cụ thể, không ghi read-back khớp hoặc restore đã kiểm; agent không chạy checksum/kho ngoài/gói/host/DB. Không thay trạng thái inventory CHƯA THU THẬP hoặc nghiệm thu DB.
+
 F11.5 bổ sung deny ZIP marker legacy/preview basename mọi path, config/marker chỉ allowlist duyệt, PHP trong upload/staging và test cases chưa viết/chạy. Rà source ITA+PmDb/PmAuth chỉ đọc không thấy LOCK TABLES/CREATE TEMPORARY TABLE/DDL; chưa đề xuất thêm hai quyền, lượt DB test “app không phát sinh DDL” cần log phù hợp, chưa chạy. Soạn DEPENDENCY_CHECKSUM_WINDOWS mẫu PowerShell cho user tự tạo checksum3 bộ ngoài máy dev; chưa chạy mẫu/tạo file checksum/backup/gói. Chỉ sửa tài liệu, inventory CHƯA THU THẬP; không BE/host/DB/merge/tag7–10/push/deploy.
 
 F11.5 tài liệu22/10: DEPLOY_LOG tái cấu trúc4 phần (trạng thái/checklist/dependency/nhật ký ngày), kiểm bằng so source Git: giữ nguyên24 mục cũ sau hạ heading, không mất/sửa body lịch sử; mục không ngày để cuối, không tự gán ngày. Bổ sung đặc tả validator ZIP +test matrix chưa viết/chạy; backup dependency ngoài máy dev +restore chưa thực hiện; hash file FTP đại diện chưa thu thập; kế hoạch runtime DB test/SHOW GRANTS chưa chạy. Chỉ tài liệu, không script/gói/host/DB/BE; inventory CHƯA THU THẬP, không merge/tag7–10/push/deploy.
