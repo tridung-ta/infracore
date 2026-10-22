@@ -1,6 +1,64 @@
 # Nhật ký thao tác hosting
 
-## Xác nhận loại tmp khỏi đóng gói — rà source22/10, không tạo gói
+Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguyên nội dung lịch sử; chỉ hạ mức heading để gom bốn phần. Mục lịch sử có ngày xếp mới trước, cùng ngày giữ thứ tự cũ; mục không ghi ngày để cuối theo thứ tự cũ, không tự gán ngày. Các ghi chú cũ là bằng chứng tại thời điểm đó, không thay bảng trạng thái hiện tại.
+
+## A. Trạng thái host hiện tại
+
+### Trạng thái host hiện tại — cập nhật22/10/2026
+
+| Gói/source | Ngày upload | Đã upload được xác nhận | Chưa upload/chưa biết |
+|---|---|---|---|
+| Source hiện chạy trên host | Chưa được cung cấp | Chỉ có lời báo/ảnh đăng nhập và ticket trong lịch sử | Chưa xác định commit/hash; không suy từ UI |
+| through-phase07 source80929beff9bb; picker2aa3c98179e5 | Chưa xác nhận | Chưa có xác nhận đúng gói/hash | Có gói local; upload thực chưa biết |
+| Phase8 UI source1691c43bd37d | Chưa xác nhận | Chưa xác nhận upload đúng gói | Chỉ có gói local được ghi trong hồ sơ |
+| Phase9 source2e95245; docs9b32bae | Chưa xác nhận | Chưa xác nhận | Build local, chưa có bằng chứng host |
+| Phase10 source0ce2166; docs2f05ea3 | Chưa upload theo hồ sơ hiện có | Không | 7 chức năng +fix chỉ local; chưa tạo gói deploy #10 |
+| Phase11 FE/tài liệu | Chưa upload | Không | Chỉ bắt đầu FE/tài liệu; BE chưa duyệt |
+
+**Bước kiểm đầu tiên trước nghiệm thu #10: transaction isolation của chính kết nối ứng dụng.** Dashboard, alerts và report-preview đều đi qua điều kiện RR/SERIALIZABLE, không riêng thao tác lưu ngân sách. Giá trị đọc trong phpMyAdmin là kết nối khác, không đủ chứng minh session PHP-FPM. Dùng công cụ/quan sát được phép của môi trường để kiểm kết nối ITA thực tế; khi chưa có cách quan sát, ghi **chưa xác nhận**, không thêm PHP endpoint chẩn đoán hoặc đổi config để vượt chặn trong bước này. Có thể dùng `@@transaction_isolation` (MariaDB cũ: `@@tx_isolation`) qua kết nối đó; nhánh fallback hiện có trong PmDb. READ-COMMITTED/READ-UNCOMMITTED chưa đạt điều kiện ứng dụng. Không tự đổi isolation toàn server.
+
+**Gói runtime phải loại mọi MOCK**: `assets/ita/mock/**` (đặc biệt dashboard.html, reports.html, JSON/HTML khác), `assets/ita/preview/**`, test/fixture, ảnh kiểm thử và tmp. Dùng danh sách runtime cho phép và manifest/hash, không zip toàn workspace. Quét lại inventory ZIP để bảo đảm không có MOCK; chỉ grep chữ MOCK không đủ, vì mã production có thể chứa nhánh preview/label và không được tự xóa source đang dùng. Chưa tạo/kiểm ZIP #11 trong bước này.
+
+PHP kiểm local8.5.10; host theo hồ sơ8.3.33; **chưa chạy test trên8.3**. Giữ DB/host chưa nghiệm thu, không merge/tag7–10/push/deploy. Kế hoạch tải chưa chạy tại PHASE11_LOAD_TEST_PLAN.md.
+
+## B. Checklist host và kế hoạch bàn giao
+
+### F11.5 — Kiểm tự động ZIP sau đóng gói (đặc tả, chưa viết/chạy)
+
+Bước bắt buộc sau khi tạo gói trong tương lai, trước bàn giao: **mở lại ZIP và kiểm chính entry của ZIP**, không chỉ tin danh sách nguồn hoặc excluded trong manifest. Hiện không tạo gói/viết validator; ba script lịch sử chưa được tuyên bố đã thực thi toàn bộ đặc tả này.
+
+1. Chuẩn hóa đường dẫn để kiểm: dấu phân cách POSIX, so không phân biệt hoa thường; kiểm cả gốc ZIP và gốc payload sau prefix runtime/. Từ chối absolute/drive/UNC, backslash mơ hồ, NUL, thành phần . hoặc .., tên trùng sau chuẩn hóa, symlink/junction hoặc đường dẫn thoát staging. Không giải nén trước khi kiểm an toàn đường dẫn.
+2. Từ chối mọi entry thuộc **tmp/** (kể cả tmp/host-inventory), **tests/**, **assets/ita/mock/**, **assets/ita/preview/**, **.git/**, **.playwright-cli/**, **artifacts/**; không cho qua vì thêm prefix runtime/ hoặc đổi hoa thường. Handoff cũng không được chứa listing/bản sao private. Không chỉ kiểm basename listing.txt.
+3. Từ chối config/private secret (.env và biến thể .env.*, ita_database.local.php, config host thật, key/credential), dump SQL/backup/log/session và file dữ liệu thật. Inventory runtime phải là allowlist đã review, không chỉ blacklist tên; config mẫu được phép nếu có phải chỉ rõ từng path/nguồn không secret, không mặc định cho mọi file có tên config. Các tệp config cấu trúc bên trong dependency cũng phải xét allowlist, không tự cắt vendor làm hỏng runtime.
+4. Đối chiếu ZIP ↔ manifest: cùng tập file được duyệt, không thiếu/thừa, size và SHA256 từng entry khớp; kiểm CRC, metadata manifest/checksum theo contract không self-hash. Vượt giới hạn hoặc không đọc được ZIP/entry → từ chối, không bỏ qua entry lỗi. Tệp bị loại xuất hiện trong manifest dù không có trong ZIP cũng là lỗi.
+5. Chỉ ghi “đạt kiểm ZIP” sau khi validator thật chạy trên ZIP thật và lưu kết quả đã che private; hash ZIP riêng sau kiểm. Quét secret theo nội dung là lớp bổ sung, không dùng regex tên để hứa phát hiện mọi secret.
+
+**Ma trận test validator dự kiến, chưa viết/chạy:** gói tối thiểu allowlist hợp lệ→đạt; mỗi prefix cấm có file con và directory entry→từ chối; TMP/Host-Inventory, Runtime/Tests, ASSETS/ITA/MOCK, .GIT/HEAD→từ chối; config/.env/dump trong gốc/runtime/handoff→từ chối; absolute/../backslash/duplicate-case/link→từ chối; manifest thiếu/thừa/sai size/sai hash/CRC hỏng→từ chối. Case âm tính: tên gần giống như templates không bị coi là tmp; dependency hợp lệ chỉ qua khi được allowlist. Test bản sao listing đổi tên/private content phải bị từ chối qua review inventory/content, không coi blacklist path là đủ.
+
+### Xác định source host bằng file đại diện — chưa thực hiện
+
+User tải bằng FTP **binary/không chuyển newline** vài file đã biết không chứa secret, ví dụ classes/services/itaapplication.class.php, includes/ita_mode.inc.php, modules/admin/ita.module.php, templates/admin/ita/layout.tpl.html và assets/ita/js/ita-dashboard.js nếu có. Không tải private config/.env/dump/session/upload người dùng. Không chạy PHP/lệnh trên host. Giữ bản tải trong tmp/host-inventory/ đã ignore, không commit/đóng gói; nếu nội dung có dữ liệu nhạy cảm ngoài dự kiến thì không gửi lên chat.
+
+Tính SHA256 **trên máy local**, ví dụ `Get-FileHash -Algorithm SHA256 -LiteralPath '<file local đã tải>'`; lấy bytes cùng path từ từng commit/gói ứng viên để tính hash local hoặc so manifest đã xác minh. Không mở/execute PHP tải về. Không chuẩn hóa newline/encoding khi so; khác do FTP text mode cần ghi sai lệch transport và tải lại binary, không tự sửa nội dung cho khớp.
+
+| Path tương đối | Thời điểm user tải | Size/SHA256 local | Commit/gói ứng viên +hash cùng path | Kết quả | Giới hạn |
+|---|---|---|---|---|---|
+| [file đại diện] | Chưa có | Chưa tính | Chưa đối chiếu | CHƯA KIỂM | Không suy toàn bộ release từ một file |
+
+Khớp vài file chỉ chứng minh **những file đó**; cùng file có thể không đổi qua nhiều commit nên không nhận diện duy nhất commit. File khớp các gói khác nhau/khác hash có thể là host trộn bản; ghi “chưa xác định source toàn bộ”. Xác nhận toàn release cần inventory/hash đủ runtime và dependency, marker/config riêng do user xác minh. Hiện chưa tải file/listing, inventory vẫn **CHƯA THU THẬP**.
+
+### Thử tài khoản DB runtime mới trên DB test — kế hoạch chưa chạy
+
+Chỉ sau user xác nhận **DB test cô lập**, dữ liệu giả/đã khử nhạy cảm và backup; không tạo DB test hay GRANT trong bước này. Không đổi credential host để thử. Quản trị tạo tài khoản runtime test với quyền dự kiến và tài khoản DDL riêng; không dùng tài khoản quản trị để chạy ứng dụng rồi coi quyền runtime đã đạt.
+
+- Ghi `SELECT CURRENT_USER()` và `SHOW GRANTS FOR CURRENT_USER()` qua đúng kết nối **tài khoản runtime test** bằng công cụ được phép; che tên user/host nhạy cảm trong hồ sơ. Kiểm effective grants/role được kích hoạt nếu DB hỗ trợ role, không chỉ grant trực tiếp. Không có CREATE/ALTER/DROP/GRANT OPTION/FILE/quyền rộng toàn server, không DELETE khi chưa có nhu cầu xác nhận. Chưa cấp/thu quyền hoặc chạy lệnh trên host.
+- Chạy lại login username/email, hash upgrade/last_login và logout/limiter; ba vai trò, đọc/đổi quyền/phạm vi và audit. Kiểm SELECT/UPDATE dc_users đúng cột cần thiết; role mapping và scope không suy từ store.
+- Chạy tài sản/danh mục/tìm kiếm/chi tiết/xóa mềm; import template/upload/preview/confirm/errors và export; giao/nhận/thu hồi/PDF; giấy phép cấp/thu hồi/vượt chỗ/reauth reveal; ticket tạo/gán/chuyển trạng thái/chi phí/ready/lịch; vòng đời/dashboard/alerts/báo cáo; cấu hình ngân sách/lưu/tính lại/snapshot/export. Mỗi thao tác đúng quyền được lưu/đọc lại, hành vi trái quyền vẫn bị chặn.
+- Kiểm transaction isolation, SELECT FOR UPDATE và lock thực với bộ grant dự kiến; rollback khi audit lỗi và hai phiên đồng thời. Nếu thiếu quyền gây lỗi thì xác định đúng query/bảng/cột, không cấp DDL/DELETE toàn schema để làm test qua. Audit insert và các UPDATE thu hồi/xóa mềm không cần DELETE theo source đã rà.
+- Xác minh tài khoản **không có quyền DDL** từ effective grants; chỉ test lệnh DDL bị từ chối khi có kế hoạch riêng được duyệt trong DB test, không thử phá bảng thật. Ghi lệnh/kết quả thực và mục chưa chạy; không suy SHOW GRANTS thay test luồng ứng dụng.
+- Trước áp dụng host: user review kết quả, source tương ứng và bảng quyền tối thiểu; backup config private, chuẩn bị credential runtime cũ còn khả dụng để rollback qua kênh quản trị. Không đặt mật khẩu trong log/Git. Việc đổi host là thao tác riêng cần chỉ đạo, không được suy từ kế hoạch này.
+
+### Xác nhận loại tmp khỏi đóng gói — rà source22/10, không tạo gói
 
 Đã đọc ba script đóng gói hiện có, **không chạy script**:
 
@@ -16,7 +74,7 @@ Xác nhận trên là **đọc đường chọn tệp hiện tại**, không ph�
 
 Inventory host vẫn **CHƯA THU THẬP**; chưa có listing và “Xác nhận cuối”, không đối chiếu host. Không merge/tag7–10/push/deploy.
 
-## Khuyến nghị cô lập vhost và quyền DB runtime — chỉ tài liệu
+### Khuyến nghị cô lập vhost và quyền DB runtime — chỉ tài liệu
 
 Chỉ đề xuất triển khai vào **vhost InfraCore riêng** (`infracore.dung.derasoft.com` theo hồ sơ), document root/marker/PHP-FPM scope riêng được host xác minh; không áp .htaccess/.user.ini/auto_prepend lên domain cha hoặc web khác dùng chung. Inventory thật user điền HOST_INVENTORY_TEMPLATE.md; agent chưa thu thập/chạy gì trên host. Vhost riêng không tự thay thế DB grants, ACL và deny static/legacy.
 
@@ -32,13 +90,13 @@ Danh sách bảng cần DELETE theo code runtime đã rà: **không có**. Nếu
 
 Quyền effective/SHOW GRANTS chưa kiểm trên host; DB/host chưa nghiệm thu. SELECT/INSERT/UPDATE mô tả nhu cầu hiện tại, không phải quyền đã cấp. Mọi thay đổi grants phải do user/quản trị thực hiện sau xác nhận môi trường và kế hoạch hoàn tác riêng.
 
-## Checklist bảo mật host bổ sung22/10 — chưa chạy
+### Checklist bảo mật host bổ sung22/10 — chưa chạy
 
 Xem PHASE11_HOST_TEST.md: bước đầu vẫn isolation kết nối ứng dụng RR/SERIALIZABLE. Kiểm ITA_SESSION HttpOnly/Secure/SameSite=Lax, headers cuối sau proxy/Apache/PHP-FPM (kể cả lỗi/file), display_errors/log_errors và log private; .ita-enabled đúng document root, **không có .ita-legacy-enabled**. Mở trực tiếp docs/tests/.git/artifacts/assets/ita/mock và file cấu hình phải403/404, không chỉ không có listing; không in/tải body config để kiểm. Thử vài URL legacy GET/POST theo checklist an toàn; staging import ngoài public_html, không symlink về webroot, ACL riêng.
 
 **Điểm source còn mở:** JSON MOCK hiện được allowlist static nếu file còn trên host; tests/artifacts GET có thể303, chưa đạt policy deny403/404. Không coi loại khỏi gói là đã bảo vệ file dư trên host. Inventory/guard tại PHASE11_LEGACY_SURFACE.md và PHASE11_PHP_SURFACE.csv. Chưa kiểm host, chưa sửa rule/PHP, chưa tạo gói hoặc deploy; S11-01/S11-02 vẫn chỉ gate nháp.
 
-## F11.5 — Chuẩn bị bàn giao, chưa tạo gói (22/10/2026)
+### F11.5 — Chuẩn bị bàn giao, chưa tạo gói (22/10/2026)
 
 Đây là **đặc tả inventory/manifest/rollback**, không phải gói đã tạo hoặc lệnh cho phép deploy. Không có SHA256 ZIP #11 vì chưa tạo ZIP; không điền hash giả. Source bàn giao tương lai phải chốt một commit cụ thể sau review; các commit tài liệu không chứng minh host đang chạy chúng. Không merge/tag Phase7–10/push/deploy. S11-01 và phần BE11 chưa sửa, DB/host chưa nghiệm thu; không mô tả gói là đã sẵn sàng production.
 
@@ -74,46 +132,25 @@ Không cần dựng gói để chuẩn bị contract trên. Khi được giao đ
 - Giữ DB, audit, tickets, allocations, snapshot và dữ liệu phát sinh; rollback source **không** DROP/restore dump đè hoặc đảo dữ liệu mới. Không DDL trong gói FE/tài liệu này; nếu code cũ không đọc được dữ liệu mới thì dừng để đối chiếu tương thích, không ép restore DB.
 - User kiểm login/ba vai trò, đọc hồ sơ, file export và mốc số liệu sau rollback; ghi thời điểm, source/hash đã khôi phục và mục chưa kiểm. Chưa thực hành rollback host/DB trong bước này.
 
-## Trạng thái host hiện tại — cập nhật22/10/2026
+## C. Hồ sơ dependency
 
-| Gói/source | Ngày upload | Đã upload được xác nhận | Chưa upload/chưa biết |
-|---|---|---|---|
-| Source hiện chạy trên host | Chưa được cung cấp | Chỉ có lời báo/ảnh đăng nhập và ticket trong lịch sử | Chưa xác định commit/hash; không suy từ UI |
-| through-phase07 source80929beff9bb; picker2aa3c98179e5 | Chưa xác nhận | Chưa có xác nhận đúng gói/hash | Có gói local; upload thực chưa biết |
-| Phase8 UI source1691c43bd37d | Chưa xác nhận | Chưa xác nhận upload đúng gói | Chỉ có gói local được ghi trong hồ sơ |
-| Phase9 source2e95245; docs9b32bae | Chưa xác nhận | Chưa xác nhận | Build local, chưa có bằng chứng host |
-| Phase10 source0ce2166; docs2f05ea3 | Chưa upload theo hồ sơ hiện có | Không | 7 chức năng +fix chỉ local; chưa tạo gói deploy #10 |
-| Phase11 FE/tài liệu | Chưa upload | Không | Chỉ bắt đầu FE/tài liệu; BE chưa duyệt |
+### Sao lưu dependency ngoài Git ra ngoài máy dev — kế hoạch chưa thực hiện
 
-**Bước kiểm đầu tiên trước nghiệm thu #10: transaction isolation của chính kết nối ứng dụng.** Dashboard, alerts và report-preview đều đi qua điều kiện RR/SERIALIZABLE, không riêng thao tác lưu ngân sách. Giá trị đọc trong phpMyAdmin là kết nối khác, không đủ chứng minh session PHP-FPM. Dùng công cụ/quan sát được phép của môi trường để kiểm kết nối ITA thực tế; khi chưa có cách quan sát, ghi **chưa xác nhận**, không thêm PHP endpoint chẩn đoán hoặc đổi config để vượt chặn trong bước này. Có thể dùng `@@transaction_isolation` (MariaDB cũ: `@@tx_isolation`) qua kết nối đó; nhánh fallback hiện có trong PmDb. READ-COMMITTED/READ-UNCOMMITTED chưa đạt điều kiện ứng dụng. Không tự đổi isolation toàn server.
+Phạm vi: Excel legacy **566 file theo baseline đã ghi**, InterVariable.woff2 +OFL, vendor mPDF đã khóa cùng DejaVu/font/license và composer.json/lock. Số566 là quan sát baseline, phải đếm lại khi sao lưu thực tế; sai lệch cần đối chiếu, không tự bỏ file để khớp số. Không tạo archive/backup hoặc upload trong bước tài liệu này.
 
-**Gói runtime phải loại mọi MOCK**: `assets/ita/mock/**` (đặc biệt dashboard.html, reports.html, JSON/HTML khác), `assets/ita/preview/**`, test/fixture, ảnh kiểm thử và tmp. Dùng danh sách runtime cho phép và manifest/hash, không zip toàn workspace. Quét lại inventory ZIP để bảo đảm không có MOCK; chỉ grep chữ MOCK không đủ, vì mã production có thể chứa nhánh preview/label và không được tự xóa source đang dùng. Chưa tạo/kiểm ZIP #11 trong bước này.
+1. User chọn nơi lưu riêng **ngoài máy dev** (kho artifact của tổ chức/NAS hoặc thiết bị ngoại tuyến khác), kiểm quyền truy cập và khả năng khôi phục. Git clone không thay backup vendor/font. Không gom config/key/dump/session vào bộ dependency; khóa giấy phép backup riêng như hồ sơ hiện có.
+2. Chốt bộ source/version/ref/baseline và license/provenance; Excel/Inter chưa xác minh upstream thì giữ nhãn unknown/baseline hash, không ghi phiên bản đoán. Lập inventory path/size/SHA256 byte thật cho mọi file, SHA256SUMS.txt UTF-8/LF sắp path, có archive hash riêng và số file. Giữ checksum sidecar ngoài archive; không self-hash. Không dùng ZIP hash thay file hash.
+3. Khi được giao sao lưu, copy/đưa archive lên nơi lưu riêng rồi **đọc lại từ nơi đó** và kiểm archive/file hash với checksum nguồn. Ghi ngày, người thực hiện, storage reference không chứa credential và kết quả, hạn chế quyền sửa/xóa; giữ bản baseline cũ thay vì ghi đè không version.
+4. Thử restore vào thư mục sạch/máy build tách biệt, không đè vendor dev/host: lấy từ nơi lưu ngoài máy dev, kiểm checksum trước giải nén, kiểm đường dẫn an toàn, file count/size/hash/license. PDF installed metadata khớp lock; Excel/font đúng tree/file hash. Không tải latest để bù thiếu file im lặng.
+5. Trên runtime build tương thích host, chạy kiểm platform/extensions, mở lại XLSX STRING/formula-like text, render PDF tiếng Việt/DejaVu và kiểm ảnh/text; Inter tải đúng byte/font. Không DB/host cần thiết cho bộ test dữ liệu giả. Chỉ ghi “restore đã kiểm” khi thực sự chạy, kèm PHP version/lệnh/kết quả; hiện **chưa sao lưu ngoài máy dev, chưa thử restore**.
 
-PHP kiểm local8.5.10; host theo hồ sơ8.3.33; **chưa chạy test trên8.3**. Giữ DB/host chưa nghiệm thu, không merge/tag7–10/push/deploy. Kế hoạch tải chưa chạy tại PHASE11_LOAD_TEST_PLAN.md.
+| Bộ | Storage reference/version | Số file +SHA256SUMS/archive hash | Copy đọc lại | Restore +runtime/test | Trạng thái |
+|---|---|---|---|---|---|
+| Excel baseline566 | Chưa chọn | Chưa tạo mới | Chưa chạy | Chưa chạy | Kế hoạch |
+| Inter +license | Chưa chọn | Chưa tạo mới | Chưa chạy | Chưa chạy | Kế hoạch |
+| mPDF vendor/DejaVu/lock/license | Chưa chọn | Chưa tạo mới | Chưa chạy | Chưa chạy | Kế hoạch |
 
-## 22/10/2026 — Dashboard/báo cáo #10 chỉ có trên local
-
-Source a017327 → 0ca9a7e gồm7 commit F10.1–F10.7, kèm fix điều hướng0ce2166 đã build/tự kiểm; xem PHASE10_VERIFY.md. **Chưa upload, chưa tạo gói deploy #10, chưa xác nhận source host.** Không DDL/seed mới. Cần đủ PHP/bootstrap/ita_mode/audit/Smarty/JS/CSS và ECharts6.1.0, không chỉ giao diện.
-
-Checklist host tại PHASE10_HOST_TEST.md: PHP/GD/mbstring, display_errors Off/log_errors On, RR/SERIALIZABLE, auth_key/ITA_LICENSE_KEY private; kiểm dependency/font theo hồ sơ nguồn bên dưới. Chưa chạy Composer hoặc đổi server config. Rollback source giữ dữ liệu/audit mới, không restore đè DB. DB Phase1–10 chưa nghiệm thu; không merge/tag7–9/push/deploy.
-
-## Hồ sơ host đã rà21/10/2026 — đối chiếu lịch sử
-
-Không kết nối host trong lần rà này. “Ngày bằng chứng” là ngày lời báo/ảnh hoặc ngày tạo gói local, **không tự coi là ngày upload**. Chưa có inventory/hash source đang chạy trên host. Các ghi chú lịch sử bên dưới không thay thế bảng trạng thái này.
-
-| Hạng mục / gói hoặc commit | Ngày bằng chứng / upload | Trạng thái xác nhận | Chưa upload hoặc chưa biết |
-|---|---|---|---|
-| Đăng nhập/đăng xuất ITA trên host, username và Gmail | User báo16/10; ngày upload chính xác chưa cung cấp | User xác nhận thao tác host thành công | Gói/commit đã upload chưa xác định; không coi là DB UAT1–9 |
-| Ticket trên host: tạo/gán/resolved/xác nhận sẵn sàng/thống kê | Ảnh user21/10; ngày upload chưa xác định | Có bằng chứng thao tác và đọc lại một thiết bị/phiếu | Chưa xác nhận commit/gói hiện chạy; không suy toàn bộ source trùng commit local |
-| infracore-host-through-phase07-80929beff9bb.zip; source80929beff9bb | Gói local ghi20/10 | Đã chuẩn bị/kiểm gói trong lịch sử | Chưa nhận xác nhận user upload đúng ZIP/hash này |
-| ita-ticket-picker-update.zip; source2aa3c98179e5 | Gói local21/10, source đọc lại từ MANIFEST | Có gói local | Chưa có xác nhận upload đúng gói; agent không upload |
-| ita-lifecycle-update.zip (gói cũ), thay bằng ita-lifecycle-ui-update.zip; source1691c43bd37d | Gói local21/10; manifest gói UI đã đối chiếu | Gói UI là bản bàn giao local mới hơn | Chưa có xác nhận upload/hash host của Phase8; không upload cả hai gói |
-| Ngân sách source2e95245; docs checkpoint9b32bae | Commit local21/10 | Đã build/verify local | Chưa tạo gói Phase9 trong phiên này; chưa có xác nhận upload |
-| Phase10 source0ce2166; docs2f05ea3 | Build local21/10, chốt22/10; chưa upload | BE đã duyệt/build local; **chưa nghiệm thu DB/host** | Chưa tạo gói deploy #10, chưa upload |
-
-DB Phase1–10 **chưa nghiệm thu**; không merge/tag7–10. Để cập nhật bảng, user cung cấp gói/commit/hash và ngày upload thực; nếu không biết ghi chưa xác định, không dựng ngược từ ảnh UI hoặc kết quả mock. Việc đăng nhập hoặc một luồng ticket thành công không xác nhận CHECK/rollback/concurrency.
-
-## Đề xuất dựng lại dependency Excel/PDF/font — chưa thực hiện
+### Đề xuất dựng lại dependency Excel/PDF/font — chưa thực hiện
 
 Đã kiểm tra local và `git ls-files` ngày21/10/2026. Đây là hồ sơ đề xuất, không cài/cập nhật dependency, không đổi loader/Composer hoặc tạo gói mới trong bước tài liệu này.
 
@@ -141,7 +178,31 @@ Quy trình đề xuất trên máy build tách biệt: lấy source commit và l
 
 File ghi nguồn đề xuất (chưa tạo/cài runtime): dependency name, version hoặc unknown, source URL/commit hoặc nguồn baseline legacy, lock SHA256, artifact SHA256, inventory path/hash, license path/hash, ngày thu thập, source commit, lệnh build/verify và giới hạn. Có thể track hồ sơ và lock trong Git, còn payload binary/vendor giữ artifact riêng có checksum; chỉ công bố phục hồi đầy đủ khi đã thực sự dựng lại và kiểm. Script package_ita_pdf.py hiện có chỉ là delta PDF, không thay quy trình phục hồi toàn app hoặc tự chứa Excel/Inter.
 
-## 21/10/2026 — Checklist host trước kiểm thử Phase 1–9 (chưa thực hiện)
+## D. Nhật ký theo ngày (mới nhất trước)
+
+### 22/10/2026 — Dashboard/báo cáo #10 chỉ có trên local
+
+Source a017327 → 0ca9a7e gồm7 commit F10.1–F10.7, kèm fix điều hướng0ce2166 đã build/tự kiểm; xem PHASE10_VERIFY.md. **Chưa upload, chưa tạo gói deploy #10, chưa xác nhận source host.** Không DDL/seed mới. Cần đủ PHP/bootstrap/ita_mode/audit/Smarty/JS/CSS và ECharts6.1.0, không chỉ giao diện.
+
+Checklist host tại PHASE10_HOST_TEST.md: PHP/GD/mbstring, display_errors Off/log_errors On, RR/SERIALIZABLE, auth_key/ITA_LICENSE_KEY private; kiểm dependency/font theo hồ sơ nguồn bên dưới. Chưa chạy Composer hoặc đổi server config. Rollback source giữ dữ liệu/audit mới, không restore đè DB. DB Phase1–10 chưa nghiệm thu; không merge/tag7–9/push/deploy.
+
+### Hồ sơ host đã rà21/10/2026 — đối chiếu lịch sử
+
+Không kết nối host trong lần rà này. “Ngày bằng chứng” là ngày lời báo/ảnh hoặc ngày tạo gói local, **không tự coi là ngày upload**. Chưa có inventory/hash source đang chạy trên host. Các ghi chú lịch sử bên dưới không thay thế bảng trạng thái này.
+
+| Hạng mục / gói hoặc commit | Ngày bằng chứng / upload | Trạng thái xác nhận | Chưa upload hoặc chưa biết |
+|---|---|---|---|
+| Đăng nhập/đăng xuất ITA trên host, username và Gmail | User báo16/10; ngày upload chính xác chưa cung cấp | User xác nhận thao tác host thành công | Gói/commit đã upload chưa xác định; không coi là DB UAT1–9 |
+| Ticket trên host: tạo/gán/resolved/xác nhận sẵn sàng/thống kê | Ảnh user21/10; ngày upload chưa xác định | Có bằng chứng thao tác và đọc lại một thiết bị/phiếu | Chưa xác nhận commit/gói hiện chạy; không suy toàn bộ source trùng commit local |
+| infracore-host-through-phase07-80929beff9bb.zip; source80929beff9bb | Gói local ghi20/10 | Đã chuẩn bị/kiểm gói trong lịch sử | Chưa nhận xác nhận user upload đúng ZIP/hash này |
+| ita-ticket-picker-update.zip; source2aa3c98179e5 | Gói local21/10, source đọc lại từ MANIFEST | Có gói local | Chưa có xác nhận upload đúng gói; agent không upload |
+| ita-lifecycle-update.zip (gói cũ), thay bằng ita-lifecycle-ui-update.zip; source1691c43bd37d | Gói local21/10; manifest gói UI đã đối chiếu | Gói UI là bản bàn giao local mới hơn | Chưa có xác nhận upload/hash host của Phase8; không upload cả hai gói |
+| Ngân sách source2e95245; docs checkpoint9b32bae | Commit local21/10 | Đã build/verify local | Chưa tạo gói Phase9 trong phiên này; chưa có xác nhận upload |
+| Phase10 source0ce2166; docs2f05ea3 | Build local21/10, chốt22/10; chưa upload | BE đã duyệt/build local; **chưa nghiệm thu DB/host** | Chưa tạo gói deploy #10, chưa upload |
+
+DB Phase1–10 **chưa nghiệm thu**; không merge/tag7–10. Để cập nhật bảng, user cung cấp gói/commit/hash và ngày upload thực; nếu không biết ghi chưa xác định, không dựng ngược từ ảnh UI hoặc kết quả mock. Việc đăng nhập hoặc một luồng ticket thành công không xác nhận CHECK/rollback/concurrency.
+
+### 21/10/2026 — Checklist host trước kiểm thử Phase 1–9 (chưa thực hiện)
 
 Đây là checklist cho user/quản trị host, không phải kết quả kiểm tra hoặc quyền deploy. Phase 1–9 giữ trạng thái DB **chưa nghiệm thu**; không merge/tag Phase 7, 8, 9 trong lúc chờ xác nhận cụ thể. Không import lại migration hoặc tạo DB từ checklist này.
 
@@ -154,66 +215,7 @@ File ghi nguồn đề xuất (chưa tạo/cài runtime): dependency name, versi
 
 User gửi xác nhận kiểm thử DB cụ thể Phase1–9 (môi trường, phiên bản, engine, CHECK ticket_events, rollback/audit, hai phiên, các mục chưa kiểm) rồi mới cập nhật nghiệm thu. Agent chưa chạy checklist, chưa đọc secret, chưa deploy. Phase10 chỉ có tài liệu BE-GATE, chưa bắt đầu BE.
 
-## 20/10/2026 — Gói upload cộng dồn đến Phase7 theo yêu cầu user
-
-User xác nhận chỉ kiểm được trên host với DB hiện có, yêu cầu bắt đầu chuẩn bị gói. Agent chỉ đóng gói local, không upload/DB/merge/push. Source runtime cố định `80929beff9bb0675b19428df63d6f4316a706caf`, dùng cho host Phase2 đã đăng nhập được.
-
-- ZIP: `artifacts/ita-phase07/infracore-host-through-phase07-80929beff9bb.zip`, 48.553.362 byte; 1.340 runtime files +6 handoff files và MANIFEST.json.
-- SHA-256: `128748eb34c3c59beac605c19335642cac119df23c383d4f283d282b3e0d8f9b`. Đã đọc lại inventory, CRC và hash từng mục. Manifest ghi source commit, nguồn dependency và hash; PDF vendor khớp composer.lock. Excel dependency/font là snapshot bộ cục bộ hiện có, không tuyên bố chúng tracked trong source Git.
-- Không chứa private config, auth/key secret, SQL/dump, session/log, dữ liệu MOCK, tests. Không mang workbook Translations.xlsx dùng duy trì dịch thuật của thư viện. Bao gồm dependency Excel/PDF/font, không cần Composer hoặc Node production.
-- User giải nén và upload **nội dung runtime/** vào `/domains/infracore.dung.derasoft.com/public_html`, giữ cấu hình host, .ita-enabled và mã nền admin.php/Smarty/PmAuth/PmDb hiện có. Không upload handoff/manifest/ZIP. Hướng dẫn backup/rollback và điều kiện PHP/khóa: HOST_UPLOAD_PHASE07.md.
-- Bằng chứng user mới: selected_database=dung_infracore, MariaDB10.6.28, check_constraint_checks=ON trong phpMyAdmin, 5 bảng chính đều InnoDB. Đây chưa phải DB UAT nghiệp vụ/rollback/concurrency hoặc CHECK enforcement của PHP session. Chưa merge Phase7; chưa sang Phase8.
-
-## 20/10/2026 — Ticket local, chưa triển khai hoặc merge
-
-User duyệt #07 kèm chỉnh sửa và #07-SCHEDULE. Đã build/kiểm local ticket, guard mọi writer, lịch ban đầu và periodic, lịch sử gộp/statistics. Không DDL, không SQL host, không tạo/kết nối DB hoặc upload. Commit lịch ban đầu ddc9c87; runtime ticket lưu trên nhánh feature/ita-phase07-tickets, không merge trước user UAT DB Phase1–7. Host/CHECK/EXPLAIN/concurrency chưa kiểm chứng. Checklist PHASE07_HOST_TEST.md; không dùng gói Phase5 cũ hoặc copy toàn repo để deploy. Chưa tạo gói phát hành mới.
-
-## 20/10/2026 — PDF hoàn thiện local, chưa deploy host
-
-BE-GATE #05-PDF được user duyệt 19/10, mPDF8.3.1 +7 dependency khóa riêng; GD local chạy per-process, không sửa php.ini hoặc server. F5.4 render/PDF text/font/pages/signatures, adapter scope/audit và browser mock đã kiểm; host/DB/download thực chưa UAT. Không migration/SQL mới.
-
-User đã cho phép origin và push nhánh đang làm: checkpoint bfe3539 đã push feature/ita-phase05-pdf; bản PDF được commit/push riêng sau kiểm chứng. Đây là lưu mã, không deploy production hoặc merge main.
-
-Builder scripts/package_ita_pdf.py tạo delta local từ source committed, gom vendor/font/license có manifest/hash và kiểm đọc lại; chỉ dùng khi user chủ động yêu cầu bàn giao. Delta phụ thuộc checkpoint, không phải bộ cài toàn app. Rollback code: khôi phục source/vendor cũ đã backup, giữ assignment/audit/DB; không DROP/restore dump đè dữ liệu hoặc sửa config host. Host cần GD/mbstring/zlib, temp ngoài webroot ghi được và runtime dependency đầy đủ; Composer chạy ở máy build, không production.
-
-## 19/10/2026 — Phase 5 chỉ build local
-
-BE-GATE #05 đã duyệt, code phân bổ/thu hồi/acknowledge/history/maintenance badge đã nối; không migration mới, không cài PDF dependency, không DB/host/deploy. Source còn working tree, chưa có release/manifest Phase5. Không upload toàn repo hoặc dùng gói Phase3 cũ. PHASE05_VERIFY.md ghi kết quả pure/scripted/browser mock; PHASE05_HOST_TEST.md ghi UAT còn lại. Không tạo PDF giả hoặc công bố phase-done.
-
-## 19/10/2026 — Phase 4 chỉ build/verify local
-
-User đã duyệt BE-GATE #04. Code F4.1–F4.5 có trong working tree; không tạo DB, không chạy SQL host, không upload hoặc tạo gói phát hành mới. Chưa có manifest/release cho Phase 4. Giữ private config host riêng, không copy toàn repo. `PHASE04_VERIFY.md` ghi bằng chứng local; `PHASE04_HOST_TEST.md` là checklist khi user sẵn sàng UAT. Không dùng gói Phase 3 cũ bên dưới cho thay đổi mới. DB transaction/collation/concurrency/performance chưa nghiệm thu.
-
-## 19/10/2026 — Bàn giao Phase 3, chưa deploy
-
-**Đính chính sau chỉ đạo user:** chưa upload production. Snapshot `b965bd30a9b4` dưới đây là bản cũ, không còn gồm các sửa local cuối (status required/category failure). Không dùng gói này để deploy; chờ user chủ động bắt đầu bàn giao sau. Phạm vi local đã kiểm 33 pure/scripted +30 browser API mock, không DB.
-
-- User duyệt build và không tạo DB test. Agent không truy cập DB host hoặc thực hiện deploy.
-- Snapshot delta: `artifacts/ita-phase03/infracore-phase03-b965bd30a9b4.zip`, 14 runtime files; archive SHA-256 `f00ab1f317b38671d8a686b4ceceacb43e3d8e0d90423cedfd36df1915d58248`. Bên trong có manifest SHA-256 từng file, đã đọc lại zip và đối chiếu hash.
-- Snapshot từ working tree đã review, chưa phải release/tag phase-done; runtime còn chờ UAT SQL/read-back thực. Không thay cấu hình private hoặc auth_key; package không có config, dump, tests, session hay seed.
-- Gói chỉ cập nhật host đang chạy Phase 2. User backup DB/source, giải nén trên máy và upload **nội dung runtime/** vào `/domains/infracore.dung.derasoft.com/public_html`, giữ đường dẫn, không tạo thêm thư mục runtime trên host. Không upload docs/manifest vào web root.
-- Không cần migration mới hoặc import lại Phase 1/2. Hướng dẫn PHASE03_VERIFY.md và checklist PHASE03_HOST_TEST.md. Nếu lỗi, dừng ghi và khôi phục runtime từ backup, giữ dữ liệu mới; không DROP/DELETE/import dump làm lối tắt.
-
-## Xác nhận từ user sau import SQL host
-
-Ngày 16/10/2026: user báo «đã thành công» sau hướng dẫn chạy phase01_verify.sql. Ghi nhận user xác nhận tạo bảng trên dung_infracore/MariaDB hosting thành công; agent không kết nối host và chưa nhận ảnh bộ đếm 12/12/12 hoặc danh sách đủ 11 khóa ngoại sau lần import cuối. Không suy diễn xác nhận này thành quyền seed, sửa PHP/routing hoặc deploy. Migration F1.1–F1.4 đã bàn giao và được user xác nhận chạy; ứng dụng chưa tích hợp DB.
-## Đính chính xác nhận hosting
-
-Ảnh user gửi tiếp theo cho thấy selected_database=dung_infracore nhưng truy vấn metadata dùng DATABASE() trả 0/NULL/NULL, không thấy FK. Chưa xác nhận tạo đủ 12 bảng trên host; kết luận thành công trước đó chỉ dựa trên lời báo của user và được thay bằng «chờ chẩn đoán». Trước đó import có thông báo #1050 ita_departments already exists. Chưa rõ nguyên nhân hai quan sát khác nhau; không mặc định bảng bị mất hoặc migration thất bại. Đã thay bộ lọc metadata trong preflight/verify bằng tên schema cố định để giảm phụ thuộc ngữ cảnh truy vấn. Cần SHOW TABLES và SHOW CREATE TABLE với schema chỉ định rõ. Không chạy lại CREATE hoặc xóa bảng khi chưa đối chiếu.
-## Bằng chứng SHOW TABLES trên host
-
-User gửi ảnh SHOW TABLES FROM dung_infracore LIKE 'ita%': liệt kê đủ 12 tên bảng đúng migration. SHOW CREATE TABLE dung_infracore.ita_departments trả về cấu trúc nhưng ảnh bị rút gọn. Đã xác nhận tồn tại đủ bảng; không chạy lại CREATE. Chưa xác nhận toàn bộ cột/engine/collation/11 FK qua ảnh này. Nguyên nhân truy vấn information_schema trước đó dùng DATABASE() trả 0 chưa xác minh; không kết luận bảng chưa được tạo. File verify đã dùng tên schema cố định.
-## Xác nhận số lượng khóa ngoại trên host
-
-Ảnh mới từ user cho thấy truy vấn information_schema.TABLE_CONSTRAINTS với CONSTRAINT_SCHEMA='dung_infracore' và loại FOREIGN KEY trả tổng 11 dòng. Kết hợp SHOW TABLES trước đó: đã xác nhận đủ 12 tên bảng và 11 khóa ngoại trên MariaDB host. Chưa có ảnh bộ đếm engine/collation 12/12/12 hoặc toàn bộ định nghĩa cột. Không yêu cầu chạy lại CREATE. Quyền PHP/routing và seed vẫn chưa được user phê duyệt.
-## File kết quả ita_settings.sql từ user
-
-Đã đọc tests/ita_settings.sql, không thực thi: có 6 cặp setting_key/setting_value khớp danh mục khởi tạo (budget_contingency_percent=10, currency=VND, display_timezone=Asia/Ho_Chi_Minh, license_critical_days=7, license_warning_days=30, warranty_warning_days=30). INSERT chỉ xuất setting_key và setting_value, không có store_id trong khi CREATE định nghĩa store_id NOT NULL không default; file này không đủ để xác nhận scope store_id=1 hoặc dùng như bản backup phục hồi nguyên bảng. DDL xuất cũng không thể hiện đầy đủ engine/collation/CHECK. Không import lại file. Chưa nhận kết quả categories/departments sau chạy catalog; cần SELECT đếm ba nhóm theo store_id=1.
-
-Gói local đã tạo và đọc lại toàn bộ 710 mục từ commit `5f1e6ea4f5fafef08e51be4b9a08641b5dbf34e0`: `artifacts/ita-phase05/ita-pdf-5f1e6ea4f5fa.zip`. SHA-256: `7d0149bcd1c89aad417a526522a3ab2d1bfcde84c9259ed5e09ba2da43443dec`. Gói chỉ lưu local, chưa upload/deploy.
-
-
-## 21/10/2026 — Gói cải tiến giao diện ticket, chưa upload
+### 21/10/2026 — Gói cải tiến giao diện ticket, chưa upload
 
 - Gói: artifacts/ita-phase07/ita-ticket-ui-update.zip. Source cố định và SHA256 từng file trong MANIFEST.json của gói.
 - Runtime7file FE (ba CSS, hai JS, layout/partial); không PHP/SQL/config/dump/vendor. Nền host cần routing60f4f49.
@@ -222,12 +224,12 @@ Gói local đã tạo và đọc lại toàn bộ 710 mục từ commit `5f1e6ea
 - Rollback source khôi phục backup tương ứng, giữ DB/config/keys; chi tiết PHASE07_UI_VERIFY.md. Phase7 chưa merge.
 
 
-## 21/10/2026 — Bổ sung bộ chọn thiết bị cho form ticket, chưa upload
+### 21/10/2026 — Bổ sung bộ chọn thiết bị cho form ticket, chưa upload
 
 Gói artifacts/ita-phase07/ita-ticket-picker-update.zip:7runtime FE cộng dồn, gồm cải tiến fcbef20; source commit và SHA256 từng file trong MANIFEST. Không PHP/SQL/config/dump/vendor, không cần gói UI trước. Cần routing60f4f49 đã kiểm host.64browser mock checks và Smarty/syntax/detector/review đạt; user kiểm picker bằng DB host sau upload. Backup7file, upload nội dung runtime, Ctrl+F5; không upload ZIP/manifest/handoff; rollback source giữ DB/config. Agent chưa deploy hoặc merge Phase7.
 
 
-## 21/10/2026 — Vòng đời tài sản, chuẩn bị gói nhưng chưa upload
+### 21/10/2026 — Vòng đời tài sản, chuẩn bị gói nhưng chưa upload
 
 - Gói: artifacts/ita-phase08/ita-lifecycle-update.zip. Nền là bản Phase7 qua 2aa3c98, gồm giao diện ticket và bộ chọn thiết bị trước đó. Source cố định và hash từng file trong MANIFEST.json.
 - Runtime 11 file: hai DAO lifecycle, rules, ItaApplication, bootstrap, JS shell/lifecycle, CSS lifecycle, layout/sidebar/partial lifecycle. Không config, SQL, seed, fixture MOCK, session, dump hoặc vendor mới.
@@ -237,8 +239,67 @@ Gói artifacts/ita-phase07/ita-ticket-picker-update.zip:7runtime FE cộng dồn
 - Agent chưa upload/deploy, chưa merge/tag Phase7 hoặc8. Phần DB giữ CHƯA XÁC NHẬN đúng nguyên văn user trong PROGRESS.
 
 
-## 21/10/2026 — Cải tiến giao diện vòng đời, chưa upload
+### 21/10/2026 — Cải tiến giao diện vòng đời, chưa upload
 
 Gói artifacts/ita-phase08/ita-lifecycle-ui-update.zip gồm12runtime files cộng dồn Phase8 (11file đã duyệt và CSS motion), source cố định/hash từng file trong manifest. Gói thay thế ita-lifecycle-update.zip; không cần upload cả hai. Nền vẫn là Phase7 qua2aa3c98. Không SQL/config/fixture/dump/vendor mới; backend giữ nguyên commit0c2e0a7.
 
 User backup file tương ứng, upload nội dung runtime vào public_html rồi Ctrl+F5; không upload handoff/manifest/ZIP. Kiểm bộ lọc/xóa lọc, chuyển nhóm, xem/đóng lý do và số liệu gốc theo hướng dẫn host. Rollback khôi phục source backup, giữ DB/config/keys.63browser mock checks và review đạt; không có xác nhận DB mới, không merge/tag/deploy.
+### 20/10/2026 — Gói upload cộng dồn đến Phase7 theo yêu cầu user
+
+User xác nhận chỉ kiểm được trên host với DB hiện có, yêu cầu bắt đầu chuẩn bị gói. Agent chỉ đóng gói local, không upload/DB/merge/push. Source runtime cố định `80929beff9bb0675b19428df63d6f4316a706caf`, dùng cho host Phase2 đã đăng nhập được.
+
+- ZIP: `artifacts/ita-phase07/infracore-host-through-phase07-80929beff9bb.zip`, 48.553.362 byte; 1.340 runtime files +6 handoff files và MANIFEST.json.
+- SHA-256: `128748eb34c3c59beac605c19335642cac119df23c383d4f283d282b3e0d8f9b`. Đã đọc lại inventory, CRC và hash từng mục. Manifest ghi source commit, nguồn dependency và hash; PDF vendor khớp composer.lock. Excel dependency/font là snapshot bộ cục bộ hiện có, không tuyên bố chúng tracked trong source Git.
+- Không chứa private config, auth/key secret, SQL/dump, session/log, dữ liệu MOCK, tests. Không mang workbook Translations.xlsx dùng duy trì dịch thuật của thư viện. Bao gồm dependency Excel/PDF/font, không cần Composer hoặc Node production.
+- User giải nén và upload **nội dung runtime/** vào `/domains/infracore.dung.derasoft.com/public_html`, giữ cấu hình host, .ita-enabled và mã nền admin.php/Smarty/PmAuth/PmDb hiện có. Không upload handoff/manifest/ZIP. Hướng dẫn backup/rollback và điều kiện PHP/khóa: HOST_UPLOAD_PHASE07.md.
+- Bằng chứng user mới: selected_database=dung_infracore, MariaDB10.6.28, check_constraint_checks=ON trong phpMyAdmin, 5 bảng chính đều InnoDB. Đây chưa phải DB UAT nghiệp vụ/rollback/concurrency hoặc CHECK enforcement của PHP session. Chưa merge Phase7; chưa sang Phase8.
+
+### 20/10/2026 — Ticket local, chưa triển khai hoặc merge
+
+User duyệt #07 kèm chỉnh sửa và #07-SCHEDULE. Đã build/kiểm local ticket, guard mọi writer, lịch ban đầu và periodic, lịch sử gộp/statistics. Không DDL, không SQL host, không tạo/kết nối DB hoặc upload. Commit lịch ban đầu ddc9c87; runtime ticket lưu trên nhánh feature/ita-phase07-tickets, không merge trước user UAT DB Phase1–7. Host/CHECK/EXPLAIN/concurrency chưa kiểm chứng. Checklist PHASE07_HOST_TEST.md; không dùng gói Phase5 cũ hoặc copy toàn repo để deploy. Chưa tạo gói phát hành mới.
+
+### 20/10/2026 — PDF hoàn thiện local, chưa deploy host
+
+BE-GATE #05-PDF được user duyệt 19/10, mPDF8.3.1 +7 dependency khóa riêng; GD local chạy per-process, không sửa php.ini hoặc server. F5.4 render/PDF text/font/pages/signatures, adapter scope/audit và browser mock đã kiểm; host/DB/download thực chưa UAT. Không migration/SQL mới.
+
+User đã cho phép origin và push nhánh đang làm: checkpoint bfe3539 đã push feature/ita-phase05-pdf; bản PDF được commit/push riêng sau kiểm chứng. Đây là lưu mã, không deploy production hoặc merge main.
+
+Builder scripts/package_ita_pdf.py tạo delta local từ source committed, gom vendor/font/license có manifest/hash và kiểm đọc lại; chỉ dùng khi user chủ động yêu cầu bàn giao. Delta phụ thuộc checkpoint, không phải bộ cài toàn app. Rollback code: khôi phục source/vendor cũ đã backup, giữ assignment/audit/DB; không DROP/restore dump đè dữ liệu hoặc sửa config host. Host cần GD/mbstring/zlib, temp ngoài webroot ghi được và runtime dependency đầy đủ; Composer chạy ở máy build, không production.
+
+### 19/10/2026 — Phase 5 chỉ build local
+
+BE-GATE #05 đã duyệt, code phân bổ/thu hồi/acknowledge/history/maintenance badge đã nối; không migration mới, không cài PDF dependency, không DB/host/deploy. Source còn working tree, chưa có release/manifest Phase5. Không upload toàn repo hoặc dùng gói Phase3 cũ. PHASE05_VERIFY.md ghi kết quả pure/scripted/browser mock; PHASE05_HOST_TEST.md ghi UAT còn lại. Không tạo PDF giả hoặc công bố phase-done.
+
+### 19/10/2026 — Phase 4 chỉ build/verify local
+
+User đã duyệt BE-GATE #04. Code F4.1–F4.5 có trong working tree; không tạo DB, không chạy SQL host, không upload hoặc tạo gói phát hành mới. Chưa có manifest/release cho Phase 4. Giữ private config host riêng, không copy toàn repo. `PHASE04_VERIFY.md` ghi bằng chứng local; `PHASE04_HOST_TEST.md` là checklist khi user sẵn sàng UAT. Không dùng gói Phase 3 cũ bên dưới cho thay đổi mới. DB transaction/collation/concurrency/performance chưa nghiệm thu.
+
+### 19/10/2026 — Bàn giao Phase 3, chưa deploy
+
+**Đính chính sau chỉ đạo user:** chưa upload production. Snapshot `b965bd30a9b4` dưới đây là bản cũ, không còn gồm các sửa local cuối (status required/category failure). Không dùng gói này để deploy; chờ user chủ động bắt đầu bàn giao sau. Phạm vi local đã kiểm 33 pure/scripted +30 browser API mock, không DB.
+
+- User duyệt build và không tạo DB test. Agent không truy cập DB host hoặc thực hiện deploy.
+- Snapshot delta: `artifacts/ita-phase03/infracore-phase03-b965bd30a9b4.zip`, 14 runtime files; archive SHA-256 `f00ab1f317b38671d8a686b4ceceacb43e3d8e0d90423cedfd36df1915d58248`. Bên trong có manifest SHA-256 từng file, đã đọc lại zip và đối chiếu hash.
+- Snapshot từ working tree đã review, chưa phải release/tag phase-done; runtime còn chờ UAT SQL/read-back thực. Không thay cấu hình private hoặc auth_key; package không có config, dump, tests, session hay seed.
+- Gói chỉ cập nhật host đang chạy Phase 2. User backup DB/source, giải nén trên máy và upload **nội dung runtime/** vào `/domains/infracore.dung.derasoft.com/public_html`, giữ đường dẫn, không tạo thêm thư mục runtime trên host. Không upload docs/manifest vào web root.
+- Không cần migration mới hoặc import lại Phase 1/2. Hướng dẫn PHASE03_VERIFY.md và checklist PHASE03_HOST_TEST.md. Nếu lỗi, dừng ghi và khôi phục runtime từ backup, giữ dữ liệu mới; không DROP/DELETE/import dump làm lối tắt.
+
+### Xác nhận từ user sau import SQL host
+
+Ngày 16/10/2026: user báo «đã thành công» sau hướng dẫn chạy phase01_verify.sql. Ghi nhận user xác nhận tạo bảng trên dung_infracore/MariaDB hosting thành công; agent không kết nối host và chưa nhận ảnh bộ đếm 12/12/12 hoặc danh sách đủ 11 khóa ngoại sau lần import cuối. Không suy diễn xác nhận này thành quyền seed, sửa PHP/routing hoặc deploy. Migration F1.1–F1.4 đã bàn giao và được user xác nhận chạy; ứng dụng chưa tích hợp DB.
+### Đính chính xác nhận hosting
+
+Ảnh user gửi tiếp theo cho thấy selected_database=dung_infracore nhưng truy vấn metadata dùng DATABASE() trả 0/NULL/NULL, không thấy FK. Chưa xác nhận tạo đủ 12 bảng trên host; kết luận thành công trước đó chỉ dựa trên lời báo của user và được thay bằng «chờ chẩn đoán». Trước đó import có thông báo #1050 ita_departments already exists. Chưa rõ nguyên nhân hai quan sát khác nhau; không mặc định bảng bị mất hoặc migration thất bại. Đã thay bộ lọc metadata trong preflight/verify bằng tên schema cố định để giảm phụ thuộc ngữ cảnh truy vấn. Cần SHOW TABLES và SHOW CREATE TABLE với schema chỉ định rõ. Không chạy lại CREATE hoặc xóa bảng khi chưa đối chiếu.
+### Bằng chứng SHOW TABLES trên host
+
+User gửi ảnh SHOW TABLES FROM dung_infracore LIKE 'ita%': liệt kê đủ 12 tên bảng đúng migration. SHOW CREATE TABLE dung_infracore.ita_departments trả về cấu trúc nhưng ảnh bị rút gọn. Đã xác nhận tồn tại đủ bảng; không chạy lại CREATE. Chưa xác nhận toàn bộ cột/engine/collation/11 FK qua ảnh này. Nguyên nhân truy vấn information_schema trước đó dùng DATABASE() trả 0 chưa xác minh; không kết luận bảng chưa được tạo. File verify đã dùng tên schema cố định.
+### Xác nhận số lượng khóa ngoại trên host
+
+Ảnh mới từ user cho thấy truy vấn information_schema.TABLE_CONSTRAINTS với CONSTRAINT_SCHEMA='dung_infracore' và loại FOREIGN KEY trả tổng 11 dòng. Kết hợp SHOW TABLES trước đó: đã xác nhận đủ 12 tên bảng và 11 khóa ngoại trên MariaDB host. Chưa có ảnh bộ đếm engine/collation 12/12/12 hoặc toàn bộ định nghĩa cột. Không yêu cầu chạy lại CREATE. Quyền PHP/routing và seed vẫn chưa được user phê duyệt.
+### File kết quả ita_settings.sql từ user
+
+Đã đọc tests/ita_settings.sql, không thực thi: có 6 cặp setting_key/setting_value khớp danh mục khởi tạo (budget_contingency_percent=10, currency=VND, display_timezone=Asia/Ho_Chi_Minh, license_critical_days=7, license_warning_days=30, warranty_warning_days=30). INSERT chỉ xuất setting_key và setting_value, không có store_id trong khi CREATE định nghĩa store_id NOT NULL không default; file này không đủ để xác nhận scope store_id=1 hoặc dùng như bản backup phục hồi nguyên bảng. DDL xuất cũng không thể hiện đầy đủ engine/collation/CHECK. Không import lại file. Chưa nhận kết quả categories/departments sau chạy catalog; cần SELECT đếm ba nhóm theo store_id=1.
+
+Gói local đã tạo và đọc lại toàn bộ 710 mục từ commit `5f1e6ea4f5fafef08e51be4b9a08641b5dbf34e0`: `artifacts/ita-phase05/ita-pdf-5f1e6ea4f5fa.zip`. SHA-256: `7d0149bcd1c89aad417a526522a3ab2d1bfcde84c9259ed5e09ba2da43443dec`. Gói chỉ lưu local, chưa upload/deploy.
+
+

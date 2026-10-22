@@ -2,6 +2,8 @@
 
 ## 22/10/2026 — Phase11 FE/tài liệu, BE chưa duyệt
 
+F11.5 tài liệu22/10: DEPLOY_LOG tái cấu trúc4 phần (trạng thái/checklist/dependency/nhật ký ngày), kiểm bằng so source Git: giữ nguyên24 mục cũ sau hạ heading, không mất/sửa body lịch sử; mục không ngày để cuối, không tự gán ngày. Bổ sung đặc tả validator ZIP +test matrix chưa viết/chạy; backup dependency ngoài máy dev +restore chưa thực hiện; hash file FTP đại diện chưa thu thập; kế hoạch runtime DB test/SHOW GRANTS chưa chạy. Chỉ tài liệu, không script/gói/host/DB/BE; inventory CHƯA THU THẬP, không merge/tag7–10/push/deploy.
+
 F11.6 bổ sung cách đọc phản hồi lưu/tải lại thất bại/kết quả chưa rõ, nguồn hiện tại/snapshot/mặc định/thiếu dữ liệu và vòng thao tác ba vai trò. Đối chiếu với luồng FE/service hiện có; không mô tả chốt kế hoạch/mua sắm hoặc BE11 chưa build là đã có. Không dùng ảnh mới, không yêu cầu UAT host lúc này; DB/host chưa nghiệm thu.
 
 Rà chỉ đọc3 script package_ita_phase03/pdf/host: selection hiện không gom tmp/ root; DEPLOY_LOG ghi loại toàn tmp/host-inventory khỏi mọi payload/manifest deploy, kiểm ZIP thật khi được giao đóng gói sau. Chưa chạy script/tạo gói hoặc sửa script. BE_GATE_11 thêm bảng điều kiện duyệt theo từng mục, chưa build. Inventory vẫn **CHƯA THU THẬP**, không đối chiếu host, không merge/tag7–10/push/deploy.
