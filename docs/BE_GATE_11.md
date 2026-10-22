@@ -1,5 +1,11 @@
 # BE-GATE #11 — Tối ưu, bảo mật, hoàn thiện (NHÁP, CHƯA DUYỆT)
 
+## Phê duyệt giới hạn22/10/2026 — chỉ S11-01 và S11-02
+
+User nguyên văn: «Duyệt BUILD S11-01 và S11-02 trước». Chỉ hai bản sửa kiểm quyền sau render được mở để build/test local không DB; các mục khác trong draft **chưa duyệt/chưa build**. Không sửa auto_prepend/.htaccess/.user.ini/header hoặc tạo/kết nối DB test, không merge/tag7–10/push/deploy. Các mô tả “chưa sửa/chưa duyệt” bên dưới là trạng thái trước lần duyệt này đối với hai finding; không suy thành duyệt toàn gate.
+
+Lựa chọn S11-02 trong phạm vi này: giữ GET và không thêm export audit mới; chặn khi actor/scope đổi, đọc lại tập dòng export sau render và từ chối409 nếu khác; import-errors đối chiếu batch/source/version/expiry. Vì chưa chốt chính sách audit GET riêng, không tự thêm side effect. report-export/template trống không đổi trong bước này; thiếu audit/semantics report ownership được giữ là rủi ro riêng chưa giải quyết.
+
 **Cập nhật chỉ đạo22/10:** không tự tạo/kết nối DB test. User kiểm DB thủ công trên host sau; local chỉ pure/scripted/mock/render trong phạm vi đã duyệt. Các tham chiếu “cần DB test” bên dưới là phương án kiểm đã soạn trước, không buộc user tạo DB test hoặc cho phép agent chạy DB/host. Kết quả DB thật vẫn chưa nghiệm thu; cách kiểm thủ công phù hợp sẽ bàn giao khi user sẵn sàng. Gate vẫn chưa được duyệt/build, không merge/tag7–10/push/deploy.
 
 Theo chỉ đạo22/10: **chỉ soạn tài liệu, chưa build BE**. Không coi việc làm FE/tài liệu hoặc user duyệt #10 là duyệt gate này. Không tự chạy DB/EXPLAIN, cài package, sửa PHP/session/server config. Không merge/tag Phase7–10/push/deploy. DB/host Phase1–10 chưa nghiệm thu.

@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 22/10/2026 — Duyệt BUILD giới hạn export S11-01/S11-02
+
+User «Duyệt BUILD S11-01 và S11-02 trước». S11-01 native recheck sau render đã build local:21 scripted export +134 hồi quy ngân sách đạt, lint/review đạt; PHASE11_EXPORT_VERIFY.md. Không DB/host, không đổi config/headers/auto_prepend hoặc mở các mục khác gate11. Không merge/tag7–10/push/deploy; DB chưa nghiệm thu. Các ghi chú gate11 hoàn toàn chưa duyệt ở lịch sử dưới không thay phê duyệt giới hạn này.
+
 ## Chỉ đạo hiện hành22/10/2026 — Không tạo DB test
 
 User nguyên văn: «à phần test DB thì không cần thiết tôi sẽ test kiểm thử thủ công trên host sau không tự í tạo DB test ở local bạn chỉ cần test trong phạm vi tôi cho phép là được rồi».

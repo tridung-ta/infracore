@@ -97,6 +97,9 @@ class ItaForecastService
     public function auditExport(array $document): void
     {
         $this->transaction(function() use ($document) {
+            if (!$this->db->fetchOne('SELECT id FROM dc_users WHERE store_id=? AND id=? AND status=1','ii',[$this->actor->storeId,$this->actor->id])) {
+                throw new ItaHttpError(403,'Tài khoản đã ngừng hoạt động. Không thể xuất dữ liệu.');
+            }
             foreach ($document['rows'] as $row) { $this->actor->requireDepartment((int)$row['department_id']); }
             if (!empty($document['saved'])) {
                 $current=(new ItaForecastObjects($this->db,$this->actor))->saved((int)$document['plan_id']);

@@ -24,6 +24,7 @@ class ForecastTestDb extends ItaDb
     }
     public function fetchOne(string $sql,string $types='',array $params=[]): ?array
     {
+        if ($sql==='SELECT id FROM dc_users WHERE store_id=? AND id=? AND status=1' && $types==='ii' && $params===[1,1]) { return ['id'=>1]; }
         $this->calls[]=[$sql,$types,$params];
         if (str_contains($sql,'FROM ita_user_roles')) { return ['role'=>$this->role,'enabled'=>1,'auth_revision'=>1]; }
         if (str_contains($sql,'FROM ita_settings')) { return isset($this->settings['forecast_category_parameters'])?['setting_value'=>$this->settings['forecast_category_parameters']]:null; }
