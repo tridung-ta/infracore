@@ -27,7 +27,61 @@ F11.4 chỉ **một phần FE**. Phần BE còn lại cần thiết kế trang l
 - ItaSession/auth/config middleware và entrypoints nếu kiểm chứng cần sửa cookie/security headers. CSP phải kiểm asset local/ECharts/PDF/download và form; không tự bật một policy gây chặn UI. HSTS chỉ sau xác nhận HTTPS/chứng chỉ/subdomain; không tin X-Forwarded-Proto từ nguồn chưa được xác minh.
 - Không đổi compiler/vendor, không Composer mới trong gate dự kiến này. Instrumentation đo PHP memory phải private/tắt mặc định, được duyệt rõ; không tạo endpoint debug công khai.
 
-## Migration, rủi ro và hoàn tác
+## Danh mục duyệt riêng — vẫn NHÁP, chưa build
+
+Các mục dưới đây là phương án để review, **không phải patch/config đã áp dụng**. Host test chỉ thực hiện sau triển khai được phép; các tình huống đổi quyền trong render cần DB test được xác nhận. Không thêm debug endpoint hoặc gây lỗi trên production để đo.
+
+### (a) S11-01 — forecast-export thiếu native recheck
+
+- Thay đổi đề xuất: sau render, đọc lại native theo actor ID +store_id +status active trước audit thành công/bytes; giữ kiểm role/revision/scope, lỗi fail-closed. Không trả MIME/chữ ký file khi bị từ chối.
+- Rủi ro: native MyISAM không bảo đảm thu hồi quyền nguyên tử cùng InnoDB; thêm query có thể lỗi/tăng thời gian. Không dùng rollback làm bằng chứng native chưa đổi.
+- Kiểm host/DB test sau duyệt: baseline xuất được; disable/mất native/store đổi trong render → **không bytes file, không audit export thành công**; query/audit lỗi cũng không bytes; mapping/scope đổi vẫn chặn. Kiểm cả Excel/PDF, không chỉ nút FE.
+- Hoàn tác: phục hồi đúng file service/dispatcher/test đã thay từ source backup, giữ DB/audit/snapshot. Việc quay lại bản cũ làm S11-01 mở lại; ghi rõ rủi ro, không restore DB để che lỗi.
+
+### (b) S11-02 — asset-export/import-errors thiếu kiểm lại sau render
+
+- Định nghĩa: hai GET có dữ liệu `asset-export` và `import-errors` chỉ kiểm quyền/scope hoặc batch owner/revision **trước** tạo workbook, không kiểm lại actor/native/scope/batch sau render; hiện cũng không có export audit. Đây là finding riêng, không phải tên khác của S11-01. `import-template` chỉ là mẫu trống, mức rủi ro thấp hơn, tách khỏi finding dữ liệu này.
+- Thay đổi đề xuất: recheck native active cùng store, ITA role/revision/scope trước bytes; import-errors kiểm lại owner/session/revision/expiry của batch. Chốt audit export phù hợp trước build (không ghi row dữ liệu/secret vào log); nếu audit được duyệt thì fail-closed khi ghi lỗi. Chốt semantics tài sản đổi bộ phận trong render cho asset-export/report-export; scope ID của actor không tự chứng minh ownership đối tượng hiện tại. Không tự đổi GET→POST trong đề xuất này.
+- Rủi ro: thay contract tải file/expiry có thể từ chối workbook đang render; thêm audit sẽ làm GET có side effect audit, cần đánh giá CSRF navigation/rate limit. Không mở rộng quyền hoặc làm snapshot ngân sách thay đổi theo hiện tại.
+- Kiểm host/DB test sau duyệt: native/role/scope bị thu hồi trong render, batch hết hạn/revision đổi/khác owner →không bytes; baseline A/M đúng phạm vi và batch của mình tải được, S bị chặn. Audit nếu được duyệt phải đúng một lần và lỗi không trả file. Đối chiếu danh sách dòng khi asset chuyển bộ phận theo contract đã chốt.
+- Hoàn tác: phục hồi controller/service từ backup, không xóa audit đã phát sinh/batch/source staging để quay lui. Ghi việc bảo vệ sau render chưa còn hiệu lực nếu rollback.
+
+### (c) project-start.php — thêm project_gate an toàn
+
+- Thay đổi đề xuất: gate trước mọi output khi truy cập trực tiếp, kèm cơ chế include một lần/reentrancy rõ ràng. **Không chỉ chèn require mù**: project_gate hiện gọi project-start.php cho service-worker và chế độ .legacy-hidden; phải giữ hai đường này không đệ quy/không dispatch hai lần.
+- Rủi ro: loop redirect/include, worker không unregister/cache cleanup đúng, trang landing legacy khôi phục sai; lỗi trước output làm trắng trang.
+- Kiểm host sau duyệt: GET/HEAD project-start trực tiếp không bypass; POST rỗng bị chặn; service-worker.js trả JS hợp lệ đúng một lần, không vòng lặp, login/shell vẫn hoạt động. Test tổ hợp marker trong môi trường cô lập, không bật legacy trên production để thử.
+- Hoàn tác: phục hồi project-start và guard liên quan đồng bộ từ backup qua FTP/File Manager; không cần PHP app còn chạy để khôi phục. Giữ nguyên marker đã xác minh.
+
+### (d) Deny tường minh tests/artifacts/scripts/assets/ita/mock
+
+- Thay đổi đề xuất: rule403/404 đặt **trước** static allowlist/catch-all, chặn cả đường thư mục và file con trên vhost InfraCore. Apache có mod_rewrite: rule dự kiến ở đầu .htaccess `RewriteRule ^(?:tests|artifacts|scripts|assets/ita/mock)(?:/|$) - [F,END,NC]`; `Options -Indexes` chỉ khi host cho phép directive đó. Đây là cú pháp đề xuất, **chưa ghi vào .htaccess**. Nếu hosting dùng Nginx/LiteSpeed khác hoặc cấm AllowOverride/directive, quản trị phải dùng rule tương đương được xác minh, không coi mẫu Apache tự có hiệu lực.
+- Rủi ro: sai thứ tự vẫn lộ JSON MOCK; directive không hỗ trợ gây500; chặn scripts HTTP là chủ ý, script CLI không được đưa vào runtime. Không block assets production/vendor hoặc dựa directory listing Off để bảo vệ file con.
+- Kiểm host sau duyệt: GET/HEAD/POST rỗng thư mục +file an toàn phải403/404, không303/200; CSS/JS/font production vẫn200. Không gọi PHP fixture để probe khi deny chưa chứng minh có hiệu lực. Kiểm không listing và thử URL mixed case theo webserver thực.
+- Hoàn tác: khôi phục đúng backup config qua kênh ngoài app; reload/cache bằng cơ chế host được phép, kiểm lại login/static. Nếu deny chưa có hiệu lực, không đưa thư mục nhạy cảm vào runtime; không xóa source legacy để chữa rule.
+
+### (e) auto_prepend_file qua .user.ini — RỦI RO CAO, lớp chiều sâu tùy chọn
+
+- Thay đổi đề xuất: prepend guard riêng bằng đường dẫn tuyệt đối, ngoài webroot nếu host cho phép; guard idempotent, xác định đúng vhost/root/method/marker và không include vòng. Không trỏ mù prepend vào project_gate hiện tại trước khi kiểm reentrancy/worker/legacy compatibility. Cần xác nhận PHP-FPM có đọc .user.ini, phạm vi kế thừa tới subdirectory và open_basedir; không tạo prepend trong bước này. Lớp PHP không bảo vệ static files, vẫn cần deny webserver.
+- Rủi ro **cao**: sai path/parse/permission có thể làm mọi request PHP lỗi, mất cả trang login; ảnh hưởng vhost khác nếu scope chung, chạy guard lặp, header/session đã gửi. .user.ini hiện auto_prepend_file rỗng; không thay toàn server/account dùng chung.
+- Kiểm host sau duyệt: trước tiên vhost cô lập/staging, xác minh chỉ InfraCore chịu tác động; direct PHP legacy bị chặn dù bỏ qua đường dispatcher, ITA/login/download/worker không lặp. Xác minh giá trị hiệu lực qua phương tiện quản trị private; không phpinfo/debug công khai. Không tắt rewrite trên production để thử.
+- **Hoàn tác nhanh:** chuẩn bị sẵn bản .user.ini cũ và kênh FTP/File Manager không phụ thuộc PHP. Khôi phục giá trị cũ (hiện rỗng) trước, **giữ tệp guard tồn tại** đến khi config cache hết hiệu lực; không xóa guard trước làm cached prepend trỏ file mất. `.user.ini` có cache theo `user_ini.cache_ttl` thực tế: xác minh TTL, chờ hoặc nhờ host recycle đúng PHP-FPM pool khi được phép; đổi tên/xóa .user.ini không bảo đảm tác dụng ngay. Sau rollback probe nhiều request/worker. Không tuyên bố “khôi phục tức thì” nếu chưa hết cache/reload.
+
+### (f) HTTP404/500, log_errors/display_errors
+
+- Thay đổi đề xuất: trang lỗi HTTP đúng status cho HTML, JSON envelope cho API, không HTML200 thay lỗi/file; error log private có mã tương quan không secret. display_errors Off/log_errors On ở cấu hình PHP-FPM phù hợp cả lỗi trước bootstrap. Module đã display_errors=0, không mô tả là chưa có. Handler fail phải fallback tối giản, không render lỗi lặp.
+- Rủi ro: ErrorDocument/internal redirect làm mất status hoặc đệ quy vào auth; warning phá bytes export; log lộ secret, đầy disk, ACL sai. PHP catch không xử lý mọi parse/startup error.
+- Kiểm host sau duyệt: URL không tồn tại/deny, API error/file error đúng MIME/status; log private/rotation, không stacktrace/secret trong response. Lỗi500 có kiểm soát chỉ tạo ở môi trường test/qua observer được phép, không làm hỏng file production.
+- Hoàn tác: phục hồi handler/config theo backup; giữ log điều tra private, không xóa audit; lưu ý cache .user.ini nếu dùng và reload pool chỉ khi được phép.
+
+### (g) Referrer-Policy, Permissions-Policy và HSTS có điều kiện
+
+- Thay đổi đề xuất: chọn Referrer-Policy (đề xuất strict-origin-when-cross-origin) và Permissions-Policy tối thiểu cho tính năng không dùng (camera/microphone/geolocation), kiểm cấu hình header cuối tại vhost. **HSTS chưa bật trong source được rà, host chưa xác nhận**; chỉ trình bật khi cả domain phục vụ ổn định HTTPS/chứng chỉ/redirect. includeSubDomains chỉ khi mọi subdomain liên quan cũng đáp ứng; không preload tự động. Không đổi CSP style-src unsafe-inline trong hạng mục này.
+- Rủi ro: policy chặn tính năng dùng chung; header trùng qua proxy; HSTS có thể khóa truy cập khi TLS lỗi và trình duyệt giữ cache sau rollback.
+- Kiểm host sau duyệt: header cuối của HTML/API/file/lỗi, chức năng hiện có không bị chặn; HTTPS mọi đường, certificate/renewal và domain/subdomain scope được xác nhận trước HSTS. Không coi một request HTTPS thành công là ổn định cả domain.
+- Hoàn tác: khôi phục header config cũ; với HSTS phải còn HTTPS hợp lệ để phát max-age=0, client cần nhận phản hồi đó và cache có thể còn. Xóa header server không xóa HSTS đã lưu trên client; preload càng không hoàn tác nhanh. Đây là lý do chưa bật khi chưa đủ điều kiện.
+
+## Migration, rủi ro và hoàn tác chung
 
 **Chưa có DDL/seed/migration.** Index mới sẽ có gate SQL riêng với bảng/cột/thứ tự, index hiện tại, EXPLAIN, ảnh hưởng ghi, backup và hoàn tác. Không ALTER engine/schema cũ, không DROP/reset/restore đè dữ liệu.
 

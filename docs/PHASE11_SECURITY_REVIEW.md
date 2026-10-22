@@ -127,6 +127,8 @@ GET import-upload không thực hiện upload (trả405). Đối chiếu trực 
 
 Đề xuất S11-02 cho asset-export/import-errors để chốt recheck/audit sau khi user duyệt gate; không coi chúng có mức bảo vệ giống report-export hiện tại. MyISAM native không tạo bảo đảm thu hồi quyền nguyên tử với transaction InnoDB. Luồng report snapshot cũng cần xác định ownership khi thiết bị đổi bộ phận; chỉ kiểm lại scope IDs của actor không đồng nghĩa đọc lại mọi đối tượng. Chưa chạy test thời điểm thu hồi quyền/DB thật.
 
+**S11-02 — Thiếu post-render recheck trên asset-export/import-errors:** tên finding riêng cho hai đường GET có dữ liệu nêu trên; không phải S11-01 và không phải kết luận tất cả export đều thiếu CSRF. Chưa recheck native/role/scope hoặc batch owner/revision sau tạo workbook, hiện không có export audit. Phương án sửa/audit, rủi ro, host test và rollback ghi riêng tại BE_GATE_11 mục(b); chưa được duyệt/chưa sửa. Mẫu import trống tách khỏi finding này.
+
 ### Hạn chế chấp nhận được và rủi ro còn lại
 
 “Chấp nhận được” ở đây là giới hạn tương thích đã được mô tả để chờ quyết định/kiểm host, **không phải phê duyệt nghiệm thu hoặc bỏ qua finding**.
@@ -135,6 +137,8 @@ GET import-upload không thực hiện upload (trả405). Đối chiếu trực 
 - **CSP style-src 'unsafe-inline':** giữ tương thích style hiện có/ECharts; script-src vẫn self trong ITA module. Cho phép inline style làm CSP yếu hơn policy nonce/hash chặt; không tự bỏ làm hỏng UI. Project-start có CSP khác, không lấy policy module suy cho mọi URL.
 - **GET tải file không CSRF:** assignment-pdf có audit nên top-level navigation có thể phát sinh audit/tải cưỡng bức; các GET import/export nói trên chưa có audit export. SameSite=Lax không giải quyết top-level GET. Quyền server vẫn bắt buộc; đổi method/token là thay đổi BE cần duyệt.
 - **Referrer-Policy/Permissions-Policy/HSTS:** chưa thấy header riêng trong đường ITA được rà; không kết luận host không thêm qua proxy. Chưa đặt HSTS khi domain chưa ổn định HTTPS/chứng chỉ; includeSubDomains chỉ cân nhắc khi mọi subdomain liên quan đều HTTPS ổn định, không tự preload. frame-ancestors none đã tồn tại, không gọi thiếu X-Frame-Options là không có chống iframe.
+
+Trạng thái phải giữ rõ: **HSTS chưa bật trong source hiện có; host chưa kiểm**. CSP style-src unsafe-inline, MD5 nền cũ và GET tải file có audit không CSRF (assignment-pdf) vẫn là hạn chế/rủi ro đã nêu, không phải đã khắc phục hoặc đã được nghiệm thu.
 - **Phụ thuộc host:** AllowOverride/rewrite, DOCUMENT_ROOT/marker, proxy TLS, PHP-FPM display_errors/log_errors/extensions, temp ACL và deny config/artifact. .user.ini không có auto_prepend bảo vệ toàn bộ PHP. Static MOCK JSON hiện được allowlist nếu file còn. Các điểm mở chi tiết tại PHASE11_LEGACY_SURFACE.md; không kết luận legacy an toàn.
 
 **Trạng thái F11.2: rà soát source xong; kiểm thử trên host chưa chạy.** Inventory PHP/ops và checklist host bổ sung tại PHASE11_LEGACY_SURFACE.md, PHASE11_PHP_SURFACE.csv và PHASE11_HOST_TEST.md. Không thay kết quả source review thành PASS host.
