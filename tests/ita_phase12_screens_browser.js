@@ -1,7 +1,7 @@
 async(page)=>{
  const context=await page.context().browser().newContext({viewport:{width:1366,height:1000},reducedMotion:'no-preference'}),p=await context.newPage(),checks=[],errors=[];
  const check=(ok,label)=>{if(!ok)throw new Error(label);checks.push(label);};
- const cases=[['alerts','#alert-list'],['tickets','#ticket-feedback'],['overview','#kpi-grid'],['assets','#asset-rows'],['assets','#asset-dialog']];
+ const cases=[['alerts','#alert-list'],['tickets','#ticket-feedback'],['overview','#kpi-grid'],['assets','#asset-rows'],['assets','#asset-dialog'],['lifecycle','#lifecycle-detail']];
  await context.addInitScript(()=>{window.motionCalls=[];const original=Element.prototype.animate;Element.prototype.animate=function(frames,options){motionCalls.push({id:this.id,keys:Object.keys(frames[0]),duration:options.duration});return original.call(this,frames,options);};});
  p.on('pageerror',e=>errors.push(e.message));
  try{

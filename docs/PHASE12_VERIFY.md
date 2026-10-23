@@ -1,5 +1,7 @@
 # Phase 12 — UI Motion local, 23/10/2026
 
+F12.7: vòng đời, 19 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.
+
 F12.6: chi tiết tài sản, 16 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.
 
 F12.2: cảnh báo,4 probes ban đầu và13 probes cộng dồn đạt. File đăng ký cảnh báo được lưu bổ sung sau các commit F12.3–F12.5; phải lấy checkpoint đầy đủ, không dùng các commit giữa chặng làm gói độc lập. Không viết lại lịch sử.
