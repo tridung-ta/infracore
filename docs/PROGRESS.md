@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+23/10/2026: F12.4 motion dashboard local hoàn tất; 10 DOM motion probes đạt, không DB/API/host. Hiệu ứng ngắn, cờ tắt/hủy hoạt động; không merge/tag/push/deploy.
+
 23/10/2026: F12.3 motion ticket local hoàn tất; 7 DOM motion probes đạt, không DB/API/host. Hiệu ứng ngắn, cờ tắt/hủy hoạt động; không merge/tag/push/deploy.
 
 ## 23/10/2026 — BUILD liên tục; mở Phase12 FE
