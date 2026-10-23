@@ -1,5 +1,12 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 23/10/2026 — Cleanup scene phải bao phủ cả khởi tạo và render muộn
+
+- Triệu chứng: renderfail trong browser làm fallback2D nhưng canvas cũ còn; review phát hiện xoay/chọn sau init vẫn có thể ném uncaught.
+- Bằng chứng: test WebGL2.clear ném lỗi trước return và sau scene đã sẵn sàng đều tái hiện đỏ, không suy từ module import lỗi.
+- Sửa: dispose idempotent dùng cả catch khởi tạo, draw phân biệt ready và gọi cleanup/fallback cho lỗi muộn, dừng observer/listener và tài nguyên GPU; không ghi đè message fallback bằng success.
+- Kiểm:23 browser WebGL/import/noWebGL/contextloss/latefail checks đạt; review cuối không finding. Không chứng minh driver mọi máy/host hoặc DB.
+
 ## 23/10/2026 — Reset form không đủ để bỏ hidden ID/version đã chọn
 
 - Triệu chứng: browser test danh mục báo Successful save resets stale editor thất bại sau lưu thành công.

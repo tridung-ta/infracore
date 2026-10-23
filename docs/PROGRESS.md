@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+23/10/2026: F13.4 Three local lazy0.180.0/r180 hoàn tất FE MOCK;23 browser WebGL/fallback checks đạt,12 2D +9 flow hồi quy đạt, Smarty/syntax/review đạt. Camerafit mobile; cleanup cả init/late-render lỗi đã tái hiện/sửa. PHASE13_VERIFY.md. F13.1 [G] vì user chưa duyệt BE13, không bảng/PHP/API/DB/host mới. Không gói/merge/tag7–10/push/deploy. Phase12FE đã xonglocal; Phase11/index/tải/host và DB1–10 vẫn chưa nghiệm thu.
+
 23/10/2026: F13.3 pulse/luồng MOCK một lần hoàn tất FE;9 browser flow checks đạt (normal/reduced/cờ tắt/không WAAPI), dừng/rời view/tắt hủy dot. Không mô phỏng giám sát mạng thật, không DB/BE13. Tiếp tục3D lazy/fallback, không gói/merge/tag/push/deploy.
 
 23/10/2026: User «Chưa duyệt BE13, hoàn thiện FE MOCK». F13.1 [G] chưa tạo bảng/migration/PHP. F13.2 sơ đồ2D8node7link với filter/table/keyboard/live-no-mock;12 browser checks/Smarty/syntax đạt, không DB/mạng thật. PHASE13_VERIFY.md, BE_GATE_13.md. Tiếp tục F13.3/F13.4, không gói/merge/tag/push/deploy.

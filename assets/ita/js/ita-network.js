@@ -33,15 +33,16 @@
  }
  function validate(data){
   if(data.mock!==true||!Array.isArray(data.nodes)||!Array.isArray(data.links)||data.nodes.length>200||data.links.length>400)throw new Error('Mô hình mẫu không hợp lệ.');
-  const ids=new Set();for(const n of data.nodes){if(typeof n.id!=='string'||ids.has(n.id)||!['name','kind','department'].every(k=>typeof n[k]==='string'&&n[k].length<=100)||!labels[n.status]||![n.x,n.y].every(Number.isFinite)||n.x<70||n.x>1030||n.y<40||n.y>460)throw new Error('Thiết bị mẫu không hợp lệ.');ids.add(n.id);}
-  for(const l of data.links)if(!ids.has(l.source)||!ids.has(l.target)||l.source===l.target||!labels[l.status]||!['kind','capacity'].every(k=>typeof l[k]==='string'&&l[k].length<=100))throw new Error('Liên kết mẫu không hợp lệ.');
+  const ids=new Set();for(const n of data.nodes){if(typeof n.id!=='string'||!n.id||n.id.length>100||ids.has(n.id)||!['name','kind','department'].every(k=>typeof n[k]==='string'&&n[k].length<=100)||!Object.hasOwn(labels,n.status)||![n.x,n.y].every(Number.isFinite)||n.x<70||n.x>1030||n.y<40||n.y>460)throw new Error('Thiết bị mẫu không hợp lệ.');ids.add(n.id);}
+  for(const l of data.links)if(!ids.has(l.source)||!ids.has(l.target)||l.source===l.target||!Object.hasOwn(labels,l.status)||!['kind','capacity'].every(k=>typeof l[k]==='string'&&l[k].length<=100))throw new Error('Liên kết mẫu không hợp lệ.');
  }
  async function load(){
   if(live||loading)return;loading=true;$('network-message').textContent='Đang tải mô hình MOCK…';$('network-retry').hidden=true;
-  try{const response=await fetch('/assets/ita/mock/network.json',{cache:'no-store'});if(!response.ok)throw new Error('Chưa tải được mô hình mẫu.');const data=await response.json();validate(data);source=data;
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+  try{const response=await fetch('/assets/ita/mock/network.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Chưa tải được mô hình mẫu.');const text=await response.text();if(text.length>250000)throw new Error('Mô hình mẫu vượt giới hạn.');const data=JSON.parse(text);validate(data);source=data;
    $('network-department').replaceChildren(new Option('Tất cả bộ phận',''),...[...new Set(data.nodes.map(n=>n.department))].sort().map(name=>new Option(name,name)));
    $('network-content').hidden=false;render();$('network-message').textContent='MOCK · Chỉ minh họa topology, chưa có dữ liệu mạng thật.';
-  }catch(error){$('network-content').hidden=true;$('network-message').textContent=error.message;$('network-retry').hidden=false;}finally{loading=false;}
+  }catch(error){$('network-content').hidden=true;$('network-message').textContent=error.name==='AbortError'?'Tải mô hình quá thời gian. Hãy thử lại.':error.message;$('network-retry').hidden=false;}finally{clearTimeout(timer);loading=false;}
  }
  function activate(){
   $('network-nav').hidden=live;if(location.hash!=='#network')return;

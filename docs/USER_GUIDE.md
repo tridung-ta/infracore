@@ -1,5 +1,11 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Phase13 — Bản đồ mạng MOCK (chưa có BE thật)
+
+Trong bản xem thử, mở Hạ tầng mạng · MOCK. Lọc tên/loại hoặc bộ phận mẫu, chọn thiết bị bằng nút danh sách hoặc bàn phím trong sơ đồ để xem chi tiết; bảng liên kết đối chiếu cùng bộ lọc. Nút Minh họa luồng chạy một lần và có Dừng, tôn trọng tùy chọn giảm chuyển động; không phải lưu lượng thực.
+
+Xem3D tải thư viện local khi bấm, Xoay trái/phải đổi góc, danh sách vẫn chọn được bằng bàn phím. Nếu WebGL lỗi, tự về2D. Không có chỉnh sửa mạng thật, quét mạng hoặc đo trạng thái. Phần này không tải dữ liệu MOCK khi chạy chế độ live và chưa được duyệt deploy.
+
 ## Phase12 — Tùy chọn hiệu ứng (local)
 
 Nút Hiệu ứng ở cuối menu và trang đăng nhập cho phép tắt/bật chuyển động ngắn; tùy chọn chỉ lưu trên trình duyệt đang dùng. Khi hệ điều hành yêu cầu giảm chuyển động hoặc cấu hình ứng dụng tắt hiệu ứng, nút không bật vượt chính sách đó. Hiệu ứng không thay số liệu, không gửi thêm thao tác lưu và không cần chờ để sử dụng form. Rời trang hoặc tắt hiệu ứng sẽ hủy chuyển động đang chạy.
