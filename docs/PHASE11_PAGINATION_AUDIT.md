@@ -1,5 +1,9 @@
 # Rà danh sách và phân trang —22/10/2026
 
+## Cập nhật23/10 — Nhóm vòng đời có điều hướng FE, BE vẫn mở
+
+Loại thiết bị/Bộ phận hiện hiển thị20 nhóm/trang phía client, nhớ trang riêng và không đổi tổng quan/mẫu số.30 browser mới +63 hồi quy đạt, PHASE11_LIFECYCLE_GROUPS_VERIFY.md. Server vẫn aggregate/trả toàn bộ nhóm như trước; đây không phải LIMIT/OFFSET SQL, chưa tối ưu payload/SQL hoặc nghiệm thu DB. Hàng nhóm vòng đời trong bảng dưới vẫn là việc BE còn mở; không đánh dấu toàn bộ phân trang nhóm đã xong.
+
 ## Cập nhật23/10 — Danh sách Quản lý loại Admin đã phân trang local
 
 User duyệt riêng; categories paged=1 có COUNT/search literal/LIMIT20/OFFSET, sort name,id và UI nav cho Admin.69 scripted +24 browser mới và hồi quy đạt, PHASE11_CATEGORY_PAGINATION_VERIFY.md. Hàng Danh mục bên dưới chỉ còn đúng với lookup/dropdown mảng guard500; management paginated đã tách contract. Không coi toàn bộ lookup đã phân trang, chưa DB/EXPLAIN/host.

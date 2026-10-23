@@ -3,6 +3,7 @@
  const $=id=>document.getElementById(id),live=document.body.dataset.mode==='live';
  const tiers={replace:'Đề xuất thay thế',watch:'Theo dõi',normal:'Bình thường',missing:'Chưa đủ dữ liệu'};
  let page=1,total=0,busy=false,fixture=null,loaded=false,perPage=20,groupMode='category',returnFocus=null;
+ let groupData={category:[],department:[]},groupPages={category:1,department:1};
  const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=text;return node;};
  const decimal=(value,digits=2)=>value===null||value===undefined?'Chưa có dữ liệu':new Intl.NumberFormat('vi-VN',{maximumFractionDigits:digits}).format(Number(value));
  function feedback(text,error=false){$('lifecycle-message').textContent=text;$('lifecycle-message').dataset.state=error?'error':text.startsWith('Đang')?'loading':'success';$('lifecycle-message').classList.toggle('is-error',error);$('lifecycle-message').setAttribute('role',error?'alert':'status');$('lifecycle-retry').hidden=!error;}
@@ -10,6 +11,8 @@
  function controls(){
   $('lifecycle-panel').querySelectorAll('button,input,select').forEach(n=>n.disabled=busy);
   $('lifecycle-prev').disabled=busy||page<=1;$('lifecycle-next').disabled=busy||page*perPage>=total;
+  $('lifecycle-group-prev').disabled=busy||groupPages[groupMode]<=1;
+  $('lifecycle-group-next').disabled=busy||groupPages[groupMode]*20>=groupData[groupMode].length;
  }
  async function request(action,query={}){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
@@ -52,12 +55,18 @@
   if(!rows.length){const tr=el('tr',''),td=el('td','Không có thiết bị phù hợp. Thử đổi bộ lọc.');td.className='lifecycle-empty';td.colSpan=6;tr.append(td);$('lifecycle-rows').append(tr);}
  }
  function renderGroups(data){
+  if(data){groupData={category:data.by_category,department:data.by_department};groupPages={category:1,department:1};}
   $('lifecycle-group-tables').replaceChildren();
-  for(const [key,name,rows] of [['category','Theo loại thiết bị',data.by_category],['department','Theo bộ phận',data.by_department]]){
+  for(const [key,name,allRows] of [['category','Theo loại thiết bị',groupData.category],['department','Theo bộ phận',groupData.department]]){
+   groupPages[key]=Math.max(1,Math.min(groupPages[key],Math.max(1,Math.ceil(allRows.length/20))));
+   const rows=allRows.slice((groupPages[key]-1)*20,groupPages[key]*20);
    const wrap=el('div','');wrap.className='lifecycle-group-wrap';wrap.dataset.group=key;wrap.hidden=key!==groupMode;const table=el('table','');table.className='lifecycle-table';table.append(el('caption',name));
    const head=el('thead',''),tr=el('tr','');for(const label of ['Nhóm','Thiết bị','Tuổi TB (năm)','Có tuổi / Thiếu tuổi','Tỷ lệ lỗi']){const th=el('th',label);th.scope='col';tr.append(th);}head.append(tr);table.append(head);
    const body=el('tbody','');for(const row of rows){const line=el('tr',''),count=Number(row.total);for(const value of [row.group_name||'Chưa phân bổ',row.total,decimal(row.average_age_years),`${row.age_known} / ${count-Number(row.age_known)}`,`${row.failed_assets}/${count} · ${count?decimal(Number(row.failed_assets)*100/count):'0'}%`])line.append(el('td',String(value)));body.append(line);}if(!rows.length){const empty=el('tr',''),cell=el('td','Chưa có dữ liệu nhóm trong bộ lọc này.');cell.colSpan=5;empty.append(cell);body.append(empty);}table.append(body);wrap.append(table);$('lifecycle-group-tables').append(wrap);
   }
+  const count=groupData[groupMode].length;
+  $('lifecycle-group-page').textContent=`${groupMode==='category'?'Loại thiết bị':'Bộ phận'} · Trang ${groupPages[groupMode]}/${Math.max(1,Math.ceil(count/20))} · ${count} nhóm`;
+  controls();
  }
  function render(data){
   page=data.page;total=data.total;perPage=data.per_page;const s=data.summary,v=data.config.values;
@@ -100,8 +109,11 @@
  $('lifecycle-retry').addEventListener('click',()=>run(load));$('lifecycle-detail-close').addEventListener('click',()=>{$('lifecycle-detail').hidden=true;document.querySelectorAll('#lifecycle-rows tr').forEach(row=>row.classList.remove('is-selected'));(returnFocus?.isConnected?returnFocus:$('lifecycle-search')).focus();});
  $('lifecycle-clear').addEventListener('click',()=>{$('lifecycle-filters').reset();page=1;run(load);});
  document.querySelectorAll('[data-lifecycle-group]').forEach(button=>button.addEventListener('click',()=>{
-  groupMode=button.dataset.lifecycleGroup;document.querySelectorAll('[data-lifecycle-group]').forEach(n=>n.setAttribute('aria-pressed',String(n===button)));document.querySelectorAll('#lifecycle-group-tables [data-group]').forEach(n=>n.hidden=n.dataset.group!==groupMode);
+  groupMode=button.dataset.lifecycleGroup;document.querySelectorAll('[data-lifecycle-group]').forEach(n=>n.setAttribute('aria-pressed',String(n===button)));renderGroups();
  }));
+ for(const [direction,delta] of [['prev',-1],['next',1]])$('lifecycle-group-'+direction).addEventListener('click',()=>{
+  if(busy)return;groupPages[groupMode]+=delta;renderGroups();
+ });
  $('lifecycle-show-method').addEventListener('click',()=>{const method=$('lifecycle-method');method.open=true;method.querySelector('summary').focus({preventScroll:true});method.scrollIntoView({behavior:'instant',block:'start'});});
  function activate(){
   const nav=$('lifecycle-nav');nav.hidden=live&&!allowed();

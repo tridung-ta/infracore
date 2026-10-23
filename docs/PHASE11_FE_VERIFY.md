@@ -1,5 +1,9 @@
 # Phase 11 — Kiểm chứng FE local, 22/10/2026
 
+## Bổ sung23/10 — Bảng nhóm vòng đời
+
+Đã thêm20 nhóm/trang phía client cho Loại thiết bị/Bộ phận, giữ riêng trang từng chế độ và tổng quan từ response.30 browser mới +63 vòng đời hồi quy/Smarty/syntax/diff đạt; PHASE11_LIFECYCLE_GROUPS_VERIFY.md. Chỉ JS/partial, không PHP/DB/API; backend vẫn trả mọi nhóm, chưa coi SQL pagination/DB hoặc layout PHP thật đạt. Phần lịch sử22/10 bên dưới giữ nguyên.
+
 **Cập nhật23/10:** (f) trong ứng dụng đã được duyệt/build,56 HTTP/Smarty +41 browser error-page đạt, PHASE11_ERROR_HTTP_VERIFY.md. Những dòng F11.4 “chỉ FE” dưới là lịch sử22/10; hiện app có lỗi HTTP/log/ref, **server config/host vẫn chưa kiểm**, F11.4 chưa nghiệm thu toàn bộ.
 
 Chỉ sửa template/CSS/JavaScript và tài liệu. Không sửa PHP, DB, auth, cookie hoặc security headers. BE_GATE_11.md là bản nháp chưa duyệt; DB/host Phase 1–10 chưa nghiệm thu. Không merge/tag Phase 7–10, không push/deploy.

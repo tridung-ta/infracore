@@ -1,5 +1,9 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Bổ sung23/10 — So sánh nhóm vòng đời (build FE local)
+
+Trong Vòng đời tài sản, phần So sánh theo nhóm có hai chế độ Loại thiết bị và Bộ phận. Mỗi trang tối đa20 nhóm; dùng Trước/Sau dưới bảng. Chuyển chế độ giữ trang vừa xem của từng bảng; nhận dữ liệu mới sẽ về trang1. Tổng quan phía trên và tỷ lệ lỗi của từng nhóm giữ nguyên khi chuyển trang nhóm. Chức năng này chỉ giúp xem bảng gọn hơn; chưa nghiệm thu DB/host.
+
 ## Bổ sung23/10 — Quản lý loại tài sản (Admin IT, build local)
 
 Mở Quản lý loại tài sản, nhập mã/tên và bấm Tìm loại. Danh sách20 loại/trang có Trước/Sau; cả loại hoạt động và ngừng sử dụng đều xuất hiện. Chọn một loại để sửa; đổi trang không xóa nội dung đang sửa. Sau lưu thành công form trở về thêm mới, cần chọn lại dòng để sửa tiếp bằng version mới. Lỗi409 cần kiểm lại hồ sơ trước khi lưu; ứng dụng không tự ghi đè bằng version mới. Nếu đã lưu nhưng tải lại lỗi, không bấm lưu lại cùng thao tác; tìm/tải lại danh sách để kiểm tra. Dropdown trên form tài sản vẫn giữ giới hạn500 loại hiện tại. Chức năng chưa nghiệm thu DB/host.

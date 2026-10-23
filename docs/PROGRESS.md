@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — Điều hướng bảng nhóm vòng đời, FE độc lập
+
+Tiếp tục BUILD phần FE được phép, không mở BE mới. Loại thiết bị/Bộ phận20 nhóm/trang, nhớ trang riêng, reset khi response mới; paging dùng cache không fetch/không đổi KPI/mẫu số hoặc trang thiết bị.30 browser mới +63 vòng đời hồi quy/Smarty/syntax/diff đạt, detector0 finding và review độc lập không defect. PHASE11_LIFECYCLE_GROUPS_VERIFY.md. Đây là client pagination, không phải SQL pagination: server vẫn aggregate/trả toàn bộ nhóm; BE nhóm và DB/host chưa nghiệm thu. Không PHP/SQL/DDL/config/gói/merge/tag7–10/push/deploy.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.3 bổ sung | Điều hướng nhóm vòng đời | FE | [x] local | Commit chức năng chứa dòng này | 30 browser mới +63 hồi quy/Smarty/syntax | Backend groups chưa SQL pagination, layout PHP thật chưa kiểm |
+
 ## 23/10/2026 — Quản lý loại Admin phân trang và tìm kiếm, build local
 
 User «Duyệt BUILD danh sách Quản lý loại». GET categories paged=1 kiểm Admin ở server, COUNT và20 rows/page, tìm literal mã/tên, sort name,id. FE giữ bản sửa/version qua paging, reset ID/version explicit sau save, không tự retry POST và chặn response cũ khi đóng/mở.69 scripted +24 browser mới1366/768/390 +30 browser hồi quy;39 asset/13 routes/174 history/190 statistics,Smarty/lint/diff đạt, detector0 finding, review độc lập không finding. PHASE11_CATEGORY_PAGINATION_VERIFY.md. Dropdown vẫn mảng/guard500/inactive; DB/EXPLAIN/PHP8.3/host chưa kiểm. Không DDL/index/gói/merge/tag7–10/push/deploy.
