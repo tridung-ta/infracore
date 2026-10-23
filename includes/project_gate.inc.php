@@ -13,6 +13,7 @@ if (ITA_ENABLED && !ITA_LEGACY_UI_ENABLED) {
     }
     if ($itaDecision === 'worker') {
         $_GET['worker'] = '1';
+        define('ITA_LANDING_ALLOWED', true);
         require dirname(__DIR__) . '/project-start.php';
         exit;
     }
@@ -42,6 +43,7 @@ if (is_file(dirname(__DIR__) . '/.legacy-hidden')) {
     if (basename(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '') === 'service-worker.js') {
         $_GET['worker'] = '1';
     }
+    define('ITA_LANDING_ALLOWED', true);
     require dirname(__DIR__) . '/project-start.php';
     exit;
 }
