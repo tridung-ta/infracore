@@ -14,6 +14,29 @@ class ItaCategoryService
         return $rows;
     }
 
+    /** Admin catalog browser; the bounded dropdown contract remains separate. */
+    public function paginated(array $input, int $page): array
+    {
+        $this->actor->requireAdmin();
+        if (($input['paged'] ?? null) !== '1') {
+            throw new ItaHttpError(422,'Chế độ danh mục không hợp lệ.');
+        }
+        $query = ItaInput::text($input['q'] ?? '',100);
+        $where = 'store_id=?';
+        $types = 'i';
+        $params = [$this->actor->storeId];
+        if ($query !== '') {
+            $like = '%'.str_replace(['!','%','_'],['!!','!%','!_'],$query).'%';
+            $where .= " AND (code LIKE ? ESCAPE '!' OR name LIKE ? ESCAPE '!')";
+            $types .= 'ss';
+            $params = [...$params,$like,$like];
+        }
+        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_asset_categories WHERE '.$where,$types,$params)['n'];
+        $page = max(1,min($page,max(1,(int) ceil($total/20))));
+        $rows = $this->db->fetchAll('SELECT id,code,name,status FROM ita_asset_categories WHERE '.$where.' ORDER BY name,id LIMIT 20 OFFSET ?',$types.'i',[...$params,($page-1)*20]);
+        return ['rows'=>array_map(fn($r)=>$r+['version'=>ItaAssetService::version($r)],$rows),'page'=>$page,'per_page'=>20,'total'=>$total];
+    }
+
     /** Preserve used categories; deactivation hides them from new asset choices. */
     public function save(array $input): int
     {

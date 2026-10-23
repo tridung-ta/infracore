@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — Quản lý loại Admin phân trang và tìm kiếm, build local
+
+User «Duyệt BUILD danh sách Quản lý loại». GET categories paged=1 kiểm Admin ở server, COUNT và20 rows/page, tìm literal mã/tên, sort name,id. FE giữ bản sửa/version qua paging, reset ID/version explicit sau save, không tự retry POST và chặn response cũ khi đóng/mở.69 scripted +24 browser mới1366/768/390 +30 browser hồi quy;39 asset/13 routes/174 history/190 statistics,Smarty/lint/diff đạt, detector0 finding, review độc lập không finding. PHASE11_CATEGORY_PAGINATION_VERIFY.md. Dropdown vẫn mảng/guard500/inactive; DB/EXPLAIN/PHP8.3/host chưa kiểm. Không DDL/index/gói/merge/tag7–10/push/deploy.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.1 bổ sung theo gate | Danh sách Quản lý loại Admin | FE/BE | [x] local | Commit chức năng chứa dòng này | 69 scripted +24 browser mới, hồi quy đạt | Lookup/dropdown chưa phân trang, DB/host chưa nghiệm thu |
+
 ## 23/10/2026 — Phân trang lịch sử tài sản, build local
 
 User «Duyệt BUILD phân trang lịch sử tài sản». GET asset trả20 thao tác/trang cùng COUNT, sort id DESC; quyền asset kiểm trước history. Tab Lịch sử có Trước/Sau, tổng/page/busy/lỗi, sequence/generation ngăn phản hồi hồ sơ cũ.174 query-contract +43 browser mới ba vai trò1366/768/390 +30 browser hồi quy +39 asset/237 ticket/13 routes/Smarty/lint đạt; review độc lập không finding. PHASE11_ASSET_HISTORY_VERIFY.md ghi lệnh và giới hạn; không DB/EXPLAIN/PHP8.3/host, không DDL/index/transaction/gói/merge/tag7–10/push/deploy.

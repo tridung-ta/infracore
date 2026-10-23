@@ -1,5 +1,9 @@
 # Rà danh sách và phân trang —22/10/2026
 
+## Cập nhật23/10 — Danh sách Quản lý loại Admin đã phân trang local
+
+User duyệt riêng; categories paged=1 có COUNT/search literal/LIMIT20/OFFSET, sort name,id và UI nav cho Admin.69 scripted +24 browser mới và hồi quy đạt, PHASE11_CATEGORY_PAGINATION_VERIFY.md. Hàng Danh mục bên dưới chỉ còn đúng với lookup/dropdown mảng guard500; management paginated đã tách contract. Không coi toàn bộ lookup đã phân trang, chưa DB/EXPLAIN/host.
+
 ## Cập nhật23/10 — Lịch sử tài sản đã phân trang local
 
 User duyệt riêng; GET asset đã COUNT + LIMIT20/OFFSET, sort id DESC và nav trong tab Lịch sử; guard scope trước history, FE chặn response muộn.174 query-contract +43 browser mới và hồi quy đạt, PHASE11_ASSET_HISTORY_VERIFY.md. Hàng «Lịch sử tài sản LIMIT51» bên dưới là snapshot22/10 trước thay đổi. Chưa DB/EXPLAIN/host; các danh sách khác giữ trạng thái chưa build.

@@ -1,5 +1,9 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Bổ sung23/10 — Quản lý loại tài sản (Admin IT, build local)
+
+Mở Quản lý loại tài sản, nhập mã/tên và bấm Tìm loại. Danh sách20 loại/trang có Trước/Sau; cả loại hoạt động và ngừng sử dụng đều xuất hiện. Chọn một loại để sửa; đổi trang không xóa nội dung đang sửa. Sau lưu thành công form trở về thêm mới, cần chọn lại dòng để sửa tiếp bằng version mới. Lỗi409 cần kiểm lại hồ sơ trước khi lưu; ứng dụng không tự ghi đè bằng version mới. Nếu đã lưu nhưng tải lại lỗi, không bấm lưu lại cùng thao tác; tìm/tải lại danh sách để kiểm tra. Dropdown trên form tài sản vẫn giữ giới hạn500 loại hiện tại. Chức năng chưa nghiệm thu DB/host.
+
 ## Bổ sung23/10 — Lịch sử tài sản (build local)
 
 Mở hồ sơ tài sản, chọn tab Lịch sử. Mỗi trang hiển thị tối đa20 thao tác; Trước/Sau cho phép xem cả các thao tác cũ hơn50 bản ghi. Số trang/tổng thao tác nằm dưới danh sách, có thể cần cuộn trong hộp thoại. Mở từng dòng để xem dữ liệu trước/sau. Khi tải lỗi, nội dung lịch sử được ẩn và hiển thị thông báo; thử lại hướng chuyển trang khi phù hợp. Cả ba vai trò chỉ xem tài sản trong phạm vi server cho phép. Đây là audit thao tác tài sản; lịch sử bảo trì/phân bổ vẫn xem tại phần tương ứng. Chưa kiểm trên DB/host thật.

@@ -17,7 +17,7 @@ async (page) => {
    }
    if(url.pathname!=='/admin.php')return route.continue();
    const action=url.searchParams.get('act');
-   if(action==='categories')return categoryFailure?json(route,{success:false,message:'QA category unavailable'},503):json(route,{success:true,data:categories});
+   if(action==='categories')return categoryFailure?json(route,{success:false,message:'QA category unavailable'},503):json(route,{success:true,data:url.searchParams.get('paged')==='1'?{rows:categories,page:1,total:categories.length,per_page:20}:categories});
    if(action==='asset')return json(route,{success:true,data:asset});
    if(action==='data'){
     queries.push(Object.fromEntries(url.searchParams));

@@ -179,7 +179,9 @@ class ItaApplication
             'asset' => $assets->detail(ItaInput::positiveInt($_GET['id'] ?? null),$page),
             'assignments' => (new ItaAssignmentObjects($this->db,$this->user))->detail(ItaInput::positiveInt($_GET['asset_id'] ?? null),$page),
             'assignment-recipients' => (new ItaAssignmentObjects($this->db,$this->user))->recipients(ItaInput::text($_GET['q'] ?? '',100),$page),
-            'categories' => array_map(fn($r)=>$r+['version'=>ItaAssetService::version($r)],(new ItaCategoryService($this->db,$this->user))->listing()),
+            'categories' => array_key_exists('paged',$_GET)
+                ? (new ItaCategoryService($this->db,$this->user))->paginated($_GET,$page)
+                : array_map(fn($r)=>$r+['version'=>ItaAssetService::version($r)],(new ItaCategoryService($this->db,$this->user))->listing()),
             'users' => (new ItaUserObjects($this->db))->listing($this->user,$page),
             'access' => (new ItaUserObjects($this->db))->access($this->user,ItaInput::positiveInt($_GET['id'] ?? null)),
             'audit' => (new ItaAuditService($this->db,$this->user))->listing($_GET,$page),

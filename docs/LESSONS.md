@@ -1,5 +1,12 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 23/10/2026 — Reset form không đủ để bỏ hidden ID/version đã chọn
+
+- Triệu chứng: browser test danh mục báo Successful save resets stale editor thất bại sau lưu thành công.
+- Bằng chứng: form.reset() không xóa ID/version hidden được gán qua value như giả định; browser assertion kiểm trực tiếp vẫn thấy giá trị cũ. Không suy áp dụng cho mọi loại input.
+- Sửa: handler reset xóa explicit hidden category-id/category-version, dùng cho cả thêm mới và sau save; giữ input khi409, không tự lấy version mới để gửi lại.
+- Kiểm:24 browser mock danh mục đạt, có reset/reselect phiên bản mới và save thành công nhưng reload lỗi;69 scripted có version mismatch409 và đúng version UPDATE/audit. Không DB/host.
+
 ## 22/10/2026 — Dispose biểu đồ phải vô hiệu hóa cache view
 
 - Triệu chứng: Tổng quan → Tài sản → Tổng quan giữ KPI/bảng nhưng chart trống.

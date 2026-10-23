@@ -9,6 +9,7 @@
   ['purchase_date','Ngày mua','date'],['purchase_price','Giá mua (VND)','text',19],['warranty_end','Bảo hành đến','date'],['vendor','Nhà cung cấp','text',200],
   ['location','Vị trí','text',255],['specs','Cấu hình / thông số','textarea',10000]];
  let categories=[],editing=null,detail=null,mode='',busy=false,loadingEditor=false,previousFocus=null,historyGeneration=0;
+ let categoryPage=1,categoryTotal=0,categoryQuery='',categoryLoading=false,categorySaving=false,categorySequence=0;
  function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
  function message(id,text,error=false){const n=$(id);n.textContent=text;n.hidden=false;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);n.focus({preventScroll:true});n.scrollIntoView({block:'nearest'});}
  function button(text,callback){const n=node('button',text,'secondary-button');n.type='button';n.addEventListener('click',callback);return n;}
@@ -144,23 +145,47 @@
   for(const [label,value] of more){const group=node('div');group.append(node('dt',label),node('dd',value===null||value===undefined||value===''?'Chưa ghi nhận':String(value)));$('asset-details').append(group);}
  });
  async function openCategories(){
-  try{await renderCategories();$('category-form').reset();$('category-id').value='';$('category-version').value='';$('category-message').textContent='';$('category-editor').showModal();}
-  catch(error){message('asset-result',error.message,true);}
+  if(categorySaving||$('category-editor').open)return;
+  $('category-form').reset();$('category-message').textContent='';$('category-search').value='';categoryQuery='';categoryPage=1;categoryTotal=0;
+  $('category-list').replaceChildren();$('category-page').textContent='';$('category-editor').showModal();
+  try{await renderCategories(1,'');}catch(error){message('category-message',error.message,true);}
  }
- async function renderCategories(){
-  await loadCategories();$('category-list').replaceChildren(...categories.map(c=>button(`${c.code} · ${c.name} · ${c.status==='active'?'Hoạt động':'Ngừng sử dụng'}`,()=>{
+ function categoryControls(){
+  const locked=categoryLoading||categorySaving;
+  $('category-editor').querySelectorAll('input,select,button').forEach(n=>n.disabled=locked);
+  $('category-close').disabled=categorySaving;
+  $('category-prev').disabled=locked||categoryPage<=1;$('category-next').disabled=locked||categoryPage*20>=categoryTotal;
+ }
+ async function renderCategories(nextPage=categoryPage,query=categoryQuery){
+  const sequence=++categorySequence;categoryLoading=true;categoryControls();$('category-list').setAttribute('aria-busy','true');$('category-list-status').textContent='Đang tải danh mục…';
+  try{
+   const data=await api('categories',{paged:'1',page:nextPage,q:query});if(sequence!==categorySequence||!$('category-editor').open)return;
+   categoryPage=data.page;categoryTotal=data.total;categoryQuery=query;
+   $('category-list').replaceChildren(...data.rows.map(c=>button(`${c.code} · ${c.name} · ${c.status==='active'?'Hoạt động':'Ngừng sử dụng'}`,()=>{
    $('category-id').value=c.id;$('category-version').value=c.version;$('category-code').value=c.code;$('category-name').value=c.name;$('category-status').value=c.status;$('category-code').focus();
-  })));
+   })));
+   $('category-page').textContent=`Trang ${categoryPage}/${Math.max(1,Math.ceil(categoryTotal/20))} · ${categoryTotal} loại`;
+   $('category-list-status').textContent=categoryTotal?`Kết quả tìm: ${categoryQuery||'Tất cả loại'}. Chọn loại để sửa hoặc thêm loại mới bên dưới.`:'Không có loại phù hợp. Thử mã hoặc tên khác.';
+  }catch(error){
+   if(sequence!==categorySequence||!$('category-editor').open)return;
+   $('category-list').replaceChildren();$('category-list-status').textContent=error.message;
+   throw error;
+  }finally{if(sequence===categorySequence){categoryLoading=false;categoryControls();$('category-list').removeAttribute('aria-busy');}}
  }
+ const categoryTask=fn=>fn().catch(error=>message('category-message',error.message,true));
+ $('category-search-form').addEventListener('submit',event=>{event.preventDefault();if(!categoryLoading&&!categorySaving)categoryTask(()=>renderCategories(1,$('category-search').value.trim()));});
+ $('category-prev').addEventListener('click',()=>categoryTask(()=>renderCategories(categoryPage-1)));
+ $('category-next').addEventListener('click',()=>categoryTask(()=>renderCategories(categoryPage+1)));
  $('category-close').addEventListener('click',()=>$('category-editor').close());
+ $('category-editor').addEventListener('cancel',event=>{if(categorySaving)event.preventDefault();});
+ $('category-editor').addEventListener('close',()=>{categorySequence++;categoryLoading=false;});
+ $('category-form').addEventListener('reset',()=>{$('category-id').value='';$('category-version').value='';});
  $('category-form').addEventListener('submit',async event=>{
-  event.preventDefault();$('category-save').disabled=true;let persisted=false;
+  event.preventDefault();if(categorySaving||categoryLoading)return;categorySaving=true;categoryControls();let persisted=false;
   try{
    await api('category-save',{},Object.fromEntries(['id','version','code','name','status'].map(k=>[k,$('category-'+k).value])));persisted=true;
-   const id=$('category-id').value;await renderCategories();
-   $('category-version').value=categories.find(c=>String(c.id)===id)?.version||'';
-   if(!id)$('category-form').reset();message('category-message','Đã lưu loại tài sản.');refresh();
-  }catch(error){message('category-message',persisted?'Đã lưu danh mục, nhưng chưa tải lại được danh sách. Hãy đóng và mở lại trước khi sửa tiếp.':error.message,!persisted);}finally{$('category-save').disabled=false;}
+   $('category-form').reset();refresh();await renderCategories();message('category-message','Đã lưu loại tài sản. Chọn lại loại trong danh sách nếu cần sửa tiếp.');
+  }catch(error){message('category-message',persisted?'Đã lưu danh mục, nhưng chưa tải lại được danh sách. Hãy tải lại danh sách trước khi sửa tiếp.':error.message,!persisted);}finally{categorySaving=false;categoryControls();}
  });
  addEventListener('ita:data',updateContext);
 })();

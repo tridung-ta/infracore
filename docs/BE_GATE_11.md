@@ -1,5 +1,9 @@
 # BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f)/(g) app và phân trang thống kê; phần còn lại NHÁP
 
+## 23/10/2026 — Duyệt danh sách Quản lý loại Admin
+
+User «Duyệt BUILD danh sách Quản lý loại». GET categories paged=1 Admin-only, COUNT20/search literal code/name, sort name,id; UI Trước/Sau giữ bản sửa/version, reset sau save và guard phản hồi muộn. Dropdown giữ contract mảng và guard500/inactive như trước.69 scripted +24 browser mới +30 browser hồi quy,39/13/174/190 hồi quy/Smarty/lint đạt; review không finding. PHASE11_CATEGORY_PAGINATION_VERIFY.md ghi query/giới hạn. Không DB/DDL/index/config/gói/merge/tag7–10/push/deploy; lookup phân trang khác vẫn chưa mở.
+
 ## 23/10/2026 — Duyệt phân trang lịch sử tài sản
 
 User «Duyệt BUILD phân trang lịch sử tài sản». Đã bổ sung COUNT/LIMIT20/OFFSET trên GET asset, sort id DESC, Trước/Sau, guard quyền trước count/list và sequence/generation chặn phản hồi muộn khi đóng/đổi hồ sơ.174 query-contract +43 browser mới/30 browser hồi quy +39 asset/237 ticket/13 routes/Smarty/lint đạt; review độc lập không finding. PHASE11_ASSET_HISTORY_VERIFY.md ghi query và giới hạn hai lần đọc không chung snapshot. Không DDL/index/DB/config/gói/merge/tag7–10/push/deploy; các phần phân trang khác vẫn chưa duyệt.
