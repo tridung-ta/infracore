@@ -1,5 +1,7 @@
 # F11.2 — Rà soát bảo mật chỉ đọc, 22/10/2026
 
+**Cập nhật23/10:** sau user duyệt(c)/(d), project-start đã có gate; PHP/Apache source đã deny tests/artifacts/scripts/MOCK trước static, không còn allowlist MOCK. Kiểm109 PHPHTTP fixture +75 pure đạt, review độc lập không finding trong diff; **Apache/host chưa chạy**. Những mô tả “MOCK đang allowlist/project-start chưa guard” bên dưới là finding tại thời điểm review22/10, không phải source hiện tại. Vẫn phụ thuộc rewrite cho direct module/library/static khác; không auto_prepend hoặc tuyên bố legacy an toàn. Xem PHASE11_GUARD_VERIFY.md.
+
 **Cập nhật sau review22/10:** user đã duyệt BUILD riêng S11-01/S11-02; hai bản sửa đã kiểm local không DB, xem PHASE11_EXPORT_VERIFY.md. S11-01 native recheck và S11-02 actor/scope/dataset/batch recheck sau render đã có trong code hiện tại. Nội dung finding/bảng source dưới đây giữ làm bằng chứng **trước sửa**, không mô tả trạng thái runtime mới. Không thêm audit GET, không đổi import-template/report-export; các rủi ro đó vẫn mở. Host/DB chưa kiểm/nghiệm thu, các phần khác gate11 chưa build.
 
 ## Kết luận và phát hiện

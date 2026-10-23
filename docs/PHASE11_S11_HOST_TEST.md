@@ -1,5 +1,7 @@
 # S11-01/S11-02 — Kiểm thủ công trên host, phạm vi hạn chế
 
+**Lưu ý23/10:** checklist/delta3 file bên dưới chỉ dành export S11-01/S11-02 từ source561d335. Guard/rewrite(c)/(d) đã build sau đó gồm project-start.php, includes/project_gate.inc.php, includes/ita_mode.inc.php và .htaccess; **không nằm trong delta3 file này**. Không tự mở rộng gói hoặc coi checklist export chứng minh deny mới. Chưa tạo gói nào mới.
+
 Soạn22/10/2026; **tất cả kết quả CHƯA KIỂM**. Chỉ tài liệu, không tạo gói/ZIP, không upload hoặc chạy host/DB. User kiểm thủ công trên DB dự án hiện có khi sẵn sàng: không tạo DB mới, không SQL ghi, không sửa dc_*. Không thêm BE, không merge/tag7–10/push/deploy. Kết quả checklist này **không phải nghiệm thu DB**.
 
 ## 1. Đúng file và điều kiện nền

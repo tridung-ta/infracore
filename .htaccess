@@ -7,7 +7,10 @@ RewriteRule ^\.ita-(?:enabled|legacy-enabled)$ - [F,L]
 # ITA flags are read from the same marker files as includes/ita_mode.inc.php.
 RewriteCond %{DOCUMENT_ROOT}/.ita-enabled -f
 RewriteCond %{DOCUMENT_ROOT}/.ita-legacy-enabled !-f
-RewriteRule ^assets/ita/(?:css|js|mock|vendor)/[a-zA-Z0-9_./-]+\.(?:css|js|json|woff2)$ - [END]
+RewriteRule ^(?:tests|artifacts|scripts|assets/ita/mock)(?:/|$) - [F,END,NC]
+RewriteCond %{DOCUMENT_ROOT}/.ita-enabled -f
+RewriteCond %{DOCUMENT_ROOT}/.ita-legacy-enabled !-f
+RewriteRule ^assets/ita/(?:css|js|vendor)/[a-zA-Z0-9_./-]+\.(?:css|js|json|woff2)$ - [END]
 RewriteCond %{DOCUMENT_ROOT}/.ita-enabled -f
 RewriteCond %{DOCUMENT_ROOT}/.ita-legacy-enabled !-f
 RewriteRule ^assets/fonts/inter/InterVariable\.woff2$ - [END]

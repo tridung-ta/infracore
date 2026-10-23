@@ -90,6 +90,38 @@ with tempfile.TemporaryDirectory(prefix='ita-guard-', dir=ROOT / 'tmp') as folde
                 check(body.count(b"self.addEventListener('install'") == 1 and headers.get('Content-Type', '').startswith('application/javascript'), 'ITA worker once and MIME')
             if method == 'HEAD':
                 check(body == b'', 'ITA worker HEAD empty')
+
+        # Second server uses the real router/gate; sensitive files actually exist in the fixture.
+        process.terminate()
+        process.wait(timeout=5)
+        for name in ['tests/run.php', 'artifacts/private.txt', 'scripts/task.php', 'assets/ita/mock/overview.json']:
+            target = base / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("<?php echo 'SENSITIVE_FIXTURE';" if name.endswith('.php') else 'SENSITIVE_FIXTURE', encoding='utf-8')
+        target = base / 'assets/ita/css/runtime.css'
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text('/* PUBLIC_FIXTURE */', encoding='utf-8')
+        process = subprocess.Popen([shutil.which('php'), '-S', f'127.0.0.1:{port}', '-t', str(base), str(base / 'router.php')], stdout=log, stderr=log)
+        for _ in range(100):
+            try:
+                with socket.create_connection(('127.0.0.1', port), timeout=.1):
+                    break
+            except OSError:
+                if process.poll() is not None:
+                    raise RuntimeError('Routed PHP fixture failed to start')
+                time.sleep(.05)
+        else:
+            raise RuntimeError('Routed PHP fixture not ready')
+        for path in ['/tests/', '/tests/run.php', '/artifacts/private.txt', '/scripts/task.php', '/assets/ita/mock/overview.json',
+                     '/%74ests/run.php', '/tests%2Frun.php', '/%2574ests/run.php', '/ASSETS/ITA/MOCK/overview.json', '/assets//ita///mock/overview.json']:
+            for method in ['GET', 'HEAD', 'POST']:
+                status, headers, body = request(path, method)
+                check(status in (403, 404), f'Routed deny {method} {path}: {status}')
+                check(b'SENSITIVE_FIXTURE' not in body and 'Location' not in headers, 'No contents/redirect for denied paths')
+                if method == 'HEAD':
+                    check(body == b'', 'Deny HEAD empty')
+        status, headers, body = request('/assets/ita/css/runtime.css')
+        check(status == 200 and b'PUBLIC_FIXTURE' in body, 'Production static still serves')
     finally:
         process.terminate()
         process.wait(timeout=5)

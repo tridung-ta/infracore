@@ -1,4 +1,8 @@
-# BE-GATE #11 — Duyệt riêng S11-01/S11-02; phần còn lại NHÁP
+# BE-GATE #11 — Duyệt S11-01/S11-02 và(c)/(d); phần còn lại NHÁP
+
+## 23/10/2026 — Duyệt và build riêng(c)/(d)
+
+User «Duyệt BUILD (c) và (d)», yêu cầu kiểm kỹ bảo mật. (c) guard project-start và internal landing/worker đã build (7dba665); (d) deny prefix nhạy cảm trước static trong .htaccess/ita_mode đã build local. Verify75 pure +109 realPHPHTTP fixture +13 routes, lint/review đạt; PHASE11_GUARD_VERIFY.md. Apache/PHP-FPM8.3/host/DB chưa kiểm. Không auto_prepend/.user.ini/header/trang lỗi HTTP, không gói/upload/deploy hoặc merge/tag7–10. Các mục đề xuất bên dưới giữ làm hồ sơ trước phê duyệt, không mở các phần khác.
 
 ## Phê duyệt giới hạn22/10/2026 — chỉ S11-01 và S11-02
 

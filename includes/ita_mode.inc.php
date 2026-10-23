@@ -19,12 +19,21 @@ function itaRequestDecision(string $path, array $query, string $method, array $f
         return 'denied';
     }
     $path = rawurldecode($path);
+    // Reject ambiguous/partially decoded paths before deciding whether an asset is public.
+    if (str_contains($path,'%') || str_contains($path,"\0") || str_contains($path,'\\')
+        || preg_match('~(?:^|/)\.{1,2}(?:/|$)~',$path)) {
+        return 'not_found';
+    }
+    $path = preg_replace('~/+~','/',$path);
+    if (preg_match('~^/(?:tests|artifacts|scripts|assets/ita/mock)(?:/|$)~i',$path)) {
+        return 'not_found';
+    }
     if (preg_match('~(?:^|/)(?:\.[^/]+|includes|classes|modules|database|docs|templates|templates_c|cron)(?:/|$)~i', $path)
         || preg_match('~\.(?:sql|ini|bak|log|env|key|pem|cjs)$~i', $path)
         || str_contains($path, "\0") || str_contains($path, '\\')) {
         return 'not_found';
     }
-    if (preg_match('~^/assets/ita/(?:css|js|mock|vendor)/[a-zA-Z0-9_./-]+\.(?:css|js|json|woff2)$~D', $path)
+    if (preg_match('~^/assets/ita/(?:css|js|vendor)/[a-zA-Z0-9_./-]+\.(?:css|js|json|woff2)$~D', $path)
         || $path === '/assets/fonts/inter/InterVariable.woff2') {
         return $method==='POST' ? 'denied' : (str_contains($path, '..') ? 'not_found' : 'static');
     }

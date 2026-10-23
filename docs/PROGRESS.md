@@ -2,6 +2,8 @@
 
 ## 23/10/2026 — Tiếp tục kiểm bảo mật và BUILD(c)/(d)
 
+(d) đã build local: .htaccess deny tests/artifacts/scripts/MOCK trước static, ita_mode chặn tương ứng và path mơ hồ, bỏ mock khỏi allowlist.75 pure +109 PHP HTTP fixture +13 route đạt, lint/review độc lập đạt; PHASE11_GUARD_VERIFY.md. Không Apache local/host/DB, không cài runtime; không tuyên bố toàn legacy an toàn. Không .user.ini/auto_prepend/header/page lỗi hoặc gói/deploy. Delta S11 export3 file trước không gồm4 file guard/rewrite mới.
+
 (c) đã build local: project-start qua gate trước output, hằng nội bộ chỉ gate đặt cho worker/landing tránh lặp.38 HTTP PHP fixture checks đạt (không router, không DB, marker bản copy), lint/review đạt; PHASE11_GUARD_VERIFY.md. Apache/host/PHP8.3 chưa chạy; không auto_prepend/.user.ini hoặc deploy.
 
 User duyệt «Duyệt BUILD (c) và (d)», đồng thời yêu cầu kiểm kỹ bảo mật. Mở project-start guard và deny tests/artifacts/scripts/MOCK; không auto_prepend/.user.ini/header/error-page/DB/deploy. Trước khi sửa guard, bổ sung test S11 export:30 forecast +54 controller scripted đạt, thêm Manager scope/ngoài bộ phận và staging mất/revision đổi. Không đổi production export; HTTP/DB thật chưa kiểm.

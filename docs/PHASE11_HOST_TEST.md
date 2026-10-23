@@ -1,5 +1,7 @@
 # Phase11 — Checklist host, CHƯA CHẠY
 
+**Source mới23/10:** (c)/(d) đã build local, có guard project-start và deny tests/artifacts/scripts/MOCK trong PHP/.htaccess. Dự đoán source cũ303/MOCK200 ở lịch sử dưới không thay tiêu chí deny403/404 khi triển khai source mới.109 PHP HTTP fixture không chứng minh Apache/host; tất cả host vẫn Chưa kiểm, không tự upload hoặc đổi marker/config.
+
 Ngày soạn22/10/2026. User thực hiện sau khi triển khai được phép. Không phải phê duyệt deploy hoặc sửa server; DB/host Phase7–10 chưa nghiệm thu, không merge/tag/push/deploy trong bước này. F11.2 rà source xong; kiểm host dưới đây **chưa chạy**. Không chạy fixture/reset/cron hoặc SQL ghi để kiểm.
 
 Ghi gói/commit/hash upload thật, ngày, vhost/document root, PHP-FPM version và vai trò test; không suy phiên bản source từ ảnh giao diện. Dùng tài khoản thật từng vai trò và hồ sơ kiểm thử được phép, không gửi password/cookie/key/token ra báo cáo.

@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+**Cập nhật source local23/10:** user duyệt(c)/(d), đã build guard project-start +deny tests/artifacts/scripts/MOCK ở .htaccess/ita_mode; PHASE11_GUARD_VERIFY.md ghi109 PHPHTTP fixture/75 pure, chưa Apache/host. Chưa gói/upload/deploy. Delta S11 export dự kiến3 file từ561d335 không chứa4 file guard/rewrite mới; không coi host đã có chúng. Auto_prepend/.user.ini/header/trang lỗi HTTP vẫn chưa build, inventory CHƯA THU THẬP.
+
 **Bổ sung22/10 sau duyệt riêng:** S11-01/S11-02 đã sửa và kiểm local không DB (PHASE11_EXPORT_VERIFY.md); chưa upload, chưa tạo gói hoặc kiểm host. Chỉ hai finding export được duyệt, các mục khác BE11 vẫn nháp. Những dòng lịch sử “S11-01/02 chưa sửa” bên dưới giữ trạng thái trước phê duyệt, không thay cập nhật này.
 
 ### Trạng thái host hiện tại — cập nhật22/10/2026
