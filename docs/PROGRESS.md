@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — Checkpoint GitHub theo yêu cầu user
+
+User yêu cầu push các commit lên GitHub trước khi tiếp tục, chỉnh sửa sau lưu commit mới. Lưu riêng PHASE11_S11_HOST_TEST.md đã soạn từ22/10: đúng3 file runtime S11, dependency/nền cần đối chiếu, kiểm thủ công host phạm vi hạn chế và kế hoạch delta chưa tạo. Tài liệu lưu ý login mới có writer dc_users nên đợt không sửa dc_* chỉ dùng phiên test có sẵn; không suy thu hồi trước request là test giữa render. Verify đối chiếu git show hai commit/source và diff; review độc lập tài liệu chưa hoàn tất do agent không khả dụng phiên trước. Host/DB chưa chạy, không ZIP/upload/merge/tag; được push nhánh làm việc theo chỉ đạo mới, không stage file nền/vendor/local ngoài phạm vi.
+
 ## 22/10/2026 — Duyệt BUILD giới hạn export S11-01/S11-02
 
 S11-02 build local: import controller kiểm actor/native/role/revision/effective scopes sau render, asset-export refetch tập dòng hiện tại và chặn thay đổi409; import-errors fingerprint owner-bound batch/source trước/sau, expiry410. Giữ GET/không thêm audit, không đổi template trống/report-export. Verify48 scripted controller +88 import/XLSX +13 routes +21 S11-01 +134 forecast đạt, lint/review đạt; PHASE11_EXPORT_VERIFY.md. HTTP/PHP8.3/DB/host chưa chạy. Không config/rewrite/auto_prepend/gói/merge/tag7–10/push/deploy.
