@@ -24,7 +24,7 @@ async(page)=>{
    if(act==='tickets')return json(route,{rows:ticket?[{...ticket,asset_code:'QA-7'}]:[],page:1,total:ticket?1:0,per_page:20});
    if(act==='ticket')return json(route,{ticket,asset:asset(),history:[{id:1,kind:'status',created_at:'2026-10-20 00:00:00',user_id:111,from_status:null,to_status:'pending',note:'QA <script>'},{id:2,kind:'ticket.assign',created_at:'2026-10-20 01:00:00',user_id:111,before_json:'{"technician_id":null}',after_json:'{"technician_id":222}'}],page:1,total:2,per_page:20});
    if(act==='ticket-technicians')return json(route,{rows:[{id:222,username:'qa-tech',fullname:'QA Tech'}],page:1,total:1,per_page:20});
-   if(act==='ticket-statistics')return json(route,{year:2026,rows:[{type:'repair',status:'resolved',n:1,cost:statsCost}]});
+   if(act==='ticket-statistics')return json(route,{year:2026,page:1,total:1,per_page:20,summary:{ticket_count:1,cost:statsCost},rows:[{type:'repair',status:'resolved',n:1,cost:statsCost}]});
    if(act==='ticket-save'){
     const body=req.postDataJSON();posts.push({body,csrf:req.headers()['x-csrf-token'],method:req.method()});
     if(fail==='network'){fail='';return route.abort();}if(fail==='conflict'){fail='';return json(route,null,409,'Thiết bị đã có phiếu pending khác.');}if(fail==='server'){fail='';return json(route,null,503,'QA backend unavailable');}

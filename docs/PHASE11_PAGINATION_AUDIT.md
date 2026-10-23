@@ -1,5 +1,9 @@
 # Rà danh sách và phân trang —22/10/2026
 
+## Cập nhật23/10 — Thống kê ticket đã phân trang local
+
+User duyệt riêng; ItaTicketObjects::statistics đã COUNT nhóm/tổng toàn tập và LIMIT20/OFFSET bind, sort asset/type/status; FE Trước/Sau giữ bộ lọc.190 scripted +43 browser mới và hồi quy đạt, PHASE11_TICKET_STATISTICS_VERIFY.md. Chưa DB/EXPLAIN/host; phần thống kê trong bảng lịch sử22/10 dưới đây là hiện trạng trước sửa. Các danh sách còn lại vẫn chưa mở gate/build, không coi hoàn tất toàn audit.
+
 **Chỉ đọc source**, không sửa PHP/SQL, không chạy DB. Rà cùng Review Agent theo AGENTS. “Có phân trang SQL” nghĩa là count + page/per_page/total + truy vấn LIMIT/OFFSET, không phải chỉ có LIMIT hoặc render vài dòng. Đây là audit hiện trạng, chưa nghiệm thu persistence/performance.
 
 ## Đã có phân trang SQL và UI gọi trang

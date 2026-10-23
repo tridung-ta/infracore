@@ -23,6 +23,7 @@ class Db07 extends ItaDb
   ok07(strlen($types)===count($params),'prepared read');$this->reads[]=[$sql,$params];
   if(str_contains($sql,'JOIN ita_user_roles'))return ['id'=>222,'username'=>'qa-tech','fullname'=>'QA Tech','role'=>'support_technician','auth_revision'=>1];
   if(str_contains($sql,'ita_user_roles'))return ['role'=>$this->role,'enabled'=>1,'auth_revision'=>1];
+  if(str_contains($sql,'COUNT(*) total'))return ['total'=>1,'ticket_count'=>1,'cost'=>'0'];
   if(str_contains($sql,'COUNT(*)'))return ['n'=>1];
   if(str_contains($sql,'LAST_INSERT_ID'))return ['id'=>9];
   if(str_contains($sql,'ita_asset_categories'))return ['maintenance_cycle_months'=>6,'status'=>'active','id'=>2];
@@ -76,7 +77,7 @@ $db=new Db07();$old=$db->asset+['next_maintenance_due'=>'2026-07-31'];$old['next
 $changed=ItaMaintenanceSchedule::initial($db,1,['category_id'=>2,'purchase_date'=>'2026-02-28'],$old);ok07($changed['next_maintenance_due']==='2026-08-28','corrected purchase recomputes initial schedule');
 $old['last_maintenance_at']='2026-02-01 00:00:00';$changed=ItaMaintenanceSchedule::initial($db,1,['category_id'=>2,'purchase_date'=>'2026-02-28'],$old);ok07(!array_key_exists('next_maintenance_due',$changed),'preserve schedule after maintenance');
 ok07(!str_contains(ItaTicketGuard::LATEST,'updated_at')&&str_contains(ItaTicketGuard::LATEST,'ita_ticket_events'),'cost/assign edits cannot reorder lifecycle');
-$db=new Db07();(new ItaTicketObjects($db,actor07('support_technician')))->statistics(['year'=>'2026']);$query=end($db->reads);ok07(str_contains($query[0],'t.opened_at>=?')&&str_contains($query[0],'GROUP BY t.asset_id,a.asset_code,t.type,t.status')&&str_contains($query[0],'t.technician_id=?')&&$query[1]===[1,10,111,'2025-12-31 17:00:00','2026-12-31 17:00:00']);
+$db=new Db07();(new ItaTicketObjects($db,actor07('support_technician')))->statistics(['year'=>'2026']);$query=end($db->reads);ok07(str_contains($query[0],'t.opened_at>=?')&&str_contains($query[0],'GROUP BY t.asset_id,a.asset_code,t.type,t.status')&&str_contains($query[0],'t.technician_id=?')&&$query[1]===[1,10,111,'2025-12-31 17:00:00','2026-12-31 17:00:00',0]);
 $db=new Db07();$db->role='system_manager';$manager=new ItaTicketService($db,actor07('system_manager'));$manager->save($create);
 rejects07(fn()=>$manager->save(['id'=>9,'version'=>ItaAssetService::version($db->ticket),'operation'=>'transition','status'=>'resolved','handled_date'=>ItaTicketRules::today(),'cost'=>'0','note'=>'QA']),403);
 $db=new Db07();$db->asset['status']='retired';rejects07(fn()=>(new ItaTicketService($db,actor07()))->save($create),409);

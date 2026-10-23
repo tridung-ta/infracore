@@ -1,4 +1,8 @@
-# BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f)/(g) giới hạn app; phần còn lại NHÁP
+# BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f)/(g) app và phân trang thống kê; phần còn lại NHÁP
+
+## 23/10/2026 — Duyệt phân trang thống kê ticket
+
+User «Duyệt BUILD phân trang thống kê ticket». Phạm vi COUNT nhóm và LIMIT/OFFSET cùng scope/bộ lọc, sort ổn định, FE Trước/Sau, giữ tổng toàn tập. Đã build trong ItaTicketObjects + JS/Smarty hiện có; không endpoint mới, index/DDL/config/DB/gói.190 query-contract +237 ticket scripted +43 browser mới +64 browser hồi quy +13 routes/Smarty/lint đạt; review độc lập không finding. PHASE11_TICKET_STATISTICS_VERIFY.md ghi contract, query và giới hạn hai lần đọc không chung snapshot. Chưa EXPLAIN/host/DB; không merge/tag7–10/push/deploy. Không mở phần phân trang khác hoặc auto_prepend/HSTS.
 
 ## 23/10/2026 — Duyệt(g) giới hạn trong ứng dụng
 

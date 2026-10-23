@@ -1,5 +1,9 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Bổ sung23/10 — Thống kê phiếu theo năm (build local)
+
+Tại Bảo trì & hỗ trợ, nhập ID thiết bị ở bộ lọc nếu cần, chọn năm và bấm Xem thống kê. Kết quả chia20 nhóm/trang theo thiết bị, loại và trạng thái; dùng Trước/Sau để chuyển trang. Tổng số phiếu/chi phí phía dưới là toàn bộ kết quả của bộ lọc đã áp dụng, không chỉ trang đang xem. Caption nêu năm và ID đang áp dụng; sửa input cần bấm Xem thống kê để áp dụng lại. Nếu tải lỗi, kết quả trước được giữ. Hỗ trợ chỉ có thống kê phiếu mình xử lý trong scope. Chức năng chưa được kiểm trên DB/host thật.
+
 Cập nhật22/10/2026 theo source đã build local. **DB/host chưa nghiệm thu**; màn hình trên host phụ thuộc bộ source user triển khai. Trang có nhãn MOCK chỉ dùng minh họa, không lưu dữ liệu thật. Hướng dẫn này không xác nhận đã upload hoặc kiểm thử host.
 
 ## Đăng nhập và phạm vi

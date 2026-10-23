@@ -87,7 +87,8 @@ class ItaTicketObjects
 
     public function statistics(array $input): array
     {
-        $year = ItaInput::text($input['year'] ?? date('Y'),4);
+        $year = ItaInput::text($input['year'] ?? (new DateTimeImmutable('now',new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y'),4);
+        $page = ItaInput::positiveInt($input['page'] ?? '1');
         if (!preg_match('/^(20|21)[0-9]{2}$/D',$year)) {
             throw new ItaHttpError(422,'Năm thống kê phải trong 2000–2199.');
         }
@@ -101,6 +102,12 @@ class ItaTicketObjects
         $start = new DateTimeImmutable($year.'-01-01',new DateTimeZone('Asia/Ho_Chi_Minh'));
         $params[]=$start->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
         $params[]=$start->modify('+1 year')->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
-        return ['year'=>(int) $year,'rows'=>$this->db->fetchAll('SELECT t.asset_id,a.asset_code,t.type,t.status,COUNT(*) n,COALESCE(SUM(t.cost),0) cost FROM ita_tickets t JOIN ita_assets a ON a.store_id=t.store_id AND a.id=t.asset_id WHERE '.$where.' AND t.opened_at>=? AND t.opened_at<? GROUP BY t.asset_id,a.asset_code,t.type,t.status',$types.'ss',$params)];
+        $types .= 'ss';
+        $grouped = 'SELECT t.asset_id,a.asset_code,t.type,t.status,COUNT(*) n,COALESCE(SUM(t.cost),0) cost FROM ita_tickets t JOIN ita_assets a ON a.store_id=t.store_id AND a.id=t.asset_id WHERE '.$where.' AND t.opened_at>=? AND t.opened_at<? GROUP BY t.asset_id,a.asset_code,t.type,t.status';
+        $summary = $this->db->fetchOne('SELECT COUNT(*) total,COALESCE(SUM(g.n),0) ticket_count,COALESCE(SUM(g.cost),0) cost FROM ('.$grouped.') g',$types,$params);
+        $total = (int) $summary['total'];
+        $page = max(1,min($page,max(1,(int) ceil($total/20))));
+        $rows = $this->db->fetchAll($grouped.' ORDER BY t.asset_id,t.type,t.status LIMIT 20 OFFSET ?',$types.'i',[...$params,($page-1)*20]);
+        return ['year'=>(int) $year,'rows'=>$rows,'page'=>$page,'per_page'=>20,'total'=>$total,'summary'=>['ticket_count'=>(int) $summary['ticket_count'],'cost'=>(string) $summary['cost']]];
     }
 }

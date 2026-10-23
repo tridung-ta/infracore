@@ -2,6 +2,7 @@
  'use strict';
  const $=id=>document.getElementById(id),live=document.body.dataset.mode==='live';
  let current=null,page=1,total=0,busy=false,stale=false,started=false,techPage=1,techTotal=0,feedbackTimer,pickerPage=1,pickerTotal=0,pickerPerPage=5,pickerQuery='';
+ let statPage=1,statTotal=0,statPerPage=20,statFilter=null;
  const role=()=>window.itaLiveContext?.user.role,admin=()=>role()==='admin_it';
  const el=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
  const labels={pending:'Đang chờ xử lý',resolved:'Đã hoàn tất',failed:'Chưa khắc phục',repair:'Sửa chữa',periodic:'Bảo trì định kỳ',low:'Thấp',medium:'Vừa',high:'Cao',critical:'Nghiêm trọng','ticket.assign':'Gán người xử lý','ticket.cost':'Điều chỉnh chi phí',in_use:'Đang sử dụng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Đã thanh lý'};
@@ -56,6 +57,8 @@
   $('ticket-tech-prev').disabled=busy||techPage<=1;$('ticket-tech-next').disabled=busy||techPage*20>=techTotal;
   $('ticket-picker-prev').disabled=busy||pickerPage<=1;
   $('ticket-picker-next').disabled=busy||pickerPage*pickerPerPage>=pickerTotal;
+  $('ticket-stat-prev').disabled=busy||statPage<=1;
+  $('ticket-stat-next').disabled=busy||statPage*statPerPage>=statTotal;
   $('ticket-picker-results').querySelectorAll('[data-unavailable]').forEach(n=>n.disabled=true);
   if(stale)$('ticket-record').querySelectorAll('button[type=submit]').forEach(n=>n.disabled=true);
  }
@@ -145,11 +148,22 @@
  $('ticket-ready').addEventListener('submit',e=>{e.preventDefault();task(()=>save({operation:'ready',asset_id:current.asset.id,asset_version:current.asset.version,note:$('ticket-ready-reason').value}));});
  $('ticket-to-status').addEventListener('change',transitionFields);
  $('ticket-year').value=new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Ho_Chi_Minh'}).format(new Date());
- $('ticket-stat-form').addEventListener('submit',e=>{e.preventDefault();task(async()=>{const data=await api('ticket-statistics',{year:$('ticket-year').value,asset_id:$('ticket-filter-asset').value});const table=el('table','');table.className='license-table ticket-stat-table';
-   const caption=el('caption',`Kết quả năm ${data.year||$('ticket-year').value} · giờ Việt Nam`);table.append(caption);
+ async function statistics(nextPage,filter=statFilter){
+   const data=await api('ticket-statistics',{...filter,page:nextPage});
+   statFilter={...filter};statPage=data.page;statTotal=data.total;statPerPage=data.per_page;
+   const table=el('table','');table.className='license-table ticket-stat-table';
+   const caption=el('caption',`Kết quả năm ${data.year} · giờ Việt Nam · ${statFilter.asset_id?'ID thiết bị '+statFilter.asset_id:'mọi thiết bị trong phạm vi'}`);table.append(caption);
    const head=el('thead',''),headers=el('tr','');for(const text of ['Thiết bị','Loại phiếu','Trạng thái','Số phiếu','Chi phí (VND)']){const th=el('th',text);th.scope='col';headers.append(th);}head.append(headers);table.append(head);
    const body=el('tbody','');for(const r of data.rows){const row=el('tr','');for(const value of [r.asset_code||'Thiết bị',displayLabel(r.type),displayLabel(r.status),`${r.n} phiếu`,money(r.cost)])row.append(el('td',String(value)));body.append(row);}table.append(body);
-   $('ticket-statistics').replaceChildren(data.rows.length?table:el('p','Chưa có phiếu trong năm này.'));message(`Đã tải thống kê năm ${$('ticket-year').value}.`);});});
+   $('ticket-statistics').replaceChildren(data.rows.length?table:el('p','Chưa có phiếu trong năm này.'));
+   $('ticket-stat-summary').hidden=false;$('ticket-stat-summary').textContent=`Toàn bộ bộ lọc: ${data.summary.ticket_count} phiếu · ${money(data.summary.cost)} VND. Mỗi dòng là một nhóm thiết bị / loại / trạng thái.`;
+   $('ticket-stat-page').textContent=`Trang ${statPage}/${Math.max(1,Math.ceil(statTotal/statPerPage))} · ${statTotal} nhóm`;
+   $('ticket-stat-pagination').hidden=statTotal===0;
+   message(`Đã tải thống kê năm ${data.year}, trang ${statPage}.`);
+ }
+ $('ticket-stat-form').addEventListener('submit',e=>{e.preventDefault();task(()=>statistics(1,{year:$('ticket-year').value,asset_id:$('ticket-filter-asset').value}));});
+ $('ticket-stat-prev').addEventListener('click',()=>task(()=>statistics(statPage-1)));
+ $('ticket-stat-next').addEventListener('click',()=>task(()=>statistics(statPage+1)));
  addEventListener('ita:asset',event=>{
   const dialog=$('asset-dialog');dialog.querySelector('.asset-ticket-link')?.remove();dialog.querySelector('.asset-ticket-history')?.remove();
   const link=el('button','Phiếu & lịch sử bảo trì');link.type='button';link.className='secondary-button asset-ticket-link';link.addEventListener('click',()=>{dialog.close();$('ticket-filter-asset').value=event.detail.id;$('ticket-asset').value=event.detail.id;$('ticket-selected-asset').hidden=true;location.hash='tickets';if(started)task(async()=>{page=1;await listing();});});dialog.append(link);
