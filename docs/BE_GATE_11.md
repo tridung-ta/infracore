@@ -1,4 +1,8 @@
-# BE-GATE #11 — Duyệt S11-01/S11-02 và(c)/(d); phần còn lại NHÁP
+# BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f) trong app; phần còn lại NHÁP
+
+## 23/10/2026 — Duyệt(f) trong ứng dụng
+
+User «Duyệt BUILD (f) trong ứng dụng». Error boundary HTML/JSON/log/ref/fallback đã build/test local, PHASE11_ERROR_HTTP_VERIFY.md.56 HTTP/Smarty +41 browser, hồi quy/lint/review đạt, không DB. Chỉ sửa trong ứng dụng/gate/module; cấu hình PHP-FPM/log_errors/display_errors host, .user.ini/auto_prepend, HSTS/headers mới và Apache ErrorDocument **không được mở**. F11.4 còn kiểm host, không ghi hoàn tất toàn bộ Phase11 hoặc nghiệm thu DB.
 
 ## 23/10/2026 — Duyệt và build riêng(c)/(d)
 

@@ -22,7 +22,8 @@ with tempfile.TemporaryDirectory(prefix='ita-guard-', dir=ROOT / 'tmp') as folde
     base = pathlib.Path(folder)
     (base / 'includes').mkdir()
     (base / 'modules/admin').mkdir(parents=True)
-    for name in ['project-start.php', 'router.php', 'includes/ita_mode.inc.php', 'includes/project_gate.inc.php']:
+    (base / 'classes/security').mkdir(parents=True)
+    for name in ['project-start.php', 'router.php', 'includes/ita_mode.inc.php', 'includes/project_gate.inc.php', 'classes/security/itaerrorresponse.class.php']:
         shutil.copyfile(ROOT / name, base / name)
     for name in ['admin.php', 'index.php']:
         (base / name).write_text("<?php require_once __DIR__.'/includes/project_gate.inc.php'; echo 'LEGACY_FIXTURE';", encoding='utf-8')

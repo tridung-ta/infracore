@@ -1,5 +1,7 @@
 # Phase 11 — Kiểm chứng FE local, 22/10/2026
 
+**Cập nhật23/10:** (f) trong ứng dụng đã được duyệt/build,56 HTTP/Smarty +41 browser error-page đạt, PHASE11_ERROR_HTTP_VERIFY.md. Những dòng F11.4 “chỉ FE” dưới là lịch sử22/10; hiện app có lỗi HTTP/log/ref, **server config/host vẫn chưa kiểm**, F11.4 chưa nghiệm thu toàn bộ.
+
 Chỉ sửa template/CSS/JavaScript và tài liệu. Không sửa PHP, DB, auth, cookie hoặc security headers. BE_GATE_11.md là bản nháp chưa duyệt; DB/host Phase 1–10 chưa nghiệm thu. Không merge/tag Phase 7–10, không push/deploy.
 
 ## Trang lỗi F11.4

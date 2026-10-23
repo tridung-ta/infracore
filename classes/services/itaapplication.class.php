@@ -33,7 +33,6 @@ class ItaApplication
         } catch (ItaHttpError $error) {
             $this->error($error->status, $error->getMessage());
         } catch (Throwable $error) {
-            error_log('ITA request unavailable.');
             $this->error(503, 'Hệ thống chưa sẵn sàng. Vui lòng kiểm tra cấu hình hoặc thử lại sau.');
         }
     }
@@ -277,15 +276,21 @@ class ItaApplication
 
     private function error(int $status, string $message): void
     {
-        http_response_code($status);
-        if ($status===429) {
-            header('Retry-After: 900');
-        }
+        $reference=ItaErrorResponse::report($status);
         if ($this->action==='login' && session_status()===PHP_SESSION_ACTIVE) {
-            $this->render('admin/ita/login.tpl.html', ['itaCsrf'=>$_SESSION['ita_csrf'],'itaError'=>$message]);
-        } else {
-            $this->json(['success'=>false,'data'=>null,'message'=>$message]);
+            http_response_code($status);
+            if ($status===429) { header('Retry-After: 900'); }
+            $level=ob_get_level();ob_start();
+            try {
+                $this->render('admin/ita/login.tpl.html', ['itaCsrf'=>$_SESSION['ita_csrf'],'itaError'=>$message.' Mã tham chiếu: '.$reference]);
+                $html=ob_get_clean();echo $html;return;
+            } catch (Throwable) {
+                while (ob_get_level()>$level) { ob_end_clean(); }
+                ItaErrorResponse::send(500,'Không thể mở trang đăng nhập. Vui lòng thử lại sau.',false,$reference);return;
+            }
         }
+        $requested=$_GET['act'] ?? $this->action;
+        ItaErrorResponse::send($status,$message,!is_string($requested) || ($requested!=='' && !in_array($requested,['login','logout'],true)),$reference);
     }
 
     private function render(string $file, array $values): void

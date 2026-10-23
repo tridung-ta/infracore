@@ -26,10 +26,11 @@ if (ITA_ENABLED && !ITA_LEGACY_UI_ENABLED) {
         header('Location: /admin.php?op=ita&notice=legacy_hidden', true, 303);
         exit;
     }
-    http_response_code(['denied' => 403, 'bad_request' => 400][$itaDecision] ?? 404);
-    header('Content-Type: text/plain; charset=utf-8');
-    header('Cache-Control: no-store, max-age=0');
-    echo 'Yêu cầu không khả dụng trong chế độ giao diện ITA.';
+    require_once dirname(__DIR__).'/classes/security/itaerrorresponse.class.php';
+    $itaJson=stripos($_SERVER['HTTP_ACCEPT'] ?? '','application/json')!==false
+        || ($itaPath==='/admin.php' && ($_GET['op'] ?? '')==='ita');
+    ItaErrorResponse::send(['denied'=>403,'bad_request'=>400][$itaDecision] ?? 404,
+        'Yêu cầu không khả dụng trong chế độ giao diện ITA.',$itaJson);
     exit;
 }
 if (ITA_ENABLED && ITA_LEGACY_UI_ENABLED) {

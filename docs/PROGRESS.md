@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — BUILD(f) xử lý lỗi trong ứng dụng
+
+User duyệt «Duyệt BUILD (f) trong ứng dụng». Đã có HTML Smarty lỗi đúng status, JSON API/export +request_id, log structured không request/exception secrets, bootstrap500/render fallback và không append response đã gửi; login form giữ nguyên.56 HTTP/Smarty +41 browser1366/768/390 đạt; hồi quy109 guard/75 deny/13 routes/30+54 export/134 forecast/Smarty đạt, lint/review đạt. PHASE11_ERROR_HTTP_VERIFY.md ghi giới hạn. F11.4 build app local xong, host/PHP-FPM/Apache/log config vẫn chưa kiểm; không PHP-FPM/.user.ini/auto_prepend/HSTS/ErrorDocument/gói/DB/merge/tag7–10/push/deploy.
+
 ## 23/10/2026 — Tiếp tục kiểm bảo mật và BUILD(c)/(d)
 
 (d) đã build local: .htaccess deny tests/artifacts/scripts/MOCK trước static, ita_mode chặn tương ứng và path mơ hồ, bỏ mock khỏi allowlist.75 pure +109 PHP HTTP fixture +13 route đạt, lint/review độc lập đạt; PHASE11_GUARD_VERIFY.md. Không Apache local/host/DB, không cài runtime; không tuyên bố toàn legacy an toàn. Không .user.ini/auto_prepend/header/page lỗi hoặc gói/deploy. Delta S11 export3 file trước không gồm4 file guard/rewrite mới.

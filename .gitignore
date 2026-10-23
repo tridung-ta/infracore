@@ -67,3 +67,4 @@ desktop.ini
 
 # Private host listings: never commit or package.
 /tmp/host-inventory/
+/tmp/phase11-error-ui/
