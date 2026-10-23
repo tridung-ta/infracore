@@ -1,5 +1,7 @@
 # Phase 12 — UI Motion local, 23/10/2026
 
+F12.5: assets, 13 probes cộng dồn trong ita_phase12_screens_browser.js đạt; giữ dữ liệu/request và không animate canvas liên tục.
+
 F12.4: dashboard, 10 probes cộng dồn trong ita_phase12_screens_browser.js đạt; giữ dữ liệu/request và không animate canvas liên tục.
 
 F12.3: ticket, 7 probes cộng dồn trong ita_phase12_screens_browser.js đạt; giữ dữ liệu/request và không animate canvas liên tục.
