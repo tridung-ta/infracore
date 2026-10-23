@@ -6,6 +6,12 @@ class ExportRecheckDb extends ForecastTestDb
 {
     public bool $native=true,$nativeFails=false;
     public int $audits=0;
+    public array $scopes=[10];
+    public function fetchAll(string $sql,string $types='',array $params=[]): array
+    {
+        if (str_contains($sql,'FROM ita_user_scopes')) { return array_map(fn($id)=>['department_id'=>$id],$this->scopes); }
+        return parent::fetchAll($sql,$types,$params);
+    }
     public function fetchOne(string $sql,string $types='',array $params=[]): ?array
     {
         if (str_contains($sql,'FROM dc_users')) {
@@ -39,5 +45,19 @@ foreach (['normal','disabled','missing','store','query','audit','role'] as $scen
     if (($scenario==='normal')!==(!$failed) || $output!==($scenario==='normal'?'synthetic-file-bytes':'')) { throw new RuntimeException('Bytes '.$scenario); }$checks++;
     if ($db->audits!==($scenario==='normal'?1:0)) { throw new RuntimeException('Successful audit '.$scenario); }$checks++;
     if ($scenario!=='normal' && !$db->rolledBack) { throw new RuntimeException('Rollback '.$scenario); }$checks++;
+}
+$manager=new ItaUserObjectInfo(['id'=>1,'store_id'=>1,'role'=>'system_manager','auth_revision'=>1,'fullname'=>'Mock','username'=>'mock'],[10]);
+foreach (['normal','scope-revoked','outside-department'] as $scenario) {
+    $db=new ExportRecheckDb();$db->role='system_manager';$service=new ItaForecastService($db,$manager);
+    // Permission changes take place after synthetic rendering, before the real export audit boundary.
+    $bytes='synthetic-manager-bytes';
+    if ($scenario==='scope-revoked') { $db->scopes=[]; }
+    ob_start();$status=null;
+    try { $service->auditExport(['rows'=>[['department_id'=>$scenario==='outside-department'?11:10]],'year'=>2026,'summary'=>[]]);echo $bytes; }
+    catch (ItaHttpError $e) { $status=$e->status; }
+    $output=ob_get_clean();
+    if ($status!==($scenario==='normal'?null:403)) { throw new RuntimeException('Manager status '.$scenario); }$checks++;
+    if ($output!==($scenario==='normal'?$bytes:'')) { throw new RuntimeException('Manager bytes '.$scenario); }$checks++;
+    if ($db->audits!==($scenario==='normal'?1:0)) { throw new RuntimeException('Manager audit '.$scenario); }$checks++;
 }
 echo "$checks scripted forecast export checks passed; no DB, synthetic render, not HTTP/DB integration.\n";

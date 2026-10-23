@@ -1,5 +1,9 @@
 # S11-01/S11-02 — Kiểm chứng local, 22/10/2026
 
+## Bổ sung23/10 — hồi quy bảo mật không DB
+
+Suite forecast export hiện **30 checks** (thêm Quản lý bình thường, scope thu hồi và dòng ngoài bộ phận dù actor còn scope); controller export hiện **54 checks** (thêm source staging mất/revision đổi trong render). Chạy PHP CLI local, transport giả, không DB/HTTP thật. Các con số21/48 bên dưới là lần kiểm22/10, giữ để truy vết. Không dùng kết quả bổ sung để ghi host/DB đạt.
+
 User duyệt «Duyệt BUILD S11-01 và S11-02 trước». Không DB/host, không thêm audit GET, không config/rewrite/header/auto_prepend, không merge/tag7–10/push/deploy. PHP CLI local8.5.10; PHP8.3/HTTP/PHP-FPM thật chưa chạy.
 
 ## S11-01 — forecast-export

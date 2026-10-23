@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — Tiếp tục kiểm bảo mật và BUILD(c)/(d)
+
+User duyệt «Duyệt BUILD (c) và (d)», đồng thời yêu cầu kiểm kỹ bảo mật. Mở project-start guard và deny tests/artifacts/scripts/MOCK; không auto_prepend/.user.ini/header/error-page/DB/deploy. Trước khi sửa guard, bổ sung test S11 export:30 forecast +54 controller scripted đạt, thêm Manager scope/ngoài bộ phận và staging mất/revision đổi. Không đổi production export; HTTP/DB thật chưa kiểm.
+
 ## 23/10/2026 — Checkpoint GitHub theo yêu cầu user
 
 User yêu cầu push các commit lên GitHub trước khi tiếp tục, chỉnh sửa sau lưu commit mới. Lưu riêng PHASE11_S11_HOST_TEST.md đã soạn từ22/10: đúng3 file runtime S11, dependency/nền cần đối chiếu, kiểm thủ công host phạm vi hạn chế và kế hoạch delta chưa tạo. Tài liệu lưu ý login mới có writer dc_users nên đợt không sửa dc_* chỉ dùng phiên test có sẵn; không suy thu hồi trước request là test giữa render. Verify đối chiếu git show hai commit/source và diff; review độc lập tài liệu chưa hoàn tất do agent không khả dụng phiên trước. Host/DB chưa chạy, không ZIP/upload/merge/tag; được push nhánh làm việc theo chỉ đạo mới, không stage file nền/vendor/local ngoài phạm vi.

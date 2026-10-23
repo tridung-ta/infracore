@@ -14,7 +14,13 @@ class ItaExcel
 }
 class ItaImportStorage
 {
-    public function get(string $name): array { return [['revision'=>1,'line'=>2,'values'=>['asset_code'=>'QA','name'=>'Mock'],'error'=>'Synthetic error']]; }
+    public static bool $missing=false;
+    public static int $revision=1;
+    public function get(string $name): array
+    {
+        if (self::$missing) { throw new ItaHttpError(410,'Synthetic staging unavailable'); }
+        return [['revision'=>self::$revision,'line'=>2,'values'=>['asset_code'=>'QA','name'=>'Mock'],'error'=>'Synthetic error']];
+    }
 }
 class DownloadDb extends ItaDb
 {
@@ -52,14 +58,16 @@ class DownloadDb extends ItaDb
 $checks=0;$actor=new ItaUserObjectInfo(['id'=>1,'store_id'=>1,'role'=>'system_manager','auth_revision'=>1,'fullname'=>'Mock','username'=>'mock'],[10]);
 $_SERVER['REQUEST_METHOD']='GET';$_SESSION=['ita_csrf'=>'synthetic-csrf'];
 foreach (['asset-export','import-errors'] as $action) {
-    $scenarios=['normal','native','role','revision','scope','query',...($action==='asset-export'?['asset']:['expiry','owner','batch'])];
+    $scenarios=['normal','native','role','revision','scope','query',...($action==='asset-export'?['asset']:['expiry','owner','batch','file','source-revision'])];
     foreach ($scenarios as $scenario) {
         $db=new DownloadDb();$_GET=$action==='import-errors'?['batch_id'=>'9']:[];
+        ItaImportStorage::$missing=false;ItaImportStorage::$revision=1;
         ItaExcel::$duringRender=static function() use ($db,$scenario): void {
             match($scenario) {
                 'native'=>$db->active=false,'role'=>$db->role='support_technician','revision'=>$db->revision=2,
                 'scope'=>$db->department=11,'query'=>$db->queryFails=true,'asset'=>$db->assetChanged=true,
-                'expiry'=>$db->available=false,'owner'=>$db->owner=false,'batch'=>$db->batchChanged=true,default=>null
+                'expiry'=>$db->available=false,'owner'=>$db->owner=false,'batch'=>$db->batchChanged=true,
+                'file'=>ItaImportStorage::$missing=true,'source-revision'=>ItaImportStorage::$revision=2,default=>null
             };
         };
         ob_start();$status=null;
@@ -67,7 +75,7 @@ foreach (['asset-export','import-errors'] as $action) {
         catch (ItaHttpError $e) { $status=$e->status; }
         catch (RuntimeException $e) { if ($scenario!=='query') { throw $e; }$status=503; }
         $bytes=ob_get_clean();
-        $expected=match($scenario) {'normal'=>null,'asset','batch'=>409,'expiry'=>410,'owner'=>404,'query'=>503,default=>403};
+        $expected=match($scenario) {'normal'=>null,'asset','batch','source-revision'=>409,'expiry','file'=>410,'owner'=>404,'query'=>503,default=>403};
         if ($status!==$expected) { throw new RuntimeException("Status $action/$scenario"); }$checks++;
         if ($bytes!==($scenario==='normal'?'PK-synthetic-workbook':'')) { throw new RuntimeException("Bytes $action/$scenario"); }$checks++;
         if ($db->identityReads!==1) { throw new RuntimeException('Expected actual post-render identity recheck'); }$checks++;
