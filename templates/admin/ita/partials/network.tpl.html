@@ -1,0 +1,16 @@
+<section id="network-panel" class="panel network-panel" aria-labelledby="network-heading" hidden>
+ <div class="panel-heading"><div><h2 id="network-heading">Bản đồ kết nối hạ tầng</h2><p>MOCK · Mô hình minh họa, không quét hoặc giám sát mạng thật.</p></div><span class="mock-label">MOCK</span></div>
+ <div class="network-body">
+  <p id="network-message" role="status" aria-live="polite"></p>
+  <div id="network-content" hidden>
+   <form id="network-filters" class="network-controls"><div><label for="network-search">Tìm thiết bị mẫu</label><input id="network-search" class="form-control" type="search" maxlength="100"></div><div><label for="network-department">Bộ phận mẫu</label><select id="network-department" class="form-select"><option value="">Tất cả bộ phận</option></select></div><button class="secondary-button" type="submit">Áp dụng</button><button id="network-reset" class="secondary-button" type="button">Xóa lọc</button></form>
+   <p id="network-count" class="muted" aria-live="polite"></p>
+   <div id="network-graph" class="network-graph" tabindex="0" role="region" aria-label="Sơ đồ mạng 2D mẫu, có thể cuộn ngang"><svg id="network-svg" viewBox="0 0 1100 500" role="group" aria-labelledby="network-svg-title"><title id="network-svg-title">MOCK · Kết nối thiết bị minh họa</title><g id="network-links"></g><g id="network-nodes"></g></svg></div>
+   <p class="muted">Chọn một thiết bị trong sơ đồ hoặc danh sách bên dưới. Trạng thái và tốc độ đều là dữ liệu giả, không phải số đo hiện tại.</p>
+   <div id="network-node-list" class="network-node-list" aria-label="Chọn thiết bị mẫu"></div>
+   <section id="network-detail" class="network-detail" aria-labelledby="network-detail-title" hidden><h3 id="network-detail-title">Thiết bị mẫu</h3><dl id="network-detail-values"></dl></section>
+   <div class="table-scroll"><table class="network-table"><caption>MOCK · Bảng đối chiếu liên kết trong bộ lọc</caption><thead><tr><th scope="col">Đầu nguồn</th><th scope="col">Đầu đích</th><th scope="col">Loại</th><th scope="col">Tốc độ mẫu</th><th scope="col">Trạng thái mẫu</th></tr></thead><tbody id="network-link-rows"></tbody></table></div>
+  </div>
+  <button id="network-retry" class="secondary-button" type="button" hidden>Tải lại mô hình mẫu</button>
+ </div>
+</section>

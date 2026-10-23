@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+23/10/2026: User «Chưa duyệt BE13, hoàn thiện FE MOCK». F13.1 [G] chưa tạo bảng/migration/PHP. F13.2 sơ đồ2D8node7link với filter/table/keyboard/live-no-mock;12 browser checks/Smarty/syntax đạt, không DB/mạng thật. PHASE13_VERIFY.md, BE_GATE_13.md. Tiếp tục F13.3/F13.4, không gói/merge/tag/push/deploy.
+
 23/10/2026: Phase12 F12.1–F12.9 FE local hoàn tất.21 infrastructure +22 screen probes +9 login MOCK; hồi quy64 ticket/63 lifecycle/42 forecast/64 dashboard đạt, Smarty/syntax/diff/review đạt. PHASE12_VERIFY.md ghi giới hạn probe và host chưa chạy. Ticket quan sát message/details trực tiếp. Không đổi BE/DB/host hoặc merge/tag/push/deploy; tiếp tục Phase13 FE MOCK.
 
 23/10/2026: F12.9 motion đăng nhập hoàn tất local;9 browser MOCK checks đạt, không auth/DB. Form/token/reauth không đổi; core không hủy entry animation ở pageshow đầu. Phase12 tiếp tục kiểm hồi quy/rà độc lập, không tuyên bố DB/host nghiệm thu.

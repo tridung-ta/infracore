@@ -1,0 +1,22 @@
+{
+ "mock":true,
+ "nodes":[
+  {"id":"mock-edge","name":"Cổng kết nối","kind":"Router","department":"Hạ tầng","status":"healthy","x":100,"y":250},
+  {"id":"mock-firewall","name":"Tường lửa","kind":"Firewall","department":"Hạ tầng","status":"healthy","x":300,"y":250},
+  {"id":"mock-core","name":"Switch trung tâm","kind":"Switch","department":"Hạ tầng","status":"healthy","x":500,"y":250},
+  {"id":"mock-office","name":"Switch văn phòng","kind":"Switch","department":"Văn phòng","status":"warning","x":730,"y":120},
+  {"id":"mock-server","name":"Máy chủ ứng dụng","kind":"Server","department":"Hạ tầng","status":"healthy","x":730,"y":380},
+  {"id":"mock-workstation","name":"Máy trạm kế toán","kind":"Workstation","department":"Văn phòng","status":"healthy","x":950,"y":80},
+  {"id":"mock-ap","name":"Điểm truy cập","kind":"Access point","department":"Văn phòng","status":"offline","x":950,"y":200},
+  {"id":"mock-backup","name":"Máy lưu trữ dự phòng","kind":"Storage","department":"Hạ tầng","status":"healthy","x":950,"y":410}
+ ],
+ "links":[
+  {"source":"mock-edge","target":"mock-firewall","kind":"Ethernet","capacity":"1 Gbps","status":"healthy"},
+  {"source":"mock-firewall","target":"mock-core","kind":"Fiber","capacity":"10 Gbps","status":"healthy"},
+  {"source":"mock-core","target":"mock-office","kind":"Fiber","capacity":"10 Gbps","status":"warning"},
+  {"source":"mock-core","target":"mock-server","kind":"Ethernet","capacity":"10 Gbps","status":"healthy"},
+  {"source":"mock-office","target":"mock-workstation","kind":"Ethernet","capacity":"1 Gbps","status":"healthy"},
+  {"source":"mock-office","target":"mock-ap","kind":"Ethernet","capacity":"1 Gbps","status":"offline"},
+  {"source":"mock-server","target":"mock-backup","kind":"Ethernet","capacity":"10 Gbps","status":"healthy"}
+ ]
+}
