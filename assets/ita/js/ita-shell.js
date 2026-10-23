@@ -135,12 +135,14 @@
   const query=$('asset-search').value.trim().toLocaleLowerCase('vi');
   return state.data.assets.filter((a)=>(!query||`${a.code} ${a.name} ${a.serial}`.toLocaleLowerCase('vi').includes(query))&&(!$('department-filter').value||a.department===$('department-filter').value)&&(!$('status-filter').value||a.status===$('status-filter').value));
  }
+ let detailRequest=0;
  async function showDetails(id,trigger) {
+  const request=++detailRequest;
   let asset=state.data.assets.find((a)=>a.id===id);
   if(liveMode){
    trigger.disabled=true;
-   try{const response=await fetch(`/admin.php?op=ita&act=asset&id=${id}`);const result=await response.json();if(response.status===401){location.assign('/admin.php?op=ita&act=login');return;}if(!result.success)throw new Error(result.message);asset=result.data;}
-   catch(error){notify(error.message||'Chưa tải được chi tiết thiết bị.');return;}
+   try{const response=await fetch(`/admin.php?op=ita&act=asset&id=${id}`);const result=await response.json();if(request!==detailRequest)return;if(response.status===401){location.assign('/admin.php?op=ita&act=login');return;}if(!response.ok||!result.success)throw new Error(result.message);asset=result.data;}
+   catch(error){if(request===detailRequest)notify(error.message||'Chưa tải được chi tiết thiết bị.');return;}
    finally{trigger.disabled=false;}
   }
   if(!asset)return;
@@ -224,7 +226,7 @@
  });
  $('notification-button').addEventListener('click',()=>{if(location.hash==='#alerts')notify(liveMode?'Bạn đang xem trung tâm cảnh báo.':'Bạn đang xem cảnh báo minh họa.');else location.hash='alerts';});
  $('close-dialog').addEventListener('click',()=>$('asset-dialog').close());
- $('asset-dialog').addEventListener('close',()=>{if(returnFocus?.isConnected)returnFocus.focus();});
+ $('asset-dialog').addEventListener('close',()=>{detailRequest++;if(returnFocus?.isConnected)returnFocus.focus();});
  $('filter-form').addEventListener('submit',(event)=>event.preventDefault());
  ['asset-search','department-filter','status-filter'].forEach((id)=>$(id).addEventListener(id==='asset-search'?'input':'change',updateFilters));
  // Reset's default action must finish before reading input/select values.

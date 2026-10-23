@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — Phân trang lịch sử tài sản, build local
+
+User «Duyệt BUILD phân trang lịch sử tài sản». GET asset trả20 thao tác/trang cùng COUNT, sort id DESC; quyền asset kiểm trước history. Tab Lịch sử có Trước/Sau, tổng/page/busy/lỗi, sequence/generation ngăn phản hồi hồ sơ cũ.174 query-contract +43 browser mới ba vai trò1366/768/390 +30 browser hồi quy +39 asset/237 ticket/13 routes/Smarty/lint đạt; review độc lập không finding. PHASE11_ASSET_HISTORY_VERIFY.md ghi lệnh và giới hạn; không DB/EXPLAIN/PHP8.3/host, không DDL/index/transaction/gói/merge/tag7–10/push/deploy.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.1 bổ sung theo gate | Phân trang lịch sử tài sản | FE/BE | [x] local | Commit chức năng chứa dòng này | 174 scripted +43 browser mới, hồi quy đạt | DB/host chưa nghiệm thu |
+
 ## 23/10/2026 — Phân trang thống kê ticket được duyệt và build local
 
 User «Duyệt BUILD phân trang thống kê ticket». COUNT nhóm/tổng toàn tập cùng scope và GROUP BY, 20 nhóm/trang, thứ tự ổn định, page validate/clamp; FE giữ bộ lọc đã áp dụng và kết quả trước khi tải lỗi, cost chuỗi.190 query-contract +237 scripted ticket +43 browser mới ba vai trò/bounds1366/768/390 +64 browser hồi quy +13 routes/Smarty/lint/diff đạt; detector template trả0 finding, review độc lập không finding. PHASE11_TICKET_STATISTICS_VERIFY.md ghi lệnh/giới hạn. Chưa DB/EXPLAIN/PHP8.3/host; không thêm index/DDL/transaction, không gói/merge/tag7–10/push/deploy.

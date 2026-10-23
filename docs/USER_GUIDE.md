@@ -1,5 +1,9 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Bổ sung23/10 — Lịch sử tài sản (build local)
+
+Mở hồ sơ tài sản, chọn tab Lịch sử. Mỗi trang hiển thị tối đa20 thao tác; Trước/Sau cho phép xem cả các thao tác cũ hơn50 bản ghi. Số trang/tổng thao tác nằm dưới danh sách, có thể cần cuộn trong hộp thoại. Mở từng dòng để xem dữ liệu trước/sau. Khi tải lỗi, nội dung lịch sử được ẩn và hiển thị thông báo; thử lại hướng chuyển trang khi phù hợp. Cả ba vai trò chỉ xem tài sản trong phạm vi server cho phép. Đây là audit thao tác tài sản; lịch sử bảo trì/phân bổ vẫn xem tại phần tương ứng. Chưa kiểm trên DB/host thật.
+
 ## Bổ sung23/10 — Thống kê phiếu theo năm (build local)
 
 Tại Bảo trì & hỗ trợ, nhập ID thiết bị ở bộ lọc nếu cần, chọn năm và bấm Xem thống kê. Kết quả chia20 nhóm/trang theo thiết bị, loại và trạng thái; dùng Trước/Sau để chuyển trang. Tổng số phiếu/chi phí phía dưới là toàn bộ kết quả của bộ lọc đã áp dụng, không chỉ trang đang xem. Caption nêu năm và ID đang áp dụng; sửa input cần bấm Xem thống kê để áp dụng lại. Nếu tải lỗi, kết quả trước được giữ. Hỗ trợ chỉ có thống kê phiếu mình xử lý trong scope. Chức năng chưa được kiểm trên DB/host thật.

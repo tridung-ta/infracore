@@ -1,5 +1,9 @@
 # BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f)/(g) app và phân trang thống kê; phần còn lại NHÁP
 
+## 23/10/2026 — Duyệt phân trang lịch sử tài sản
+
+User «Duyệt BUILD phân trang lịch sử tài sản». Đã bổ sung COUNT/LIMIT20/OFFSET trên GET asset, sort id DESC, Trước/Sau, guard quyền trước count/list và sequence/generation chặn phản hồi muộn khi đóng/đổi hồ sơ.174 query-contract +43 browser mới/30 browser hồi quy +39 asset/237 ticket/13 routes/Smarty/lint đạt; review độc lập không finding. PHASE11_ASSET_HISTORY_VERIFY.md ghi query và giới hạn hai lần đọc không chung snapshot. Không DDL/index/DB/config/gói/merge/tag7–10/push/deploy; các phần phân trang khác vẫn chưa duyệt.
+
 ## 23/10/2026 — Duyệt phân trang thống kê ticket
 
 User «Duyệt BUILD phân trang thống kê ticket». Phạm vi COUNT nhóm và LIMIT/OFFSET cùng scope/bộ lọc, sort ổn định, FE Trước/Sau, giữ tổng toàn tập. Đã build trong ItaTicketObjects + JS/Smarty hiện có; không endpoint mới, index/DDL/config/DB/gói.190 query-contract +237 ticket scripted +43 browser mới +64 browser hồi quy +13 routes/Smarty/lint đạt; review độc lập không finding. PHASE11_TICKET_STATISTICS_VERIFY.md ghi contract, query và giới hạn hai lần đọc không chung snapshot. Chưa EXPLAIN/host/DB; không merge/tag7–10/push/deploy. Không mở phần phân trang khác hoặc auto_prepend/HSTS.

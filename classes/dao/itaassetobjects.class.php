@@ -112,7 +112,7 @@ class ItaAssetObjects
             'pagination'=>['page'=>$page,'per_page'=>5,'total'=>$total]];
     }
 
-    public function detail(int $id): array
+    public function detail(int $id, int $page = 1): array
     {
         $row = $this->db->fetchOne(self::SELECT.' WHERE a.store_id=? AND a.id=? AND a.is_deleted=0', 'ii', [$this->actor->storeId,$id]);
         if (!$row) {
@@ -120,10 +120,12 @@ class ItaAssetObjects
         }
         $this->actor->requireDepartment($row['department_id'] === null ? null : (int) $row['department_id']);
         $raw = array_diff_key($row,array_flip(['category_name','department_name','maintenance_cycle_months']));
-        $history = $this->db->fetchAll("SELECT id,user_id,action,before_json,after_json,created_at FROM ita_audit_logs
-            WHERE store_id=? AND entity_type='asset' AND entity_id=? ORDER BY id DESC LIMIT 51",'ii',[$this->actor->storeId,$id]);
+        $from = " FROM ita_audit_logs WHERE store_id=? AND entity_type='asset' AND entity_id=?";
+        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n'.$from,'ii',[$this->actor->storeId,$id])['n'];
+        $page = max(1,min($page,max(1,(int) ceil($total/20))));
+        $history = $this->db->fetchAll('SELECT id,user_id,action,before_json,after_json,created_at'.$from.' ORDER BY id DESC LIMIT 20 OFFSET ?','iii',[$this->actor->storeId,$id,($page-1)*20]);
         return (new ItaAssetObjectInfo($row))->presentation() + ['fields'=>$raw,'version'=>ItaAssetService::version($raw),
-            'history'=>array_slice($history,0,50),'history_has_more'=>count($history)>50];
+            'history'=>$history,'history_has_more'=>$page*20<$total,'history_pagination'=>['page'=>$page,'per_page'=>20,'total'=>$total]];
     }
 
     public function summary(): array

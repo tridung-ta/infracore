@@ -1,5 +1,9 @@
 # Rà danh sách và phân trang —22/10/2026
 
+## Cập nhật23/10 — Lịch sử tài sản đã phân trang local
+
+User duyệt riêng; GET asset đã COUNT + LIMIT20/OFFSET, sort id DESC và nav trong tab Lịch sử; guard scope trước history, FE chặn response muộn.174 query-contract +43 browser mới và hồi quy đạt, PHASE11_ASSET_HISTORY_VERIFY.md. Hàng «Lịch sử tài sản LIMIT51» bên dưới là snapshot22/10 trước thay đổi. Chưa DB/EXPLAIN/host; các danh sách khác giữ trạng thái chưa build.
+
 ## Cập nhật23/10 — Thống kê ticket đã phân trang local
 
 User duyệt riêng; ItaTicketObjects::statistics đã COUNT nhóm/tổng toàn tập và LIMIT20/OFFSET bind, sort asset/type/status; FE Trước/Sau giữ bộ lọc.190 scripted +43 browser mới và hồi quy đạt, PHASE11_TICKET_STATISTICS_VERIFY.md. Chưa DB/EXPLAIN/host; phần thống kê trong bảng lịch sử22/10 dưới đây là hiện trạng trước sửa. Các danh sách còn lại vẫn chưa mở gate/build, không coi hoàn tất toàn audit.

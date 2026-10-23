@@ -8,7 +8,7 @@
   ['brand','Thương hiệu','text',100],['model','Model','text',150],['serial_no','Số seri','text',150],['os','Hệ điều hành','text',120],
   ['purchase_date','Ngày mua','date'],['purchase_price','Giá mua (VND)','text',19],['warranty_end','Bảo hành đến','date'],['vendor','Nhà cung cấp','text',200],
   ['location','Vị trí','text',255],['specs','Cấu hình / thông số','textarea',10000]];
- let categories=[],editing=null,detail=null,mode='',busy=false,loadingEditor=false,previousFocus=null;
+ let categories=[],editing=null,detail=null,mode='',busy=false,loadingEditor=false,previousFocus=null,historyGeneration=0;
  function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
  function message(id,text,error=false){const n=$(id);n.textContent=text;n.hidden=false;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);n.focus({preventScroll:true});n.scrollIntoView({block:'nearest'});}
  function button(text,callback){const n=node('button',text,'secondary-button');n.type='button';n.addEventListener('click',callback);return n;}
@@ -83,19 +83,51 @@
  for(const id of ['asset-editor-close','asset-editor-cancel'])$(id).addEventListener('click',()=>{if(!busy)$('asset-editor').close();});
  $('asset-editor').addEventListener('cancel',event=>{if(busy)event.preventDefault();});
  $('asset-editor').addEventListener('close',()=>{if(previousFocus?.isConnected)previousFocus.focus();});
+ function createHistory(initial,dialog,generation){
+  const history=node('section',undefined,'asset-history');history.append(node('h3','Lịch sử thao tác'));
+  const entries=node('div'),feedback=node('p',undefined,'muted'),paging=node('nav',undefined,'asset-tools');
+  feedback.setAttribute('role','status');paging.setAttribute('aria-label','Phân trang lịch sử tài sản');
+  const assetId=initial.id;let historyPage=1,historyTotal=0,historyPerPage=20,historyBusy=false;
+  const previous=button('Trước',()=>loadHistory(historyPage-1)),next=button('Sau',()=>loadHistory(historyPage+1)),summary=node('span');
+  previous.id='asset-history-prev';next.id='asset-history-next';summary.id='asset-history-page';summary.setAttribute('aria-live','polite');paging.append(previous,summary,next);
+  function historyControls(){previous.disabled=historyBusy||historyPage<=1;next.disabled=historyBusy||historyPage*historyPerPage>=historyTotal;}
+  function renderHistory(data){
+   const pagination=data.history_pagination||{page:1,per_page:20,total:data.history?.length||0};
+   historyPage=pagination.page;historyTotal=pagination.total;historyPerPage=pagination.per_page;
+   entries.replaceChildren();if(!data.history?.length)entries.append(node('p','Chưa có lịch sử thao tác.','muted'));
+   for(const item of data.history||[]){
+    const entry=node('details'),date=new Date(item.created_at.replace(' ','T')+'Z');entry.append(node('summary',`${date.toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'})} · #${item.user_id} · ${item.action}`));
+    const parse=value=>{try{return value?JSON.parse(value):null;}catch(error){return 'Không đọc được dữ liệu lịch sử.';}};
+    entry.append(node('pre',JSON.stringify({before:parse(item.before_json),after:parse(item.after_json)},null,2)));entries.append(entry);
+   }
+   summary.textContent=`Trang ${historyPage}/${Math.max(1,Math.ceil(historyTotal/historyPerPage))} · ${historyTotal} thao tác`;
+   historyControls();
+  }
+  async function loadHistory(requested){
+   if(historyBusy)return;historyBusy=true;historyControls();history.setAttribute('aria-busy','true');feedback.textContent='Đang tải lịch sử…';feedback.setAttribute('role','status');
+   try{
+    const data=await api('asset',{id:assetId,page:requested});
+    if(generation!==historyGeneration||!dialog.open||!history.isConnected)return;
+    renderHistory(data);feedback.textContent=`Đã tải lịch sử trang ${historyPage}.`;
+   }catch(error){
+    if(generation!==historyGeneration||!dialog.open||!history.isConnected)return;
+    entries.replaceChildren();feedback.textContent=error.message;feedback.setAttribute('role','alert');
+   }finally{
+    if(generation===historyGeneration&&history.isConnected){historyBusy=false;historyControls();history.removeAttribute('aria-busy');}
+   }
+  }
+  renderHistory(initial);history.append(feedback,entries,paging);
+  return history;
+ }
+ $('asset-dialog').addEventListener('close',()=>{historyGeneration++;});
  addEventListener('ita:asset',event=>{
+  const generation=++historyGeneration;
   detail=event.detail;const dialog=$('asset-dialog');dialog.querySelectorAll('.asset-tools,.asset-history').forEach(n=>n.remove());
   const controls=node('div',undefined,'asset-tools'),role=window.itaLiveContext.user.role;
   if(role!=='support_technician')controls.append(button('Sửa thông tin',()=>openEditor('update')));
   if((transitions[detail.status]||[]).some(s=>s!=='retired'||role==='admin_it'))controls.append(button('Đổi trạng thái',()=>openEditor('status')));
   controls.append(button('Ghi chú',()=>openEditor('note')));if(role==='admin_it')controls.append(button('Xóa mềm',()=>openEditor('delete')));dialog.append(controls);
-  const history=node('section',undefined,'asset-history');history.append(node('h3','Lịch sử thao tác'));
-  if(!detail.history?.length)history.append(node('p','Chưa có lịch sử thao tác.','muted'));
-  for(const item of detail.history||[]){
-   const entry=node('details'),date=new Date(item.created_at.replace(' ','T')+'Z');entry.append(node('summary',`${date.toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'})} · #${item.user_id} · ${item.action}`));
-   entry.append(node('pre',JSON.stringify({before:item.before_json?JSON.parse(item.before_json):null,after:item.after_json?JSON.parse(item.after_json):null},null,2)));history.append(entry);
-  }
-  if(detail.history_has_more)history.append(node('p','Đang hiển thị 50 thao tác mới nhất. Admin có thể tra cứu thêm ở Nhật ký thao tác.','muted'));
+  const history=createHistory(detail,dialog,generation);
   history.id='asset-history-panel';history.hidden=true;history.setAttribute('role','tabpanel');history.setAttribute('aria-labelledby','asset-history-tab');
   const tabs=node('div',undefined,'asset-tools asset-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Hồ sơ tài sản');
   const info=$('asset-details');info.setAttribute('role','tabpanel');info.setAttribute('aria-labelledby','asset-info-tab');info.hidden=false;
