@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## Bảng trạng thái hiện tại — 23/10/2026 sau BUILD liên tục
+
+Xem CURRENT_BUILD_STATUS.md để đối chiếu10 yêu cầu/commit/bằng chứng và việc còn mở. Phase12 F12.1–F12.9 [x] FE local; Phase13 F13.2–F13.4 [x] FE MOCK, F13.1 [G] user chưa duyệt. Phase11 app/FE đã có các phần duyệt và verify local, nhưng index/tải/host/BE còn lại và gói vẫn chưa hoàn tất. DB1–10 chưa nghiệm thu; không gói/merge/tag7–10/push/deploy. Bảng baseline/mốc cũ phía dưới giữ để truy vết, không thay trạng thái hiện tại này.
+
 23/10/2026: F13.4 Three local lazy0.180.0/r180 hoàn tất FE MOCK;23 browser WebGL/fallback checks đạt,12 2D +9 flow hồi quy đạt, Smarty/syntax/review đạt. Camerafit mobile; cleanup cả init/late-render lỗi đã tái hiện/sửa. PHASE13_VERIFY.md. F13.1 [G] vì user chưa duyệt BE13, không bảng/PHP/API/DB/host mới. Không gói/merge/tag7–10/push/deploy. Phase12FE đã xonglocal; Phase11/index/tải/host và DB1–10 vẫn chưa nghiệm thu.
 
 23/10/2026: F13.3 pulse/luồng MOCK một lần hoàn tất FE;9 browser flow checks đạt (normal/reduced/cờ tắt/không WAAPI), dừng/rời view/tắt hủy dot. Không mô phỏng giám sát mạng thật, không DB/BE13. Tiếp tục3D lazy/fallback, không gói/merge/tag/push/deploy.

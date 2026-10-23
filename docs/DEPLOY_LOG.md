@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+**23/10 sau BUILD liên tục:** Phase12 motion FE và Phase13 network2D/3D MOCK đã build local tới89b0047, không tạo gói/upload. Phase13 chưa có BE, user chọn chỉ FE MOCK; không đưa topology mẫu hoặc cả nhánh source lên host. Three local0.180.0 có source/license/provenance, không chứng minh host đã có. Gate SQL/host/DB/EXPLAIN vẫn chưa nghiệm thu; các nguồn host trong bảng bên dưới không tự cập nhật theo commit local. CURRENT_BUILD_STATUS.md tổng hợp10 yêu cầu và giới hạn. Không merge/tag7–10/push/deploy.
+
 **Source(g)23/10 local:** hai header Referrer/Permissions đã build ở module/error boundary,102 HTTP local +hồi quy đạt (PHASE11_PRIVACY_HEADERS_VERIFY.md). Chưa HSTS hoặc cấu hình host, chưa gói/upload; phải có nền(f). Không coi source local là header cuối trên hosting đã kiểm.
 
 **Source(f)23/10 chỉ local:** error boundary/template/CSS mới và Application/bootstrap/module/project_gate đã sửa trong phạm vi user duyệt.56 HTTP/Smarty +41 browser đạt; chưa PHP-FPM/Apache/host/config log. Chưa gói/upload/deploy. Không dùng delta export3 file cũ để triển khai(f); dependency/file boundary phải bàn giao đồng bộ khi có yêu cầu tạo gói riêng.
