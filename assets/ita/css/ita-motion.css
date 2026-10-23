@@ -1,4 +1,7 @@
 /* Opt in only; no continuous decorative motion. */
+.motion-toggle{margin:12px 16px;min-height:44px;font-size:12px}
+body.sidebar-collapsed .motion-toggle{font-size:0;padding:8px}
+body.sidebar-collapsed .motion-toggle::after{content:'FX';font-size:12px}
 @media(prefers-reduced-motion:no-preference){
  body[data-ticket-motion="on"] #tickets-panel .ticket-feedback:not([hidden]) { animation:ticket-feedback-in 180ms ease-out; }
  body[data-ticket-motion="on"] #tickets-panel button { transition:transform 150ms ease-out; }

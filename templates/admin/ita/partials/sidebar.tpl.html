@@ -17,5 +17,6 @@
   <a id="forecast-nav" href="#forecast" data-view="forecast"><svg class="ita-icon nav-icon" aria-hidden="true"><use href="#ita-icon-chart"/></svg><span class="nav-label">Dự báo &amp; ngân sách</span></a>
   <a href="#reports" data-view="reports" class="live-only"><svg class="ita-icon nav-icon" aria-hidden="true"><use href="#ita-icon-chart"/></svg><span class="nav-label">Báo cáo</span></a>
  </nav>
+ <button type="button" class="secondary-button motion-toggle" data-motion-toggle aria-pressed="true">Hiệu ứng: Bật</button>
  <div class="sidebar-bottom"><div class="demo-status"><span class="workspace-dot" aria-hidden="true"></span><span class="nav-label" id="connection-label">Chế độ xem thử<small>Chưa kết nối hệ thống</small></span></div><div class="profile"><span class="avatar">IT</span><span class="nav-label"><span id="profile-name">{$itaUserName|default:'Admin IT'|escape:'html'}</span><small id="profile-role">{$itaRoleLabel|default:'Vai trò minh họa'|escape:'html'}</small></span><form method="post" action="/admin.php?op=ita&amp;act=logout" class="logout-form live-only"><input type="hidden" name="csrf_token" value="{$itaCsrf|default:''|escape:'html'}"><button type="submit" class="icon-button" aria-label="Đăng xuất" title="Đăng xuất"><svg class="ita-icon" aria-hidden="true"><use href="#ita-icon-transfer"/></svg></button></form></div></div>
 </aside>

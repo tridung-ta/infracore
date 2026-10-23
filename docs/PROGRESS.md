@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — BUILD liên tục; mở Phase12 FE
+
+User yêu cầu không dừng giữa mỗi chức năng, tiếp tục qua các phase. Giữ gate BE chưa duyệt và giới hạn không DB test/host/merge/tag7–10/push/deploy/gói. F12.1 hạ tầng motion dùng WAAPI180ms opacity/transform, cờ UI_MOTION_ENABLED, reduced-motion, tùy chọn local và hủy khi rời view/hidden;21 browser static/Smarty/syntax đạt. PHASE12_VERIFY.md. Các màn triển khai tiếp theo bằng commit riêng, không báo nghiệm thu DB.
+
 ## 23/10/2026 — Điều hướng dòng ngân sách, FE độc lập
 
 Tiếp tục BUILD FE được phép:20 dòng/trang bằng slice hiển thị; documentData, tổng tiền, snapshot và export giữ nguyên toàn nguồn.24 browser mới +42 ngân sách hồi quy/Smarty/syntax/diff đạt, detector0 finding, review độc lập không finding. PHASE11_FORECAST_ROWS_VERIFY.md. Đây là client pagination, server vẫn tính/trả toàn tập trong guard hiện có; chưa SQL/DB/host/PHP8.3/layout PHP thật. Không PHP/API/DDL/config/gói/merge/tag7–10/push/deploy.
