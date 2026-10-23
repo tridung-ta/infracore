@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+23/10/2026: F12.3 motion ticket local hoàn tất; 7 DOM motion probes đạt, không DB/API/host. Hiệu ứng ngắn, cờ tắt/hủy hoạt động; không merge/tag/push/deploy.
+
 ## 23/10/2026 — BUILD liên tục; mở Phase12 FE
 
 User yêu cầu không dừng giữa mỗi chức năng, tiếp tục qua các phase. Giữ gate BE chưa duyệt và giới hạn không DB test/host/merge/tag7–10/push/deploy/gói. F12.1 hạ tầng motion dùng WAAPI180ms opacity/transform, cờ UI_MOTION_ENABLED, reduced-motion, tùy chọn local và hủy khi rời view/hidden;21 browser static/Smarty/syntax đạt. PHASE12_VERIFY.md. Các màn triển khai tiếp theo bằng commit riêng, không báo nghiệm thu DB.

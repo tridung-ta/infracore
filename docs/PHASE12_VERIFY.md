@@ -1,5 +1,7 @@
 # Phase 12 — UI Motion local, 23/10/2026
 
+F12.3: ticket, 7 probes cộng dồn trong ita_phase12_screens_browser.js đạt; giữ dữ liệu/request và không animate canvas liên tục.
+
 User yêu cầu BUILD liên tục qua các phase. Motion là FE theo PLAN_FINAL; không PHP/DB/API/config host, không merge/tag7–10/push/deploy hoặc tạo gói. Giữ Smarty và hệ thống token hiện tại.
 
 ## F12.1 — Hạ tầng
