@@ -1,5 +1,7 @@
 # Phase 12 — UI Motion local, 23/10/2026
 
+F12.9: login Smarty giữ nguyên auth/form/token; motion vào card, toggle và reduced-motion.9 browser MOCK checks đạt, không submit xác thực. Core pageshow chỉ refresh khi BFCache persisted để không hủy hiệu ứng vào trang ngay ở load đầu. Review độc lập không finding, chưa chạy browser ở agent review.
+
 F12.8: ngân sách, 22 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.
 
 F12.7: vòng đời, 19 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.

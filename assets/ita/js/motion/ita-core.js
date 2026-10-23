@@ -36,7 +36,7 @@
  reduced.addEventListener('change',refresh);
  document.addEventListener('visibilitychange',refresh);
  addEventListener('pagehide',()=>{cancel();registrations.forEach(record=>record.observer.disconnect());});
- addEventListener('pageshow',refresh);
+ addEventListener('pageshow',event=>{if(event.persisted)refresh();});
  addEventListener('ita:view',()=>{cancel();for(const record of registrations)if(active(record))play(record.target);});
  refresh();
 })();

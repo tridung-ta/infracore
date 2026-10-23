@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+23/10/2026: F12.9 motion đăng nhập hoàn tất local;9 browser MOCK checks đạt, không auth/DB. Form/token/reauth không đổi; core không hủy entry animation ở pageshow đầu. Phase12 tiếp tục kiểm hồi quy/rà độc lập, không tuyên bố DB/host nghiệm thu.
+
 23/10/2026: F12.8 motion ngân sách hoàn tất local; 22 DOM probes cộng dồn đạt. Không đổi dữ liệu/API/DB/host hoặc merge/tag/push/deploy.
 
 23/10/2026: F12.7 motion vòng đời hoàn tất local; 19 DOM probes cộng dồn đạt. Không đổi dữ liệu/API/DB/host hoặc merge/tag/push/deploy.
