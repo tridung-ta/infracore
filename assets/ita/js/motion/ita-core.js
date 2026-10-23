@@ -19,6 +19,7 @@
    button.setAttribute('aria-pressed',String(enabled()));button.disabled=reduced.matches||window.UI_MOTION_ENABLED===false;
   });
   for(const record of registrations){record.observer.disconnect();if(enabled())record.observer.observe(record.target,{childList:true,attributes:true,attributeFilter:['hidden','open']});}
+  dispatchEvent(new CustomEvent('ita:motion',{detail:{enabled:enabled()}}));
  }
  function register(selector,view){
   const target=document.querySelector(selector);if(!target)return;

@@ -1,5 +1,7 @@
 # Phase 13 — Hạ tầng mạng FE MOCK, 23/10/2026
 
+F13.3: nút minh họa luồng chạy một lần900ms và pulse600ms, chỉ opacity/transform; không đo lưu lượng. Offline không chạy dot; Dừng/tắt motion/reduced/hidden/rời view hủy và xóa dot. Không WAAPI thì nút bị khóa, sơ đồ2D vẫn dùng được.9 browser flow checks đạt sau bổ sung fallback, không network/DB thật.
+
 User xác nhận «Chưa duyệt BE13, hoàn thiện FE MOCK». F13.1 bảng/migration/API mạng thật chưa build. Không DB/SQL/host/network scanner hoặc dữ liệu kết nối thật. FE2D/3D tiếp tục độc lập, không push/deploy/gói/merge/tag.
 
 ## F13.2 — Sơ đồ2D
