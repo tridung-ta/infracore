@@ -1,4 +1,8 @@
-# BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f) trong app; phần còn lại NHÁP
+# BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f)/(g) giới hạn app; phần còn lại NHÁP
+
+## 23/10/2026 — Duyệt(g) giới hạn trong ứng dụng
+
+User «Duyệt BUILD (g) giới hạn trên». Đã thêm Referrer-Policy strict-origin-when-cross-origin và Permissions-Policy camera/microphone/geolocation=() sau rà source ITA không thấy feature cần dùng.102 HTTP header +56 error +109 guard checks/lint/review đạt, PHASE11_PRIVACY_HEADERS_VERIFY.md. Không HSTS/.user.ini/auto_prepend/server config/DB/deploy. Host cuối/proxy vẫn chưa kiểm; phần(g) HSTS không mở để build.
 
 ## 23/10/2026 — Duyệt(f) trong ứng dụng
 

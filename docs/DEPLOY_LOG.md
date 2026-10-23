@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+**Source(g)23/10 local:** hai header Referrer/Permissions đã build ở module/error boundary,102 HTTP local +hồi quy đạt (PHASE11_PRIVACY_HEADERS_VERIFY.md). Chưa HSTS hoặc cấu hình host, chưa gói/upload; phải có nền(f). Không coi source local là header cuối trên hosting đã kiểm.
+
 **Source(f)23/10 chỉ local:** error boundary/template/CSS mới và Application/bootstrap/module/project_gate đã sửa trong phạm vi user duyệt.56 HTTP/Smarty +41 browser đạt; chưa PHP-FPM/Apache/host/config log. Chưa gói/upload/deploy. Không dùng delta export3 file cũ để triển khai(f); dependency/file boundary phải bàn giao đồng bộ khi có yêu cầu tạo gói riêng.
 
 **Cập nhật source local23/10:** user duyệt(c)/(d), đã build guard project-start +deny tests/artifacts/scripts/MOCK ở .htaccess/ita_mode; PHASE11_GUARD_VERIFY.md ghi109 PHPHTTP fixture/75 pure, chưa Apache/host. Chưa gói/upload/deploy. Delta S11 export dự kiến3 file từ561d335 không chứa4 file guard/rewrite mới; không coi host đã có chúng. Auto_prepend/.user.ini/header/trang lỗi HTTP vẫn chưa build, inventory CHƯA THU THẬP.

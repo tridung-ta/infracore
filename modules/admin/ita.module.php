@@ -13,6 +13,7 @@ header('X-Robots-Tag: noindex, nofollow, noarchive');
 header("Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
 
 require_once dirname(__DIR__,2).'/classes/security/itaerrorresponse.class.php';
+ItaErrorResponse::privacyHeaders();
 try {
     require_once dirname(__DIR__, 2) . '/includes/ita_bootstrap.inc.php';
     (new ItaApplication())->run();

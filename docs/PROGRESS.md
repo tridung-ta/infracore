@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — BUILD(g) giới hạn privacy headers
+
+User duyệt(g) app: Referrer-Policy strict-origin-when-cross-origin và Permissions-Policy tắt camera/microphone/geolocation sau rà source ITA.102 HTTP privacy +56 error +109 guard/lint/review đạt; PHASE11_PRIVACY_HEADERS_VERIFY.md. Không HSTS, auto_prepend/.user.ini/config host hoặc DB/gói/merge/tag7–10/push/deploy. Không suy header PHP local thay policy cuối sau proxy trên host.
+
 ## 23/10/2026 — BUILD(f) xử lý lỗi trong ứng dụng
 
 User duyệt «Duyệt BUILD (f) trong ứng dụng». Đã có HTML Smarty lỗi đúng status, JSON API/export +request_id, log structured không request/exception secrets, bootstrap500/render fallback và không append response đã gửi; login form giữ nguyên.56 HTTP/Smarty +41 browser1366/768/390 đạt; hồi quy109 guard/75 deny/13 routes/30+54 export/134 forecast/Smarty đạt, lint/review đạt. PHASE11_ERROR_HTTP_VERIFY.md ghi giới hạn. F11.4 build app local xong, host/PHP-FPM/Apache/log config vẫn chưa kiểm; không PHP-FPM/.user.ini/auto_prepend/HSTS/ErrorDocument/gói/DB/merge/tag7–10/push/deploy.

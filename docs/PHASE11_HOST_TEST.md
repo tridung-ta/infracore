@@ -1,5 +1,7 @@
 # Phase11 — Checklist host, CHƯA CHẠY
 
+**Source(g)23/10:** app/module/error boundary đã thêm Referrer-Policy=strict-origin-when-cross-origin, Permissions-Policy=camera=(), microphone=(), geolocation=(); PHASE11_PRIVACY_HEADERS_VERIFY.md. Trên host kiểm header cuối đúng một policy mỗi tên, shell/login/API/file/error và chức năng hiện có không bị ảnh hưởng. HSTS chưa thêm trong code; proxy/server có thể có policy riêng chưa xác minh. Không tự bật HSTS hoặc sửa config để làm checklist qua.
+
 **Source(f)23/10:** lỗi HTML/JSON và log ứng dụng đã build local (PHASE11_ERROR_HTTP_VERIFY.md). Cần kiểm host mã HTTP/MIME/ref và log private thực tế; PHP-FPM display_errors/log_errors/ACL/rotation, startup/fatal trước boundary và Apache ErrorDocument chưa được sửa/xác minh. Không coi lỗi ứng dụng đã đẹp là cấu hình server đã đạt. Delta3 file export cũ không chứa error boundary/template/CSS/bootstrap/module/guard mới; chưa có gói mới.
 
 **Source mới23/10:** (c)/(d) đã build local, có guard project-start và deny tests/artifacts/scripts/MOCK trong PHP/.htaccess. Dự đoán source cũ303/MOCK200 ở lịch sử dưới không thay tiêu chí deny403/404 khi triển khai source mới.109 PHP HTTP fixture không chứng minh Apache/host; tất cả host vẫn Chưa kiểm, không tự upload hoặc đổi marker/config.

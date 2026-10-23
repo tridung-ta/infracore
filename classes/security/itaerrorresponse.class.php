@@ -2,6 +2,13 @@
 /** Minimal error boundary: never logs request bodies, credentials, URLs or exception messages. */
 class ItaErrorResponse
 {
+    /** Application-only privacy policy. HSTS requires separate host/TLS approval. */
+    public static function privacyHeaders(): void
+    {
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+    }
+
     public static function report(int $status, string $kind = 'request'): string
     {
         try { $id=bin2hex(random_bytes(8)); }
@@ -26,6 +33,7 @@ class ItaErrorResponse
         $status=$status>=400 && $status<=599?$status:500;
         $id ??= self::report($status);
         if (headers_sent()) { self::log($id,$status,'response_started');return; }
+        self::privacyHeaders();
         foreach (['Content-Disposition','Content-Length','Location'] as $name) { header_remove($name); }
         http_response_code($status);
         header('Cache-Control: no-store, private');
