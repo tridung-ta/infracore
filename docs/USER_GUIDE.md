@@ -1,5 +1,9 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Phase12 — Tùy chọn hiệu ứng (local)
+
+Nút Hiệu ứng ở cuối menu và trang đăng nhập cho phép tắt/bật chuyển động ngắn; tùy chọn chỉ lưu trên trình duyệt đang dùng. Khi hệ điều hành yêu cầu giảm chuyển động hoặc cấu hình ứng dụng tắt hiệu ứng, nút không bật vượt chính sách đó. Hiệu ứng không thay số liệu, không gửi thêm thao tác lưu và không cần chờ để sử dụng form. Rời trang hoặc tắt hiệu ứng sẽ hủy chuyển động đang chạy.
+
 ## Bổ sung23/10 — Bảng dòng ngân sách (build FE local)
 
 Bảng ngân sách chia20 dòng/trang; dùng Trước/Sau dưới bảng để đối chiếu các dòng khác. Tổng tiền phía trên luôn là toàn nguồn đang xem, không chỉ trang hiện tại. Khi tính lại hoặc mở snapshot khác, bảng trở về trang1. Xuất Excel/PDF vẫn xuất toàn nguồn theo bộ lọc/quyền và giới hạn server hiện có, không chỉ các dòng đang nhìn thấy. Chưa nghiệm thu DB/host.

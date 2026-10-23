@@ -1,5 +1,13 @@
 # Phase 12 — UI Motion local, 23/10/2026
 
+## Kết quả cuối Phase12 local
+
+F12.1–F12.9 đã triển khai FE.21 infrastructure +22 screen DOM probes +9 login MOCK checks đạt; hồi quy ticket64/vòng đời63/ngân sách42/dashboard64 đạt, Smarty/syntax/diff đạt. Rà độc lập không finding; reviewer không tự chạy browser. Probe screens kích thay đổi DOM trực tiếp, không chứng minh mọi animation trong mọi luồng thật; các hồi quy riêng kiểm luồng/payload/quyền bằng API mock.
+
+Ticket observer đã chuyển sang message/details nơi nội dung thực thay đổi trực tiếp, không quan sát subtree toàn form. Không animate canvas/chart liên tục. Nội dung luôn hiển thị nếu JS/motion không chạy. Đã giữ tính riêng của mỗi màn qua các file motion; login không đổi auth. Core, các module và template phải đi cùng checkpoint đầy đủ.
+
+Mọi kết quả là local/mock; PHP8.3/HTTPS/host/layout dữ liệu thật chưa kiểm, DB Phase1–10 vẫn chưa nghiệm thu. Không merge/tag7–10/push/deploy, không tạo gói. Không đổi thư viện/server/package Composer. Phase13 FE MOCK tiếp tục riêng.
+
 F12.9: login Smarty giữ nguyên auth/form/token; motion vào card, toggle và reduced-motion.9 browser MOCK checks đạt, không submit xác thực. Core pageshow chỉ refresh khi BFCache persisted để không hủy hiệu ứng vào trang ngay ở load đầu. Review độc lập không finding, chưa chạy browser ở agent review.
 
 F12.8: ngân sách, 22 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.
