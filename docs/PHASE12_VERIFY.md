@@ -1,5 +1,7 @@
 # Phase 12 — UI Motion local, 23/10/2026
 
+F12.8: ngân sách, 22 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.
+
 F12.7: vòng đời, 19 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.
 
 F12.6: chi tiết tài sản, 16 DOM motion probes cộng dồn đạt; không thay dữ liệu hoặc request.

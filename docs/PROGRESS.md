@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+23/10/2026: F12.8 motion ngân sách hoàn tất local; 22 DOM probes cộng dồn đạt. Không đổi dữ liệu/API/DB/host hoặc merge/tag/push/deploy.
+
 23/10/2026: F12.7 motion vòng đời hoàn tất local; 19 DOM probes cộng dồn đạt. Không đổi dữ liệu/API/DB/host hoặc merge/tag/push/deploy.
 
 23/10/2026: F12.6 motion chi tiết tài sản hoàn tất local; 16 DOM probes cộng dồn đạt. Không đổi dữ liệu/API/DB/host hoặc merge/tag/push/deploy.
