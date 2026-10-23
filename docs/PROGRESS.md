@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+23/10/2026: F12.2 motion cảnh báo local hoàn tất;4 probes ban đầu và13 probes cộng dồn đạt. Lưu bổ sung file cảnh báo bị sót stage trước đó, không sửa lịch sử; checkpoint giữa chặng không là release/gói. Không DB/host/merge/tag/push/deploy.
+
 23/10/2026: F12.5 motion assets local hoàn tất; 13 DOM motion probes đạt, không DB/API/host. Hiệu ứng ngắn, cờ tắt/hủy hoạt động; không merge/tag/push/deploy.
 
 23/10/2026: F12.4 motion dashboard local hoàn tất; 10 DOM motion probes đạt, không DB/API/host. Hiệu ứng ngắn, cờ tắt/hủy hoạt động; không merge/tag/push/deploy.
