@@ -1,6 +1,8 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
-Checkpoint runtime mới nhất89b0047 trên feature/ita-phase13-network, kế thừa các commit Phase11/12, không merge. Đây là trạng thái implementation local, **không phải nghiệm thu DB/host hoặc gói deploy**. User chưa duyệt BE13; agent không tạo/kết nối DB test, không chạy SQL/host. Không push/deploy/tạo gói/merge/tag7–10.
+**Cập nhật BE13:** user đã duyệt “Duyệt BUILD source BE13”; F13.1 source và UI live đã xây/kiểm local theo PHASE13_BE_VERIFY.md (179 thuần/query-contract,31 browser mock). BE_GATE_13_SQL.md vẫn **chưa duyệt/chưa chạy**; schema/DB/host chưa nghiệm thu. Các dòng “BE13 chưa duyệt” dưới đây là checkpoint trước phê duyệt, không thay cập nhật này. Không tạo/kết nối DB/host hoặc gói/merge/tag/push/deploy.
+
+Source BE13 đang được chốt trên feature/ita-phase13-network, kế thừa các commit Phase11/12, không merge. Đây là trạng thái implementation local, **không phải nghiệm thu DB/host hoặc gói deploy**. User đã duyệt source BE13; SQL gate riêng chưa duyệt. Agent không tạo/kết nối DB test, không chạy SQL/host. Không push/deploy/tạo gói/merge/tag7–10.
 
 ## Mười yêu cầu bắt buộc
 
@@ -34,7 +36,7 @@ Không coi10/10 đã nghiệm thu. Phase1–10 DB vẫn «chưa nghiệm thu» c
 |F12.7 vòng đời|0234ac6|[x] FE local |
 |F12.8 ngân sách|b9f098a|[x] FE local |
 |F12.9 đăng nhập|950d749|[x] FE local MOCK9; không xác thực thật |
-|F13.1 bảng/API mạng thật|Chưa có|[G] User chưa duyệt BE13; không SQL/PHP/migration/seed mới |
+|F13.1 API mạng thật và FE live|Commit F13.1 mới|[x] source local;179 PHP +31 browser mock; schema/DDL vẫn [G], chưa DB/host |
 |F13.2 sơ đồ2D|24acbab|[x] FE MOCK12 checks |
 |F13.3 pulse/luồng|6233ba0|[x] FE MOCK9 checks, không loop/traffic thật |
 |F13.4 Three lazy/fallback|89b0047|[x] FE MOCK23 WebGL checks; giải phóng GPU và bắt init/late-render lỗi |
@@ -45,9 +47,9 @@ Hồi quy cuối sau Phase13: browser tài sản30/import đạt/phân bổ đ�
 
 ## Việc còn mở theo giới hạn hiện hành
 
-- BE13 chưa duyệt (user đã chọn chỉ FE MOCK); không tự soạn/chạy migration hoặc nối dữ liệu thật.
+- Source BE13 đã duyệt và build local; DDL ở BE_GATE_13_SQL.md chưa duyệt/chạy. Chưa có bảng/dữ liệu mạng thật được xác nhận trên host, không tạo/kết nối DB hoặc tự triển khai.
 - Phase11: EXPLAIN/index/đo tải chưa chạy; các lookup/phân trang SQL còn lại chỉ audit/gate, không coi client pagination là tối ưu backend. Auto_prepend/.user.ini/HSTS/ErrorDocument/cấu hình host chưa được mở; không tự áp dụng.
 - F11.5 chỉ đặc tả manifest/exclusions/check ZIP/rollback; user chưa cho tạo gói. Không thể ghi đã đóng gói/ready production. Network MOCK phải nằm ngoài runtime release, cần review layout/dependencies đồng bộ trước gói sau này.
 - User kiểm DB/host thủ công khi sẵn sàng, agent ghi nguyên văn kết quả rồi mới đổi trạng thái. Inventory host CHƯA THU THẬP; chưa có source/hash host, backup dependency ngoài máy dev/read-back/restore chưa xác nhận.
 
-Không còn phần BUILD FE trong Phase12/13 được coi là cần xin lại gate. Những phần BE/host trên không được đánh dấu xong chỉ vì yêu cầu BUILD liên tục. Xem PHASE11_HOST_TEST.md, PHASE11_S11_HOST_TEST.md, BE_GATE_11.md, BE_GATE_13.md và DEPLOY_LOG.md trước bước tiếp theo được phép.
+Không còn phần BUILD FE trong Phase12/13 được coi là cần xin lại gate. Phần source BE13 đã kiểm local không thay nghiệm thu schema/host; các phần BE/host còn mở không được đánh dấu xong chỉ vì yêu cầu BUILD liên tục. Xem PHASE11_HOST_TEST.md, PHASE11_S11_HOST_TEST.md, BE_GATE_11.md, BE_GATE_13_SQL.md và DEPLOY_LOG.md trước bước tiếp theo được phép.

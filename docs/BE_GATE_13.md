@@ -1,4 +1,6 @@
-# BE-GATE #13 — Hạ tầng mạng thật (NHÁP, chưa build BE)
+# BE-GATE #13 — Hạ tầng mạng thật (SOURCE ĐÃ DUYỆT)
+
+23/10/2026: user xác nhận **“Duyệt BUILD source BE13”**. Phạm vi source dưới đây được mở; SQL chính xác tách tại BE_GATE_13_SQL.md, **chưa duyệt/chưa chạy**. Xem PHASE13_BE_VERIFY.md cho kết quả local và giới hạn; không suy thành deploy, quyền DB hoặc nghiệm thu host.
 
 User yêu cầu BUILD liên tục; phần FE2D/3D dùng MOCK làm độc lập ngay. Gate này trình riêng vì có bảng/SQL/PHP mới; không coi yêu cầu tiếp tục là quyền agent thực thi DB/host. Không tạo DB test, không chạy migration/seed hoặc SQL ghi, không deploy/merge/tag/push.
 

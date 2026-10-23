@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+23/10/2026 — BE13: user duyệt source; API/DAO/service và FE live đã build/kiểm local. **Chưa upload, chưa tạo gói, schema mới chưa duyệt/chạy**, không coi host có bảng hoặc cùng source. Xem PHASE13_BE_VERIFY.md và BE_GATE_13_SQL.md. Runtime cần SELECT/INSERT/UPDATE đúng bảng mới, không DELETE/DDL; quyền/grants thật chưa kiểm. Khi được giao gói sau này phải review nền/schema/dependencies toàn bộ, không ghép vào delta S11 ba file. Backup source/DB trước triển khai do user làm; rollback source giữ link/audit/dữ liệu mới, không DROP/restore đè. Không merge/tag7–10/push/deploy.
+
 **23/10 sau BUILD liên tục:** Phase12 motion FE và Phase13 network2D/3D MOCK đã build local tới89b0047, không tạo gói/upload. Phase13 chưa có BE, user chọn chỉ FE MOCK; không đưa topology mẫu hoặc cả nhánh source lên host. Three local0.180.0 có source/license/provenance, không chứng minh host đã có. Gate SQL/host/DB/EXPLAIN vẫn chưa nghiệm thu; các nguồn host trong bảng bên dưới không tự cập nhật theo commit local. CURRENT_BUILD_STATUS.md tổng hợp10 yêu cầu và giới hạn. Không merge/tag7–10/push/deploy.
 
 **Source(g)23/10 local:** hai header Referrer/Permissions đã build ở module/error boundary,102 HTTP local +hồi quy đạt (PHASE11_PRIVACY_HEADERS_VERIFY.md). Chưa HSTS hoặc cấu hình host, chưa gói/upload; phải có nền(f). Không coi source local là header cuối trên hosting đã kiểm.

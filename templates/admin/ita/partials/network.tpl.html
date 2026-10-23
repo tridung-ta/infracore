@@ -1,5 +1,5 @@
 <section id="network-panel" class="panel network-panel" aria-labelledby="network-heading" hidden>
- <div class="panel-heading"><div><h2 id="network-heading">Bản đồ kết nối hạ tầng</h2><p>MOCK · Mô hình minh họa, không quét hoặc giám sát mạng thật.</p></div><span class="mock-label">MOCK</span></div>
+ <div class="panel-heading"><div><h2 id="network-heading">Bản đồ kết nối hạ tầng</h2><p id="network-description">MOCK · Mô hình minh họa, không quét hoặc giám sát mạng thật.</p></div><span id="network-badge" class="mock-label">MOCK</span></div>
  <div class="network-body">
   <p id="network-message" role="status" aria-live="polite"></p>
   <div id="network-content" hidden>
@@ -13,6 +13,16 @@
    <div id="network-node-list" class="network-node-list" aria-label="Chọn thiết bị mẫu"></div>
    <section id="network-detail" class="network-detail" aria-labelledby="network-detail-title" hidden><h3 id="network-detail-title">Thiết bị mẫu</h3><dl id="network-detail-values"></dl></section>
    <div class="table-scroll"><table class="network-table"><caption>MOCK · Bảng đối chiếu liên kết trong bộ lọc</caption><thead><tr><th scope="col">Đầu nguồn</th><th scope="col">Đầu đích</th><th scope="col">Loại</th><th scope="col">Tốc độ mẫu</th><th scope="col">Trạng thái mẫu</th></tr></thead><tbody id="network-link-rows"></tbody></table></div>
+   <nav id="network-paging" class="network-controls" aria-label="Trang liên kết" hidden><button id="network-prev" class="secondary-button" type="button">Trước</button><span id="network-page" aria-live="polite"></span><button id="network-next" class="secondary-button" type="button">Sau</button></nav>
+   <form id="network-editor" hidden>
+    <h3>Quản lý liên kết</h3><p>Chọn hai thiết bị phần cứng trong phạm vi đang xem. Mỗi cặp có một liên kết đang sử dụng.</p>
+    <input id="network-edit-id" type="hidden"><input id="network-edit-version" type="hidden">
+    <div class="network-controls"><div><label for="network-source">Thiết bị thứ nhất</label><select id="network-source" class="form-select" required></select></div><div><label for="network-target">Thiết bị thứ hai</label><select id="network-target" class="form-select" required></select></div><div><label for="network-type">Loại liên kết</label><select id="network-type" class="form-select"><option value="ethernet">Ethernet</option><option value="fiber">Cáp quang</option><option value="wireless">Không dây</option></select></div></div>
+    <div class="network-controls"><div><label for="network-source-port">Cổng thiết bị thứ nhất</label><input id="network-source-port" class="form-control" maxlength="64"></div><div><label for="network-target-port">Cổng thiết bị thứ hai</label><input id="network-target-port" class="form-control" maxlength="64"></div><div><label for="network-capacity">Dung lượng mô tả</label><input id="network-capacity" class="form-control" maxlength="64"></div></div>
+    <label for="network-note">Ghi chú</label><textarea id="network-note" class="form-control" maxlength="1000"></textarea>
+    <div class="network-controls"><button id="network-save" class="primary-button" type="submit">Lưu liên kết</button><button id="network-new" class="secondary-button" type="button">Tạo liên kết khác</button></div>
+    <p id="network-save-message" role="status" aria-live="polite"></p>
+   </form>
   </div>
   <button id="network-retry" class="secondary-button" type="button" hidden>Tải lại mô hình mẫu</button>
  </div>

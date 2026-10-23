@@ -11,7 +11,7 @@
  titles.reports=['Báo cáo','Xem trước và xuất báo cáo theo phạm vi được cấp quyền.'];
  titles.lifecycle=['Vòng đời tài sản','Đối chiếu tuổi sử dụng và mức ưu tiên thay thế trong phạm vi quản lý.'];
  titles.tickets=['Bảo trì & hỗ trợ','Theo dõi phiếu, người xử lý và lịch bảo trì của thiết bị.'];
- titles.network=['Hạ tầng mạng · MOCK','Mô hình kết nối minh họa, chưa nối dữ liệu thật.'];
+ titles.network=liveMode?['Hạ tầng mạng','Liên kết khai báo trong phạm vi tài sản được phép.']:['Hạ tầng mạng · MOCK','Mô hình kết nối minh họa, chưa nối dữ liệu thật.'];
  titles.imports=['Import / Export tài sản',liveMode?'Kiểm tra file, nhập theo lô và xuất tài sản theo quyền.':'Chuẩn bị dữ liệu Excel và xem luồng nhập minh họa.'];
  titles.assignments=['Phân bổ & thu hồi',liveMode?'Giao thiết bị, xác nhận nhận và theo dõi thu hồi trong phạm vi của bạn.':'MOCK · Xem trước bàn giao và lịch sử với dữ liệu giả.'];
  let toastTimer;

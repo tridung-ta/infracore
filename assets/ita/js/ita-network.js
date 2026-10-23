@@ -1,6 +1,7 @@
 (() => {
  'use strict';
  const $=id=>document.getElementById(id),live=document.body.dataset.mode==='live',ns='http://www.w3.org/2000/svg';
+ if(live)return;
  const labels={healthy:'Bình thường (mẫu)',warning:'Cần theo dõi (mẫu)',offline:'Mất kết nối (mẫu)'};
  let source=null,visible={nodes:[],links:[]},selected='',loading=false;
  const node=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};

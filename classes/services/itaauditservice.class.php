@@ -4,7 +4,8 @@ class ItaAuditService
     private const FIELDS = ['asset_code','code','name','brand','model','serial_no','specs','os','purchase_date','purchase_price','warranty_end','vendor','location','category_id','department_id','current_user_id','status','is_deleted','status_reason','role','enabled','department_ids','total_rows',
         'asset_id','to_user_id','to_department_id','assigned_by','assigned_at','due_return','returned_at','handover_no','acknowledged_by','acknowledged_at','note','return_note',
         'software_name','license_type','total_seats','used_seats','start_date','expire_date','cost','allocation_id','user_id','override_reason',
-        'technician_id','type','issue','handled_date','resolution_note','last_maintenance_at','next_maintenance_due','forecast_config','snapshot_hash','budget_summary','year','planned_headcount_increase','report_type','format','as_of'];
+        'technician_id','type','issue','handled_date','resolution_note','last_maintenance_at','next_maintenance_due','forecast_config','snapshot_hash','budget_summary','year','planned_headcount_increase','report_type','format','as_of',
+        'source_asset_id','target_asset_id','link_type','source_port','target_port','capacity_label'];
 
     public function __construct(private ItaDb $db, private ItaUserObjectInfo $actor)
     {
@@ -15,7 +16,7 @@ class ItaAuditService
     {
         if (!in_array($action, ['auth.login','auth.logout','user.access_update','asset.create','asset.update','asset.soft_delete','asset.status_change','category.update','import.complete','assignment.assign','assignment.return','assignment.acknowledge','assignment.pdf_download',
             'license.create','license.update','license.allocate','license.release','license.overage','license.key_view',
-            'ticket.create','ticket.assign','ticket.transition','ticket.cost','forecast.config','forecast.plan','forecast.export','report.export'], true)) {
+            'ticket.create','ticket.assign','ticket.transition','ticket.cost','forecast.config','forecast.plan','forecast.export','report.export','network.save','network.delete'], true)) {
             throw new LogicException('Unknown ITA audit action');
         }
         $json = static function ($value): ?string {

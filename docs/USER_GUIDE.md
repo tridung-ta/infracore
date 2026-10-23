@@ -1,6 +1,14 @@
 # Hướng dẫn sử dụng InfraCore
 
-## Phase13 — Bản đồ mạng MOCK (chưa có BE thật)
+## Hạ tầng mạng — source live đã build local, chưa triển khai host
+
+Sau khi schema/source được duyệt triển khai và xác minh trên host, Admin IT và Quản lý có thể mở Hạ tầng mạng, lọc mã/tên thiết bị và bộ phận; giới hạn200 thiết bị/400 liên kết, vượt giới hạn cần thu hẹp bộ lọc. Chọn thiết bị trong sơ đồ2D/3D hoặc nút danh sách để đọc thông tin tài sản. Đây là **liên kết khai báo**, không kiểm tra kết nối, đo tốc độ hoặc quét mạng. Bảng liên kết20 dòng/trang; tổng và sơ đồ giữ toàn tập lọc.
+
+Admin IT: chọn hai thiết bị trong form Quản lý liên kết, điền loại/cổng/dung lượng mô tả/ghi chú rồi Lưu. Sửa lấy version hiện có; nếu409 thì giữ input, tải lại và đối chiếu trước khi tự lưu lại. Ngừng liên kết cần xác nhận, hồ sơ được giữ bằng xóa mềm. Tạo liên kết khác xóa trạng thái sửa hiện tại. Quản lý chỉ xem khi cả hai đầu trong bộ phận phụ trách, không có form ghi; Hỗ trợ không có quyền topology. Mọi quyền được kiểm lại ở server.
+
+3D tải local theo yêu cầu, lỗi WebGL trở về2D; bảng/nút vẫn dùng được. Chế độ live không tải MOCK và không minh họa luồng giả. Chức năng này **chưa nghiệm thu DB/host**, không xem hướng dẫn là xác nhận đã deploy. Mục MOCK dưới đây mô tả bản xem thử độc lập trước khi nối BE.
+
+## Phase13 — Bản xem thử mạng MOCK độc lập
 
 Trong bản xem thử, mở Hạ tầng mạng · MOCK. Lọc tên/loại hoặc bộ phận mẫu, chọn thiết bị bằng nút danh sách hoặc bàn phím trong sơ đồ để xem chi tiết; bảng liên kết đối chiếu cùng bộ lọc. Nút Minh họa luồng chạy một lần và có Dừng, tôn trọng tùy chọn giảm chuyển động; không phải lưu lượng thực.
 

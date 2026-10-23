@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 23/10/2026 — Source BE13 được duyệt, tách SQL gate
+
+Nguồn: user trả lời nguyên văn “Duyệt BUILD source BE13”. Cho build liên kết giữa hai tài sản phần cứng: Admin quản lý, Manager chỉ đọc khi cả hai đầu thuộc scope, Support không xem; CSRF/version/audit. Source local không phải quyền tạo/kết nối DB hoặc deploy. DDL chính xác để review tại BE_GATE_13_SQL.md, chưa duyệt/chưa chạy; không seed/scan/SNMP/cron. Giới hạn200node/400cạnh, vượt báo lỗi; bảng20/trang, sort ID giảm. Liên kết vô hướng chuẩn hóa hai ID/cổng, soft-delete, unique active pair dự kiến trong schema mới. Sơ đồ là khai báo, trạng thái asset không được mô tả là đo kết nối thật. PHASE13_BE_VERIFY.md ghi bằng chứng/giới hạn; không merge/tag7–10/push/deploy.
+
 ## 22/10/2026 — Ghi nhận lựa chọn triển khai trong gate #10
 
 Một transaction đọc RR/SERIALIZABLE, không tự đổi isolation; tối đa5.000 tài sản/giấy phép và500 nhóm biểu đồ, vượt trả lỗi. Nhóm KPI tính PHP trên tập đã scope, điểm/repair preaggregate dùng SQL vòng đời hiện có. PHASE10_EXPLAIN.sql ghi6 source query cho hai vai trò, chưa thực thi.

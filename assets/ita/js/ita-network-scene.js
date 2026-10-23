@@ -1,6 +1,6 @@
 import * as THREE from '/assets/ita/vendor/three/0.180.0/three.module.min.js';
 
-/** One demand-rendered mock scene. No RAF loop, network polling or real asset data. */
+/** Demand-rendered declared topology. No RAF loop or network polling. */
 export function createScene(host,view,onSelect,onLost){
  const color=name=>getComputedStyle(document.body).getPropertyValue('--ita-'+name).trim();
  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
@@ -9,7 +9,7 @@ export function createScene(host,view,onSelect,onLost){
  function dispose(){if(disposed)return;disposed=true;observer?.disconnect();renderer.domElement.removeEventListener('pointerdown',pick);renderer.domElement.removeEventListener('webglcontextlost',lost);group.traverse(object=>{object.geometry?.dispose();if(Array.isArray(object.material))object.material.forEach(m=>m.dispose());else object.material?.dispose();});renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();}
  try{
  scene.background=new THREE.Color(color('bg'));scene.add(group);camera.position.set(0,8,13);camera.lookAt(0,0,0);
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.domElement.setAttribute('role','img');renderer.domElement.setAttribute('aria-label','MOCK · Sơ đồ mạng 3D; dùng danh sách thiết bị để chọn bằng bàn phím');host.append(renderer.domElement);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.domElement.setAttribute('role','img');renderer.domElement.setAttribute('aria-label',(document.body.dataset.mode==='live'?'Liên kết khai báo':'MOCK')+' · Sơ đồ mạng 3D; dùng danh sách thiết bị để chọn bằng bàn phím');host.append(renderer.domElement);
  const palette={healthy:color('success'),warning:color('warning'),offline:color('text-muted')};
  for(const n of view.nodes){
   const mesh=new THREE.Mesh(new THREE.BoxGeometry(.9,.5,.65),new THREE.MeshBasicMaterial({color:palette[n.status]}));

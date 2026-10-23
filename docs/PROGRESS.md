@@ -1,5 +1,15 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — F13.1 source BE được duyệt, SQL chưa duyệt
+
+User xác nhận nguyên văn **“Duyệt BUILD source BE13”**. Đã xây dựng DAO/service/GET network/network-detail/POST network-save và FE live, Admin quản lý, Manager chỉ đọc cạnh có cả hai đầu trong scope, Support403. Không tạo/kết nối DB hoặc chạy SQL/host; không gói/merge/tag7–10/push/deploy. Schema mới chỉ gate riêng BE_GATE_13_SQL.md chưa duyệt/chưa chạy. F13.1 [x] **source local**, phần schema/DB vẫn [G]/chưa nghiệm thu; trạng thái cũ “BE13 chưa duyệt” bên dưới là lịch sử.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F13.1 | Liên kết tài sản, API và giao diện live | BE/FE | [x] source local | Commit chức năng chứa dòng này | 179 thuần/query-contract +31 browser API mock;12/23 hồi quy MOCK/WebGL;237 ticket/72 lifecycle/69 category;109 HTTP guard fixture;Smarty/lint/syntax/review | Không DB; SQL gate riêng, không suy kiểm lock/rollback thật |
+
+Chi tiết PHASE13_BE_VERIFY.md. Quyền ghi native không mở thêm: BE13 chỉ SELECT dc_users để kiểm active/store. PHASE13_EXPLAIN.sql sinh8 query đọc từ DAO, chưa EXPLAIN thật. Không thay nghiệm thu Phase1–10 hoặc cho phép chạy DDL/host.
+
 ## Bảng trạng thái hiện tại — 23/10/2026 sau BUILD liên tục
 
 Xem CURRENT_BUILD_STATUS.md để đối chiếu10 yêu cầu/commit/bằng chứng và việc còn mở. Phase12 F12.1–F12.9 [x] FE local; Phase13 F13.2–F13.4 [x] FE MOCK, F13.1 [G] user chưa duyệt. Phase11 app/FE đã có các phần duyệt và verify local, nhưng index/tải/host/BE còn lại và gói vẫn chưa hoàn tất. DB1–10 chưa nghiệm thu; không gói/merge/tag7–10/push/deploy. Bảng baseline/mốc cũ phía dưới giữ để truy vết, không thay trạng thái hiện tại này.

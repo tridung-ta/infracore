@@ -88,6 +88,9 @@ class ItaApplication
 
     private function api(): void
     {
+        if (in_array($this->action,['network','network-detail','network-save'],true)) {
+            $this->networkApi();return;
+        }
         if (in_array($this->action,['dashboard','dashboard-charts','alerts','report-preview','report-export'],true)) {
             $this->reportApi();return;
         }
@@ -188,6 +191,22 @@ class ItaApplication
             default => throw new ItaHttpError(404, 'Không tìm thấy chức năng.'),
         };
         $this->json(['success'=>true,'data'=>$data,'message'=>'']);
+    }
+
+    private function networkApi(): void
+    {
+        header('Cache-Control: no-store, private');
+        $service=new ItaNetworkService($this->db,$this->user);
+        if ($this->action==='network-save') {
+            $this->requirePost();$data=$service->save($this->readJson());
+        } else {
+            if ($_SERVER['REQUEST_METHOD']!=='GET') { throw new ItaHttpError(405,'Chỉ hỗ trợ GET.'); }
+            $dao=new ItaNetworkObjects($this->db,$this->user);
+            $data=$service->read(fn()=> $this->action==='network-detail'
+                ? $dao->detail(ItaInput::positiveInt($_GET['id'] ?? null))
+                : $dao->listing($_GET,ItaInput::positiveInt($_GET['page'] ?? '1')));
+        }
+        $this->json(['success'=>true,'data'=>$data,'message'=>$this->action==='network-save'?'Đã cập nhật liên kết.':'']);
     }
 
     private function reportApi(): void
