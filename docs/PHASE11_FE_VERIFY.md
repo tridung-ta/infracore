@@ -1,5 +1,9 @@
 # Phase 11 — Kiểm chứng FE local, 22/10/2026
 
+## Bổ sung23/10 — Dòng ngân sách
+
+20 dòng/trang phía client, giữ toàn documentData/tổng/snapshot/export.24 browser mới +42 ngân sách hồi quy/Smarty/syntax/diff đạt, PHASE11_FORECAST_ROWS_VERIFY.md; không PHP/API/DB hoặc SQL pagination. Host/layout PHP thật chưa kiểm.
+
 ## Bổ sung23/10 — Bảng nhóm vòng đời
 
 Đã thêm20 nhóm/trang phía client cho Loại thiết bị/Bộ phận, giữ riêng trang từng chế độ và tổng quan từ response.30 browser mới +63 vòng đời hồi quy/Smarty/syntax/diff đạt; PHASE11_LIFECYCLE_GROUPS_VERIFY.md. Chỉ JS/partial, không PHP/DB/API; backend vẫn trả mọi nhóm, chưa coi SQL pagination/DB hoặc layout PHP thật đạt. Phần lịch sử22/10 bên dưới giữ nguyên.

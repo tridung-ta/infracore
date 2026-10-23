@@ -1,5 +1,9 @@
 # Rà danh sách và phân trang —22/10/2026
 
+## Cập nhật23/10 — Dòng ngân sách có điều hướng FE, BE vẫn mở
+
+Bảng ngân sách hiện20 dòng/trang phía client, giữ tổng/snapshot/export toàn nguồn;24 browser mới +42 hồi quy đạt, PHASE11_FORECAST_ROWS_VERIFY.md. Server vẫn tính/trả toàn bộ rows trong giới hạn1000 dòng/2000 asset; chưa LIMIT/OFFSET SQL hay giảm payload. Hàng Dòng forecast trong bảng dưới vẫn là việc tối ưu BE còn mở, không đánh dấu SQL pagination đã xong.
+
 ## Cập nhật23/10 — Nhóm vòng đời có điều hướng FE, BE vẫn mở
 
 Loại thiết bị/Bộ phận hiện hiển thị20 nhóm/trang phía client, nhớ trang riêng và không đổi tổng quan/mẫu số.30 browser mới +63 hồi quy đạt, PHASE11_LIFECYCLE_GROUPS_VERIFY.md. Server vẫn aggregate/trả toàn bộ nhóm như trước; đây không phải LIMIT/OFFSET SQL, chưa tối ưu payload/SQL hoặc nghiệm thu DB. Hàng nhóm vòng đời trong bảng dưới vẫn là việc BE còn mở; không đánh dấu toàn bộ phân trang nhóm đã xong.

@@ -1,7 +1,7 @@
 (() => {
  'use strict';
  const $=id=>document.getElementById(id),live=document.body.dataset.mode==='live',now=Number(new Intl.DateTimeFormat('en',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric'}).format(new Date()));
- let config=null,plans=[],documentData=null,busy=false,loaded=false,displayFilters={};
+ let config=null,plans=[],documentData=null,busy=false,loaded=false,displayFilters={},rowPage=1;
  $('forecast-year').value=now;$('forecast-year').min=now;
  const node=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
  const money=v=>v===null?'Chưa đủ dữ liệu':String(v).replace(/\B(?=(\d{3})+(?!\d))/g,' ').replace('.',',');
@@ -39,8 +39,17 @@
   $('forecast-incomplete').textContent=data.summary.complete?'':'Chưa đủ dữ liệu. Các tổng dưới đây chỉ gồm phần đã tính.'+(data.unassigned_assets?' Có '+data.unassigned_assets+' thiết bị chưa có bộ phận, chưa đưa vào các dòng dự toán.':'');
   const labels={replacement:'Thay thế',maintenance:'Bảo trì',growth:'Mua thêm',contingency:'Dự phòng 10%',total:data.summary.complete?'Tổng ngân sách':'Tổng phần đã tính'};
   $('forecast-summary').replaceChildren(...Object.entries(labels).map(([k,label])=>{const d=node('div','');d.append(node('dt',label+' · VND'),node('dd',money(data.summary[k])));return d;}));
-  $('forecast-rows').replaceChildren(...data.rows.map(r=>{const tr=node('tr',''),first=node('td',r.department_name);first.append(node('small',r.category_name));tr.append(first,...['replacement','maintenance','growth'].map(k=>node('td',money(r[k]))),node('td',[...r.issues,`Thiết bị: ${r.asset_count}; thay thế: ${r.replacement_count}; mua thêm: ${r.growth_quantity??'chưa xác định'}`,`Giá: ${r.inputs.price??'chưa có'}; thiết bị/người: ${r.inputs.units_per_person??'chưa có'}; bảo trì dự phòng: ${r.inputs.maintenance_percent??'chưa có'}%`].join(' · ')));return tr;}));
+  rowPage=1;renderRows();
  }
+ function rowControls(){const total=documentData?.rows.length||0;$('forecast-row-prev').disabled=busy||rowPage<=1;$('forecast-row-next').disabled=busy||rowPage*20>=total;}
+ function renderRows(){
+  $('forecast-rows').replaceChildren(...documentData.rows.slice((rowPage-1)*20,rowPage*20).map(r=>{const tr=node('tr',''),first=node('td',r.department_name);first.append(node('small',r.category_name));tr.append(first,...['replacement','maintenance','growth'].map(k=>node('td',money(r[k]))),node('td',[...r.issues,`Thiết bị: ${r.asset_count}; thay thế: ${r.replacement_count}; mua thêm: ${r.growth_quantity??'chưa xác định'}`,`Giá: ${r.inputs.price??'chưa có'}; thiết bị/người: ${r.inputs.units_per_person??'chưa có'}; bảo trì dự phòng: ${r.inputs.maintenance_percent??'chưa có'}%`].join(' · ')));return tr;}));
+  const total=documentData.rows.length;
+  if(!total){const tr=node('tr',''),td=node('td','');td.textContent='Chưa có dòng ngân sách trong nguồn đang xem.';td.colSpan=5;tr.append(td);$('forecast-rows').append(tr);}
+  $('forecast-row-page').textContent=`Trang ${rowPage}/${Math.max(1,Math.ceil(total/20))} · ${total} dòng`;
+  rowControls();
+ }
+ for(const [direction,delta] of [['prev',-1],['next',1]])$('forecast-row-'+direction).addEventListener('click',()=>{if(busy||!documentData)return;rowPage=Math.max(1,Math.min(rowPage+delta,Math.max(1,Math.ceil(documentData.rows.length/20))));renderRows();});
  async function load(){
   let data;
   if(live){data=await request('forecast',filters());plans=data.plans;configure(data.config);}
@@ -50,7 +59,7 @@
   render(data);loaded=true;message(live?'Đã tính dự báo hiện tại.':'MOCK · Chỉ minh họa; lưu và xuất được kiểm bằng luồng API riêng.');
  }
  async function run(work){if(busy)return;busy=true;$('forecast-panel').setAttribute('aria-busy','true');$('forecast-panel').querySelectorAll('button,input,select').forEach(n=>n.disabled=true);message('Đang xử lý…');
-  try{await work();}catch(e){message(e.message,true);}finally{busy=false;$('forecast-panel').setAttribute('aria-busy','false');$('forecast-panel').querySelectorAll('button,input,select').forEach(n=>n.disabled=false);const p=selected();$('forecast-save-plan').disabled=!live||p?.status==='finalized';$('forecast-view-plan').disabled=!p?.has_snapshot;$('forecast-headcount').disabled=p?.status==='finalized';$('forecast-note').disabled=p?.status==='finalized';if(!live)$('forecast-panel').querySelectorAll('#forecast-config-form button,#forecast-xlsx,#forecast-pdf').forEach(n=>n.disabled=true);}}
+  try{await work();}catch(e){message(e.message,true);}finally{busy=false;$('forecast-panel').setAttribute('aria-busy','false');$('forecast-panel').querySelectorAll('button,input,select').forEach(n=>n.disabled=false);const p=selected();$('forecast-save-plan').disabled=!live||p?.status==='finalized';$('forecast-view-plan').disabled=!p?.has_snapshot;$('forecast-headcount').disabled=p?.status==='finalized';$('forecast-note').disabled=p?.status==='finalized';if(!live)$('forecast-panel').querySelectorAll('#forecast-config-form button,#forecast-xlsx,#forecast-pdf').forEach(n=>n.disabled=true);rowControls();}}
  $('forecast-filters').addEventListener('submit',e=>{e.preventDefault();run(load);});$('forecast-retry').addEventListener('click',()=>run(load));
  $('forecast-year').addEventListener('change',()=>{if($('forecast-year').checkValidity())run(load);});
  $('forecast-plan-department').addEventListener('change',planFields);$('forecast-config-category').addEventListener('change',configFields);

@@ -1,5 +1,9 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Bổ sung23/10 — Bảng dòng ngân sách (build FE local)
+
+Bảng ngân sách chia20 dòng/trang; dùng Trước/Sau dưới bảng để đối chiếu các dòng khác. Tổng tiền phía trên luôn là toàn nguồn đang xem, không chỉ trang hiện tại. Khi tính lại hoặc mở snapshot khác, bảng trở về trang1. Xuất Excel/PDF vẫn xuất toàn nguồn theo bộ lọc/quyền và giới hạn server hiện có, không chỉ các dòng đang nhìn thấy. Chưa nghiệm thu DB/host.
+
 ## Bổ sung23/10 — So sánh nhóm vòng đời (build FE local)
 
 Trong Vòng đời tài sản, phần So sánh theo nhóm có hai chế độ Loại thiết bị và Bộ phận. Mỗi trang tối đa20 nhóm; dùng Trước/Sau dưới bảng. Chuyển chế độ giữ trang vừa xem của từng bảng; nhận dữ liệu mới sẽ về trang1. Tổng quan phía trên và tỷ lệ lỗi của từng nhóm giữ nguyên khi chuyển trang nhóm. Chức năng này chỉ giúp xem bảng gọn hơn; chưa nghiệm thu DB/host.

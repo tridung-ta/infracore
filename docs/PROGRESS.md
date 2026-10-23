@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 23/10/2026 — Điều hướng dòng ngân sách, FE độc lập
+
+Tiếp tục BUILD FE được phép:20 dòng/trang bằng slice hiển thị; documentData, tổng tiền, snapshot và export giữ nguyên toàn nguồn.24 browser mới +42 ngân sách hồi quy/Smarty/syntax/diff đạt, detector0 finding, review độc lập không finding. PHASE11_FORECAST_ROWS_VERIFY.md. Đây là client pagination, server vẫn tính/trả toàn tập trong guard hiện có; chưa SQL/DB/host/PHP8.3/layout PHP thật. Không PHP/API/DDL/config/gói/merge/tag7–10/push/deploy.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.3 bổ sung | Điều hướng dòng ngân sách | FE | [x] local | Commit chức năng chứa dòng này | 24 browser mới +42 hồi quy/Smarty/syntax | Không SQL pagination, snapshot/export toàn nguồn |
+
 ## 23/10/2026 — Điều hướng bảng nhóm vòng đời, FE độc lập
 
 Tiếp tục BUILD phần FE được phép, không mở BE mới. Loại thiết bị/Bộ phận20 nhóm/trang, nhớ trang riêng, reset khi response mới; paging dùng cache không fetch/không đổi KPI/mẫu số hoặc trang thiết bị.30 browser mới +63 vòng đời hồi quy/Smarty/syntax/diff đạt, detector0 finding và review độc lập không defect. PHASE11_LIFECYCLE_GROUPS_VERIFY.md. Đây là client pagination, không phải SQL pagination: server vẫn aggregate/trả toàn bộ nhóm; BE nhóm và DB/host chưa nghiệm thu. Không PHP/SQL/DDL/config/gói/merge/tag7–10/push/deploy.
