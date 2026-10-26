@@ -7,8 +7,8 @@
  async function three(){
   if(!window.ItaNetwork?.view().nodes.length)return;
   const current=++sequence;mode='loading';controls();$('network-3d-status').textContent=prefix+'Đang tải mô hình 3D…';
-  try{module=module||await import('/assets/ita/js/ita-network-scene.js?v=20261023-13be');if(current!==sequence||location.hash!=='#network')return;
-   mode='3d';controls();build();if(mode==='3d'&&scene)$('network-3d-status').textContent=prefix+'3D theo thao tác; không có giám sát mạng thật. Chọn thiết bị bằng danh sách hoặc bấm khối.';
+  try{module=module||await import('/assets/ita/js/ita-network-scene.js?v=20261026-pointer');if(current!==sequence||location.hash!=='#network')return;
+   mode='3d';controls();build();if(mode==='3d'&&scene)$('network-3d-status').textContent=prefix+'Rê chuột trong khung để xoay trái/phải và nghiêng lên/xuống; chế độ giảm chuyển động dùng nút xoay. Chọn thiết bị bằng danh sách hoặc bấm khối. Không có giám sát mạng thật.';
   }catch(error){if(current===sequence)two('3D chưa khả dụng. Sơ đồ 2D và bảng đối chiếu vẫn dùng được.');}
  }
  $('network-show-2d').addEventListener('click',()=>two());$('network-show-3d').addEventListener('click',three);

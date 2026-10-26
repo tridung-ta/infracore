@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — 3D xoay theo con trỏ, giữ nút hiện có
+
+User yêu cầu rê chuột ngang/dọc/lên/xuống không cần bấm nút và không xóa nút. Chỉ scene/controllerJS +layoutSmarty cacheversion: yaw/pitch giới hạn, một RAF theo pointer, leave giữ buttonbase, touch không chiếm scroll, reduced-motion dùng nút; dispose đầy đủ.24pointer/WebGL checks mới +23hồi quy3D +31liveAPImock +Smarty/syntax/diffcheck đạt; review độc lập không finding. Chi tiết PHASE13_POINTER_VERIFY.md, chưa DB/host/PHP8.3layout thật. Gói source81f3c55 cũ không có thay đổi này, chưa tạo ZIP mới/upload/push/merge/tag7–10; không thay mô hình/dữ liệu mạng thật.
+
 ## 26/10/2026 — Gói kiểm host đã tạo, chưa upload
 
 Theo quyền user mới, sourcefixed81f3c55821e760472a830ae523f1a662bd6dbe8b được đóng gói cộng dồn local: infracore-host-test-81f3c55821e7.zip **49.319.548 byte**, SHA256 b8c8945c6c93233c4e9cb7049ec5e13e9d66bd884fc7654071e95e3ba8d4fd08.1401runtime +17handoff +1manualreview, metadata2entry, actualZIPreadback toàn bộCRC/path/size/hash/manifest/checksums đạt. Chi tiết DEPLOY_LOG/HOST_UPLOAD_20261026. Dependency đúngbaseline/lock đã ghi, không config/MOCK/fixturelocal. User gửi runtime path thực là8.5.10 (đã xácminh), **không8.3**; không chạy lặp unit8.5 chỉ để báo8.3. Chưa upload/kết nốiDB/PHP8.3/FPM/host. Host cần nền/schema/config/backup đã xácnhận trước tựupload, .htaccess riêngmanualreview; kếtquảtươnglaiphạmvi hạnchế, khôngmerge/tag7–10/push/deploy hoặc nghiệmthuDBtựđộng.

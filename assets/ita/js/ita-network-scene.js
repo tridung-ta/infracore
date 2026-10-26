@@ -4,12 +4,13 @@ import * as THREE from '/assets/ita/vendor/three/0.180.0/three.module.min.js';
 export function createScene(host,view,onSelect,onLost){
  const color=name=>getComputedStyle(document.body).getPropertyValue('--ita-'+name).trim();
  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
- let disposed=false,ready=false,observer=null,pick=null,lost=null;
+ let disposed=false,ready=false,observer=null,pick=null,lost=null,move=null,leave=null,frame=0,yaw=0,hoverX=0,hoverY=0;
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,1,.1,100),group=new THREE.Group(),meshes=[];
- function dispose(){if(disposed)return;disposed=true;observer?.disconnect();renderer.domElement.removeEventListener('pointerdown',pick);renderer.domElement.removeEventListener('webglcontextlost',lost);group.traverse(object=>{object.geometry?.dispose();if(Array.isArray(object.material))object.material.forEach(m=>m.dispose());else object.material?.dispose();});renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();}
+ function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);observer?.disconnect();renderer.domElement.removeEventListener('pointerdown',pick);renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerleave',leave);reduced.removeEventListener('change',leave);renderer.domElement.removeEventListener('webglcontextlost',lost);group.traverse(object=>{object.geometry?.dispose();if(Array.isArray(object.material))object.material.forEach(m=>m.dispose());else object.material?.dispose();});renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();}
  try{
  scene.background=new THREE.Color(color('bg'));scene.add(group);camera.position.set(0,8,13);camera.lookAt(0,0,0);
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.domElement.setAttribute('role','img');renderer.domElement.setAttribute('aria-label',(document.body.dataset.mode==='live'?'Liên kết khai báo':'MOCK')+' · Sơ đồ mạng 3D; dùng danh sách thiết bị để chọn bằng bàn phím');host.append(renderer.domElement);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.domElement.setAttribute('role','img');renderer.domElement.setAttribute('aria-label',(document.body.dataset.mode==='live'?'Liên kết khai báo':'MOCK')+' · Sơ đồ mạng 3D; rê chuột để xoay ngang và nghiêng dọc, dùng nút xoay hoặc danh sách thiết bị bằng bàn phím');host.append(renderer.domElement);
  const palette={healthy:color('success'),warning:color('warning'),offline:color('text-muted')};
  for(const n of view.nodes){
   const mesh=new THREE.Mesh(new THREE.BoxGeometry(.9,.5,.65),new THREE.MeshBasicMaterial({color:palette[n.status]}));
@@ -29,10 +30,20 @@ export function createScene(host,view,onSelect,onLost){
  const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
  pick=event=>{if(disposed)return;const rect=renderer.domElement.getBoundingClientRect();pointer.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(meshes)[0];if(hit)onSelect(hit.object.userData.id);};
  lost=event=>{event.preventDefault();onLost();};
+ function orient(){group.rotation.set(hoverX,yaw+hoverY,0);resize();}
+ move=event=>{
+  if(disposed||reduced.matches||event.pointerType!=='mouse')return;
+  const rect=renderer.domElement.getBoundingClientRect();if(!rect.width||!rect.height)return;
+  hoverY=Math.max(-1,Math.min(1,(event.clientX-rect.left)/rect.width*2-1))*.65;
+  hoverX=Math.max(-1,Math.min(1,(event.clientY-rect.top)/rect.height*2-1))*.4;
+  if(!frame)frame=requestAnimationFrame(()=>{frame=0;if(!disposed)orient();});
+ };
+ leave=()=>{if(disposed)return;cancelAnimationFrame(frame);frame=0;hoverX=hoverY=0;orient();};
+ renderer.domElement.addEventListener('pointermove',move);renderer.domElement.addEventListener('pointerleave',leave);reduced.addEventListener('change',leave);
  renderer.domElement.addEventListener('pointerdown',pick);renderer.domElement.addEventListener('webglcontextlost',lost);resize();
  ready=true;
  return {
-  rotate(delta){group.rotation.y+=delta;resize();},
+  rotate(delta){yaw+=delta;orient();},
   select(id){for(const mesh of meshes)mesh.material.color.set(mesh.userData.id===id?color('accent'):palette[mesh.userData.status]);draw();},
   dispose
  };
