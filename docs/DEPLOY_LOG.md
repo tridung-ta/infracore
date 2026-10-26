@@ -8,6 +8,10 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+26/10/2026 — Gói **deltaFE3D** theo yêu cầu “gửi tôi file upload”: artifacts/ita-host-20261026/infracore-network-3d-46ef989.zip, source46ef9896446e39f25b8b6b55e3dd72818afdde00, **10.993byte**, SHA256 **3d94c3244a3e4e3945098fd0c5e4450f6681f1a9de1e5501e3a6fff6c83a160f**. Chỉ5file runtime/26.931byte +MANIFEST/SHA256SUMS metadata2entry; builder đã đọc lạiZIP thật kiểmallowlist/exclusions/CRC/hash/size/manifest đạt. **CHƯA UPLOAD**, không suy sourcehost hiệnđãcó delta. KhôngPHP/SQL/config/vendor/MOCK/test mới.
+
+Năm path cầnbackup/upload đồngbộ: assets/ita/css/ita-network.css; assets/ita/js/ita-network-3d.js; assets/ita/js/ita-network-scene.js; templates/admin/ita/layout.tpl.html; templates/admin/ita/partials/network.tpl.html. Cần nền gói cộngdồn81f3c55 đangchạy hoặcsource tươngthích/Three.js0.180.0 cósẵn, khôngbộ càiđộc lập. User giảinénlocal rồi upload **nội dung runtime/** vào đúngpublic_html, khônguploadZIP/metadata hoặc tạo thêmruntime/host. Không cầnmigration/SQL/đổiDB; giữconfig/key/dữliệu. Backup5filetrước; rollback5fileđúngbackup, Ctrl+F5 sauupload/rollback. Kiểm 3Dnhãn/fullscreen/Esc/chuộttrái-kéo360°/clickkhối/tap vàresponsive; nếu lỗi gửistatus/consoleđãche, khôngthửsửaDB. Sidecar/report cùngbasename ởartifactđãignore, khôngcommitpayload. Headerkind chung củabuilder giữ“cumulative host test update”; trườngpackage_type trongmanifest ghi rõ **NETWORK3DFEDELTA—EXACTLYFIVERUNTIMEFILES**, tậpfiles5path làscope thực.
+
 | Gói kiểm cộng dồn mới | Source cố định | Ngày tạo local / upload | Trạng thái |
 |---|---|---|---|
 |infracore-host-test-81f3c55821e7.zip|81f3c55821e760472a830ae523f1a662bd6dbe8b|26/10/2026 / CHƯA UPLOAD|ZIP local đã đọc lại; không biết source đang chạy host từ gói này|

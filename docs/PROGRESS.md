@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Bàn giao deltaFE3D5file
+
+User yêu cầu gửifileupload. Đã tạo artifacts/ita-host-20261026/infracore-network-3d-46ef989.zip từsourcefixed46ef9896446e39f25b8b6b55e3dd72818afdde00,10.993byte, SHA2563d94c3244a3e4e3945098fd0c5e4450f6681f1a9de1e5501e3a6fff6c83a160f.5fileFE(runtime26931byte)+2metadata, actualZIPreadback CRC/path/size/hash/manifest/checksums đạt; khôngPHP/SQL/config/vendor/MOCK/test. Không chạy lạibrowser vìsourceđãverify106checks tạiPHASE13_ORBIT_VERIFY, chỉđónggói/kiểmtoànvẹn. Hướngdẫn5path/backup/uploadnộidungruntime/rollback tạiDEPLOY_LOG; cầnnềncộngdồn81f3c55 tươngthích. Chưa upload/DB/push/merge/tag7–10 hoặc nghiệmthuhost.
+
 ## 26/10/2026 — Xoay360° hai trục bằng kéo chuột
 
 User muốn bỏgiới hạn xemtheochiềudọc. Thêm mouse drag pointercapture, pitch/yaw khôngclamp; thảgiữgóc, thresholdclick4px/upkhôngdrag, giữhover/nút/fullscreen. Nhãnproject8góc vẫntrênkhối khilật. Review tìm regressiontap touch/pen, đãtách tap khôngcapture/ngănscroll, swipe/cancelkhôngselect.28orbit +32pointer/tap +23fullscreen +23WebGL hồiquy +Smarty/syntax/diff đạt, ảnhunderneathMOCKđãrà. PHASE13_ORBIT_VERIFY ghi cáchdùng **giữ chuột trái vàkéo**, khônghứahoverkhôngbấmcóthểquayliêntục. ChỉFE, chưaDB/host/PHP8.3; ZIPcũchưacóthayđổi, chưaZIPmới/upload/push/merge/tag7–10.
