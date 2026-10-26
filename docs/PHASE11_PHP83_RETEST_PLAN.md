@@ -1,5 +1,7 @@
 # S26-03 — Kế hoạch kiểm lại bằng PHP8.3, CHƯA CHẠY
 
+**Cập nhật26/10:** user sẽ tự dựng Laragon8.3/Apache/MariaDBlocal theo LOCAL_RUN.md. Kế hoạch CLI/fake transport dưới đây giữ nguyên; kiểm DB integration là lượt riêng theo LOCAL_DB_TEST_PLAN.md, chỉ sau câu xác nhận đúng tên DB. Hiện chưa runtime8.3 được cung cấp, chưa kết nối DB. Không dùng credential/config host. S26 vẫn là test chức năng đầu tiên và phải xác nhận dummy algo/cost khớp default8.3 thực.
+
 Theo user26/10/2026: chỉ lập kế hoạch, **chưa sửa code/test/vendor, chưa chạy**. User sẽ cung cấp runtime PHP8.3 nếu có. Không tự tải/cài PHP, Composer/dependency hoặc đổi php.ini/host; không tạo/kết nối DB test. Kết quả8.5.10 trước đây không đổi thành PASS8.3.
 
 ## Điều kiện trước lượt chạy tương lai

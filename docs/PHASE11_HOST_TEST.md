@@ -1,5 +1,7 @@
 # Phase11 — Checklist host, CHƯA CHẠY
 
+**26/10 — lượt local riêng:** user tự dựng Laragon theo LOCAL_RUN.md, kế hoạch LOCAL_DB_TEST_PLAN.md chỉ được chạy sau xác nhận tên DB riêng. Kết quả ghi **«kiểm trên local, DB cô lập»**, không điền PASS host từ kết quả local. Sau upload được phép vẫn chạy smokehost ngắn (HTTPS/cookie/header/CORS, PHP/dependency/key, login3vai trò, dashboard, GETngoàiscope, export dữ liệu giả và audit), giữ checklist host còn lại theo bằng chứng thực. Không chạy fault/revokegrants/stress trên host.
+
 ## Sau S26-02 — Login host và native write, CHƯA KIỂM
 
 User thực hiện bằng **HTTPS** và tài khoản test khi được phép kiểm, không có thao tác agent/SQL ghi. Ghi source/gói thật trước kiểm:4file mẫu Phase8 chưa chứng minh host có S26-02. Không upload/gói trong bước tài liệu này. Không ghi credential/cookie/CSRF/key hoặc body login chứa dữ liệu nhạy cảm vào báo cáo.

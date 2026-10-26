@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 26/10/2026 — Chuyển sang chuẩn bị kiểm DB local cô lập
+
+Nguồn: user quyết định tự dựng Laragon (Apache +PHP8.3.x +MariaDB10.6.x, vhostHTTPS local) để kiểm đầy đủ trước đóng gói. Duyệt **soạn tài liệu và script**, chưa cho kết nối/SQL. Chỉ sau câu riêng **«Tôi xác nhận cho chạy trên DB local [tên DB]»** mới được chạy đúng schema đó; không đọc/dùng config hoặc credential host. Công cụ mới không dùng ItaDb.configuration/env host, không tự tạoDB/reset, seed native giả bằng setupaccount riêng. Runtime theo granttừngbảng, audit append-only, không DDL/DELETE/LOCK TABLES/CREATE TEMPORARY TABLES theo source đã rà. Kết quả ghi **«kiểm trên local, DB cô lập»**, tách khỏi kiểmhost; smokehost ngắn sauupload vẫn cần. Quyết định này thay giới hạn cũ “không cần DBtestlocal” về **kế hoạch**; không phải quyền kết nối hiện tại, không nghiệm thuDB, không đónggói/upload/merge/tag7–10/push/deploy.
+
 ## 26/10/2026 — Ghi nhận giới hạn sau build S26-02
 
 Nguồn: user đã xem S26_AUTH_VERIFY, ghi nhận local686checks và chưa PHP8.3/FPM/DB. Ngoại lệ nguyên văn **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**; Argon2 có chi phí khác bcrypt nên thời gian có thể khác, **«đếm verify không chứng minh hằng thời gian»**. Chấp nhận policy xác thực được giữ ở cả PmAuth và ItaAuthService: đổi một nơi phải rà nơi kia, không tự đồng bộ code trong bước tài liệu. Dummy chọn theo PASSWORD_DEFAULT; nếu không có variant khớp thì503 fail-closed, không tự sinh/nới cost để cho login qua. Trước kiểm host user phải biết native last_login và password_hash có thể ghi, MD5 giữ nguyên. S26-03 chờ đường dẫn8.3 riêng; S26 test đầu tiên và xác nhận dummy/default cost thực, hiện CHƯA CHẠY. Không code/gói/upload/merge/tag7–10/push/deploy; S26-01 vẫn hạn chế đã chấp nhận, không xóa/reset credential.
