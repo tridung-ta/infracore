@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Bộ kiểm thủ công theo menu,36 tình huống
+
+User yêu cầu bộ kiểm và từng cú bấm để tự thêm dữ liệu/test lần lượt từ Tổng quan xuống Hạ tầng mạng. Soạn MANUAL_UAT_CLICK_GUIDE:36case TC01–TC36/13mục menu,6assetfake+2import, loạiTEST riêng, allocation/license/ticketP1P2P3 vàP4role, snapshotdraft/nămtestkhôngđèplanthật, networklinks/360/fullscreen; dữliệu/bộphận/userIDthật phảiuserđiền, khôngSQLghi/seed/DCreset. Builder chỉ includeItaExcel/ItaInput/errorclass, khôngbootstrap/config/DB.2XLSX(2dòngmẫu,5dòngmixedcốýlỗi) tạo và đọc lại8checks roundtrip/rejection đạt PHP8.5.10;71deprecationvendor giữlogsynthetic, chưaPHP8.3. Review độc lập đãsửa P1resolvedkhôngthểxửlýởbướcSupport bằngP4mới, sốliệuM6sauP4ghi70000/2phiếu/repair1. CSV36dòngkếtquả banđầu Chưa kiểm vàsổID khôngpassword/key. Bộfile là **để user tự kiểm**, không phải appZIP hoặcPASS/nghiệmthuDB/host. Agent chưahost/DB/upload/push/merge/tag7–10; artifactngoàiGit, khôngcopy vàopublic_html.
+
 ## 26/10/2026 — Bàn giao deltaFE3D5file
 
 User yêu cầu gửifileupload. Đã tạo artifacts/ita-host-20261026/infracore-network-3d-46ef989.zip từsourcefixed46ef9896446e39f25b8b6b55e3dd72818afdde00,10.993byte, SHA2563d94c3244a3e4e3945098fd0c5e4450f6681f1a9de1e5501e3a6fff6c83a160f.5fileFE(runtime26931byte)+2metadata, actualZIPreadback CRC/path/size/hash/manifest/checksums đạt; khôngPHP/SQL/config/vendor/MOCK/test. Không chạy lạibrowser vìsourceđãverify106checks tạiPHASE13_ORBIT_VERIFY, chỉđónggói/kiểmtoànvẹn. Hướngdẫn5path/backup/uploadnộidungruntime/rollback tạiDEPLOY_LOG; cầnnềncộngdồn81f3c55 tươngthích. Chưa upload/DB/push/merge/tag7–10 hoặc nghiệmthuhost.
