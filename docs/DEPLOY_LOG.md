@@ -1,10 +1,18 @@
 # Nhật ký thao tác hosting
 
+**Chỉ đạo mới26/10/2026:** user cho phép đóng gói để tự upload và kiểm trên host8.3, thay yêu cầu dừng đóng gói trước. Agent chỉ tạo/kiểm ZIP local, chưa upload/kết nốiDB hoặc đổi cấu hìnhhost. Runtime user gửi thực8.5.10 (đã chạy đúng php.exe -v), **chưa kiểm8.3**; không tự nghiệm thuDB/host/merge/tag7–10/push/deploy. Các ghi chú “chưa đóng gói” bên dưới là lịch sử trước gói kiểm này, không xóa/sửa bằng chứng cũ.
+
 **Chỉ đạo mới22/10/2026:** user sẽ kiểm DB thủ công trên host sau; agent **không tự tạo/kết nối DB test**, không chạy host/DB và không yêu cầu DB test để tiếp tục local trong phạm vi được duyệt. Các kế hoạch thử DB test trong tài liệu được giữ để truy vết, **không còn là bước bắt buộc user phải thực hiện**. Không ghi PASS/nghiệm thu DB khi chưa có xác nhận cụ thể. Quyền build BE/merge/tag7–10/push/deploy không được mở bởi chỉ đạo này.
 
 Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguyên nội dung lịch sử; chỉ hạ mức heading để gom bốn phần. Mục lịch sử có ngày xếp mới trước, cùng ngày giữ thứ tự cũ; mục không ghi ngày để cuối theo thứ tự cũ, không tự gán ngày. Các ghi chú cũ là bằng chứng tại thời điểm đó, không thay bảng trạng thái hiện tại.
 
 ## A. Trạng thái host hiện tại
+
+| Gói kiểm cộng dồn mới | Source cố định | Ngày tạo local / upload | Trạng thái |
+|---|---|---|---|
+|infracore-host-test-81f3c55821e7.zip|81f3c55821e760472a830ae523f1a662bd6dbe8b|26/10/2026 / CHƯA UPLOAD|ZIP local đã đọc lại; không biết source đang chạy host từ gói này|
+
+PHP8.3/FPM/DB vẫn CHƯA KIỂM; user tự upload sau khi kiểm điều kiện nền/schema/backup trong HOST_UPLOAD_20261026.md. Đây là bản cập nhật nềnDerasoft hiện có, không bộ cài độc lập. Gói không có cấu hìnhhost/marker/admin.php/ajax.php toànnền; .htaccess chỉ tách manualreview. Không upload handoff/manual-review/metadata/ZIP vàowebroot.
 
 26/10/2026 — Chỉ bổ sung hồ sơ sau S26-02: user ghi nhận686checks local, chưa8.3/FPM/DB. Ngoại lệ **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”** có chi phí khác bcrypt, thời gian có thể khác; **«đếm verify không chứng minh hằng thời gian»**. Chấp nhận hai nơi giữ policy (PmAuth/ItaAuthService) cần rà đồng bộ và dummy theo PASSWORD_DEFAULT không khớp variant thì503. PHASE11_HOST_TEST thêm login sai/nonexistent401 cùng thông báo, không503, login đúng và khai báo native last_login/password_hash (MD5 giữ). S26-03 chờ runtime8.3, chạy S26 trước và xác nhận dummy/default cost thực; **CHƯA CHẠY**. Không code/test mới/gói/upload/merge/tag7–10/push/deploy.
 
@@ -227,6 +235,16 @@ Quy trình đề xuất trên máy build tách biệt: lấy source commit và l
 File ghi nguồn đề xuất (chưa tạo/cài runtime): dependency name, version hoặc unknown, source URL/commit hoặc nguồn baseline legacy, lock SHA256, artifact SHA256, inventory path/hash, license path/hash, ngày thu thập, source commit, lệnh build/verify và giới hạn. Có thể track hồ sơ và lock trong Git, còn payload binary/vendor giữ artifact riêng có checksum; chỉ công bố phục hồi đầy đủ khi đã thực sự dựng lại và kiểm. Script package_ita_pdf.py hiện có chỉ là delta PDF, không thay quy trình phục hồi toàn app hoặc tự chứa Excel/Inter.
 
 ## D. Nhật ký theo ngày (mới nhất trước)
+
+### 26/10/2026 — Tạo và kiểm ZIP cộng dồn theo quyền user mới, chưa upload
+
+- Source: `81f3c55821e760472a830ae523f1a662bd6dbe8b`. Gói local `artifacts/ita-host-20261026/infracore-host-test-81f3c55821e7.zip`, **49.319.548 byte**, SHA256 **b8c8945c6c93233c4e9cb7049ec5e13e9d66bd884fc7654071e95e3ba8d4fd08**.
+- Payload1419 file/105.076.353 byte:1401 runtime +17 handoff +1 manual-review/.htaccess; thêm MANIFEST.json và SHA256SUMS.txt =>1421 ZIPentries. Manifest ghi release_id/sourcecommit/buildUTC/môi trường/PHPCLI thực8.5.10. Metadatahash vàZIPhash nằm sidecar ngoài gói, không selfhash.
+- Reviewinventory SHA256 `33ef20d3c70400d9d1118a2a233d235589cffc53b8dd50c8a918180acfe61b5e`. Builder hydrate lại đúng commit/dependencybytes, từ chối mismatch rồi mở lại **ZIP thật**, đối chiếu toàn bộ path allowlist/exclusions/case/link, CRC, size/SHA256 từngentry, manifest/checksums: **đạt kiểm cấu trúc và toàn vẹn ZIP**. Không suy thành PHP8.3/DB/downloadhostpass.66synthetic validatorchecks +Pythoncompile đạt trước build. Review độc lập đã bổ sung metadataF11.5 còn thiếu.
+- Dependency: Excel566 file baseline tree88815432… đúng, chọn565 sau loại workbookTranslations.xlsx dùng pháttriển; PDFvendor697 nguồn/chọn696 sau loại tmpmarker, packageversion/refs khớp lock; Inter2file/hash baseline khớp. Không thayvendor hoặc khẳngđịnh Excel/Inter upstreamversion; chưa backup/restore ngoài máydev được xácnhận.
+- Không có tmp/tests/scripts/artifacts/.git/.playwright-cli/MOCK/preview/configlocal/.env/dump/session hoặc markerlegacy trong runtime. FileSQL đãduyệt chỉ ởhandoff/sql, không autoexecute;005 không kèm để importmù. .htaccess tách manualreview cóhashngoạilệ để user rà riêng, không tự ghiđèhost; không .user.ini/auto_prepend/HSTS mới. Không xóa filedưhost.
+- Hướng dẫn `docs/HOST_UPLOAD_20261026.md`: backupfile sẽthay +DB/keyprivate, xácminhnền/entrypoint/Smarty/config/schema/isolation/grants trước upload; user chỉ upload **nội dungruntime/** bằngFileZilla. Rollback đúngsourcebackup, giữdữliệumới/hash/last_login/audit, khôngDROP/restoreDBđè. Testhost tài khoảntest/dữliệugiả, ghi **«kiểm thủ công trên host, phạm vi hạn chế»**, không nghiệmthuDBtựđộng.
+- Lệnh thật: `python scripts/prepare_ita_release.py --source 81f3c55 --output artifacts/ita-host-20261026/review-81f3c55.json`; `python scripts/build_ita_reviewed_release.py --review artifacts/ita-host-20261026/review-81f3c55.json --output artifacts/ita-host-20261026/infracore-host-test-81f3c55821e7.zip --php-version 8.5.10`. Report/sidecar cùngbasename trong thư mục artifactđãignore, khôngcommit payload. Agent **chưa upload/DB/push/merge/tag7–10**.
 
 ### 22/10/2026 — Dashboard/báo cáo #10 chỉ có trên local
 
