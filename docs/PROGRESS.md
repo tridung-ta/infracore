@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Fullscreen3D và tên trên từng khối
+
+User yêu cầu nút toàn màn hình3D +nhãn tên nhỏ. Chỉ FE5file:CSS/controller/scene/layout/partial. FullscreenAPI thật với toolbarxoay/chọnthiếtbị/thoát bên trong, Esc/focus/aria, nhãnDOMtextContent chiếu theo3D, disposal và cacheversion.23checks fullscreen/label mới +24pointer +23WebGL +31liveAPImock +Smarty/syntax/diff đạt; ảnhdesktop/mobile đã rà, bố trí8nhãn không chồng ở768/390, khôngDB/host. Review tìm thiếu nútxoay trongfullscreen cho reduced-motion, đãsửa vàkiểm bànphímxoaythực. Chi tiết PHASE13_FULLSCREEN_VERIFY.md. ZIP cũ81f3c55 không chứa pointer/fullscreen mới; chưaZIPmới/upload/push/merge/tag7–10, khôngthayquyền/config/DB.
+
 ## 26/10/2026 — 3D xoay theo con trỏ, giữ nút hiện có
 
 User yêu cầu rê chuột ngang/dọc/lên/xuống không cần bấm nút và không xóa nút. Chỉ scene/controllerJS +layoutSmarty cacheversion: yaw/pitch giới hạn, một RAF theo pointer, leave giữ buttonbase, touch không chiếm scroll, reduced-motion dùng nút; dispose đầy đủ.24pointer/WebGL checks mới +23hồi quy3D +31liveAPImock +Smarty/syntax/diffcheck đạt; review độc lập không finding. Chi tiết PHASE13_POINTER_VERIFY.md, chưa DB/host/PHP8.3layout thật. Gói source81f3c55 cũ không có thay đổi này, chưa tạo ZIP mới/upload/push/merge/tag7–10; không thay mô hình/dữ liệu mạng thật.
