@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Bàn giao ZIP bộ kiểm thủ công
+
+Đã đóng InfraCore-Bo-Kiem-Thu-Thu-Cong.zip (artifacts/ita-manual-uat-20261026-v3),30.382byte, SHA256b64f822cc2d09854163f28857ec80df361a4a90680c4018ed7ad479344c30a1e, source tài liệu17ae623a519d06a2b2edb45de9f26b6de982437d.7payloadhướngdẫn/dữliệugiả/CSV+2metadata, actualZIPreadbackCRC/size/hash/metadata đạt. Guidebyteskhớpcommit, CSV36caseđểChưakiểm, XLSX16col/2và5rowdữliệu/0formula. MANUAL_UAT_KIT_VERIFY ghi8roundtrip/rejectionchecks,71deprecation8.5, reviewlogicP4 vàgiớihạn. **Không phải gói uploadwebsite**, chỉ XLSXđượcchọnquaformImport; userchưachạycasehost, agentkhônghost/DB/upload/push/merge/tag7–10.
+
 ## 26/10/2026 — Bộ kiểm thủ công theo menu,36 tình huống
 
 User yêu cầu bộ kiểm và từng cú bấm để tự thêm dữ liệu/test lần lượt từ Tổng quan xuống Hạ tầng mạng. Soạn MANUAL_UAT_CLICK_GUIDE:36case TC01–TC36/13mục menu,6assetfake+2import, loạiTEST riêng, allocation/license/ticketP1P2P3 vàP4role, snapshotdraft/nămtestkhôngđèplanthật, networklinks/360/fullscreen; dữliệu/bộphận/userIDthật phảiuserđiền, khôngSQLghi/seed/DCreset. Builder chỉ includeItaExcel/ItaInput/errorclass, khôngbootstrap/config/DB.2XLSX(2dòngmẫu,5dòngmixedcốýlỗi) tạo và đọc lại8checks roundtrip/rejection đạt PHP8.5.10;71deprecationvendor giữlogsynthetic, chưaPHP8.3. Review độc lập đãsửa P1resolvedkhôngthểxửlýởbướcSupport bằngP4mới, sốliệuM6sauP4ghi70000/2phiếu/repair1. CSV36dòngkếtquả banđầu Chưa kiểm vàsổID khôngpassword/key. Bộfile là **để user tự kiểm**, không phải appZIP hoặcPASS/nghiệmthuDB/host. Agent chưahost/DB/upload/push/merge/tag7–10; artifactngoàiGit, khôngcopy vàopublic_html.
