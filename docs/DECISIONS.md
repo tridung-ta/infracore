@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 26/10/2026 — Cho phép đóng gói để user kiểm host8.3
+
+Nguồn user: **“tôi đã cài host ở 8.3 nếu muốn test thì bạn cứ đóng gói tôi đẩy lên host rồi test”**. Cho agent chuẩn bị/kiểm gói local, upload và kiểm host do user; thay lệnh dừng đóng gói trước đó, không cho agent truy cập host/DB/push/merge/tag7–10. User gửi thư mục D:\Hoc_PHP\php\php-8.5.10-nts-Win32-vs17-x64; chạy đúng php.exe ở đó trả **PHP8.5.10**, không8.3. Không có kết quả S26/unit/export trên8.3, không dựng số giả. Gói kiểm cộng dồn phải sourcefixed/manifest/hash/ZIPreadback/exclusions/backuprollback, không tự chạy migration005/006 hoặc giả định schemahost đầy đủ. Auto_prepend/HSTS vẫn không duyệt; kết quả host tương lai ghi phạm vi hạn chế, không tự nghiệm thuDB.
+
 ## 26/10/2026 — Chuyển sang chuẩn bị kiểm DB local cô lập
 
 Nguồn: user quyết định tự dựng Laragon (Apache +PHP8.3.x +MariaDB10.6.x, vhostHTTPS local) để kiểm đầy đủ trước đóng gói. Duyệt **soạn tài liệu và script**, chưa cho kết nối/SQL. Chỉ sau câu riêng **«Tôi xác nhận cho chạy trên DB local [tên DB]»** mới được chạy đúng schema đó; không đọc/dùng config hoặc credential host. Công cụ mới không dùng ItaDb.configuration/env host, không tự tạoDB/reset, seed native giả bằng setupaccount riêng. Runtime theo granttừngbảng, audit append-only, không DDL/DELETE/LOCK TABLES/CREATE TEMPORARY TABLES theo source đã rà. Kết quả ghi **«kiểm trên local, DB cô lập»**, tách khỏi kiểmhost; smokehost ngắn sauupload vẫn cần. Quyết định này thay giới hạn cũ “không cần DBtestlocal” về **kế hoạch**; không phải quyền kết nối hiện tại, không nghiệm thuDB, không đónggói/upload/merge/tag7–10/push/deploy.

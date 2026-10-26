@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Được phép chuẩn bị gói kiểm host, chưa upload
+
+User cho đóng gói local để tự đẩy lên hostPHP8.3 rồi kiểm; agent không upload/DB. Đường dẫn PHP user mới gửi được chạy `php.exe -v`, thực tế8.5.10, nên8.3/S26-on8.3/unit/export8.3 vẫn CHƯA CHẠY. Soạn builder từ inventory riêng sourcecommit cố định, dùng validator hiện có;66synthetic ZIPchecks +Pythoncompile +diffcheck đạt, chưa thay bằng actualZIPpass cho đến khi gói thật được đọc lại. HOST_UPLOAD_20261026 mô tả nềnDerasoft có sẵn/cấu hình giữ riêng/schema005006 cầnmetadata/backup/rollback/smokehost. Không gói localfixture/mock/config/secret; .htaccess tách manualreview. Source/gói/hash/kết quả ZIP thật sẽ ghi DEPLOY_LOG sau bước build, không claim sẵn sàng production. Không merge/tag7–10/push/deploy hoặc kết nốiDB.
+
 ## 26/10/2026 — Đồng bộ hai hướng dẫn local, chờ runtime thực
 
 Đã đối chiếu RUN_LOCAL.md (ghi chú Phase1–5) với LOCAL_RUN.md mới: thêm chỉ dẫn hiện hành, giữ nguyên lịch sử, nêu trạng thái cũ “PDF chưa nối” không phản ánh source hiện tại. CURRENT_BUILD_STATUS dẫn tới bộ chuẩn bị local và commit1b041db/e7f6001. Chưa có pathPHP8.3 thực hoặc câu xác nhận schema: không chạy S26-on8.3/unit/export8.3/browser/DB; không đọc privateconfig. Kiểm diff tài liệu, không test lại code vì không sửa code. Không gói/upload/merge/tag7–10/push/deploy.

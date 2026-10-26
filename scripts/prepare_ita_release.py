@@ -14,7 +14,9 @@ PREFIXES = ('assets/ita/css/', 'assets/ita/js/', 'assets/ita/vendor/',
             'classes/database/ita', 'templates/admin/ita/')
 HANDOFF = ['docs/PREUPLOAD_SECURITY_VERIFY.md', 'docs/PHASE13_SQL_HOST_GUIDE.md', 'docs/PHASE13_BE_VERIFY.md',
            'docs/PHASE11_HOST_TEST.md', 'docs/PHASE09_HOST_TEST.md',
-           'docs/PHASE10_HOST_TEST.md', 'docs/HOST_SOURCE_IDENTIFICATION_RESULT.md']
+           'docs/PHASE10_HOST_TEST.md', 'docs/HOST_SOURCE_IDENTIFICATION_RESULT.md',
+           'docs/HOST_UPLOAD_20261026.md', 'docs/S26_AUTH_VERIFY.md',
+           'docs/BE_GATE_HOST_MIGRATIONS_005_006.md']
 SQL = ['database/migrations/006_ita_network_links.sql', 'database/host/phase13_preflight.sql',
        'database/host/phase13_verify.sql', 'docs/PHASE08_EXPLAIN.sql',
        'docs/PHASE09_EXPLAIN.sql', 'docs/PHASE10_EXPLAIN.sql', 'docs/PHASE13_EXPLAIN.sql']
