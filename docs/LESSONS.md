@@ -1,5 +1,13 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 26/10/2026 — Trích DDL chứa backtick qua PowerShell
+
+- Triệu chứng/phân loại: bản nháp migration trích bằng Python inline trong chuỗi PowerShell chỉ còn CREATE TABLE; chưa chạy SQL.
+- Bằng chứng: PowerShell diễn giải backtick trong delimiter Markdown/SQL trước khi Python nhận chuỗi; đọc lại file thấy nội dung bị cắt.
+- Sửa: ghi DDL bằng apply_patch, không truyền delimiter/backtick qua chuỗi shell nội suy. Kiểm byte CREATE với code fence gate sau chuẩn hóa LF.
+- Kiểm:57 static SQL contract checks đạt, gồm exact approved CREATE, một bảng mới, không seed/destructive, preflight/verify chỉ SELECT/SHOW. Không chứng minh SQL parser/DB.
+- Phạm vi: tạo source SQL/Markdown bằng shell Windows; đọc lại file thật trước stage/chạy bất kỳ SQL nào.
+
 ## 23/10/2026 — Cleanup scene phải bao phủ cả khởi tạo và render muộn
 
 - Triệu chứng: renderfail trong browser làm fallback2D nhưng canvas cũ còn; review phát hiện xoay/chọn sau init vẫn có thể ném uncaught.

@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — SQL #13 được duyệt, migration chỉ chuẩn bị local
+
+User xác nhận nguyên văn **“duyệt SQL #13 tiếp tục BUILD”**. Migration006 tạo duy nhất ita_network_links khớp CREATE trong gate; preflight/verify chỉ đọc và hướng dẫn áp dụng/rollback đã có.57 static SQL contract checks +179 PHP BE13 hồi quy đạt; static không chứng minh parser/enforcement/FK/unique/rollback DB. Không tạo/kết nối DB, không chạy SQL/host, không seed/gói/merge/tag7–10/push/deploy. Schema **đã duyệt file, chưa áp dụng/chưa nghiệm thu**; các dòng cũ “SQL13 chưa duyệt” bên dưới là lịch sử.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F13.1 SQL | Migration liên kết mạng | BE/DDL file | [x] chuẩn bị local | Commit chức năng chứa dòng này | python tests/ita_phase13_sql_contract.py:57 checks; php tests/ita_phase13_unit.php:179 checks | Không thực thi DDL/DB; user áp dụng khi sẵn sàng |
+
 ## 26/10/2026 — Điều hướng bảng dashboard, chỉ FE
 
 Tiếp tục phần bảng nhóm/đề xuất còn mở trong audit: bốn bảng20 dòng/trang phía client, độc lập và không gọi API khi chuyển trang; giữ chart toàn tập/KPI/tỷ lệ/mốc số liệu.44 browser mới +64 hồi quy Phase10/Smarty/syntax/diff đạt, detector[] và review độc lập không finding. PHASE11_DASHBOARD_TABLES_VERIFY.md. Không PHP/SQL/quyền/DB/host; SQL13 chưa duyệt, không gói/merge/tag7–10/push/deploy. Không coi client pagination là tối ưu SQL hoặc nghiệm thu host.

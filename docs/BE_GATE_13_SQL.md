@@ -1,13 +1,13 @@
-# BE-GATE #13-SQL — NHÁP DDL, CHƯA DUYỆT / CHƯA CHẠY
+# BE-GATE #13-SQL — ĐÃ DUYỆT DDL / CHƯA CHẠY
 
-User đã duyệt **BUILD source BE13**, chưa duyệt SQL này. Đây là bản đề xuất chính xác để review riêng, không phải migration đã áp dụng. Agent không tạo/kết nối DB, không chạy DDL/seed/EXPLAIN trên host. Không thay bảng hiện có hoặc thêm index vào bảng cũ. Dữ liệu mẫu chỉ JSON MOCK; không seed mạng thật.
+26/10/2026: user xác nhận nguyên văn **“duyệt SQL #13 tiếp tục BUILD”**. DDL dưới đây được duyệt và đã chuyển thành database/migrations/006_ita_network_links.sql; **chưa áp dụng**. Agent không tạo/kết nối DB, không chạy DDL/seed/EXPLAIN trên host. Không thay bảng hiện có hoặc thêm index vào bảng cũ. Dữ liệu mẫu chỉ JSON MOCK; không seed mạng thật. User tự áp dụng khi xác nhận target/backup theo PHASE13_SQL_HOST_GUIDE.md; duyệt này không cho agent chạy host/DB.
 
 ## Thay đổi dự kiến
 
 Một bảng `ita_network_links`, dùng InnoDB/utf8mb4 như baseline. Đối chiếu source `002_ita_assets.sql`: store_id INT có dấu; asset id BIGINT UNSIGNED; unique (store_id,id) đã có. Hai FK composite chống nối nhầm store. Chỉ hardware chưa soft-delete được writer PHP chấp nhận, không suy FK tự kiểm điều kiện đó.
 
 ```sql
--- CHƯA DUYỆT: user không chạy trước khi xác nhận gate SQL và backup.
+-- APPROVED 2026-10-26. User confirms target and backup before applying.
 CREATE TABLE `ita_network_links` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `store_id` INT NOT NULL,
@@ -52,4 +52,4 @@ DDL có implicit commit, không giả transaction rollback CREATE. Unique chỉ 
 
 Nếu chưa áp dụng DDL: không có gì để hoàn tác. Nếu đã tạo và có dữ liệu: rollback source đã backup, giữ bảng/liên kết/audit; không DROP hoặc restore dump đè. Chỉ cân nhắc gỡ bảng trong một gate riêng với backup và xác nhận không dữ liệu cần giữ; không cung cấp DOWN tự chạy. Không upload source BE13 đơn lẻ khi host thiếu bảng/nền tương thích.
 
-Trả lời mong muốn cho bước sau: **Duyệt SQL #13 / Chỉnh sửa / Chưa duyệt**. Duyệt SQL không phải quyền agent chạy host/DB; user tự thực hiện thao tác đã thống nhất.
+Đã nhận phê duyệt, không cần xin lại cùng DDL. Đổi schema/index/phạm vi ngoài nội dung này vẫn cần gate riêng. Duyệt SQL không phải quyền agent chạy host/DB; user tự thực hiện thao tác đã thống nhất. Kết quả DB vẫn chưa kiểm/chưa nghiệm thu cho đến khi có bằng chứng cụ thể.

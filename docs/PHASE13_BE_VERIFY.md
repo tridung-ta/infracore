@@ -1,5 +1,7 @@
 # BE13 — Liên kết tài sản thật, kiểm chứng local 23/10/2026
 
+**Bổ sung26/10:** user đã duyệt SQL #13; đã chuẩn bị migration006, preflight/verify chỉ đọc và PHASE13_SQL_HOST_GUIDE.md.57 static SQL contract checks +179 PHP hồi quy đạt, không DB. Các dòng SQL chưa duyệt trong báo cáo23/10 bên dưới là lịch sử; SQL hiện **đã duyệt/chưa chạy**, không thay kết quả chưa nghiệm thu host. Review SQL độc lập không thấy blocker theo baseline, đã sửa trạng thái gate còn ghi nháp; chưa kiểm DB/enforcement/tương thích server thật.
+
 User duyệt “Duyệt BUILD source BE13”. Source DAO/service/API/Smarty/JS đã xây dựng, **không tạo/kết nối DB, không chạy host/SQL, không DDL/seed hoặc gói mới**. BE_GATE_13_SQL.md là gate riêng chưa duyệt. DB/host chưa nghiệm thu; không merge/tag7–10/push/deploy.
 
 ## Hành vi source

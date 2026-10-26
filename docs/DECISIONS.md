@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 26/10/2026 — Duyệt DDL mạng #13, không thực thi bởi agent
+
+Nguồn: user nguyên văn **“duyệt SQL #13 tiếp tục BUILD”**. Mở chuẩn bị migration006 khớp DDL BE_GATE_13_SQL.md: một bảng ita_network_links, unique active pair nullable/generated, composite FK cùng store, không seed hoặc bảng cũ/dc_*. Agent không tạo/kết nối DB hoặc chạy SQL/host. User backup/xác nhận môi trường rồi tự áp dụng khi sẵn sàng theo PHASE13_SQL_HOST_GUIDE.md. File được duyệt không chứng minh đã có bảng, enforcement hoặc nghiệm thu; không mở gói/merge/tag7–10/push/deploy. Không xin lại cùng DDL đã được duyệt.
+
 ## 23/10/2026 — Source BE13 được duyệt, tách SQL gate
 
 Nguồn: user trả lời nguyên văn “Duyệt BUILD source BE13”. Cho build liên kết giữa hai tài sản phần cứng: Admin quản lý, Manager chỉ đọc khi cả hai đầu thuộc scope, Support không xem; CSRF/version/audit. Source local không phải quyền tạo/kết nối DB hoặc deploy. DDL chính xác để review tại BE_GATE_13_SQL.md, chưa duyệt/chưa chạy; không seed/scan/SNMP/cron. Giới hạn200node/400cạnh, vượt báo lỗi; bảng20/trang, sort ID giảm. Liên kết vô hướng chuẩn hóa hai ID/cổng, soft-delete, unique active pair dự kiến trong schema mới. Sơ đồ là khai báo, trạng thái asset không được mô tả là đo kết nối thật. PHASE13_BE_VERIFY.md ghi bằng chứng/giới hạn; không merge/tag7–10/push/deploy.

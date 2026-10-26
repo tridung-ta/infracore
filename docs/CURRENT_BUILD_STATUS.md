@@ -1,5 +1,7 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
+**Cập nhật SQL26/10/2026:** user đã duyệt SQL #13. Có migration006 +preflight/verify/hướng dẫn và57 kiểm tĩnh đạt;179 BE13 hồi quy đạt. **Chưa chạy SQL, chưa có bảng/DB/host được xác nhận**, không tạo DB test/gói/push/deploy/merge/tag. Các ghi chú “SQL13 chưa duyệt” trong checkpoint trước bên dưới đã được thay bằng phê duyệt này; không suy thành áp dụng hoặc nghiệm thu. Xem PHASE13_SQL_HOST_GUIDE.md.
+
 **Cập nhật26/10/2026:** hoàn thiện FE bốn bảng dashboard20 dòng/trang;44 browser mới +64 hồi quy/Smarty/syntax/review đạt, PHASE11_DASHBOARD_TABLES_VERIFY.md. Không đổi PHP/API/công thức, chart/KPI toàn tập. Client pagination không giảm query/payload; BE13 source b4bd575 giữ nguyên, SQL13 vẫn chưa duyệt/chạy và DB/host chưa nghiệm thu. Không gói/merge/tag7–10/push/deploy.
 
 **Cập nhật BE13:** user đã duyệt “Duyệt BUILD source BE13”; F13.1 source và UI live đã xây/kiểm local theo PHASE13_BE_VERIFY.md (179 thuần/query-contract,31 browser mock). BE_GATE_13_SQL.md vẫn **chưa duyệt/chưa chạy**; schema/DB/host chưa nghiệm thu. Các dòng “BE13 chưa duyệt” dưới đây là checkpoint trước phê duyệt, không thay cập nhật này. Không tạo/kết nối DB/host hoặc gói/merge/tag/push/deploy.
