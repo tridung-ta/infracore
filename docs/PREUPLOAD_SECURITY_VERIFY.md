@@ -49,7 +49,7 @@
 |File thật|php -d extension=gd tests/ita_phase09_exports.php|XLSX mở lại, formula-like STRING, PDF tiếng Việt render được; còn deprecation8.5, không phải HTTP download host |
 |Browser|playwright-cli -s=ita-phase06 run-code --filename=tests/ita_phase03_browser.js /04_browser.js /05_browser.js /06_browser.js /07_browser.js /08_browser.js /09_browser.js /10_browser.js /13_live_browser.js /11_errors_browser.js|30 /30 /29 /28 /64 /63 /42 /64 /31 /61 đạt; static/API mock, không auth/DB thật |
 |SQL file|python tests/ita_phase13_sql_contract.py|57checks tĩnh đạt, không SQL server/DB |
-|Release guard|python tests/ita_release_validation_test.py|64checks đạt với ZIP synthetic trong bộ nhớ; không tạo ZIP ứng dụng |
+|Release guard|python tests/ita_release_validation_test.py|66checks đạt với ZIP synthetic trong bộ nhớ, gồm NUL filename/Windows reparse bổ sung; không tạo ZIP ứng dụng |
 |Syntax|php -l tests/ita_preupload_auth.php|Đạt |
 
 Browser static127.0.0.1:18766, server node workspace/session ita-phase06; log synthetic ở tmp/security-*.log, không commit/gói. Không chạy ita_phase02_checks.php/fixture/sql/browser vì có mở/reset DB fixture ngoài phạm vi. Không đọc private config hoặc dùng kết quả mock thay DB.

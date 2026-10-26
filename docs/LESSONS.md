@@ -1,5 +1,13 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 26/10/2026 — Hash cây dependency và filename ZIP trên Windows
+
+- Triệu chứng/phân loại: inventory báo Excel lệch baseline dù vẫn566file; validator synthetic ban đầu chấp nhận tên ZIP có NUL sau phần filename hợp lệ.
+- Bằng chứng: sorted(Path) Windows cho80fc14a4…; sort chuỗi relative POSIX cho đúng88815432…. ZipInfo giữ orig_filename nhưng cắt filename ở NUL, nên chỉ kiểm filename bỏ sót tên thô.
+- Sửa: sort explicit relative POSIX ordinal, không đổi byte/baseline; từ chối orig_filename khác filename và reparse flag. Không giải nén hoặc chạy dependency.
+- Kiểm: inventory review chạy lại khớp baseline;66 syntheticZIPchecks đạt, gồm regression NUL/reparse. Chưa ZIP ứng dụng/host.
+- Phạm vi: manifest portable và validator ZIP, không suy hash khớp thành source an toàn hoặc provenance upstream đã xác minh.
+
 ## 26/10/2026 — Trích DDL chứa backtick qua PowerShell
 
 - Triệu chứng/phân loại: bản nháp migration trích bằng Python inline trong chuỗi PowerShell chỉ còn CREATE TABLE; chưa chạy SQL.

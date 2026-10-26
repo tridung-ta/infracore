@@ -45,6 +45,10 @@ PHP kiểm local8.5.10; host theo hồ sơ8.3.33; **chưa chạy test trên8.3**
 
 ## B. Checklist host và kế hoạch bàn giao
 
+### 26/10 — Công cụ chuẩn bị và validator, chưa đóng gói
+
+Xem RELEASE_PREPARATION_VERIFY.md. Đã có prepare_ita_release.py (chỉ inventory JSON, không ZIP) và ita_release_validation.py với66checks ZIP synthetic trong memory. Inventory cũ dd03897 gồm1415file/105032697byte, chưa phải release mới; đóng gói/upload vẫn dừng theo PREUPLOAD_SECURITY_VERIFY.md. Tool mới loại preview/temp/MOCK, có Inter OFL, giữ project-start và dependency; .htaccess tách manual-review exacthash, SQL handoff exacthash, không config/key/marker runtime. Khi được giao tiếp phải chốt source/inventory cuối và kiểm ZIP thật; chưa có archive hash/manifest release hoặc bằng chứng host. Đặc tả lịch sử “chưa viết validator” bên dưới là thời điểm trước cập nhật này; không suy các script lịch sử đã được nâng cấp.
+
 ### F11.5 — Kiểm tự động ZIP sau đóng gói (đặc tả, chưa viết/chạy)
 
 Bước bắt buộc sau khi tạo gói trong tương lai, trước bàn giao: **mở lại ZIP và kiểm chính entry của ZIP**, không chỉ tin danh sách nguồn hoặc excluded trong manifest. Hiện không tạo gói/viết validator; ba script lịch sử chưa được tuyên bố đã thực thi toàn bộ đặc tả này.

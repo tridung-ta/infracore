@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Lưu công cụ chuẩn bị/kiểm gói, chưa tạo ZIP ứng dụng
+
+Hoàn thiện phần chuẩn bị đã làm trước khi user bổ sung Word: prepare_ita_release.py chỉ sinh inventory review từ source cố định; ita_release_validation.py kiểm exact manifest/checksum/hash/CRC/path của ZIP khi có bước sau.66checks synthetic-memory đạt, không ZIP ứng dụng. Inventory tạm source dd03897 có1415file, không phải release hiện tại; cần sinh lại sau khi chốt security. Đã sửa sort Excel theo POSIX để khớp baseline và chặn NUL filename/reparse ZIP. RELEASE_PREPARATION_VERIFY.md ghi phạm vi/giới hạn; **đóng gói/upload vẫn dừng**, không DB/host/push/merge/tag7–10.
+
 ## 26/10/2026 — Kiểm bảo mật theo20 mục Word, tạm dừng đóng gói
 
 User yêu cầu đọc “kiểm thử web trước khi upload lên Host.docx”, kiểm ổn rồi mới gói/upload. PREUPLOAD_SECURITY_VERIFY.md đối chiếu đủ20mục, tách local/host.29 auth/session/limiter mới; unit03–10/S11/13 và routing đạt; HTTP102/56/109;10browser API mock đạt; XLSX/PDF dữ liệu giả chạy được nhưng còn deprecation PHP8.5. Không chạy fixture auth có DB/reset, không đọc config/host. MD5 native còn giữ (giới hạn tương thích), khác chi phí nhánh thất bại auth là finding source chưa chứng minh timing HTTP; đề xuất BE_GATE_11 nháp, không sửa PHP ứng dụng. Host TLS/cookie/header/CORS, DB network/grants/isolation, Cloudflare, backup/log chưa kiểm. **Chưa đóng gói/upload, không đánh dấu tất cả đạt hoặc nghiệm thu DB.** Không push/merge/tag7–10/deploy.
