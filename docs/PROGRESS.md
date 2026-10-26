@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Đã đối chiếu4 file đại diện host
+
+User cung cấp4 file local tải về và báo “ita-dashboard.js file này chưa có”. Đọc byte/hash/size, **4/4 khớp Phase8 1691c43bd37da547bd4d4f7733f90f2b15516bdc**, không chạy PHP hoặc host/DB. HOST_SOURCE_IDENTIFICATION_RESULT.md ghi hash/candidate/giới hạn; chỉ xác nhận các file mẫu, không xác nhận toàn bộ release hoặc ngày/gói đã upload. Full inventory vẫn CHƯA THU THẬP, source toàn host chưa xác định; DB chưa nghiệm thu. Không gói/merge/tag7–10/push/deploy.
+
 ## 26/10/2026 — Bắt đầu xác định source host, chỉ chuẩn bị local
 
 User yêu cầu “bắt đầu” bước bàn giao. Đã lập HOST_SOURCE_FINGERPRINTS.csv gồm30 dòng SHA256 Git blob từ6 commit/5file và HOST_SOURCE_IDENTIFICATION.md hướng dẫn FTP Binary/path riêng. Đã kiểm tmp/host-inventory được ignore và không tracked. **Chưa có file/listing host, inventory CHƯA THU THẬP, chưa đối chiếu hoặc ghi PASS**. Không đọc/chạy host/DB, không gói/merge/tag7–10/push/deploy; DB/host chưa nghiệm thu.

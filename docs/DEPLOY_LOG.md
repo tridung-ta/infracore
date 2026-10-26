@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+26/10/2026 — Đã nhận4 file đại diện do user tải về: module ITA/mode/dispatcher/layout có byte SHA256 khớp checkpoint Phase8 `1691c43` (4/4). User báo ita-dashboard.js chưa có. Chi tiết HOST_SOURCE_IDENTIFICATION_RESULT.md. **Chỉ xác minh file mẫu, chưa xác nhận source/hash toàn host hoặc gói/ngày upload**; không suy Phase9–13 hoàn toàn vắng hoặc schema đã/chưa có. Cần cập nhật cộng dồn đồng bộ, không dùng delta S11 lẻ. Chưa tạo gói/upload/DB/host; full inventory chưa thu thập, DB chưa nghiệm thu. Các ghi chú trước “chưa có file host” là trạng thái trước đợt nhận mẫu này.
+
 26/10/2026 — Bắt đầu nhận diện source: đã chuẩn bị HOST_SOURCE_FINGERPRINTS.csv (30 hash tham chiếu Git local) và HOST_SOURCE_IDENTIFICATION.md. User tải5file đại diện bằng FTP Binary vào tmp/host-inventory/files khi sẵn sàng; **hiện chưa có file host, chưa đối chiếu và chưa xác định source host**. Hash Git không thay manifest payload gói thực. Không tạo gói/upload/chạy host/DB hoặc cập nhật ngày deploy.
 
 26/10/2026 — User “duyệt SQL #13 tiếp tục BUILD”: đã chuẩn bị database/migrations/006_ita_network_links.sql theo đúng DDL, database/host/phase13_preflight.sql +phase13_verify.sql chỉ đọc, hướng dẫn PHASE13_SQL_HOST_GUIDE.md.57 kiểm tĩnh +179 PHP hồi quy đạt; không SQL parser/DB proof. **Chưa áp dụng, chưa upload/gói, chưa xác nhận bảng mới/host source**, không ghi Đạt DB hoặc ngày migration giả. User backup source/DB, xác nhận schema/phiên bản và tự áp dụng khi sẵn sàng; runtime không cần DDL/DELETE. Giữ dữ liệu mới khi rollback source; không DROP/restore đè. Không merge/tag7–10/push/deploy. Ghi chú SQL chưa duyệt trước đây là lịch sử.

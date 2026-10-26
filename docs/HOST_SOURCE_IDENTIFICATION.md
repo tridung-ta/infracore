@@ -1,5 +1,7 @@
 # Xác định source host — bắt đầu26/10/2026
 
+**Đã nhận mẫu26/10:** user cung cấp4 file local,4/4 khớp checkpoint Phase8 `1691c43`; user báo ita-dashboard.js chưa có. Xem HOST_SOURCE_IDENTIFICATION_RESULT.md. Đã đối chiếu file mẫu, chưa xác minh toàn source/vhost hoặc inventory đầy đủ; các hướng dẫn chuẩn bị dưới đây giữ để tham khảo.
+
 Đã chuẩn bị HOST_SOURCE_FINGERPRINTS.csv:30 dòng tham chiếu từ6 commit local và5 path. Đây là **SHA256 byte Git blob**, không phải kết quả đọc host hoặc checksum working tree. Mục tiêu chỉ thu hẹp các bản ứng viên, không khẳng định commit hiện chạy. Inventory host vẫn **CHƯA THU THẬP**; chưa có file host để đối chiếu, không tạo gói/deploy hoặc chạy host/DB.
 
 ## User thực hiện bằng FTP, không chạy gì trên host
