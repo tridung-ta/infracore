@@ -1,5 +1,7 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
+**Chuẩn bị local26/10 — cập nhật mới nhất:** user tự dựng Laragon Apache/PHP8.3/MariaDB10.6/vhostHTTPS. LOCAL_RUN/LOCAL_DB_TEST_PLAN và CLI fixture seed/load đã soạn (commit1b041db); rà36 vị trí khóa/grants, harness hai phiên và gatehost005/006 nháp ở commit e7f6001. Chỉ lint/pure guard/static checks, chưa seed/migration/browser/DB. Tin PHP8.3 trước còn placeholder nên S26/unit/export8.3 **CHƯA CHẠY**. Chờ pathphp.exe8.3 thực cho test không DB và câu xác nhận đúng schema riêng trước kết nối DB. RUN_LOCAL.md là ghi chú preview/lịch sử, đã dẫn sang LOCAL_RUN.md hiện hành. Không tạoDB/đọc confighost/gói/upload/merge/tag7–10/push/deploy; DB/host chưa nghiệm thu.
+
 **S26-02 được duyệt/build26/10:** chỉ ItaAuthService(+test), không đổi PmAuth;686checks mới và hồi quy đạt, S26_AUTH_VERIFY.md. Argon2 ngoại lệ một real verify, không dummy; MD5 tương thích được chấp nhận. Counter không chứng minh hằng thời gian; DB/host/PHP8.3 chưa chạy. Auto_prepend/HSTS KHÔNG duyệt, không gói/upload/merge/tag/push/deploy. Ghi chú S26-02 chưa duyệt bên dưới là trước phê duyệt mới này.
 
 **Chốt hồ sơ26/10:** user chấp nhận giữ MD5 native cho tương thích (S26-01), không xóa/reset credential. PHASE11_SECURITY_TEST_20.md đồng bộ báo cáo,17–20 vẫn CHƯA KIỂM host. S26-02 chỉ draft ItaAuthService/count-call, có điểm cần chốt về hash giả/bcrypt; chưa build. S26-03 chỉ kế hoạch runtime8.3/test đếm deprecation; chưa chạy. Chỉ tài liệu, không code/gói/upload/merge/tag/push/deploy; host/DB chưa nghiệm thu.

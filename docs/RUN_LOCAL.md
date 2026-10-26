@@ -1,5 +1,11 @@
 # Chạy InfraCore local — cập nhật Phase 4
 
+## Hướng dẫn hiện hành —26/10/2026
+
+File này giữ ghi chú preview và lịch sử Phase1–5; không dùng các trạng thái cũ như “PDF chưa nối” để kết luận source hiện tại. Dựng runtime thật bằng Laragon Apache/PHP8.3/MariaDB10.6/HTTPS theo **[LOCAL_RUN.md](LOCAL_RUN.md)**. Kiểm DB theo [LOCAL_DB_TEST_PLAN.md](LOCAL_DB_TEST_PLAN.md); grants/locking theo [LOCAL_LOCK_GRANTS_REVIEW.md](LOCAL_LOCK_GRANTS_REVIEW.md), hai phiên theo [LOCAL_CONCURRENCY_RUN.md](LOCAL_CONCURRENCY_RUN.md).
+
+Hiện chưa có đường dẫn PHP8.3 thực được cung cấp và chưa xác nhận schema: **S26/unit/export8.3 và DB integration CHƯA CHẠY**. Khi có runtime, S26 chạy đầu tiên, đối chiếu dummy/default algo-cost thực. Agent chỉ kết nối DB sau câu **«Tôi xác nhận cho chạy trên DB local [tên DB]»**. Không chạy fixture/reset DB cũ hoặc lấy config/credential host; không đóng gói/upload/merge/tag7–10/push/deploy. Các lệnh dùng `php` dưới đây là ghi chú cũ, không chứng minh đang dùng8.3.
+
 Phase 5: mở `http://127.0.0.1:18766/#assignments` sau build preview (vẫn MOCK, không ghi). Backend đã nối theo BE-GATE #05 nhưng cần auth/DB để chạy runtime thật, không dùng static preview thay thế UAT. PDF chưa nối. Kiểm local không DB:
 
 ```powershell

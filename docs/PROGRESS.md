@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Đồng bộ hai hướng dẫn local, chờ runtime thực
+
+Đã đối chiếu RUN_LOCAL.md (ghi chú Phase1–5) với LOCAL_RUN.md mới: thêm chỉ dẫn hiện hành, giữ nguyên lịch sử, nêu trạng thái cũ “PDF chưa nối” không phản ánh source hiện tại. CURRENT_BUILD_STATUS dẫn tới bộ chuẩn bị local và commit1b041db/e7f6001. Chưa có pathPHP8.3 thực hoặc câu xác nhận schema: không chạy S26-on8.3/unit/export8.3/browser/DB; không đọc privateconfig. Kiểm diff tài liệu, không test lại code vì không sửa code. Không gói/upload/merge/tag7–10/push/deploy.
+
 ## 26/10/2026 — Bổ sung rà khóa/grants và kế hoạch đồng thời/migration host
 
 Chỉ đọc source/tài liệu và soạn harness, không chạy runtime PHP/DB/browser. LOCAL_LOCK_GRANTS_REVIEW ghi36 vị trí FOR UPDATE trong ITA, không LOCK IN SHARE MODE tường minh, có reference động categories/departments; map route/call chain và phân biệt legacy ngoài phạm vi. Đối chiếu source MariaDB10.6 SELECT_ACL: không tự thêm UPDATE departments chỉ vì locking SELECT; events append-only bỏ UPDATE dự kiến, grants thực vẫn chưa kiểm. Harness hai context/cookie/actor, CSRF riêng +Promise.all cho ticket/last seat/same version đã soạn, node --check đạt; kiểm tĩnh danh sách khóa khớp36/36. Review phát hiện và đã siết bên thua phải409, không nhận403/422 bất kỳ làm PASS race; stale license không chứng minh riêng nhánh excess. **Chưa chạy**, SQL overlap/persistence/audit chưa chứng minh. Gate host005/006 nháp đòi inventory hiện tại, không suy12 bảng cũ nghĩa là thiếu4. PHP8.3 tin mới vẫn placeholder, **S26/unit/export8.3 chưa chạy**, không số giả. DB không kết nối, chờ câu xác nhận đúng schema. Không gói/upload/merge/tag7–10/push/deploy.
