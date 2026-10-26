@@ -60,9 +60,12 @@ Runtime: grant **từng bảng**, không `schema.*` INSERT (nếu có thì thu I
 |dc_users|SELECT trên8 cột đọc nêu trên; UPDATE(last_login,password_hash). Không INSERT/DELETE/DDL; nếu cơ chế SELECT FOR UPDATE yêu cầu khác, ghi lỗi chính xác trước nới|
 |ita_audit_logs|SELECT, INSERT; append-only, không UPDATE/DELETE|
 |ita_departments|SELECT (hiện không có route quản lý ghi bộ phận)|
-|ita_asset_categories, ita_settings, ita_assets, ita_licenses, ita_license_allocations, ita_assignments, ita_tickets, ita_ticket_events, ita_budget_plans, ita_import_batches, ita_user_roles, ita_user_scopes, ita_login_limits, ita_network_links|SELECT/INSERT/UPDATE theo nhu cầu source hiện tại; có thể siết thêm từng bảng/cột sau test|
+|ita_ticket_events|SELECT/INSERT; source hiện chỉ append, không UPDATE|
+|ita_asset_categories, ita_settings, ita_assets, ita_licenses, ita_license_allocations, ita_assignments, ita_tickets, ita_budget_plans, ita_import_batches, ita_user_roles, ita_user_scopes, ita_login_limits, ita_network_links|SELECT/INSERT/UPDATE theo nhu cầu source hiện tại; có thể siết thêm từng bảng/cột sau test|
 
 Không DELETE/REPLACE/TRUNCATE/LOCK TABLES/CREATE TEMPORARY TABLE trong đường runtime ITA đã rà; không đề xuất DELETE, LOCK TABLES hoặc CREATE TEMPORARY TABLES. Không suy sang legacy/vendor mọi chức năng. Kiểm `CURRENT_USER()`, SHOW GRANTS của **runtime thực**, role/inherited effective grants và transaction lock thực trước kết luận. Không dùng kết quả tài khoản phpMyAdmin quản trị làm grant của app.
+
+Rà36 vị trí locking SELECT tại [LOCAL_LOCK_GRANTS_REVIEW.md](LOCAL_LOCK_GRANTS_REVIEW.md). Có FOR UPDATE trên ita_departments (asset/assignment/license/import/forecast), nhưng source MariaDB10.6 kiểm SELECT_ACL cho SELECT/prepared SELECT; **chưa có căn cứ thêm UPDATE chỉ vì khóa**. Giữ SELECT-only bộ phận và kiểm với runtime Laragon thật sau xác nhận. Không áp kết luận này sang MySQL/phiên bản khác. Không thêm LOCK TABLES/UPDATE rộng để chữa lỗi chưa tái hiện.
 
 Ưu tiên cấu hình app qua Apache vhost private **ngoài Git/webroot**: ITA_DB_HOST=127.0.0.1, ITA_DB_PORT cổng local, ITA_DB_NAME tên đã xác nhận, ITA_DB_USER/PASSWORD runtime, ITA_STORE_ID=1, ITA_AUTH_KEY ngẫu nhiên local≥32 ký tự, ITA_LICENSE_KEY base64 của32 byte ngẫu nhiên test. Sinh khóa bằng công cụ local khi được giao, không dùng/reveal khóa host. Giữ khóa test để đọc ciphertext fixture; không đổi sau seed tùy tiện.
 

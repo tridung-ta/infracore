@@ -29,6 +29,8 @@ Dùng runtime test/DDL phù hợp có INSERT sự kiện trên DB local đã xá
 
 ## Hai phiên đồng thời thực
 
+Bộ chạy đã soạn tại tests/ita_local_concurrency_browser.js; quy trình/sessionprivate/payload/precondition/readback tại LOCAL_CONCURRENCY_RUN.md. Hai context/cookie và haiactorfake khác nhau, barrierclient +Promise.all; **chưa chạy**, không hứa overlapSQL từ Promise.all. Ràgrants/36 vị trí lock tại LOCAL_LOCK_GRANTS_REVIEW.md; không thêm UPDATEdepartments chỉ theo giả địnhMySQL, cần kiểmMariaDB10.6thực. Gatehostmigration005/006 là bản nháp riêng BE_GATE_HOST_MIGRATIONS_005_006.md, chưainventory/chưađượcchạy.
+
 Hai browser profile/session riêng localHTTPS, không hai tab chung cookie. Dùng cùng hồ sơ TEST; dựng barrier thao tác bằng công cụ khi được giao, lưu thứ tự request/response và kết quả DB, không suy đồng thời từ hai thao tác tuần tự.
 
 | Tình huống | Kỳ vọng |

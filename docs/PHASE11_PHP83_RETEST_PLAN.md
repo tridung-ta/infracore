@@ -1,5 +1,7 @@
 # S26-03 — Kế hoạch kiểm lại bằng PHP8.3, CHƯA CHẠY
 
+**Bổ sung26/10 — đầu vào chưa đủ:** tin nhắn mới vẫn để `[đường dẫn php.exe]` và `[dán]`, chưa cung cấp path/runtime/output thật. Không chạy PHP trên PATH8.5 rồi ghi8.3; S26/unit/export8.3/counterdeprecation đều **CHƯA CHẠY**, không có số liệu để điền. Khi có path thực, kiểm version/extensions rồi S26 trước, xác nhận dummy algo/cost khớp default thực; không cần kết nối DB cho các unitfake/export fixture này. Kết nốiDBlocal vẫn đợi câu xác nhận schema riêng.
+
 **Cập nhật26/10:** user sẽ tự dựng Laragon8.3/Apache/MariaDBlocal theo LOCAL_RUN.md. Kế hoạch CLI/fake transport dưới đây giữ nguyên; kiểm DB integration là lượt riêng theo LOCAL_DB_TEST_PLAN.md, chỉ sau câu xác nhận đúng tên DB. Hiện chưa runtime8.3 được cung cấp, chưa kết nối DB. Không dùng credential/config host. S26 vẫn là test chức năng đầu tiên và phải xác nhận dummy algo/cost khớp default8.3 thực.
 
 Theo user26/10/2026: chỉ lập kế hoạch, **chưa sửa code/test/vendor, chưa chạy**. User sẽ cung cấp runtime PHP8.3 nếu có. Không tự tải/cài PHP, Composer/dependency hoặc đổi php.ini/host; không tạo/kết nối DB test. Kết quả8.5.10 trước đây không đổi thành PASS8.3.
