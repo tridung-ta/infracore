@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Chốt hồ sơ20mục theo user, không sửa code
+
+Đồng bộ PHASE11_SECURITY_TEST_20.md từ PREUPLOAD_SECURITY_VERIFY.md; mục17–20 giữ **CHƯA KIỂM host**. User chấp nhận S26-01: MD5 native còn vì tương thích hệ thống cũ, không xóa/reset/NULL credential. S26-02 chỉ draft trong BE_GATE_11: chỉ ItaAuthService/không PmAuth, count verifier thay timing, giữ status/message; ghi rõ mâu thuẫn nếu vừa yêu cầu bcrypt failure verify hash thật vừa thêm dummy mà tổng chỉ1. Chưa build, chưa tự thay tiêu chí user. S26-03 có PHASE11_PHP83_RETEST_PLAN.md, chưa runtime/chưa biến thể/chưa chạy. Checklist host bổ sung HTTPS/Set-Cookie/header/CORS/display_errors và panel17–20. Chỉ rà tài liệu/diff, không chạy lại test; mọi số check vẫn là kết quả lượt trước, không PASS8.3/host mới. Không gói/upload/merge/tag7–10/push/deploy.
+
 ## 26/10/2026 — Lưu công cụ chuẩn bị/kiểm gói, chưa tạo ZIP ứng dụng
 
 Hoàn thiện phần chuẩn bị đã làm trước khi user bổ sung Word: prepare_ita_release.py chỉ sinh inventory review từ source cố định; ita_release_validation.py kiểm exact manifest/checksum/hash/CRC/path của ZIP khi có bước sau.66checks synthetic-memory đạt, không ZIP ứng dụng. Inventory tạm source dd03897 có1415file, không phải release hiện tại; cần sinh lại sau khi chốt security. Đã sửa sort Excel theo POSIX để khớp baseline và chặn NUL filename/reparse ZIP. RELEASE_PREPARATION_VERIFY.md ghi phạm vi/giới hạn; **đóng gói/upload vẫn dừng**, không DB/host/push/merge/tag7–10.

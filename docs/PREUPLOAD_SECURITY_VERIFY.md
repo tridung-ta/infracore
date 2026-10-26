@@ -2,6 +2,8 @@
 
 Đã đọc20 mục trong **“kiểm thử web trước khi upload lên Host.docx”** user gửi; không sửa DOCX, thực thi macro/link hoặc coi đề xuất Cloudflare là quyền đổi DNS/server. User yêu cầu kiểm xong mới đóng gói/upload.
 
+Bổ sung theo user26/10: S26-01 là **hạn chế chấp nhận được** vì tương thích hệ thống cũ, không xóa/reset credential. S26-02 chỉ soạn gate, chưa build; S26-03 chỉ lập kế hoạch PHP8.3, chưa chạy. Bản đồng bộ20 mục nằm tại PHASE11_SECURITY_TEST_20.md; các mục17–20 giữ **CHƯA KIỂM host**, không phải điều kiện local đã đạt.
+
 **Các bộ kiểm local dưới đây đạt, nhưng chưa đủ bằng chứng đánh dấu cả20 mục đạt trên host. Chưa đóng gói ứng dụng/upload.** Không tạo/kết nối DB, không đọc private config/credential hoặc gọi host. PHP CLI thực8.5.10, chưa8.3.33. Runtime kế thừa dd03897; không sửa PHP ứng dụng trong đợt này.
 
 ## Đối chiếu20 mục
@@ -28,12 +30,15 @@
 |16|CORS chỉ domain cần|Không thấy Access-Control-Allow-Origin/Allow-Credentials trong tập source ITA quét; ứng dụng cùng origin. Không tự thêm wildcard/allowlist. CORS vhost/proxy/CDN/legacy khác chưa kiểm. |
 |17|DB không public|**CHƯA KIỂM host:** không scan port hoặc kết nối DB. Quản trị xác minh bind/firewall/network đúng phạm vi, không gửi credential. |
 |18|DB user tối thiểu|**CHƯA KIỂM host:** không có SHOW GRANTS của chính runtime. SQL-tool user có thể khác PHP. Source cần SELECT/INSERT/UPDATE theo bảng; login có UPDATE dc_users hash/last_login. Không sửa/cấp grants hoặc coi nhu cầu source là quyền effective. |
-|19|Cloudflare|**CHƯA XÁC NHẬN:** không có bằng chứng DNS/CDN/account, không đổi DNS/proxy/cache. Không chứng minh bằng unit test. |
-|20|Backup/theo dõi lỗi|Log/ref fixture kiểm local. **Backup source/DB/key ngoài webroot, log ACL/rotation/alert/restore host chưa xác nhận.** Không tạo dump hoặc đọc log thật. |
+|19|Cloudflare|**CHƯA KIỂM host:** không có bằng chứng DNS/CDN/account, không đổi DNS/proxy/cache. Không chứng minh bằng unit test. |
+|20|Backup/theo dõi lỗi|**CHƯA KIỂM host:** backup source/DB/key ngoài webroot, log ACL/rotation/alert/restore chưa xác nhận. Log/ref fixture chỉ kiểm local; không tạo dump hoặc đọc log thật. |
+
+## Hạn chế chấp nhận được
+
+- **S26-01 — MD5 native còn lưu:** user chấp nhận giữ vì tương thích hệ thống cũ. PmAuth chỉ ghi password_hash/last_login, giữ password MD5; **không xóa/reset/NULL credential**, không đổi PmAuth hoặc luồng legacy trong bước này. Rủi ro dò MD5 khi lộ DB vẫn còn, không coi đã loại hash yếu hoặc nghiệm thu host. Thay chính sách sau này cần gate riêng, đối chiếu consumer và backup.
 
 ## Rủi ro còn lại
 
-- **S26-01 — MD5 native còn lưu:** PmAuth chỉ ghi password_hash/last_login, giữ password MD5. Bản MD5 còn làm giảm sức chịu dò nếu DB lộ dù đã có hash hiện đại. Giới hạn tương thích đã biết; không tự clear/reset credential hoặc sửa legacy. Muốn loại bỏ cần kế hoạch auth tương thích được duyệt riêng, đối chiếu mọi consumer và backup.
 - **S26-02 — Chi phí nhánh thất bại auth khác nhau từ source:** ItaAuthService khi không có user gọi password_hash rồi password_verify; user MD5 tồn tại nhưng sai mật khẩu có thể kết thúc bằng MD5 nhanh. Có khả năng lộ timing. **Chưa đo/tái hiện enumeration HTTP thực**, không khẳng định đã khai thác. Đề xuất dummy hash/failure-cost trong BE_GATE_11 nháp; chưa sửa PHP.
 - **S26-03 — Deprecation Excel/PHP8.5:** export thật tạo/mở lại XLSX STRING và render PDF tiếng Việt thành công nhưng PhpSpreadsheet/ZipStream có deprecation. Không sửa vendor/hạ error_reporting để che. Test Phase4 hiện có tự loại E_DEPRECATED, nên riêng output đó không chứng minh hết warning. Cần kiểm PHP8.3/FPM display_errors Off và bytes file thật; chưa chạy.
 - **Host chưa kiểm:** TLS/cookie/header/CORS cuối, legacy rewrite/deny, DB grants/network/isolation, staging ACL, backup/log và source đầy đủ.4 file mẫu Phase8 không chứng minh bảo vệ Phase11/13 đã có trên host. Không ghi toàn bộ đã ổn.
@@ -59,3 +64,5 @@ Browser static127.0.0.1:18766, server node workspace/session ita-phase06; log sy
 **Chưa đóng gói ứng dụng/upload.** Công việc trước chỉ tạo inventory JSON review1415file/105032697byte trong artifacts, không ZIP. Lỗi Excel được tái hiện: sort Path Windows cho hash80fc14a4…, sort relative POSIX ordinal khớp baseline88815432… cho566file. Đã sửa sort key, không thay dependency/baseline. Bản inventory sau sửa đạt kiểm đường dẫn/hash, không thay kiểm ZIP release thật hoặc xác nhận dependency backup ngoài máy dev.
 
 Sau khi các mục mở được chốt trong phạm vi user chấp nhận mới đóng gói/kiểm ZIP thật theo F11.5. Upload vẫn do user qua FileZilla; không suy quyền đổi host/DNS/grants từ checklist. Không push/merge/tag7–10 hoặc đổi nghiệm thu DB bằng kết quả local.
+
+Kế hoạch S26-03: PHASE11_PHP83_RETEST_PLAN.md; chưa có runtime user cung cấp, chưa sửa biến thể test hoặc chạy PHP8.3. Checklist host bổ sung HTTPS/Set-Cookie/header/CORS/display_errors và hosting panel17–20 tại PHASE11_HOST_TEST.md.

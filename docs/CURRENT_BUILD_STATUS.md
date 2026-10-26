@@ -1,5 +1,7 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
+**Chốt hồ sơ26/10:** user chấp nhận giữ MD5 native cho tương thích (S26-01), không xóa/reset credential. PHASE11_SECURITY_TEST_20.md đồng bộ báo cáo,17–20 vẫn CHƯA KIỂM host. S26-02 chỉ draft ItaAuthService/count-call, có điểm cần chốt về hash giả/bcrypt; chưa build. S26-03 chỉ kế hoạch runtime8.3/test đếm deprecation; chưa chạy. Chỉ tài liệu, không code/gói/upload/merge/tag/push/deploy; host/DB chưa nghiệm thu.
+
 **Kiểm trước upload26/10:** user bổ sung checklist Word20mục. Local đã chạy auth29checks, các unit/service/HTTP/browser và file export theo PREUPLOAD_SECURITY_VERIFY.md; không DB/host. Còn rủi ro/giới hạn auth, deprecation dependency và xác minh vận hành host. **Tạm dừng đóng gói/upload, không coi mọi mục đã ổn**, không push/merge/tag7–10 hoặc đổi nghiệm thu DB.
 
 **Cập nhật SQL26/10/2026:** user đã duyệt SQL #13. Có migration006 +preflight/verify/hướng dẫn và57 kiểm tĩnh đạt;179 BE13 hồi quy đạt. **Chưa chạy SQL, chưa có bảng/DB/host được xác nhận**, không tạo DB test/gói/push/deploy/merge/tag. Các ghi chú “SQL13 chưa duyệt” trong checkpoint trước bên dưới đã được thay bằng phê duyệt này; không suy thành áp dụng hoặc nghiệm thu. Xem PHASE13_SQL_HOST_GUIDE.md.

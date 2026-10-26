@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+26/10/2026 — User ghi nhận local đạt, host chưa nghiệm thu, chưa gói; chỉ cập nhật hồ sơ. PHASE11_SECURITY_TEST_20.md đồng bộ báo cáo,17–20 **CHƯA KIỂM host**. S26-01 MD5 native là hạn chế user chấp nhận, không xóa/reset credential. S26-02 chỉ draft ItaAuthService/counter, chưa build; S26-03 chỉ PHASE11_PHP83_RETEST_PLAN.md, chưa runtime/chưa chạy. PHASE11_HOST_TEST.md bổ sung đúng HTTPS/Set-Cookie/header cuối/CORS/display_errors và hosting panel cho DB network/grants/Cloudflare/backup-log. Không thao tác panel hoặc cấu hình, không upload/gói/deploy/merge/tag7–10/push.
+
 26/10/2026 — **Tạm dừng đóng gói/upload theo checklist Word mới của user.** Đã chạy các kiểm local trong PREUPLOAD_SECURITY_VERIFY.md, không chạy DB/host hoặc auth fixture reset. Các bộ local đạt, còn native MD5, nhánh timing chỉ thấy từ source, deprecation Excel trên PHP8.5 và các mục vận hành host chưa có bằng chứng. Không tạo ZIP ứng dụng; inventory JSON review không phải release/gói đã kiểm. Không đổi quyền deploy/DNS/grants, không push/merge/tag7–10.
 
 26/10/2026 — Đã nhận4 file đại diện do user tải về: module ITA/mode/dispatcher/layout có byte SHA256 khớp checkpoint Phase8 `1691c43` (4/4). User báo ita-dashboard.js chưa có. Chi tiết HOST_SOURCE_IDENTIFICATION_RESULT.md. **Chỉ xác minh file mẫu, chưa xác nhận source/hash toàn host hoặc gói/ngày upload**; không suy Phase9–13 hoàn toàn vắng hoặc schema đã/chưa có. Cần cập nhật cộng dồn đồng bộ, không dùng delta S11 lẻ. Chưa tạo gói/upload/DB/host; full inventory chưa thu thập, DB chưa nghiệm thu. Các ghi chú trước “chưa có file host” là trạng thái trước đợt nhận mẫu này.

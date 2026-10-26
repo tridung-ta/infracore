@@ -4,10 +4,34 @@
 
 PREUPLOAD_SECURITY_VERIFY.md đã đối chiếu20 mục user gửi. Không sửa PHP/auth/credential trong lượt kiểm này. Các đề xuất dưới đây chưa được mở chỉ vì user yêu cầu chạy kiểm thử:
 
-- **S26-01, MD5 giữ sau upgrade:** PmAuth ghi password_hash/last_login nhưng giữ cột password MD5 cho tương thích. Chưa đạt tiêu chí loại bỏ hash yếu. Nếu muốn thay cần khảo sát mọi consumer legacy, quyết định tương thích/cột nào được ghi, backup và kế hoạch chuyển đổi riêng; không tự NULL/reset/xóa credential hoặc đổi dc_*.
-- **S26-02, nhánh thất bại khác chi phí:** ItaAuthService thiếu user chạy password_hash+verify, còn user legacy sai mật khẩu có đường MD5 nhanh. Mới là finding từ source, **chưa chứng minh enumeration HTTP thực**. Đề xuất sửa trong ItaAuthService: dummy hash cố định hợp lệ, cân bằng phép verify chậm ở đường thất bại legacy/không có user, giữ message/limiter/long-password/auth contract, không thêm native write. Rủi ro: tăng CPU/latency hoặc bỏ sót nhánh disabled/ambiguous; test actual code với fake transport cho missing/disabled/MD5/modern/sai/đúng/long, đo có giới hạn không tuyên bố constant-time HTTP. Host timing/concurrency do user kiểm riêng. Rollback đúng service source backup, giữ limiter/audit/native credential.
+- **S26-01, MD5 giữ sau upgrade:** user chấp nhận giữ MD5 native vì tương thích hệ thống cũ. Đưa vào Hạn chế chấp nhận được; không xóa/reset/NULL credential, không đổi PmAuth hoặc dc_* trong phạm vi này. Không coi hash yếu đã được loại bỏ.
+- **S26-02:** thay đề xuất sơ bộ bằng contract/test-count chi tiết ngay dưới đây; **chưa duyệt BUILD**, không dùng đo thời gian để nghiệm thu.
 
 S26-03 deprecation dependency cần kiểm PHP8.3/HTTP bytes, không tự nâng vendor/Composer hoặc che warning. Host-only TLS/grants/Cloudflare/backup/log chưa kiểm; không tự thay server. Chưa tạo gói/upload.
+
+### S26-02 — Draft chỉ ItaAuthService, không đổi PmAuth
+
+**Trạng thái: chỉ soạn tài liệu theo user; chưa build.** File ứng dụng duy nhất dự kiến classes/services/itaauthservice.class.php. Không sửa PmAuth, schema/credential/cookie/session/limiter, endpoint hoặc config. Test mới chỉ fake transport/counter local, không DB/host. Không tạo hash mới mỗi request; dummy hash phải cố định, hợp lệ, không phải mật khẩu/secret thật và có algorithm/cost đã chốt.
+
+Yêu cầu user cần giữ khi duyệt thiết kế: ba nhánh thất bại (không tồn tại user, sai mật khẩu user MD5-only, sai mật khẩu user bcrypt) thực hiện **đúng một lần password_verify tương đương chi phí bằng hash giả**; cùng thông báo và HTTP401. Không cộng dummy verify sau đường bcrypt đã verify một lần rồi nhận là một lần. Limiter429, validation422, CSRF403 hoặc lỗi vận hành503 không được đổi thành401 hay tự thêm công việc hash để vượt guard; contract này nhắm các thất bại xác thực đã qua validation/limiter.
+
+**Điểm cần chốt trước BUILD, chưa tự thay yêu cầu:** bcrypt sai chỉ biết sau khi password_verify với hash thật. Nếu bắt buộc hash giả ở cả ba nhánh thì thêm dummy sau đó sẽ thành hai lần, trái tiêu chí tổng một lần. Không đổi sang crypt/tự viết thuật toán để lách bộ đếm hoặc bỏ kiểm hash thật. Vì vậy không hứa đã có thiết kế thỏa đồng thời hai điều kiện theo nghĩa đen.
+
+Phương án kỹ thuật để user cân nhắc (chưa coi là đã đồng ý): tổng đúng một verify ở mỗi nhánh401, **dummy cho user vắng/MD5-only sai; hash thật cho bcrypt sai**, algorithm/cost tương ứng cấu hình đã kiểm. ItaAuthService phải tránh gọi PmAuth ở đường thất bại rồi verify lần nữa; đường thành công vẫn giữ side effect native/audit hiện có và contract mật khẩu>72byte. Không giả một dummy cost cố định cân bằng được mọi hash cũ khác algorithm/cost. Nếu user vẫn yêu cầu cả ba dùng hash giả thì cần chốt lại cách xác thực bcrypt trước build; không triển khai một phương án trái yêu cầu.
+
+| Nhánh / tiêu chí | Counter cần quan sát khi thiết kế được chốt |
+|---|---|
+| User không tồn tại |tổng password_verify=1, dummy=1; cùng401/message |
+| MD5-only, sai mật khẩu |tổng password_verify=1, dummy=1; không native write; cùng401/message |
+| Bcrypt, sai mật khẩu |yêu cầu gốc:1dummy; mâu thuẫn nêu trên chưa chốt. Phương án thay thế:1real/0dummy, không thêm verify trong PmAuth |
+| Disabled/ITA mapping hết hiệu lực/định danh trùng |thất bại401 không lộ lý do; kiểm không bypass actor/limiter; xác định count cùng contract trước build |
+| Hash/cost không đúng cấu hình, long password và đăng nhập đúng |không cắt suffix, không đổi chuẩn xác thực/ghi native hiện có; không dùng hash sai format làm dummy rẻ hơn |
+
+**Cách kiểm:** dùng spy/counter tại điểm gọi verifier có thể kiểm soát trong ItaAuthService, cộng cả lời gọi thực sự ở downstream nếu đường đó còn gọi PmAuth; chỉ đếm wrapper hoặc chỉ đếm dummy là chưa đủ. Xác nhận hash truyền vào (dummy hay real/algorithm/cost), tổng count, HTTP/message và zero native write ở các nhánh401 với dữ liệu giả. Không dùng benchmark, ngưỡng ms, sleep hoặc timing HTTP để cho PASS; số lần gọi không chứng minh HTTP constant-time. Kiểm hồi quy login đúng username/email, upgrade/last_login/audit, rate limit, session/CSRF và long password bằng fake transport. Không thêm dependency/interceptor PHP cần cài host.
+
+**Rủi ro:** tăng CPU/DoS nếu bỏ limiter trước verify; vô tình gọi hai lần khi PmAuth đã verify; bypass xác thực bcrypt hoặc tạo khác biệt cost giữa hash legacy; thay đổi long-password/disabled/collision semantics; counter test thiếu downstream dẫn tới PASS giả. Không tuyên bố loại mọi enumeration chỉ từ count.
+
+**Hoàn tác:** trước thay source sau duyệt, chốt commit và backup đúng ItaAuthService; rollback phục hồi file đó, giữ PmAuth/config/native credential/limiter/audit/dữ liệu mới. Không reset tài khoản, xóa MD5 hoặc restore DB. Bản rollback có thể mở lại rủi ro S26-02 nên phải ghi rõ. Không deploy/gói trong bước soạn gate này.
 
 ## 23/10/2026 — Duyệt danh sách Quản lý loại Admin
 

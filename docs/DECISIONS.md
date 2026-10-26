@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 26/10/2026 — Chấp nhận S26-01 và chỉ lập kế hoạch S26-02/03
+
+Nguồn: user sau khi xem báo cáo20mục. S26-01 được ghi vào Hạn chế chấp nhận được: **MD5 native còn lưu vì tương thích hệ thống cũ; không xóa/reset credential**. Không sửa PmAuth/native/hash trong bước này. S26-02 chỉ soạn BE_GATE_11 cho ItaAuthService với yêu cầu một verify/nhánh thất bại, cùng message/status và test đếm số lần gọi, không đo thời gian; chưa duyệt BUILD. Điểm tổng1verify/hashgiả so với xác thực bcrypt thật phải được chốt trước triển khai, không hứa một contract mâu thuẫn. S26-03 chỉ kế hoạch kiểm PHP8.3 khi user cung cấp runtime, biến thể test đếm deprecation thay mask bỏ; chưa sửa/chạy. Mục17–20 giữ CHƯA KIỂM host. Không gói/upload/merge/tag7–10/push/deploy.
+
 ## 26/10/2026 — Duyệt DDL mạng #13, không thực thi bởi agent
 
 Nguồn: user nguyên văn **“duyệt SQL #13 tiếp tục BUILD”**. Mở chuẩn bị migration006 khớp DDL BE_GATE_13_SQL.md: một bảng ita_network_links, unique active pair nullable/generated, composite FK cùng store, không seed hoặc bảng cũ/dc_*. Agent không tạo/kết nối DB hoặc chạy SQL/host. User backup/xác nhận môi trường rồi tự áp dụng khi sẵn sàng theo PHASE13_SQL_HOST_GUIDE.md. File được duyệt không chứng minh đã có bảng, enforcement hoặc nghiệm thu; không mở gói/merge/tag7–10/push/deploy. Không xin lại cùng DDL đã được duyệt.

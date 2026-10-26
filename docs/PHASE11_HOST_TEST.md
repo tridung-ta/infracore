@@ -1,5 +1,23 @@
 # Phase11 — Checklist host, CHƯA CHẠY
 
+## Bổ sung26/10 — HTTPS, cookie/header và hosting panel17–20
+
+Chỉ checklist cho user khi được phép kiểm host, **chưa chạy**. Không tự upload/cấu hình/DNS/grants. Mục17–20 của PHASE11_SECURITY_TEST_20.md giữ CHƯA KIỂM host và được xác minh qua hosting panel/quản trị có quyền; không thay bằng unit local hoặc phpMyAdmin user khác.
+
+| Mã | Cách quan sát / tiêu chí | Kết quả thật |
+|---|---|---|
+|H-HTTPS|Gõ đúng `https://infracore.dung.derasoft.com/` và mở đường ITA cần kiểm; quan sát URL cuối vẫn HTTPS, certificate hợp lệ, không cảnh báo TLS/mixed-content. Không nhập credential trên HTTP hoặc bỏ qua cảnh báo chứng chỉ. TLS/redirect/proxy do hosting panel quản trị xác nhận, không tin chỉ X-Forwarded-Proto client tự khai | CHƯA KIỂM host |
+|H-COOKIE|DevTools Network quan sát **Set-Cookie** của ITA_SESSION ở phản hồi phù hợp: HttpOnly; Secure trên HTTPS; SameSite=Lax; Path=/, đồng thời kiểm Application/Cookies. Response không phát Set-Cookie không đủ kết luận; dùng phiên test được phép. Không chụp/copy giá trị cookie, không xuất HAR. Login có native last_login/hash side effect nên không tự mở ngoại lệ không ghi dc_* | CHƯA KIỂM host |
+|H-HEADERS|Network kiểm header cuối sau proxy/Apache/PHP-FPM trên login/shell/JSON/file/error: no-store/nosniff/CSP/Referrer/Permissions như source đã duyệt; không policy trùng/mâu thuẫn. HSTS chỉ quan sát trạng thái, không tự bật. Không xem HTTP fixture local là header host | CHƯA KIỂM host |
+|H-CORS|Kiểm response cuối và policy trong hosting panel/proxy/CDN: không ACAO wildcard hoặc phản chiếu Origin tùy ý; ACAC chỉ khi policy thực cần. Ứng dụng ITA cùng origin không cần tự mở CORS; thiếu header không phải lỗi tự động. Không thử CORS để ghi dữ liệu hoặc đổi cấu hình | CHƯA KIỂM host |
+|H-ERRORS|Hosting panel xác nhận PHP-FPM display_errors=Off, log_errors=On, log private/rotation/ACL; không tạo phpinfo/debug endpoint hoặc gây fatal trên production. Export test được phép phải đúng MIME/signature và không có warning/HTML trong bytes. Không hạ error_reporting để che deprecation | CHƯA KIỂM host |
+|17 — DB network|Hosting panel/quản trị xác nhận database bind/network/firewall/remote-access giới hạn phạm vi cần; không scan port, mở public DB hoặc gửi credential | CHƯA KIỂM host |
+|18 — Runtime grants|Hosting panel đối chiếu đúng DB user ứng dụng và quyền hiệu lực tối thiểu từng bảng; SHOW GRANTS chỉ có giá trị cho user/role đang kiểm, không mặc định phpMyAdmin=runtime. Không tự cấp/thu quyền hoặc đưa credential DDL vào config app | CHƯA KIỂM host |
+|19 — Cloudflare|Hosting/DNS panel và Cloudflare dashboard nếu có: xác nhận trạng thái/proxy/TLS/CORS/cache trong phạm vi user quản trị. Nếu không dùng ghi rõ chưa cấu hình; không đổi DNS/proxy/cache để cho checklist đạt | CHƯA KIỂM host |
+|20 — Backup/log|Hosting panel xác nhận backup source/DB/key ngoài webroot, lịch/thời điểm/phạm vi, quyền truy cập và theo dõi lỗi/rotation/cảnh báo; khả năng restore có bằng chứng riêng, không restore đè dữ liệu thật hoặc lấy dump vào chat | CHƯA KIỂM host |
+
+Ghi source/gói/giờ kiểm và kết quả Đạt/Không/Chưa kiểm với bằng chứng đã che; không đánh dấu tất cả đã đạt từ việc đăng nhập hoặc tải một file. Checklist này không mở quyền gói/upload và không nghiệm thu DB. Các bước lịch sử dưới đây vẫn giữ để đối chiếu.
+
 **Source(g)23/10:** app/module/error boundary đã thêm Referrer-Policy=strict-origin-when-cross-origin, Permissions-Policy=camera=(), microphone=(), geolocation=(); PHASE11_PRIVACY_HEADERS_VERIFY.md. Trên host kiểm header cuối đúng một policy mỗi tên, shell/login/API/file/error và chức năng hiện có không bị ảnh hưởng. HSTS chưa thêm trong code; proxy/server có thể có policy riêng chưa xác minh. Không tự bật HSTS hoặc sửa config để làm checklist qua.
 
 **Source(f)23/10:** lỗi HTML/JSON và log ứng dụng đã build local (PHASE11_ERROR_HTTP_VERIFY.md). Cần kiểm host mã HTTP/MIME/ref và log private thực tế; PHP-FPM display_errors/log_errors/ACL/rotation, startup/fatal trước boundary và Apache ErrorDocument chưa được sửa/xác minh. Không coi lỗi ứng dụng đã đẹp là cấu hình server đã đạt. Delta3 file export cũ không chứa error boundary/template/CSS/bootstrap/module/guard mới; chưa có gói mới.
