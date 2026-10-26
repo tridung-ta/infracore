@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Bắt đầu xác định source host, chỉ chuẩn bị local
+
+User yêu cầu “bắt đầu” bước bàn giao. Đã lập HOST_SOURCE_FINGERPRINTS.csv gồm30 dòng SHA256 Git blob từ6 commit/5file và HOST_SOURCE_IDENTIFICATION.md hướng dẫn FTP Binary/path riêng. Đã kiểm tmp/host-inventory được ignore và không tracked. **Chưa có file/listing host, inventory CHƯA THU THẬP, chưa đối chiếu hoặc ghi PASS**. Không đọc/chạy host/DB, không gói/merge/tag7–10/push/deploy; DB/host chưa nghiệm thu.
+
 ## 26/10/2026 — SQL #13 được duyệt, migration chỉ chuẩn bị local
 
 User xác nhận nguyên văn **“duyệt SQL #13 tiếp tục BUILD”**. Migration006 tạo duy nhất ita_network_links khớp CREATE trong gate; preflight/verify chỉ đọc và hướng dẫn áp dụng/rollback đã có.57 static SQL contract checks +179 PHP BE13 hồi quy đạt; static không chứng minh parser/enforcement/FK/unique/rollback DB. Không tạo/kết nối DB, không chạy SQL/host, không seed/gói/merge/tag7–10/push/deploy. Schema **đã duyệt file, chưa áp dụng/chưa nghiệm thu**; các dòng cũ “SQL13 chưa duyệt” bên dưới là lịch sử.

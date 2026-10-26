@@ -6,6 +6,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+26/10/2026 — Bắt đầu nhận diện source: đã chuẩn bị HOST_SOURCE_FINGERPRINTS.csv (30 hash tham chiếu Git local) và HOST_SOURCE_IDENTIFICATION.md. User tải5file đại diện bằng FTP Binary vào tmp/host-inventory/files khi sẵn sàng; **hiện chưa có file host, chưa đối chiếu và chưa xác định source host**. Hash Git không thay manifest payload gói thực. Không tạo gói/upload/chạy host/DB hoặc cập nhật ngày deploy.
+
 26/10/2026 — User “duyệt SQL #13 tiếp tục BUILD”: đã chuẩn bị database/migrations/006_ita_network_links.sql theo đúng DDL, database/host/phase13_preflight.sql +phase13_verify.sql chỉ đọc, hướng dẫn PHASE13_SQL_HOST_GUIDE.md.57 kiểm tĩnh +179 PHP hồi quy đạt; không SQL parser/DB proof. **Chưa áp dụng, chưa upload/gói, chưa xác nhận bảng mới/host source**, không ghi Đạt DB hoặc ngày migration giả. User backup source/DB, xác nhận schema/phiên bản và tự áp dụng khi sẵn sàng; runtime không cần DDL/DELETE. Giữ dữ liệu mới khi rollback source; không DROP/restore đè. Không merge/tag7–10/push/deploy. Ghi chú SQL chưa duyệt trước đây là lịch sử.
 
 23/10/2026 — BE13: user duyệt source; API/DAO/service và FE live đã build/kiểm local. **Chưa upload, chưa tạo gói, schema mới chưa duyệt/chạy**, không coi host có bảng hoặc cùng source. Xem PHASE13_BE_VERIFY.md và BE_GATE_13_SQL.md. Runtime cần SELECT/INSERT/UPDATE đúng bảng mới, không DELETE/DDL; quyền/grants thật chưa kiểm. Khi được giao gói sau này phải review nền/schema/dependencies toàn bộ, không ghép vào delta S11 ba file. Backup source/DB trước triển khai do user làm; rollback source giữ link/audit/dữ liệu mới, không DROP/restore đè. Không merge/tag7–10/push/deploy.
