@@ -7,8 +7,8 @@
  async function three(){
   if(!window.ItaNetwork?.view().nodes.length)return;
   const current=++sequence;mode='loading';controls();$('network-3d-status').textContent=prefix+'Đang tải mô hình 3D…';
-  try{module=module||await import('/assets/ita/js/ita-network-scene.js?v=20261026-labels');if(current!==sequence||location.hash!=='#network')return;
-   mode='3d';controls();build();if(mode==='3d'&&scene)$('network-3d-status').textContent=prefix+'Rê chuột trong khung để xoay trái/phải và nghiêng lên/xuống; chế độ giảm chuyển động dùng nút xoay. Chọn thiết bị bằng danh sách hoặc bấm khối. Không có giám sát mạng thật.';
+  try{module=module||await import('/assets/ita/js/ita-network-scene.js?v=20261026-orbit');if(current!==sequence||location.hash!=='#network')return;
+   mode='3d';controls();build();if(mode==='3d'&&scene)$('network-3d-status').textContent=prefix+'Giữ chuột trái và kéo để xoay 360° ngang/dọc, kể cả xem từ dưới lên. Rê nhẹ để nghiêng; chế độ giảm chuyển động vẫn kéo hoặc dùng nút xoay. Bấm khối hoặc chọn trong danh sách để xem thiết bị. Không có giám sát mạng thật.';
   }catch(error){if(current===sequence)two('3D chưa khả dụng. Sơ đồ 2D và bảng đối chiếu vẫn dùng được.');}
  }
  $('network-show-2d').addEventListener('click',()=>two());$('network-show-3d').addEventListener('click',three);

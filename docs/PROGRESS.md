@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Xoay360° hai trục bằng kéo chuột
+
+User muốn bỏgiới hạn xemtheochiềudọc. Thêm mouse drag pointercapture, pitch/yaw khôngclamp; thảgiữgóc, thresholdclick4px/upkhôngdrag, giữhover/nút/fullscreen. Nhãnproject8góc vẫntrênkhối khilật. Review tìm regressiontap touch/pen, đãtách tap khôngcapture/ngănscroll, swipe/cancelkhôngselect.28orbit +32pointer/tap +23fullscreen +23WebGL hồiquy +Smarty/syntax/diff đạt, ảnhunderneathMOCKđãrà. PHASE13_ORBIT_VERIFY ghi cáchdùng **giữ chuột trái vàkéo**, khônghứahoverkhôngbấmcóthểquayliêntục. ChỉFE, chưaDB/host/PHP8.3; ZIPcũchưacóthayđổi, chưaZIPmới/upload/push/merge/tag7–10.
+
 ## 26/10/2026 — Fullscreen3D và tên trên từng khối
 
 User yêu cầu nút toàn màn hình3D +nhãn tên nhỏ. Chỉ FE5file:CSS/controller/scene/layout/partial. FullscreenAPI thật với toolbarxoay/chọnthiếtbị/thoát bên trong, Esc/focus/aria, nhãnDOMtextContent chiếu theo3D, disposal và cacheversion.23checks fullscreen/label mới +24pointer +23WebGL +31liveAPImock +Smarty/syntax/diff đạt; ảnhdesktop/mobile đã rà, bố trí8nhãn không chồng ở768/390, khôngDB/host. Review tìm thiếu nútxoay trongfullscreen cho reduced-motion, đãsửa vàkiểm bànphímxoaythực. Chi tiết PHASE13_FULLSCREEN_VERIFY.md. ZIP cũ81f3c55 không chứa pointer/fullscreen mới; chưaZIPmới/upload/push/merge/tag7–10, khôngthayquyền/config/DB.

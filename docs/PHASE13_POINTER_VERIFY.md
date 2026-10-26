@@ -1,5 +1,7 @@
 # Phase13 — Xoay 3D theo con trỏ,26/10/2026
 
+Cập nhật: user yêu cầu xoay360° thêm, đã bổ sung **kéo chuột** khônggiới hạn ngang/dọc tại PHASE13_ORBIT_VERIFY.md. Hovernhẹ cũ giữgiới hạn như ghi dưới; mô tảbanđầu khôngcócamera/xoaytựdo khôngthay trạngtháimới. Clickraycast hiệnphânbiệt bằngpointerdown/up khôngkéo; touch/pen giữtap riêng. Bằngchứng24checks dưới là lượtbanđầu, bộpointer hiện32checks sau bổsungtap.
+
 User yêu cầu rê chuột trái/phải/ngang/dọc/lên/xuống, giữ nút chức năng. Chỉ FE: ita-network-scene.js, ita-network-3d.js và version script trong layout Smarty. Không PHP/API/SQL/auth, không host/DB, không sửa dữ liệu hoặc mô hình mạng thật.
 
 Trong khung3D, chuột điều khiển yaw±0.65radian và pitch±0.4radian theo vị trí trong canvas. Gộp pointermove vào tối đa một RAF đang chờ, render theo thao tác, không loop tự quay/polling. Pointerleave reset offset chuột, giữ góc nền do nút trái/phải thiết lập. Giữ nút2D/3D/trái/phải, raycast chọn khối và danh sách chọn thiết bị. Touch không bắt chuyển động để giữ cuộn trang; prefers-reduced-motion tắt hover, nút xoay vẫn dùng, đổi preference reset góc hover. Dispose hủy RAF/listener/observer/material/geometry/context; đổifilter/2D/rờitrang không giữ scene cũ. URL controller/module tăng version để tránh cache cũ.

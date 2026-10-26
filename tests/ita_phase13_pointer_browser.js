@@ -36,11 +36,22 @@ async(page)=>{
    }
    await p.locator('#network-node-list button').nth(2).click();check((await p.locator('#network-detail-title').textContent()).includes('Switch trung tâm'),'List selection preserved with pointer control');
    const selected=await canvas.evaluate(n=>{
-    const r=n.getBoundingClientRect();n.dispatchEvent(new PointerEvent('pointerdown',{clientX:r.left+r.width/2,clientY:r.top+r.height/2}));
+    const click=(x,y)=>{for(const type of ['pointerdown','pointerup'])n.dispatchEvent(new PointerEvent(type,{pointerType:'mouse',pointerId:7,button:0,clientX:x,clientY:y}));};const r=n.getBoundingClientRect();click(r.left+r.width/2,r.top+r.height/2);
     const mesh=window.__testGroup.children.find(x=>x.isMesh),v=mesh.position.clone();mesh.localToWorld(v.set(0,0,0));v.project(window.__testCamera);
-    n.dispatchEvent(new PointerEvent('pointerdown',{clientX:r.left+(v.x+1)*r.width/2,clientY:r.top+(1-v.y)*r.height/2}));return mesh.userData.id;
+    click(r.left+(v.x+1)*r.width/2,r.top+(1-v.y)*r.height/2);return mesh.userData.id;
    });
    check(await p.locator('#network-node-list [aria-pressed="true"]').getAttribute('data-network-node')===String(selected),'Raycast click on 3D block still selects device');
+   for(const type of ['touch','pen']){
+    const result=await canvas.evaluate((n,type)=>{
+     const r=n.getBoundingClientRect(),mesh=window.__testGroup.children.find(x=>x.isMesh),v=mesh.localToWorld(mesh.position.clone().set(0,0,0)).project(window.__testCamera),x=r.left+(v.x+1)*r.width/2,y=r.top+(1-v.y)*r.height/2;
+     let hits=0;const count=()=>hits++;addEventListener('ita:network-select',count);
+     const fire=(event,dx=0,dy=0)=>n.dispatchEvent(new PointerEvent(event,{pointerType:type,pointerId:9,button:0,clientX:x+dx,clientY:y+dy}));
+     fire('pointerdown');fire('pointerup');const tap=hits;
+     fire('pointerdown');fire('pointermove',30,30);fire('pointerup',30,30);const swipe=hits-tap;
+     fire('pointerdown');fire('pointercancel');fire('pointerup');const cancelled=hits-tap-swipe;removeEventListener('ita:network-select',count);return{tap,swipe,cancelled};
+    },type);
+    check(result.tap===1,type+' tap selects block');check(result.swipe===0&&result.cancelled===0,type+' swipe/cancel does not select');
+   }
    await canvas.evaluate(n=>{n.dispatchEvent(new PointerEvent('pointermove',{pointerType:'mouse',clientX:100,clientY:100}));document.getElementById('network-show-2d').click();});
    await p.waitForTimeout(80);check(await canvas.count()===0,'2D disposes scene with pending pointer frame');
    check(errors.length===0,'No uncaught pointer/disposal error');
