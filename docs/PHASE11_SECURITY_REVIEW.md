@@ -1,5 +1,7 @@
 # F11.2 — Rà soát bảo mật chỉ đọc, 22/10/2026
 
+**Bổ sung26/10 S26-02 sau duyệt riêng:** ItaAuthService đã sửa/test local một verify/401, không native write401; ngoại lệ Argon2 một real verify user chấp nhận, PmAuth không đổi. S26_AUTH_VERIFY.md ghi686counter/query checks và hồi quy, giới hạn không constant-time/HTTPDB/MyISAM/host. Không auto_prepend/HSTS/gói/upload. Phần rà22/10 dưới đây là snapshot lịch sử.
+
 **Cập nhật(g)23/10 sau duyệt riêng:** module/error boundary đã có Referrer-Policy và Permissions-Policy giới hạn camera/microphone/geolocation;102 HTTP local checks đạt, không HSTS/host config. Những dòng “chưa thấy Referrer/Permissions” bên dưới là quan sát22/10 trước sửa. Host cuối chưa kiểm, CSP unsafe-inline/MD5/GET audit và các hạn chế còn lại không đổi.
 
 **Cập nhật23/10:** sau user duyệt(c)/(d), project-start đã có gate; PHP/Apache source đã deny tests/artifacts/scripts/MOCK trước static, không còn allowlist MOCK. Kiểm109 PHPHTTP fixture +75 pure đạt, review độc lập không finding trong diff; **Apache/host chưa chạy**. Những mô tả “MOCK đang allowlist/project-start chưa guard” bên dưới là finding tại thời điểm review22/10, không phải source hiện tại. Vẫn phụ thuộc rewrite cho direct module/library/static khác; không auto_prepend hoặc tuyên bố legacy an toàn. Xem PHASE11_GUARD_VERIFY.md.

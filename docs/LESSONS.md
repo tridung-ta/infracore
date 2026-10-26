@@ -1,5 +1,13 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 26/10/2026 — Bcrypt variant không được nhận diện chỉ bằng password_get_info
+
+- Triệu chứng/phân loại: S26-02 mới từ chối bcrypt2a/2b/2x hợp lệ dù PmAuth cũ/password_verify chấp nhận.
+- Bằng chứng: review tái hiện bằng hash giả local, test đỏ ở case2a; password_get_info có thể trảunknown cho các prefix này. Không DB/host.
+- Sửa: nhận diện format/cost bcrypt2a/2b/2x/2y đầy đủ, giữ guard>72byte và không fallback MD5 khi modern hash có giá trị; không đổi PmAuth.
+- Kiểm: case đúng/sai từngvariant một real verify, zero native write401,686checks S26+hồi quy đạt. Argon2 ngoại lệ riêng theo user; không benchmark/tuyên bố constant-time.
+- Phạm vi: phân loại credential để chọn real/dummy verify; metadata hash không thay verify mật khẩu thực.
+
 ## 26/10/2026 — Hash cây dependency và filename ZIP trên Windows
 
 - Triệu chứng/phân loại: inventory báo Excel lệch baseline dù vẫn566file; validator synthetic ban đầu chấp nhận tên ZIP có NUL sau phần filename hợp lệ.

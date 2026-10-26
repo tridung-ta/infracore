@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 26/10/2026 — Duyệt BUILD S26-02 và ngoại lệ Argon2
+
+Nguồn: user “OK BUILD S26-02 với chỉnh sửa” kèm7điều kiện và trả lời thêm **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**. Cho sửa duy nhất ItaAuthService(+test): mọi401 sau validation/limiter một verify, dummy cho missing/MD5-only sai, real cho bcrypt/Argon; cùng message/status và không native write401. Dummy là hằng số generated một lần, chọn algo/cost khớp PmAuth PASSWORD_DEFAULT; không gọi PmAuth verify lại, không sửa PmAuth. Giữ native success upgrade/last_login/audit, limiter/session/CSRF/long password; counter kiểm service và downstream, không đo timing. Đếm verify không chứng minh hằng thời gian. S26-01 MD5 tương thích đã chấp nhận, không xóa/reset credential. Auto_prepend/HSTS KHÔNG duyệt; PHP8.3 do user cung cấp riêng cho S26-03, chưa chạy. Không DB/gói/upload/merge/tag7–10/push/deploy.
+
 ## 26/10/2026 — Chấp nhận S26-01 và chỉ lập kế hoạch S26-02/03
 
 Nguồn: user sau khi xem báo cáo20mục. S26-01 được ghi vào Hạn chế chấp nhận được: **MD5 native còn lưu vì tương thích hệ thống cũ; không xóa/reset credential**. Không sửa PmAuth/native/hash trong bước này. S26-02 chỉ soạn BE_GATE_11 cho ItaAuthService với yêu cầu một verify/nhánh thất bại, cùng message/status và test đếm số lần gọi, không đo thời gian; chưa duyệt BUILD. Điểm tổng1verify/hashgiả so với xác thực bcrypt thật phải được chốt trước triển khai, không hứa một contract mâu thuẫn. S26-03 chỉ kế hoạch kiểm PHP8.3 khi user cung cấp runtime, biến thể test đếm deprecation thay mask bỏ; chưa sửa/chạy. Mục17–20 giữ CHƯA KIỂM host. Không gói/upload/merge/tag7–10/push/deploy.

@@ -1,5 +1,7 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
+**S26-02 được duyệt/build26/10:** chỉ ItaAuthService(+test), không đổi PmAuth;686checks mới và hồi quy đạt, S26_AUTH_VERIFY.md. Argon2 ngoại lệ một real verify, không dummy; MD5 tương thích được chấp nhận. Counter không chứng minh hằng thời gian; DB/host/PHP8.3 chưa chạy. Auto_prepend/HSTS KHÔNG duyệt, không gói/upload/merge/tag/push/deploy. Ghi chú S26-02 chưa duyệt bên dưới là trước phê duyệt mới này.
+
 **Chốt hồ sơ26/10:** user chấp nhận giữ MD5 native cho tương thích (S26-01), không xóa/reset credential. PHASE11_SECURITY_TEST_20.md đồng bộ báo cáo,17–20 vẫn CHƯA KIỂM host. S26-02 chỉ draft ItaAuthService/count-call, có điểm cần chốt về hash giả/bcrypt; chưa build. S26-03 chỉ kế hoạch runtime8.3/test đếm deprecation; chưa chạy. Chỉ tài liệu, không code/gói/upload/merge/tag/push/deploy; host/DB chưa nghiệm thu.
 
 **Kiểm trước upload26/10:** user bổ sung checklist Word20mục. Local đã chạy auth29checks, các unit/service/HTTP/browser và file export theo PREUPLOAD_SECURITY_VERIFY.md; không DB/host. Còn rủi ro/giới hạn auth, deprecation dependency và xác minh vận hành host. **Tạm dừng đóng gói/upload, không coi mọi mục đã ổn**, không push/merge/tag7–10 hoặc đổi nghiệm thu DB.

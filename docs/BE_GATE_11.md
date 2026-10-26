@@ -1,5 +1,11 @@
 # BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f)/(g) app và phân trang thống kê; phần còn lại NHÁP
 
+## 26/10/2026 — S26-02 ĐÃ DUYỆT kèm điều kiện, source kiểm local
+
+User “OK BUILD S26-02 với chỉnh sửa”: chỉ ItaAuthService(+test), không PmAuth; một verify cho mỗi401 sau validation/limiter, dummy cho missing/MD5 và real cho bcrypt, mọi401 không native write; dummy cố định cùng default algo/cost PmAuth; guard429/422/403/503 không padding; count service+downstream, không đo thời gian. User chốt thêm **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**. Điểm cần chốt của draft dưới đã được giải quyết theo phương án này, không xin lại cùng phạm vi.
+
+Đã triển khai đúng một file ứng dụng và test riêng, kiểm local theo S26_AUTH_VERIFY.md (686checks mới +hồi quy); không sửa PmAuth/native credential thật, không DB/host. S26-01 vẫn hạn chế chấp nhận, không xóa/reset credential. **(e) auto_prepend KHÔNG duyệt; (g) HSTS KHÔNG duyệt.** Không gói/upload/merge/tag7–10/push/deploy. S26-03 đợi user cung cấp runtime8.3 riêng, chưa chạy. Draft trước duyệt dưới đây giữ làm lịch sử, không thay điều kiện mới.
+
 ## 26/10/2026 — Bổ sung auth từ checklist trước upload, CHƯA DUYỆT BUILD
 
 PREUPLOAD_SECURITY_VERIFY.md đã đối chiếu20 mục user gửi. Không sửa PHP/auth/credential trong lượt kiểm này. Các đề xuất dưới đây chưa được mở chỉ vì user yêu cầu chạy kiểm thử:

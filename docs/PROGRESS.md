@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — BUILD S26-02 theo duyệt và ngoại lệ Argon2
+
+User duyệt một verify/nhánh401, zero native write401, dummy cố định matching PmAuth default, không đổi PmAuth, không padding guard khác; test counters service/downstream, không đo thời gian. User chốt **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**. Chỉ sửa ItaAuthService(+test): service xác thực trước native success writes và recheck quyền/identity/credential; giữ upgrade/last_login/audit/limiter/session/long-password.686counter/query checks mới +29auth +159license +30/54export +179network/13routes và102/56/109HTTPfixture đạt. PmAuth git diff rỗng. Review phát hiện và đã sửa regression bcrypt2a/2b/2x, test đỏ→đạt. S26_AUTH_VERIFY.md ghi giới hạn MyISAM/DB/HTTP/8.3. **Đếm verify không chứng minh hằng thời gian.** S26-01 MD5 được chấp nhận, không xóa/reset; auto_prepend/HSTS KHÔNG duyệt, S26-03 chưa runtime/chưa chạy. Không gói/upload/merge/tag7–10/push/deploy hoặc nghiệm thu DB/host.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| S26-02 | Một verify cho401, không native write khi từ chối | BE/test | [x] local | Commit chức năng chứa dòng này |686checks counter +hồi quy tại S26_AUTH_VERIFY | Chỉ ItaAuthService; PmAuth không đổi; Argon ngoại lệ user duyệt |
+
 ## 26/10/2026 — Chốt hồ sơ20mục theo user, không sửa code
 
 Đồng bộ PHASE11_SECURITY_TEST_20.md từ PREUPLOAD_SECURITY_VERIFY.md; mục17–20 giữ **CHƯA KIỂM host**. User chấp nhận S26-01: MD5 native còn vì tương thích hệ thống cũ, không xóa/reset/NULL credential. S26-02 chỉ draft trong BE_GATE_11: chỉ ItaAuthService/không PmAuth, count verifier thay timing, giữ status/message; ghi rõ mâu thuẫn nếu vừa yêu cầu bcrypt failure verify hash thật vừa thêm dummy mà tổng chỉ1. Chưa build, chưa tự thay tiêu chí user. S26-03 có PHASE11_PHP83_RETEST_PLAN.md, chưa runtime/chưa biến thể/chưa chạy. Checklist host bổ sung HTTPS/Set-Cookie/header/CORS/display_errors và panel17–20. Chỉ rà tài liệu/diff, không chạy lại test; mọi số check vẫn là kết quả lượt trước, không PASS8.3/host mới. Không gói/upload/merge/tag7–10/push/deploy.
