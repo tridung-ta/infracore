@@ -1,5 +1,9 @@
 # Hướng dẫn sử dụng InfraCore
 
+## Bảng trên Tổng quan — điều hướng FE local26/10
+
+Ba bảng đối chiếu dưới biểu đồ và bảng thiết bị đề xuất thay thế hiển thị20 dòng/trang. Dùng Trước/Sau tại từng bảng; trang các bảng độc lập. Biểu đồ, KPI và giờ số liệu giữ toàn bộ tập lọc, không tính lại theo trang đang xem. Áp dụng bộ lọc hoặc Làm mới nhận response mới sẽ đưa các bảng về trang1. Khi tải lỗi, dữ liệu cũ giữ nguyên mốc thời gian; chỉ làm mới lại khi muốn thử. Phần này đã kiểm bằng API mock local, chưa xác nhận upload/layout PHP thật trên host.
+
 ## Hạ tầng mạng — source live đã build local, chưa triển khai host
 
 Sau khi schema/source được duyệt triển khai và xác minh trên host, Admin IT và Quản lý có thể mở Hạ tầng mạng, lọc mã/tên thiết bị và bộ phận; giới hạn200 thiết bị/400 liên kết, vượt giới hạn cần thu hẹp bộ lọc. Chọn thiết bị trong sơ đồ2D/3D hoặc nút danh sách để đọc thông tin tài sản. Đây là **liên kết khai báo**, không kiểm tra kết nối, đo tốc độ hoặc quét mạng. Bảng liên kết20 dòng/trang; tổng và sơ đồ giữ toàn tập lọc.

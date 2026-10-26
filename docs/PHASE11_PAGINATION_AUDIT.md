@@ -1,5 +1,9 @@
 # Rà danh sách và phân trang —22/10/2026
 
+## Cập nhật26/10 — Bảng dashboard có điều hướng FE
+
+Ba bảng đối chiếu biểu đồ và bảng đề xuất thay thế20 dòng/trang phía client;44 browser mới +64 hồi quy đạt, xem PHASE11_DASHBOARD_TABLES_VERIFY.md. Chart vẫn toàn tập response, KPI/mốc số liệu giữ nguyên, chuyển trang không fetch hoặc dựng lại chart. Hàng Dashboard groups/replacements trong bảng lịch sử bên dưới chỉ còn đúng về chi phí server/bounded dataset; không còn render toàn bộ dòng bảng cùng lúc. Đây không phải SQL pagination: server vẫn đọc/tính/trả cùng tập có guard. Chưa đo SQL/payload/DB/host hoặc nâng giới hạn.
+
 ## Cập nhật23/10 — Dòng ngân sách có điều hướng FE, BE vẫn mở
 
 Bảng ngân sách hiện20 dòng/trang phía client, giữ tổng/snapshot/export toàn nguồn;24 browser mới +42 hồi quy đạt, PHASE11_FORECAST_ROWS_VERIFY.md. Server vẫn tính/trả toàn bộ rows trong giới hạn1000 dòng/2000 asset; chưa LIMIT/OFFSET SQL hay giảm payload. Hàng Dòng forecast trong bảng dưới vẫn là việc tối ưu BE còn mở, không đánh dấu SQL pagination đã xong.

@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Điều hướng bảng dashboard, chỉ FE
+
+Tiếp tục phần bảng nhóm/đề xuất còn mở trong audit: bốn bảng20 dòng/trang phía client, độc lập và không gọi API khi chuyển trang; giữ chart toàn tập/KPI/tỷ lệ/mốc số liệu.44 browser mới +64 hồi quy Phase10/Smarty/syntax/diff đạt, detector[] và review độc lập không finding. PHASE11_DASHBOARD_TABLES_VERIFY.md. Không PHP/SQL/quyền/DB/host; SQL13 chưa duyệt, không gói/merge/tag7–10/push/deploy. Không coi client pagination là tối ưu SQL hoặc nghiệm thu host.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.3 bổ sung | Điều hướng bảng dashboard | FE | [x] local | Commit chức năng chứa dòng này | 44 browser API mock mới +64 hồi quy, Smarty/syntax/review | 20 dòng/trang; chart toàn nguồn, không SQL pagination |
+
 ## 23/10/2026 — F13.1 source BE được duyệt, SQL chưa duyệt
 
 User xác nhận nguyên văn **“Duyệt BUILD source BE13”**. Đã xây dựng DAO/service/GET network/network-detail/POST network-save và FE live, Admin quản lý, Manager chỉ đọc cạnh có cả hai đầu trong scope, Support403. Không tạo/kết nối DB hoặc chạy SQL/host; không gói/merge/tag7–10/push/deploy. Schema mới chỉ gate riêng BE_GATE_13_SQL.md chưa duyệt/chưa chạy. F13.1 [x] **source local**, phần schema/DB vẫn [G]/chưa nghiệm thu; trạng thái cũ “BE13 chưa duyệt” bên dưới là lịch sử.

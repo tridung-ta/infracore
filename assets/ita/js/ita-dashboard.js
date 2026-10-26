@@ -6,6 +6,7 @@
   if(!panel)return;
  const tiers={replace:'Thay thế',watch:'Theo dõi',normal:'Bình thường',missing:'Chưa đủ dữ liệu'};
  let view='',page=1,sequence=0,request,exportRequest,documentData,applied={},charts=[],observers=[],busy=false,badgeLoaded=false,badgeRequest;
+ let tableControls=[],tableLoading=false;
  const node=(tag,text)=>{const n=document.createElement(tag);
   if(text!==undefined)n.textContent=String(text);
   return n;
@@ -42,6 +43,27 @@
   wrap.append(t);
   return wrap;
   }
+ /** Page presentation only; chart series and server totals always retain all rows. */
+ function pagedTable(headers,rows,caption){
+  const section=node('div'),body=node('div'),nav=node('nav'),previous=node('button','Trước'),next=node('button','Sau'),label=node('span');
+  section.dataset.dashPaged=caption;
+  nav.className='pagination-controls';nav.setAttribute('aria-label','Trang bảng '+caption);
+  label.setAttribute('aria-live','polite');
+  previous.type=next.type='button';previous.className=next.className='secondary-button';
+  previous.setAttribute('aria-label',caption+': trang trước');next.setAttribute('aria-label',caption+': trang sau');
+  let current=1;
+  const pages=Math.max(1,Math.ceil(rows.length/20));
+  function controls(){previous.disabled=tableLoading||current<=1;next.disabled=tableLoading||current>=pages;}
+  function draw(){
+   body.replaceChildren(table(headers,rows.slice((current-1)*20,current*20),caption));
+   label.textContent=`Trang ${current} / ${pages} · ${rows.length} dòng`;
+   controls();
+  }
+  previous.addEventListener('click',()=>{if(!tableLoading&&current>1){current--;draw();}});
+  next.addEventListener('click',()=>{if(!tableLoading&&current<pages){current++;draw();}});
+  nav.append(previous,label,next);section.append(body,nav);tableControls.push(controls);draw();return section;
+ }
+ function tableBusy(value){tableLoading=value;tableControls.forEach(update=>update());}
  function bell(n){$('dash-bell-label').textContent=n+' cảnh báo hiệu lực';
   $('nav-alert-count').textContent=String(n);
   $('notification-button').setAttribute('aria-label',`${n} cảnh báo đang hiệu lực, không phải chưa đọc`);
@@ -55,7 +77,7 @@
   canvas.className='dash-chart';
   canvas.setAttribute('role','img');
   canvas.setAttribute('aria-label',title+'; bảng đối chiếu bên dưới');
-  card.append(canvas,table(headers,rows,title));
+  card.append(canvas,pagedTable(headers,rows,title));
   $('dash-output').append(card);
   if(!window.echarts){canvas.textContent='Không tải được biểu đồ. Dùng bảng đối chiếu bên dưới.';
   return;
@@ -81,10 +103,12 @@
   chart('Tình trạng theo nhóm',g.map(r=>r.name),g.map(r=>r.total),['Nhóm','Tổng','Đang dùng','Bảo trì','Hỏng','Thanh lý'],g.map(r=>[r.name,r.total,r.by_status.in_use,r.by_status.maintenance,r.by_status.broken,r.by_status.retired]));
   chart('Tỷ lệ lỗi (%)',g.map(r=>r.name),g.map(r=>r.fault_rate===null?null:r.fault_rate*100),['Nhóm','Có sửa chữa','Mẫu số','Tỷ lệ lỗi'],g.map(r=>[r.name,r.failed_assets,r.analyzed,r.fault_rate===null?'Chưa có mẫu số':(r.fault_rate*100).toFixed(1)+'%']));
   chart('Thiết bị đề xuất thay thế',g.map(r=>r.name),g.map(r=>r.replace),['Nhóm','Thay thế','Thiếu điểm'],g.map(r=>[r.name,r.replace,r.missing_scores]));
-  $('dash-output').append(table(['Mã','Thiết bị','Điểm','Nhóm'],d.replacements.map(r=>[r.asset_code,r.name,r.score_display,tiers[r.tier]]),'Đề xuất theo điểm gốc, hiển thị 3 số lẻ; điểm có thể vượt 1'));
+  $('dash-output').append(node('p','Các bảng hiển thị 20 dòng/trang. Biểu đồ và KPI giữ toàn bộ dữ liệu trong bộ lọc; chuyển trang bảng không tải lại số liệu.'));
+  $('dash-output').append(pagedTable(['Mã','Thiết bị','Điểm','Nhóm'],d.replacements.map(r=>[r.asset_code,r.name,r.score_display,tiers[r.tier]]),'Đề xuất theo điểm gốc, hiển thị 3 số lẻ; điểm có thể vượt 1'));
   }
  function render(d){dispose();
   $('dash-output').replaceChildren();
+  tableControls=[];
   documentData=d;
   page=d.page??1;
   $('dash-time').textContent='Số liệu tại '+new Date(d.as_of).toLocaleTimeString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',hour:'2-digit',minute:'2-digit'})+' · '+new Date(d.as_of).toLocaleDateString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'})+' · giờ Việt Nam';
@@ -109,6 +133,7 @@
   }
  async function load(){if(!role())return;
   const id=++sequence;
+  tableBusy(true);
   exportRequest?.abort();
   $('dash-previous').disabled=$('dash-next').disabled=true;
   dispose();
@@ -126,7 +151,7 @@
   render(result.data);
   $('dash-message').textContent='Đã tải số liệu. Không tự làm mới.';
   }catch(e){if(id===sequence&&e.name!=='AbortError')$('dash-message').textContent=(e instanceof SyntaxError?'Máy chủ trả phản hồi không hợp lệ.':e.message)+' Dữ liệu cũ (nếu có) giữ nguyên mốc; bấm Làm mới để thử lại.';
-  }finally{if(id===sequence)$('dash-output').setAttribute('aria-busy','false');
+  }finally{if(id===sequence){$('dash-output').setAttribute('aria-busy','false');tableBusy(false);}
   }}
  async function initialBell(){if(badgeLoaded||role()==='support_technician')return;
   badgeLoaded=true;
@@ -144,6 +169,7 @@
   exportRequest?.abort();
   view='';
   documentData=null;
+  tableControls=[];
   dispose();
   return;
   }if(next===view&&documentData)return;
@@ -155,6 +181,7 @@
   documentData=null;
   dispose();
   $('dash-output').replaceChildren();
+  tableControls=[];
   const support=role()==='support_technician';
   if(support&&next!=='overview'){$('dash-heading').textContent='Không có quyền';
   $('dash-message').textContent='Hỗ trợ chỉ xem bảng bảo trì tại Tổng quan.';
