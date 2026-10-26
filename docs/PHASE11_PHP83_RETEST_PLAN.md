@@ -8,6 +8,14 @@ Theo user26/10/2026: chỉ lập kế hoạch, **chưa sửa code/test/vendor, c
 2. Kiểm mysqli/OpenSSL/mbstring/zip/fileinfo/DOM/zlib và GD theo chức năng; thiếu thì ghi chưa đủ điều kiện, không lấy DLL8.5 ghép vào8.3. GD chỉ bật per-process nếu runtime có đúng extension và chưa nạp; không sửa ini toàn cục hoặc nạp trùng.
 3. Không dùng private DB config, session/login thật hoặc fixture reset DB. Chỉ bootstrap class + fake DB transport và dữ liệu XLSX/PDF giả. Giữ vendor/lock/font baseline, không nâng package để làm test đạt.
 
+## Thứ tự bắt buộc sau khi user cung cấp runtime — CHƯA CHẠY
+
+Sau khi xác minh đúng PHP8.3/ini/extensions ở trên, **test chức năng đầu tiên là tests/ita_s26_auth.php**, trước auth29 cũ, các unit khác và export. Dùng đúng php.exe8.3 user cung cấp, không lấy php trên PATH8.5 để báo kết quả8.3. Nếu S26 lỗi, thiếu extension hoặc dummy không khớp thì dừng các bước phụ thuộc và báo nguyên nhân; không hạ cost/sửa hằng số để ép PASS.
+
+Trong lượt đầu phải xác nhận và ghi **dummy được chọn thực sự có algo/cost default của runtime8.3 đó**, cùng cấu hình PASSWORD_DEFAULT mà PmAuth hiện dùng. Test S26 hiện có assertion password_get_info(dummy) khớp password_get_info(hash synthetic mới bằng PASSWORD_DEFAULT), và password_needs_rehash(dummy,PASSWORD_DEFAULT)=false. Kèm probe/test-only metadata khi được giao chạy: chỉ in algoName/options.cost và kết quả đối chiếu; không in hash/password hoặc đọc credential thật. Ghi giá trị cost số thực, **không điền sẵn cost10 chỉ vì tên8.3**, không suy test8.5cost12 đã kiểm nhánh8.3.
+
+Việc kiểm metadata/đếm call không là phép đo latency và **«đếm verify không chứng minh hằng thời gian»**. Argon2 một real verify không dummy theo ngoại lệ user, chi phí có thể khác bcrypt. Nếu runtime thiếu Argon2 thì giữ thông tin SKIP tương ứng, không nhận đã chạy ngoại lệ đó. Chưa có đường dẫn runtime nên S26-on8.3 và xác nhận dummy-on8.3 đều **CHƯA CHẠY**; không chạy thêm test ở bước cập nhật tài liệu này.
+
 ## Biến thể test đếm deprecation, mới là thiết kế
 
 Chưa tạo các file biến thể. Sau khi được giao chạy cùng runtime user cung cấp, chuẩn bị biến thể **test-only** cho test có loại E_DEPRECATED (đặc biệt ita_phase04_unit.php); giữ nguyên fixtures/assertions và import giới hạn/scope/formula guard. Không include nguyên test còn gọi error_reporting(E_ALL & ~E_DEPRECATED) rồi giả định flag bên ngoài đã thắng.
@@ -24,6 +32,7 @@ Tên dưới đây là test hiện có để lập danh sách; **không phải l
 
 | Nhóm | Test dự kiến | Kết quả cần thu | Trạng thái |
 |---|---|---|---|
+|Đầu tiên — S26-02|ita_s26_auth.php bằng đúng runtime8.3|Counter service/downstream, native401=0, ghi dummy algo/cost và default runtime khớp, không thêm dummy Argon2 | CHƯA CHẠY |
 |Auth/session/limiter|ita_preupload_auth.php|Assertions, exit code, counters; không DB/native credential thật | CHƯA CHẠY |
 |Unit tài sản/import/phân bổ/license/ticket/lifecycle|ita_phase03_unit.php đến ita_phase08_unit.php|Assertions như contract, counter của biến thể Phase4 và test có mask tương tự | CHƯA CHẠY |
 |Ngân sách/dashboard/network|ita_phase09_unit.php, ita_phase10_unit.php, ita_phase13_unit.php|Số check/exit code/deprecation; fake transport | CHƯA CHẠY |
@@ -37,8 +46,8 @@ Không chạy ita_phase02_checks/fixture/sql/browser cũ hoặc SQL/migration đ
 
 ## Mẫu ghi kết quả sau này
 
-| Source commit/runtime/ini/extensions | Lệnh/test/biến thể thật | Assertions/exit code | E_DEPRECATED | E_USER_DEPRECATED | XLSX/PDF | Mục chưa kiểm |
-|---|---|---|---|---|---|---|
-|Chưa cung cấp runtime | Chưa chạy | Chưa có | Chưa đếm trên8.3 | Chưa đếm trên8.3 | Chưa chạy8.3 | FPM/host/DB |
+| Source commit/runtime/ini/extensions | Lệnh/test/biến thể thật | Assertions/exit code | Dummy algo/cost so default runtime | E_DEPRECATED | E_USER_DEPRECATED | XLSX/PDF | Mục chưa kiểm |
+|---|---|---|---|---|---|---|---|
+|Chưa cung cấp runtime | S26 đầu tiên, chưa chạy | Chưa có | Chưa xác nhận trên8.3 | Chưa đếm trên8.3 | Chưa đếm trên8.3 | Chưa chạy8.3 | FPM/host/DB |
 
 Đối chiếu số liệu8.3 với báo cáo8.5 bằng cùng nguồn/dependency và fixtures khi khả thi; ghi khác môi trường, không xóa kết quả cũ. Nếu assertion/file lỗi hoặc còn diagnostic: giữ bằng chứng và trình phương án riêng, không sửa vendor/che output. Không tuyên bố “hết deprecation” hoặc sẵn sàng deploy khi chưa có số thực. Chưa đóng gói/upload/push/merge/tag7–10.

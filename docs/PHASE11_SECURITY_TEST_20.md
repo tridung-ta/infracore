@@ -36,6 +36,8 @@ Bổ sung theo user26/10: S26-01 là **hạn chế chấp nhận được** vì 
 ## Hạn chế chấp nhận được
 
 - **S26-01 — MD5 native còn lưu:** user chấp nhận giữ vì tương thích hệ thống cũ. PmAuth chỉ ghi password_hash/last_login, giữ password MD5; **không xóa/reset/NULL credential**, không đổi PmAuth hoặc luồng legacy trong bước này. Rủi ro dò MD5 khi lộ DB vẫn còn, không coi đã loại hash yếu hoặc nghiệm thu host. Thay chính sách sau này cần gate riêng, đối chiếu consumer và backup.
+- **Policy ở hai nơi:** PmAuth và ItaAuthService giữ chính sách song song; đổi một nơi phải rà nơi kia, không coi tự đồng bộ hoặc mở quyền sửa PmAuth. User chấp nhận giới hạn duy trì này sau S26-02.
+- **Dummy theo PASSWORD_DEFAULT:** không có variant hằng số khớp default algorithm/cost thì503 fail-closed; không sinh hash mới hoặc hạ cost để qua kiểm. Host cần kiểm sai password/nonexistent phải401 cùng thông báo, không503. Ngoại lệ nguyên văn **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”** có chi phí khác bcrypt nên thời gian có thể khác; **«đếm verify không chứng minh hằng thời gian»**.
 
 ## Rủi ro còn lại
 

@@ -52,6 +52,15 @@ Regression bcrypt đã tái hiện bằng test đỏ trước khi sửa: passwor
 
 **Đếm verify không chứng minh hằng thời gian.** Cost/algorithm hash thật có thể khác default hoặc Argon2; thời gian SQL/lookup/limiter/OS cũng khác. Không khẳng định đã loại mọi enumeration hoặc đo timingHTTP. Native MyISAM/quyền có thể đổi sau lần recheck cuối; không hứa atomicity giữa native và ita_. Lock/rollback/shared limiter/thu hồi giữa request trên DB thật chưa kiểm.
 
+### Hạn chế chấp nhận được — user xác nhận26/10
+
+- Ngoại lệ user nguyên văn: **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**. Argon2 có chi phí khác bcrypt nên thời gian có thể khác; **«đếm verify không chứng minh hằng thời gian»**.
+- **Policy ở hai nơi:** PmAuth và ItaAuthService cùng giữ quy tắc xác thực/native success. Đổi algorithm/cost/rehash, định danh, disabled hoặc long-password ở một nơi phải rà nơi kia và hồi quy tương ứng; không coi chúng tự đồng bộ. Đây là chi phí duy trì được chấp nhận, không phải quyền sửa PmAuth trong bước này.
+- **Dummy theo PASSWORD_DEFAULT:** chỉ chọn hằng số có algorithm/cost khớp default mà PmAuth dùng. Không có variant khớp thì **503**, không sinh hash mỗi request, không hạ cost hoặc bỏ guard. Vì vậy host phải kiểm login thất bại ra401 thay vì503 để phát hiện runtime/config chưa tương thích; không suy local8.5 sang8.3.
+- S26-01 MD5 native giữ để tương thích như user đã chấp nhận; không xóa/reset/NULL credential.
+
+PHP8.3 chưa có runtime user cung cấp nên **CHƯA CHẠY**. Theo PHASE11_PHP83_RETEST_PLAN.md, sau xác minh runtime/extensions, test S26 chạy trước các bộ chức năng và ghi metadata dummy được chọn so với cost default thực. Lượt cập nhật này chỉ tài liệu, không chạy lại686checks hoặc thêm kết quả runtime mới.
+
 Chỉ test local8.5.10; chưa8.3/FPM/HTTPS/loginHTTP+DB thật. Không chạy fixture/reset DB cũ hoặc đọc config/private hash. S26-01 MD5 native còn giữ là hạn chế user đã chấp nhận, không xóa/reset/NULL credential. Nếu đổi policy hash trong PmAuth sau này, cần rà đồng bộ service/test; không tự nới dummy cost hoặc bỏ counter.
 
 Rollback source: backup/khôi phục đúng ItaAuthService và đồng bộ test/hồ sơ liên quan; giữ PmAuth/credential/limiter/audit/native last_login và dữ liệu mới. Không reset user, xóa MD5 hoặc restore dump. Rollback mở lại S26-02 cũ nên phải ghi rõ. Chưa đóng gói/upload/deploy; host/DB chưa nghiệm thu.

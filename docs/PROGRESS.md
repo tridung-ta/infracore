@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Chốt giới hạn S26-02 và thứ tự kiểm PHP8.3, chỉ tài liệu
+
+Ngoại lệ user nguyên văn: **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**. Argon2 có chi phí khác bcrypt nên thời gian có thể khác; **«đếm verify không chứng minh hằng thời gian»**. User ghi nhận build local686checks, chưa PHP8.3/FPM/DB. Hạn chế chấp nhận được bổ sung: policy xác thực ở PmAuth và ItaAuthService cần rà đồng bộ khi đổi một nơi; dummy theo PASSWORD_DEFAULT, không có variant khớp thì503. PHASE11_HOST_TEST thêm login sai/nonexistent phải401 cùng thông báo nghiệp vụ, không503, và login đúng; nêu native last_login/password_hash trước khi kiểm. S26-03: khi user gửi runtime8.3, chạy ita_s26_auth.php trước các bộ chức năng và xác nhận algo/cost dummy so default runtime thực, không đoán cost. **Chưa runtime, CHƯA CHẠY8.3**. Bước này không sửa code/chạy test/gói/upload/merge/tag7–10/push/deploy.
+
 ## 26/10/2026 — BUILD S26-02 theo duyệt và ngoại lệ Argon2
 
 User duyệt một verify/nhánh401, zero native write401, dummy cố định matching PmAuth default, không đổi PmAuth, không padding guard khác; test counters service/downstream, không đo thời gian. User chốt **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**. Chỉ sửa ItaAuthService(+test): service xác thực trước native success writes và recheck quyền/identity/credential; giữ upgrade/last_login/audit/limiter/session/long-password.686counter/query checks mới +29auth +159license +30/54export +179network/13routes và102/56/109HTTPfixture đạt. PmAuth git diff rỗng. Review phát hiện và đã sửa regression bcrypt2a/2b/2x, test đỏ→đạt. S26_AUTH_VERIFY.md ghi giới hạn MyISAM/DB/HTTP/8.3. **Đếm verify không chứng minh hằng thời gian.** S26-01 MD5 được chấp nhận, không xóa/reset; auto_prepend/HSTS KHÔNG duyệt, S26-03 chưa runtime/chưa chạy. Không gói/upload/merge/tag7–10/push/deploy hoặc nghiệm thu DB/host.

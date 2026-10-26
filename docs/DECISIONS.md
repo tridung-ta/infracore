@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 26/10/2026 — Ghi nhận giới hạn sau build S26-02
+
+Nguồn: user đã xem S26_AUTH_VERIFY, ghi nhận local686checks và chưa PHP8.3/FPM/DB. Ngoại lệ nguyên văn **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**; Argon2 có chi phí khác bcrypt nên thời gian có thể khác, **«đếm verify không chứng minh hằng thời gian»**. Chấp nhận policy xác thực được giữ ở cả PmAuth và ItaAuthService: đổi một nơi phải rà nơi kia, không tự đồng bộ code trong bước tài liệu. Dummy chọn theo PASSWORD_DEFAULT; nếu không có variant khớp thì503 fail-closed, không tự sinh/nới cost để cho login qua. Trước kiểm host user phải biết native last_login và password_hash có thể ghi, MD5 giữ nguyên. S26-03 chờ đường dẫn8.3 riêng; S26 test đầu tiên và xác nhận dummy/default cost thực, hiện CHƯA CHẠY. Không code/gói/upload/merge/tag7–10/push/deploy; S26-01 vẫn hạn chế đã chấp nhận, không xóa/reset credential.
+
 ## 26/10/2026 — Duyệt BUILD S26-02 và ngoại lệ Argon2
 
 Nguồn: user “OK BUILD S26-02 với chỉnh sửa” kèm7điều kiện và trả lời thêm **“Giữ Argon2: cho phép ngoại lệ một verify hash thật, không thêm dummy”**. Cho sửa duy nhất ItaAuthService(+test): mọi401 sau validation/limiter một verify, dummy cho missing/MD5-only sai, real cho bcrypt/Argon; cùng message/status và không native write401. Dummy là hằng số generated một lần, chọn algo/cost khớp PmAuth PASSWORD_DEFAULT; không gọi PmAuth verify lại, không sửa PmAuth. Giữ native success upgrade/last_login/audit, limiter/session/CSRF/long password; counter kiểm service và downstream, không đo timing. Đếm verify không chứng minh hằng thời gian. S26-01 MD5 tương thích đã chấp nhận, không xóa/reset credential. Auto_prepend/HSTS KHÔNG duyệt; PHP8.3 do user cung cấp riêng cho S26-03, chưa chạy. Không DB/gói/upload/merge/tag7–10/push/deploy.

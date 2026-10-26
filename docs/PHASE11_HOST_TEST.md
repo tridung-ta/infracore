@@ -1,5 +1,23 @@
 # Phase11 — Checklist host, CHƯA CHẠY
 
+## Sau S26-02 — Login host và native write, CHƯA KIỂM
+
+User thực hiện bằng **HTTPS** và tài khoản test khi được phép kiểm, không có thao tác agent/SQL ghi. Ghi source/gói thật trước kiểm:4file mẫu Phase8 chưa chứng minh host có S26-02. Không upload/gói trong bước tài liệu này. Không ghi credential/cookie/CSRF/key hoặc body login chứa dữ liệu nhạy cảm vào báo cáo.
+
+**Biết trước khi đăng nhập:** luồng ITA xác thực đúng có thể UPDATE `dc_users.last_login`; UPDATE `dc_users.password_hash` khi MD5/needs_rehash và password **≤72byte**, theo PASSWORD_DEFAULT. Cột MD5 `dc_users.password` giữ nguyên; không xóa/reset/NULL credential hoặc sửa username/email/status. Password legacy>72byte thành công không nâng bcrypt, chỉ last_login; Argon2 dài giữ hash thật theo contract. Chỉ tài khoản test riêng, không dùng chung credential với hệ thống cũ nếu chưa cân nhắc tương thích. Nếu phạm vi hiện tại vẫn tuyệt đối không ghi dc_* thì không login mới; ghi chưa kiểm, không suy checklist tự mở ngoại lệ.
+
+`dc_users` MyISAM: nếu audit lỗi **sau** native success, HTTP503 vẫn có thể đã đổi last_login/hash, không có rollback native được bảo đảm. Khi gặp503 dừng/ghi mã tham chiếu và trạng thái, không retry liên tục hoặc reset credential để thử. Trước kiểm user xác nhận backup/phạm vi theo quy trình hiện có.
+
+| Mã | Thao tác giới hạn bằng tài khoản test | Mong đợi | Kết quả thật |
+|---|---|---|---|
+|LOGIN-401-A|Sai mật khẩu với một tài khoản test đang active/ITA enabled, form/CSRF hợp lệ, chưa chạm limiter |POST login trả **401, không503**; thông báo nghiệp vụ “Thông tin đăng nhập không hợp lệ hoặc tài khoản chưa được cấp quyền IT.”; không phiên xác thực/native write theo contract | CHƯA KIỂM host |
+|LOGIN-401-B|Một tên test không tồn tại đã xác nhận, input/CSRF hợp lệ, không đoán hoặc quét danh sách user |POST login trả **401, không503**, cùng thông báo nghiệp vụ như A; không xác thực/native write | CHƯA KIỂM host |
+|LOGIN-OK|Đăng nhập đúng tài khoản test hợp lệ bằng luồng được phép |POST login303 rồi trang ITA đúng vai trò/phạm vi; không503. Có side effect native nêu trên, auth.login audit theo contract | CHƯA KIỂM host |
+
+Quan sát status **POST ban đầu** trong Network, không dùng200 của trang cuối redirect thay bằng chứng login. Mã tham chiếu lỗi có thể khác từng request; so thông báo nghiệp vụ/HTTP401, không đòi toàn bộ HTML/token/ref byte giống nhau. Nếu thấy429 thì dừng, ghi limiter/chưa đủ điều kiện kiểm401; không đổi guard, spam hoặc tính429 là FAIL401. Nếu503, ghi mã tham chiếu/source/runtime và báo lại; kiểm dummy có variant hợp PASSWORD_DEFAULT cùng PHP-FPM/config qua kênh quản trị được phép, **không hạ cost/bỏ guard/thêm debug endpoint**.
+
+Hai phép thử thất bại này không đo thời gian, không chứng minh hằng thời gian hoặc mọi race/zero-write trên DB thật. Xác minh native/audit chỉ bằng bằng chứng được phép của đúng tài khoản test, không xuất hash/password hoặc tự chạy SQL ghi. Host/FPM/DB chưa nghiệm thu; các bước dưới vẫn giữ nguyên.
+
 ## Bổ sung26/10 — HTTPS, cookie/header và hosting panel17–20
 
 Chỉ checklist cho user khi được phép kiểm host, **chưa chạy**. Không tự upload/cấu hình/DNS/grants. Mục17–20 của PHASE11_SECURITY_TEST_20.md giữ CHƯA KIỂM host và được xác minh qua hosting panel/quản trị có quyền; không thay bằng unit local hoặc phpMyAdmin user khác.
