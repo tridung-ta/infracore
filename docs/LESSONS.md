@@ -1,5 +1,20 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 26/10/2026 — Tổng kết cuối ngày theo yêu cầu tạm dừng
+
+Đã lưu [RETROSPECTIVE_20261026.md](RETROSPECTIVE_20261026.md): trạng thái/commit/artifact, lỗi sản phẩm so với lỗi test/công cụ, bằng chứng và cách sửa, ràng buộc source và việc dở. Đọc cùng PROGRESS/DECISIONS/gitstatus trước khi tiếp tục; bản ghi nhớ không cấp quyền mới.
+
+- Không suy runtime8.3 từ ý định/nơi cài: php.exe user cung cấp thực8.5.10; không đổi nhãn kết quả8.5 thành8.3.
+- Không sửa CSS chỉ từ ảnh nhỏ/zoom50%; không suyTLSđạt từhttps hoặc isolation/DBđạt từ một màn không503.
+- Import0hợp lệ/2lỗi phải sửa mãloại/bộphận/placeholder, không gỡ guardconfirm. Fixture đọcđược không chứng minh lookup/DBhợplệ.
+- Kịch bản cóphụthuộc phải theo trạngtháithật: P1resolved không mởlại đểtestSupport; dùngP4riêng vàghi mốc/sốliệutrước-sau.
+- Hovergiới hạn vàorbit360làhai thao tác; thay pointer phải giữmouse/touch/pen/cancel, phânbiệtclick/drag, kiểm cleanupgiữacapture.
+- Fullscreen cần bộđiềukhiển bêntrong cho bànphím/reduced-motion, focus/Esc; nhãn3D phải theo hìnhchiếucamera khi lật vàkiểm mobile.
+- Spyprototype cóthểkhôngbắt methodinstance; chờUIevent đúng, khôngsửasảnphẩm theoinstrumentation sai. UnicodequaPowerShell phảiđọclạibytes, khôngtin exitcode.
+- Tênmáy khôngmặcđịnh chỉchữ; rulemới vềngày/tiền/modeluploadphảiBEgate. FEchỉđồngbộcontractserverđãxácminh, chưa được triểnkhai trongđợtUIbịdừng.
+
+Không tự học nền, không hooks/daemon/swarm/provider; trí nhớ dự án là hồ sơ đã làm sạch, có bằng chứng và giới hạn.
+
 ## 26/10/2026 — Bcrypt variant không được nhận diện chỉ bằng password_get_info
 
 - Triệu chứng/phân loại: S26-02 mới từ chối bcrypt2a/2b/2x hợp lệ dù PmAuth cũ/password_verify chấp nhận.

@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Tạm dừng theo user, tổng kết bài học và lập luận
+
+User yêu cầu tạm dừng và học lại việc hôm nay, từ lỗi sai đến cách lập luận. Đã dừng BUILD; chỉ lưu RETROSPECTIVE_20261026.md và cập nhật LESSONS/CURRENT_BUILD_STATUS. Bản tổng kết tách lỗi sản phẩm/test/công cụ, runtime8.5/8.3, bằngchứngmock/host/DB, importplaceholder/guard, kịchbảnP4, hover/orbit/touch/fullscreen/nhãn, packaging vàủyquyền. ĐợtUI mới chỉ đọc source/context, reviewràngbuộc; chưa sửa runtimeFE/PHP, chưa endpoint/uploadcustom3D, chưa gói/host/DB. Trackedtree trước tổngkết sạch ở3045b62; ghi nhớkhông phải quyềnresume hoặcnghiệmthu. Không hooks/daemon/tựhọcnền/push/merge/tag7–10/deploy. Không chạy lại test sản phẩm trongbước tài liệunày.
+
 ## 26/10/2026 — Bàn giao ZIP bộ kiểm thủ công
 
 Đã đóng InfraCore-Bo-Kiem-Thu-Thu-Cong.zip (artifacts/ita-manual-uat-20261026-v3),30.382byte, SHA256b64f822cc2d09854163f28857ec80df361a4a90680c4018ed7ad479344c30a1e, source tài liệu17ae623a519d06a2b2edb45de9f26b6de982437d.7payloadhướngdẫn/dữliệugiả/CSV+2metadata, actualZIPreadbackCRC/size/hash/metadata đạt. Guidebyteskhớpcommit, CSV36caseđểChưakiểm, XLSX16col/2và5rowdữliệu/0formula. MANUAL_UAT_KIT_VERIFY ghi8roundtrip/rejectionchecks,71deprecation8.5, reviewlogicP4 vàgiớihạn. **Không phải gói uploadwebsite**, chỉ XLSXđượcchọnquaformImport; userchưachạycasehost, agentkhônghost/DB/upload/push/merge/tag7–10.

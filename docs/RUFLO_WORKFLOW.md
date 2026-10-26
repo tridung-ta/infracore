@@ -1,5 +1,7 @@
 # Ruflo trong công việc InfraCore
 
+26/10/2026 — User yêu cầu tạm dừng và tổng kết học lỗi. Đã lưu bản làm sạch tại RETROSPECTIVE_20261026.md, liên kết vào LESSONS/PROGRESS/CURRENT_BUILD_STATUS; đây là nguồn đọc lại khi user cho tiếp tục. Không chạy CLI/hook/daemon/swarm/provider, không xuất session/credential hoặc Save-Handoff sang thư mục ngoài workspace. Không diễn giải “học lại” thành tự học nền, quyền resume BUILD hoặc thay trạng thái nghiệm thuDB/host.
+
 User yêu cầu dùng skill Ruflo xuyên suốt quá trình làm việc ngày 21/10/2026. Đã đọc bản gốc C:/Users/PC/.agents/skills/ruflo/SKILL.md và references/installation.md qua điểm tra cứu thư viện local.
 
 - CLI pinned được kiểm bằng scripts/ruflo.ps1 --help: trả v3.59.3. Kết quả này chỉ xác nhận CLI, không xác nhận live LLM, vector memory, MCP hoặc tự học nền.
