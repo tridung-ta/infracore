@@ -1,5 +1,14 @@
 # BE-GATE #11 — Duyệt S11-01/S11-02,(c)/(d),(f)/(g) app và phân trang thống kê; phần còn lại NHÁP
 
+## 26/10/2026 — Bổ sung auth từ checklist trước upload, CHƯA DUYỆT BUILD
+
+PREUPLOAD_SECURITY_VERIFY.md đã đối chiếu20 mục user gửi. Không sửa PHP/auth/credential trong lượt kiểm này. Các đề xuất dưới đây chưa được mở chỉ vì user yêu cầu chạy kiểm thử:
+
+- **S26-01, MD5 giữ sau upgrade:** PmAuth ghi password_hash/last_login nhưng giữ cột password MD5 cho tương thích. Chưa đạt tiêu chí loại bỏ hash yếu. Nếu muốn thay cần khảo sát mọi consumer legacy, quyết định tương thích/cột nào được ghi, backup và kế hoạch chuyển đổi riêng; không tự NULL/reset/xóa credential hoặc đổi dc_*.
+- **S26-02, nhánh thất bại khác chi phí:** ItaAuthService thiếu user chạy password_hash+verify, còn user legacy sai mật khẩu có đường MD5 nhanh. Mới là finding từ source, **chưa chứng minh enumeration HTTP thực**. Đề xuất sửa trong ItaAuthService: dummy hash cố định hợp lệ, cân bằng phép verify chậm ở đường thất bại legacy/không có user, giữ message/limiter/long-password/auth contract, không thêm native write. Rủi ro: tăng CPU/latency hoặc bỏ sót nhánh disabled/ambiguous; test actual code với fake transport cho missing/disabled/MD5/modern/sai/đúng/long, đo có giới hạn không tuyên bố constant-time HTTP. Host timing/concurrency do user kiểm riêng. Rollback đúng service source backup, giữ limiter/audit/native credential.
+
+S26-03 deprecation dependency cần kiểm PHP8.3/HTTP bytes, không tự nâng vendor/Composer hoặc che warning. Host-only TLS/grants/Cloudflare/backup/log chưa kiểm; không tự thay server. Chưa tạo gói/upload.
+
 ## 23/10/2026 — Duyệt danh sách Quản lý loại Admin
 
 User «Duyệt BUILD danh sách Quản lý loại». GET categories paged=1 Admin-only, COUNT20/search literal code/name, sort name,id; UI Trước/Sau giữ bản sửa/version, reset sau save và guard phản hồi muộn. Dropdown giữ contract mảng và guard500/inactive như trước.69 scripted +24 browser mới +30 browser hồi quy,39/13/174/190 hồi quy/Smarty/lint đạt; review không finding. PHASE11_CATEGORY_PAGINATION_VERIFY.md ghi query/giới hạn. Không DB/DDL/index/config/gói/merge/tag7–10/push/deploy; lookup phân trang khác vẫn chưa mở.

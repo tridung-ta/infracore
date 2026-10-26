@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 26/10/2026 — Kiểm bảo mật theo20 mục Word, tạm dừng đóng gói
+
+User yêu cầu đọc “kiểm thử web trước khi upload lên Host.docx”, kiểm ổn rồi mới gói/upload. PREUPLOAD_SECURITY_VERIFY.md đối chiếu đủ20mục, tách local/host.29 auth/session/limiter mới; unit03–10/S11/13 và routing đạt; HTTP102/56/109;10browser API mock đạt; XLSX/PDF dữ liệu giả chạy được nhưng còn deprecation PHP8.5. Không chạy fixture auth có DB/reset, không đọc config/host. MD5 native còn giữ (giới hạn tương thích), khác chi phí nhánh thất bại auth là finding source chưa chứng minh timing HTTP; đề xuất BE_GATE_11 nháp, không sửa PHP ứng dụng. Host TLS/cookie/header/CORS, DB network/grants/isolation, Cloudflare, backup/log chưa kiểm. **Chưa đóng gói/upload, không đánh dấu tất cả đạt hoặc nghiệm thu DB.** Không push/merge/tag7–10/deploy.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.2 bổ sung | Kiểm trước upload theo Word | Test/docs | [x] phạm vi local đã chạy | Commit chức năng chứa dòng này |29 auth mới; unit/scripted,HTTP/browser chi tiết tại PREUPLOAD_SECURITY_VERIFY | Host và rủi ro auth/dependency còn mở; chưa ready deploy |
+
 ## 26/10/2026 — Đã đối chiếu4 file đại diện host
 
 User cung cấp4 file local tải về và báo “ita-dashboard.js file này chưa có”. Đọc byte/hash/size, **4/4 khớp Phase8 1691c43bd37da547bd4d4f7733f90f2b15516bdc**, không chạy PHP hoặc host/DB. HOST_SOURCE_IDENTIFICATION_RESULT.md ghi hash/candidate/giới hạn; chỉ xác nhận các file mẫu, không xác nhận toàn bộ release hoặc ngày/gói đã upload. Full inventory vẫn CHƯA THU THẬP, source toàn host chưa xác định; DB chưa nghiệm thu. Không gói/merge/tag7–10/push/deploy.
