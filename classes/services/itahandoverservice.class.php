@@ -7,6 +7,7 @@ class ItaHandoverService
 
     public function document(int $id): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('assignment.pdf'); }
         $row = $this->db->fetchOne('SELECT * FROM ita_assignments WHERE store_id=? AND id=?','ii',[$this->actor->storeId,$id]);
         if (!$row) throw new ItaHttpError(404,'Không tìm thấy lượt bàn giao.');
         $asset = (new ItaAssignmentObjects($this->db,$this->actor))->asset((int) $row['asset_id']);
@@ -27,6 +28,7 @@ class ItaHandoverService
     /** Rendering must succeed and the download be audited before returning any bytes. */
     public function download(int $id): string
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('assignment.pdf'); }
         $this->currentActor();
         $document = $this->document($id);
         $bytes = ItaHandoverPdf::render($document);

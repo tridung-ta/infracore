@@ -7,7 +7,7 @@ class ItaDashboardObjects
     public function queryPlans(array $input): array
     {
         $where='a.store_id=? AND a.is_deleted=0';$params=[$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $ids=$this->actor->departmentIds;
             $where.=$ids?' AND a.department_id IN ('.implode(',',array_fill(0,count($ids),'?')).')':' AND 1=0';$params=[...$params,...$ids];
         }
@@ -33,9 +33,9 @@ class ItaDashboardObjects
 
     public function licensePlan(array $input): array
     {
-        $params=[$this->actor->storeId];$scope='';$ids=$this->actor->isAdmin()?[]:$this->actor->departmentIds;
+        $params=[$this->actor->storeId];$scope='';$ids=$this->actor->hasGlobalScope()?[]:$this->actor->departmentIds;
         if (($input['department_id'] ?? '')!=='') { $ids=[ItaInput::positiveInt($input['department_id'])];$this->actor->requireDepartment($ids[0]); }
-        if (!$this->actor->isAdmin() || $ids) {
+        if (!$this->actor->hasGlobalScope() || $ids) {
             $marks=implode(',',array_fill(0,count($ids),'?'));
             $scope=$ids?' AND EXISTS (SELECT 1 FROM ita_license_allocations x LEFT JOIN ita_assets a ON a.store_id=x.store_id AND a.id=x.asset_id AND a.is_deleted=0 WHERE x.store_id=l.store_id AND x.license_id=l.id AND x.released_at IS NULL AND (x.department_id IN ('.$marks.') OR a.department_id IN ('.$marks.')))':' AND 1=0';
             $params=[...$params,...$ids,...$ids];

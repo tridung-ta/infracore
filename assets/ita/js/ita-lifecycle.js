@@ -7,7 +7,7 @@
  const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=text;return node;};
  const decimal=(value,digits=2)=>value===null||value===undefined?'Chưa có dữ liệu':new Intl.NumberFormat('vi-VN',{maximumFractionDigits:digits}).format(Number(value));
  function feedback(text,error=false){$('lifecycle-message').textContent=text;$('lifecycle-message').dataset.state=error?'error':text.startsWith('Đang')?'loading':'success';$('lifecycle-message').classList.toggle('is-error',error);$('lifecycle-message').setAttribute('role',error?'alert':'status');$('lifecycle-retry').hidden=!error;}
- function allowed(){return !live||['admin_it','system_manager'].includes(window.itaLiveContext?.user.role);}
+ function allowed(){return !live||window.ItaPolicy.can('lifecycle.read',['admin_it','system_manager'].includes(window.itaLiveContext?.user.role));}
  function controls(){
   $('lifecycle-panel').querySelectorAll('button,input,select').forEach(n=>n.disabled=busy);
   $('lifecycle-prev').disabled=busy||page<=1;$('lifecycle-next').disabled=busy||page*perPage>=total;

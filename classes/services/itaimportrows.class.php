@@ -47,7 +47,7 @@ class ItaImportRows
         }
         $reason = ItaInput::text($input['status_reason'] ?? '',10000);
         if ($status==='retired') {
-            $this->actor->requireAdmin();
+            $this->actor->requireCapability('asset.retire');
             if ($reason==='') {
                 throw new ItaHttpError(422,'Tài sản thanh lý cần lý do.');
             }

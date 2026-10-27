@@ -112,19 +112,19 @@
   current=await api('ticket',{id,page:historyPage});stale=false;const t=current.ticket,asset=current.asset;
   $('ticket-record').hidden=false;selectRecord(t.id);$('ticket-record-title').textContent=t.ticket_no;$('ticket-details').replaceChildren();
   for(const [label,value] of [['Thiết bị',`${asset.asset_code} · ${asset.name}`],['Trạng thái',displayLabel(t.status)],['Loại',displayLabel(t.type)],['Nội dung',t.issue],['Người xử lý',t.technician_id||'Chưa gán'],['Chi phí (VND)',money(t.cost)],['Kết quả',t.resolution_note||'Chưa ghi nhận']])$('ticket-details').append(el('dt',label),el('dd',String(value)));
-  $('ticket-ready-badge').hidden=!asset.awaiting_ready;$('ticket-ready').hidden=!admin()||!asset.awaiting_ready;
-  $('ticket-assign').hidden=role()==='support_technician'||t.status!=='pending';
-  $('ticket-transition').hidden=role()==='system_manager'||t.status==='resolved';
+  $('ticket-ready-badge').hidden=!asset.awaiting_ready;$('ticket-ready').hidden=!window.ItaPolicy.can('ticket.ready',admin())||!asset.awaiting_ready;
+  $('ticket-assign').hidden=!window.ItaPolicy.can('ticket.assign',role()!=='support_technician')||t.status!=='pending';
+  $('ticket-transition').hidden=!window.ItaPolicy.can('ticket.process',role()!=='system_manager')||t.status==='resolved';
   $('ticket-to-status').replaceChildren(...(t.status==='pending'?['resolved','failed']:['pending']).map(s=>new Option(displayLabel(s),s)));
   $('ticket-cost').value=t.cost;$('ticket-handled').value='';$('ticket-resolution').value='';
-  $('ticket-cost-form').hidden=!admin()||t.status==='pending';$('ticket-correct-cost').value=t.cost;$('ticket-cost-reason').value='';
+  $('ticket-cost-form').hidden=!window.ItaPolicy.can('ticket.cost',admin())||t.status==='pending';$('ticket-correct-cost').value=t.cost;$('ticket-cost-reason').value='';
   $('ticket-assign-note').value='';$('ticket-ready-reason').value='';transitionFields();
   $('ticket-history').replaceChildren(...current.history.map(h=>{const item=el('details','');item.append(el('summary',`${localTime(h.created_at)} · #${h.user_id} · ${h.kind==='status'?`${h.from_status?displayLabel(h.from_status):'Tạo phiếu'} → ${displayLabel(h.to_status)}`:displayLabel(h.kind)}`),el('pre',historyNote(h)));return item;}));
   if(!current.history.length)$('ticket-history').append(el('p','Chưa có lịch sử.'));
   $('ticket-history-page').textContent=`Trang ${current.page} · ${current.total} sự kiện`;
   if(!$('ticket-assign').hidden)try{await technicians();}catch(error){message('Đã tải phiếu, nhưng chưa tải được người xử lý. '+error.message,true);}
  }
- function transitionFields(){const closing=$('ticket-to-status').value!=='pending';$('ticket-handled').required=closing;$('ticket-handled').disabled=!closing;$('ticket-cost').readOnly=!closing||(!admin()&&!!current?.ticket.handled_date);}
+ function transitionFields(){const closing=$('ticket-to-status').value!=='pending';$('ticket-handled').required=closing;$('ticket-handled').disabled=!closing;$('ticket-cost').readOnly=!closing||(!window.ItaPolicy.can('ticket.cost',admin())&&!!current?.ticket.handled_date);}
  async function save(body){
   stale=true;const result=await api('ticket-save',{}, {id:current?.ticket.id,version:current?.ticket.version,...body});message('Đã lưu, đang đọc lại…');
   try{await listing();if(result.id)await detail(result.id);else if(current)await detail(current.ticket.id);stale=false;if(body.operation==='create')$('ticket-create-section').open=false;message('Đã lưu và đọc lại phiếu.');dispatchEvent(new Event('ita:refresh'));}
@@ -165,7 +165,7 @@
  $('ticket-stat-prev').addEventListener('click',()=>task(()=>statistics(statPage-1)));
  $('ticket-stat-next').addEventListener('click',()=>task(()=>statistics(statPage+1)));
  addEventListener('ita:asset',event=>{
-  const dialog=$('asset-dialog');dialog.querySelector('.asset-ticket-link')?.remove();dialog.querySelector('.asset-ticket-history')?.remove();
+  if(!window.ItaPolicy.can('ticket.read',true))return;const dialog=$('asset-dialog');dialog.querySelector('.asset-ticket-link')?.remove();dialog.querySelector('.asset-ticket-history')?.remove();
   const link=el('button','Phiếu & lịch sử bảo trì');link.type='button';link.className='secondary-button asset-ticket-link';link.addEventListener('click',()=>{dialog.close();$('ticket-filter-asset').value=event.detail.id;$('ticket-asset').value=event.detail.id;$('ticket-selected-asset').hidden=true;location.hash='tickets';if(started)task(async()=>{page=1;await listing();});});dialog.append(link);
   const history=el('details','');history.className='asset-ticket-history';history.append(el('summary','Xem lịch sử bảo trì của thiết bị'));
   const content=el('div',''),feedback=el('p','');feedback.setAttribute('role','status');history.append(feedback,content);dialog.append(history);
@@ -191,6 +191,6 @@
   }
   history.addEventListener('toggle',()=>{if(history.open&&!loaded){loaded=true;load();}});
  });
- function activate(){if(location.hash!=='#tickets')return;if(!live){message('MOCK · Chỉ xem cấu trúc phiếu, chưa ghi dữ liệu.');return;}if(!window.itaLiveContext)return;$('ticket-live').hidden=false;if(!started){started=true;task(listing);}}
+ function activate(){if(location.hash!=='#tickets')return;if(!live){message('MOCK · Chỉ xem cấu trúc phiếu, chưa ghi dữ liệu.');return;}if(!window.itaLiveContext)return;$('ticket-live').hidden=!window.ItaPolicy.can('ticket.read',true);if($('ticket-live').hidden)return;$('ticket-create-section').hidden=!window.ItaPolicy.can('ticket.create',true);document.querySelector('.ticket-create-link').hidden=!window.ItaPolicy.can('ticket.create',true);$('ticket-stat-form').hidden=!(window.ItaPolicy.can('ticket.statistics',true)||window.ItaPolicy.can('ticket.statistics_self',true));if(!started){started=true;task(listing);}}
  addEventListener('ita:view',activate);addEventListener('ita:data',activate);activate();
 })();

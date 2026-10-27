@@ -15,7 +15,7 @@ class ItaAssignmentRules
 
     public static function assignable(array $asset, ?array $active, ItaUserObjectInfo $actor): void
     {
-        if (!in_array($actor->role,['admin_it','system_manager'],true)) {
+        if (!$actor->can('assignment.create')) {
             throw new ItaHttpError(403,'Bạn không có quyền tạo bàn giao.');
         }
         if ($asset['status']!=='in_use') {

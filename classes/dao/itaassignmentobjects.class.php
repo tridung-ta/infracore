@@ -17,6 +17,7 @@ class ItaAssignmentObjects
 
     public function detail(int $id, int $page): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('assignment.read'); }
         $asset = $this->asset($id);
         $cycle = $this->db->fetchOne('SELECT maintenance_cycle_months FROM ita_asset_categories WHERE store_id=? AND id=?','ii',[$this->actor->storeId,$asset['category_id']]);
         $schedule = $asset+['maintenance_cycle_months'=>$cycle['maintenance_cycle_months'] ?? null];
@@ -41,7 +42,7 @@ class ItaAssignmentObjects
 
     public function recipients(string $query, int $page): array
     {
-        if (!in_array($this->actor->role,['admin_it','system_manager'],true)) {
+        if (!$this->actor->can('assignment.create')) {
             throw new ItaHttpError(403,'Bạn không có quyền chọn người nhận bàn giao mới.');
         }
         $pattern = '%'.str_replace(['=','%','_'],['==','=%','=_'],$query).'%';

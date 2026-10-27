@@ -41,17 +41,17 @@
   const row=current.license;$('license-record').hidden=false;$('license-record-title').textContent=row.software_name;
   $('license-details').replaceChildren();
   for(const [label,value] of [['Hình thức',types[row.license_type]],['Số chỗ',`${row.used_seats} / ${row.total_seats}`],['Key',row.key_mask],['Cảnh báo',warnings(row)]])$('license-details').append(el('dt',label),el('dd',value));
-  $('license-editor').hidden=!admin();$('license-reveal').hidden=!admin()||!row.has_key;
+  $('license-editor').hidden=!window.ItaPolicy.can('license.manage',admin());$('license-reveal').hidden=!window.ItaPolicy.can('license.reveal',admin())||!row.has_key;
   for(const [id,key] of [['name','software_name'],['vendor','vendor'],['type','license_type'],['seats','total_seats'],['start','start_date'],['expire','expire_date'],['cost','cost'],['status','status']])$(`license-${id}`).value=row[key]??'';
-  $('license-key-input').value='';$('license-save-over').checked=false;$('license-save-reason').value='';
+  $('license-key-input').value='';$('license-save-over').closest('.license-override').hidden=!window.ItaPolicy.can('license.overage',admin());$('license-save-over').checked=false;$('license-save-reason').value='';
   $('license-allocate-over').checked=false;$('license-allocate-reason').value='';$('license-target').value='';
-  $('license-allocate').hidden=row.status!=='active'||(row.alerts.days_remaining!==null&&row.alerts.days_remaining<0)||(!admin()&&row.license_type==='per_user');
-  $('license-allocate-override').hidden=!admin();
+  $('license-allocate').hidden=!window.ItaPolicy.can('license.allocate',true)||row.status!=='active'||(row.alerts.days_remaining!==null&&row.alerts.days_remaining<0)||(!window.ItaPolicy.can('license.allocate_user',admin())&&row.license_type==='per_user');
+  $('license-allocate-override').hidden=!window.ItaPolicy.can('license.overage',admin());
   $('license-target-help').textContent=`${types[row.license_type]}: nhập đúng ID đích. Máy và bộ phận phải thuộc phạm vi của bạn. Máy/bộ phận tra ở trang Tài sản; tài khoản do Admin IT xác minh.`;
   $('license-allocations').replaceChildren(...current.allocations.map(a=>{
    const tr=el('tr',''),target=a.asset_id?`Máy #${a.asset_id}`:a.user_id?`Tài khoản #${a.user_id}`:`Bộ phận #${a.department_id}`;
    for(const text of [target,a.allocated_at,a.released_at||'Đang cấp'])tr.append(el('td',text));
-   const td=el('td','');if(!a.released_at){const button=el('button','Thu hồi');button.type='button';button.className='secondary-button';button.dataset.release=a.id;button.addEventListener('click',()=>task(()=>save({operation:'release',allocation_id:a.id})));td.append(button);}tr.append(td);return tr;
+   const td=el('td','');if(!a.released_at&&window.ItaPolicy.can('license.allocate',true)){const button=el('button','Thu hồi');button.type='button';button.className='secondary-button';button.dataset.release=a.id;button.addEventListener('click',()=>task(()=>save({operation:'release',allocation_id:a.id})));td.append(button);}tr.append(td);return tr;
   }));
   if(!current.allocations.length){const tr=el('tr',''),td=el('td','Chưa có lượt cấp phát trong phạm vi.');td.colSpan=4;tr.append(td);$('license-allocations').append(tr);}
   $('license-history-page').textContent=`Trang ${current.page} · ${current.total} lượt`;
@@ -92,8 +92,8 @@
   if(location.hash!=='#licenses')return;
   if(!live){message('MOCK · Giấy phép chỉ hoạt động khi đăng nhập hệ thống. Không có key hoặc dữ liệu thật trong bản xem thử.');return;}
   if(!window.itaLiveContext)return;
-  const allowed=['admin_it','system_manager'].includes(window.itaLiveContext.user.role);
-  $('license-live').hidden=!allowed;$('license-new').hidden=!allowed||!admin();
+  const allowed=window.ItaPolicy.can('license.read',['admin_it','system_manager'].includes(window.itaLiveContext.user.role));
+  $('license-live').hidden=!allowed;$('license-new').hidden=!allowed||!window.ItaPolicy.can('license.manage',admin());
   if(!allowed){message('Bạn không có quyền quản lý giấy phép.',true);return;}
   if(!started){started=true;task(listing);}
  }

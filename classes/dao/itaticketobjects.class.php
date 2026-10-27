@@ -10,6 +10,7 @@ class ItaTicketObjects
 
     public function row(int $id): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('ticket.read'); }
         $row = $this->db->fetchOne('SELECT * FROM ita_tickets WHERE store_id=? AND id=?','ii',[$this->actor->storeId,$id]);
         if (!$row) {
             throw new ItaHttpError(404,'Không tìm thấy phiếu.');
@@ -22,7 +23,7 @@ class ItaTicketObjects
     {
         $where = 'a.store_id=? AND a.is_deleted=0';
         $params = [$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $ids = $this->actor->departmentIds;
             $where .= $ids ? ' AND a.department_id IN ('.implode(',',array_fill(0,count($ids),'?')).')' : ' AND 1=0';
             $params = [...$params,...$ids];
@@ -32,6 +33,7 @@ class ItaTicketObjects
 
     public function listing(array $input, int $page): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('ticket.read'); }
         [$where,$types,$params] = $this->scope();
         if (!empty($input['asset_id'])) {
             $id = ItaInput::positiveInt($input['asset_id']);
@@ -54,6 +56,7 @@ class ItaTicketObjects
 
     public function detail(int $id, int $page): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('ticket.read'); }
         $row = $this->row($id);
         $total = (int) $this->db->fetchOne("SELECT (SELECT COUNT(*) FROM ita_ticket_events WHERE store_id=? AND ticket_id=?) + (SELECT COUNT(*) FROM ita_audit_logs WHERE store_id=? AND entity_type='ticket' AND entity_id=? AND action IN ('ticket.assign','ticket.cost')) n",'iiii',[$this->actor->storeId,$id,$this->actor->storeId,$id])['n'];
         $page = max(1,min($page,max(1,(int) ceil($total/20))));
@@ -73,11 +76,15 @@ class ItaTicketObjects
 
     public function technicians(int $assetId, int $page): array
     {
-        if ($this->actor->role==='support_technician') {
+        if (!$this->actor->can('ticket.assign')) {
             throw new ItaHttpError(403,'Bạn không có quyền gán kỹ thuật viên.');
         }
         $asset = $this->asset($assetId);
         $where = "u.store_id=? AND u.status=1 AND r.enabled=1 AND (r.role='admin_it' OR EXISTS (SELECT 1 FROM ita_user_scopes s WHERE s.store_id=u.store_id AND s.user_id=u.id AND s.active=1 AND s.department_id=?))";
+        if ($this->actor->capabilitiesEnabled) {
+            $where=str_replace("r.role='admin_it'","EXISTS (SELECT 1 FROM ita_user_permissions g WHERE g.store_id=u.store_id AND g.user_id=u.id AND g.permission_key='scope.store' AND g.active=1)",$where);
+            $where.=" AND EXISTS (SELECT 1 FROM ita_user_permissions p WHERE p.store_id=u.store_id AND p.user_id=u.id AND p.permission_key='ticket.process' AND p.active=1)";
+        }
         $from = ' FROM dc_users u JOIN ita_user_roles r ON r.store_id=u.store_id AND r.user_id=u.id WHERE '.$where;
         $params = [$this->actor->storeId,$asset['department_id']];
         $total = (int) $this->db->fetchOne('SELECT COUNT(*) n'.$from,'ii',$params)['n'];
@@ -87,6 +94,7 @@ class ItaTicketObjects
 
     public function statistics(array $input): array
     {
+        if ($this->actor->capabilitiesEnabled) { if (!$this->actor->can('ticket.statistics') && !$this->actor->can('ticket.statistics_self')) { throw new ItaHttpError(403,'Chưa có quyền thống kê.'); } }
         $year = ItaInput::text($input['year'] ?? (new DateTimeImmutable('now',new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y'),4);
         $page = ItaInput::positiveInt($input['page'] ?? '1');
         if (!preg_match('/^(20|21)[0-9]{2}$/D',$year)) {
@@ -96,7 +104,7 @@ class ItaTicketObjects
         if (!empty($input['asset_id'])) {
             $id=ItaInput::positiveInt($input['asset_id']);$this->asset($id);$where.=' AND t.asset_id=?';$types.='i';$params[]=$id;
         }
-        if ($this->actor->role==='support_technician') {
+        if (!$this->actor->can('ticket.statistics')) {
             $where.=' AND t.technician_id=?';$types.='i';$params[]=$this->actor->id;
         }
         $start = new DateTimeImmutable($year.'-01-01',new DateTimeZone('Asia/Ho_Chi_Minh'));

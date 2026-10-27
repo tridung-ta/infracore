@@ -88,6 +88,9 @@ class ItaApplication
 
     private function api(): void
     {
+        if ($_SERVER['REQUEST_METHOD']==='GET' && $this->user?->capabilitiesEnabled) {
+            ItaPermissions::read($this->user,$this->action,$_GET);
+        }
         if (in_array($this->action,['network','network-detail','network-save'],true)) {
             $this->networkApi();return;
         }
@@ -231,6 +234,15 @@ class ItaApplication
 
     private function overview(ItaAssetObjects $assets, int $page): array
     {
+        if ($this->user->capabilitiesEnabled) {
+            $summary=['total'=>0,'by_status'=>[],'by_department'=>[],'alerts'=>[],'alerts_total'=>0];
+            $listing=['assets'=>[],'pagination'=>['page'=>1,'per_page'=>5,'total'=>0]];
+            if ($this->user->can('asset.read')) { $summary=$assets->summary();$listing=$assets->listing($_GET,$page); }
+            return $listing+['summary'=>$summary,'departments'=>$assets->departments(),'mock'=>false,
+                'user'=>['id'=>$this->user->id,'display_name'=>$this->user->name,'role'=>$this->user->role,'role_label'=>$this->user->roleLabel(),
+                    'capabilities_enabled'=>true,'permissions'=>$this->user->permissions,
+                    'permission_catalog'=>$this->user->can('access.manage')?ItaPermissions::KEYS:[]]];
+        }
         $summary = $assets->summary();
         $ready = (new ItaTicketObjects($this->db,$this->user))->waitingAlerts();
         $summary['alerts'] = [...$summary['alerts'],...$ready['alerts']];

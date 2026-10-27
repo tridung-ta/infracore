@@ -5,15 +5,15 @@
  const $=id=>document.getElementById(id);
  let batch=null,busy=false,uncertain=false,unknown=false;
  const controls=['import-upload','import-confirm','import-errors','import-check','import-template','import-export-download','import-previous','import-next'];
- const allowed=()=>['admin_it','system_manager'].includes(window.itaLiveContext?.user.role);
+ const allowed=()=>window.ItaPolicy.enabled()?(window.ItaPolicy.can('import.read')||window.ItaPolicy.can('asset.export')):['admin_it','system_manager'].includes(window.itaLiveContext?.user.role);
  function message(text,error=false){$('import-summary').textContent=text;$('import-summary').setAttribute('role',error?'alert':'status');}
  function state(){
   const disabled=busy||!allowed();
-  $('import-file').disabled=disabled||unknown;
+  $('import-file').disabled=disabled||unknown||!window.ItaPolicy.can('import.upload',true);
   controls.forEach(id=>$(id).disabled=disabled);
-  $('import-upload').disabled=disabled||unknown||!$('import-file').files.length;
-  $('import-confirm').disabled=disabled||uncertain||!batch||batch.error_rows>0||batch.status!=='validated';
-  $('import-errors').disabled=disabled||!batch||!batch.error_rows;
+  $('import-upload').disabled=disabled||unknown||!window.ItaPolicy.can('import.upload',true)||!$('import-file').files.length;
+  $('import-confirm').disabled=disabled||uncertain||!window.ItaPolicy.can('import.confirm',true)||!batch||batch.error_rows>0||batch.status!=='validated';
+  $('import-template').disabled=disabled||!window.ItaPolicy.can('import.read',true);$('import-export-download').disabled=disabled||!window.ItaPolicy.can('asset.export',true);$('import-errors').disabled=disabled||!window.ItaPolicy.can('import.read',true)||!batch||!batch.error_rows;
   $('import-check').disabled=disabled||!batch;
   $('import-previous').disabled=disabled||!batch||batch.page<=1;
   $('import-next').disabled=disabled||!batch||batch.page*batch.per_page>=batch.total_rows;

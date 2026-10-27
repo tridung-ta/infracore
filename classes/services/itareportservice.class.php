@@ -21,6 +21,7 @@ class ItaReportService
 
     public function document(array $input,string $asOf): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability(($input['report'] ?? '')==='maintenance' && !$this->actor->can('report.read')?'report.maintenance':'report.read'); }
         $type=ItaInput::text($input['report'] ?? 'inventory',20);
         ItaDashboardRules::access($this->actor,$type==='maintenance');
         ItaDashboardRules::limit($type,'xlsx');$today=substr($asOf,0,10);$source='Số liệu hiện tại';$missing=0;
@@ -74,6 +75,7 @@ class ItaReportService
 
     public function export(array $input): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('report.export'); }
         ItaDashboardRules::access($this->actor);
         $asOf=ItaInput::text($input['as_of'] ?? '',25);
         $date=DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:sP',$asOf);
@@ -101,7 +103,7 @@ class ItaReportService
             if (!$native) { throw new ItaHttpError(403,'Tài khoản đã ngừng hoạt động. Hãy đăng nhập lại.'); }
             $r=$this->db->fetchOne('SELECT role,enabled,auth_revision FROM ita_user_roles WHERE store_id=? AND user_id=? FOR UPDATE','ii',[$this->actor->storeId,$this->actor->id]);
             if (!$r || !(int)$r['enabled'] || $r['role']!==$this->actor->role || (int)$r['auth_revision']!==$this->actor->revision) { throw new ItaHttpError(403,'Quyền đã thay đổi. Hãy đăng nhập lại.'); }
-            if (!$this->actor->isAdmin()) {
+            if (!$this->actor->hasGlobalScope()) {
                 $rows=$this->db->fetchAll('SELECT department_id FROM ita_user_scopes WHERE store_id=? AND user_id=? AND active=1 ORDER BY department_id FOR UPDATE','ii',[$this->actor->storeId,$this->actor->id]);
                 $current=array_map('intval',array_column($rows,'department_id'));$known=$this->actor->departmentIds;sort($current);sort($known);
                 if ($current!==$known) { throw new ItaHttpError(403,'Phạm vi đã thay đổi. Hãy tải lại báo cáo.'); }

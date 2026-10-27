@@ -1,7 +1,7 @@
 <?php
 class ItaAuditService
 {
-    private const FIELDS = ['asset_code','code','name','brand','model','serial_no','specs','os','purchase_date','purchase_price','warranty_end','vendor','location','category_id','department_id','current_user_id','status','is_deleted','status_reason','role','enabled','department_ids','total_rows',
+    private const FIELDS = ['permissions','asset_code','code','name','brand','model','serial_no','specs','os','purchase_date','purchase_price','warranty_end','vendor','location','category_id','department_id','current_user_id','status','is_deleted','status_reason','role','enabled','department_ids','total_rows',
         'asset_id','to_user_id','to_department_id','assigned_by','assigned_at','due_return','returned_at','handover_no','acknowledged_by','acknowledged_at','note','return_note',
         'software_name','license_type','total_seats','used_seats','start_date','expire_date','cost','allocation_id','user_id','override_reason',
         'technician_id','type','issue','handled_date','resolution_note','last_maintenance_at','next_maintenance_due','forecast_config','snapshot_hash','budget_summary','year','planned_headcount_increase','report_type','format','as_of',
@@ -33,7 +33,7 @@ class ItaAuditService
 
     public function listing(array $filters, int $page): array
     {
-        $this->actor->requireAdmin();
+        $this->actor->requireCapability('audit.read');
         $where = 'store_id=?';
         $types = 'i';
         $params = [$this->actor->storeId];

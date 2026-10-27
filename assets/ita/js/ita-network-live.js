@@ -4,7 +4,7 @@
  const $=id=>document.getElementById(id),ns='http://www.w3.org/2000/svg';
  const labels={in_use:'Đang dùng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Thanh lý'};
  let visible={nodes:[],links:[]},documentData=null,sequence=0,controller=null,busy=false,posting=false,page=1,applied={q:'',department_id:''};
- const role=()=>window.itaLiveContext?.user?.role,allowed=()=>['admin_it','system_manager'].includes(role());
+ const role=()=>window.itaLiveContext?.user?.role,allowed=()=>window.ItaPolicy.can('network.read',['admin_it','system_manager'].includes(role()));
  const node=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
  function svg(tag,attrs={}){const n=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))n.setAttribute(k,String(v));return n;}
  function message(text){$('network-message').textContent=text;}
@@ -50,7 +50,7 @@
   $('network-count').textContent=visible.nodes.length+' thiết bị · '+data.total+' liên kết trong bộ lọc';
   $('network-link-rows').replaceChildren(...data.rows.map(row=>{
    const tr=node('tr','');for(const value of [row.source_name,row.target_name,row.link_type,row.capacity_label||'Chưa ghi',row.source_port+' ↔ '+row.target_port])tr.append(node('td',value));
-   if(data.can_manage&&role()==='admin_it'){
+   if(data.can_manage&&window.ItaPolicy.can('network.manage',role()==='admin_it')){
     const td=tr.lastChild,editButton=node('button','Sửa'),remove=node('button','Ngừng liên kết');
     for(const button of [editButton,remove]){button.type='button';button.className='secondary-button';td.append(button);}
     editButton.addEventListener('click',()=>edit(row));remove.addEventListener('click',()=>{if(confirm('Ngừng liên kết #'+row.id+'? Hồ sơ được giữ bằng xóa mềm.'))save({action:'delete',id:row.id,version:row.version});});
@@ -58,7 +58,7 @@
   }));
   if(!data.rows.length){const tr=node('tr',''),td=node('td','Không có liên kết trong bộ lọc.');td.colSpan=5;tr.append(td);$('network-link-rows').append(tr);}
   $('network-paging').hidden=false;$('network-page').textContent='Trang '+page+'/'+Math.max(1,Math.ceil(data.total/20))+' · '+data.total+' liên kết';
-  $('network-editor').hidden=!(data.can_manage&&role()==='admin_it');
+  $('network-editor').hidden=!(data.can_manage&&window.ItaPolicy.can('network.manage',role()==='admin_it'));
   for(const id of ['source','target']){
    const select=$('network-'+id),value=select.value;select.replaceChildren(new Option('Chọn thiết bị',''),...visible.nodes.map(n=>new Option(n.code+' · '+n.name,n.id)));select.value=value;
   }
@@ -75,7 +75,7 @@
   finally{clearTimeout(timer);if(current===sequence){busy=false;controls();}}
  }
  async function save(payload){
-  if(posting||role()!=='admin_it')return;posting=true;controls();$('network-save-message').textContent='Đang lưu…';
+  if(posting||!window.ItaPolicy.can('network.manage',role()==='admin_it'))return;posting=true;controls();$('network-save-message').textContent='Đang lưu…';
   try{await request('network-save',payload);$('network-editor').reset();$('network-edit-id').value='';$('network-edit-version').value='';$('network-save-message').textContent='Đã lưu liên kết.';await load();}
   catch(error){$('network-save-message').textContent=error.message+' Chưa gửi lại; dữ liệu nhập được giữ nguyên.';}
   finally{posting=false;controls();}

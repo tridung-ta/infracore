@@ -1,5 +1,11 @@
 # Quyết định của dự án 5
 
+## 27/10/2026 — BE14 đã duyệt source; kích hoạt qua SQL gate riêng
+
+User xác nhận nguyên văn **“Duyệt BUILD source BE14 theo gate”**. Xây guard capability trên mọi route/suboperation, dùng quyền từng người và scope.store thay suy Admin từ role. Role hiện tại chỉ compatibility khi cờ chưa bật; không thêm role4, không fallback role trong mode mới. Scope toàn store không đồng nghĩa có mọi chức năng. access.read cần scope.store; access.manage/audit.read phụ thuộc access.read: chưa hỗ trợ quản trị/audit giới hạn từng bộ phận. assignment.read và ticket.create cần asset.read cho bộ chọn tài sản. Chọn thiếu dependency bị422, không âm thầm thêm quyền.
+
+Giao diện nhóm quyền có tìm kiếm, giữ version và chỉ gửi permission catalogue server; không gửi role trong mode mới. Server chặn cấp quyền ngoài tập người cấp và sửa tài khoản có tập quyền vượt người cấp. Lưu quyền tăng revision, cùng transaction audit; không ghi native. Native MyISAM và SQL ngoài protocol không được hứa atomicity. Cờ ITA_CAPABILITIES_ENABLED mặc định tắt; SQL007/mapping/rollout vẫn gate riêng BE_GATE_14_SQL.md, chưa chạy DB/config/host. Giữ không gói/upload/push/merge/tag7–10.
+
 ## 27/10/2026 — Hai phong cách theo nút hiệu ứng và nâng cấp đăng nhập
 
 User muốn khi Tắt là diện mạo mới, đăng nhập được nâng cấp. Chọn Command tối/cyan cho Bật, Focus sáng/tập trung cho Tắt; dùng semantic tokens và preference ita.motion hiện có. Theme là lựa chọn trình bày, không phụ thuộc tab ẩn hoặc reduced-motion; nút vẫn đổi phong cách trong reduced/config-off nhưng animation thật luôn bị chặn. Không dùng đổi theme để reload/fetch/reset dữ liệu hoặc thay quyền. Login giữ Smarty/form/auth contract, chỉ trình bày; preview MOCK chặn submit. Không PHP/DB/config/package mới, không gói/upload/push/merge/tag7–10. Kiểm local không thay nghiệm thu host.

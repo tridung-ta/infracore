@@ -11,7 +11,7 @@ class ItaNetworkObjects
     private function scope(string $alias): array
     {
         $where=$alias.'.store_id=? AND '.$alias.'.is_deleted=0';$params=[$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $ids=$this->actor->departmentIds;
             $where.=$ids?' AND '.$alias.'.department_id IN ('.implode(',',array_fill(0,count($ids),'?')).')':' AND 1=0';
             $params=[...$params,...$ids];
@@ -61,6 +61,6 @@ class ItaNetworkObjects
         if (count($links)>400) { throw new ItaHttpError(422,'Sơ đồ vượt giới hạn liên kết.'); }
         $page=max(1,min($page,max(1,(int)ceil($total/20))));
         $rows=$this->db->fetchAll('SELECT l.*,a.name source_name,b.name target_name'.$from.' ORDER BY l.id DESC LIMIT 20 OFFSET ?',$types.'i',[...$params,($page-1)*20]);
-        return ['mock'=>false,'can_manage'=>$this->actor->isAdmin(),'nodes'=>$nodes,'links'=>$links,'rows'=>array_map([ItaNetworkObjectInfo::class,'row'],$rows),'page'=>$page,'per_page'=>20,'total'=>$total];
+        return ['mock'=>false,'can_manage'=>$this->actor->can('network.manage'),'nodes'=>$nodes,'links'=>$links,'rows'=>array_map([ItaNetworkObjectInfo::class,'row'],$rows),'page'=>$page,'per_page'=>20,'total'=>$total];
     }
 }

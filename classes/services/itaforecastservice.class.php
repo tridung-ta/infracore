@@ -10,7 +10,7 @@ class ItaForecastService
         if (!$r || !(int)$r['enabled'] || $r['role']!==$this->actor->role || (int)$r['auth_revision']!==$this->actor->revision) {
             throw new ItaHttpError(403,'Quyền đã thay đổi. Hãy đăng nhập lại.');
         }
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $rows=$this->db->fetchAll('SELECT department_id FROM ita_user_scopes WHERE store_id=? AND user_id=? AND active=1 ORDER BY department_id FOR UPDATE','ii',[$this->actor->storeId,$this->actor->id]);
             $current=array_map('intval',array_column($rows,'department_id'));$known=$this->actor->departmentIds;sort($known);sort($current);
             if ($current!==$known) { throw new ItaHttpError(403,'Phạm vi đã thay đổi. Hãy tải lại.'); }
@@ -38,7 +38,7 @@ class ItaForecastService
 
     public function configure(array $input): array
     {
-        $this->actor->requireAdmin();
+        $this->actor->requireCapability('forecast.configure');
         return $this->transaction(function() use ($input) {
             $dao=new ItaForecastObjects($this->db,$this->actor);$before=$dao->configuration();
             if (!hash_equals($before['version'],ItaInput::text($input['version'] ?? '',64))) { throw new ItaHttpError(409,'Cấu hình đã đổi. Hãy tải lại.'); }
@@ -62,6 +62,7 @@ class ItaForecastService
 
     public function save(array $input): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('forecast.plan'); }
         $year=ItaForecastRules::year($input['year'] ?? null);$department=ItaInput::positiveInt($input['department_id'] ?? null);
         $this->actor->requireDepartment($department);
         $n=$input['planned_headcount_increase'] ?? null;
@@ -96,6 +97,7 @@ class ItaForecastService
 
     public function auditExport(array $document): void
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('forecast.export'); }
         $this->transaction(function() use ($document) {
             if (!$this->db->fetchOne('SELECT id FROM dc_users WHERE store_id=? AND id=? AND status=1','ii',[$this->actor->storeId,$this->actor->id])) {
                 throw new ItaHttpError(403,'Tài khoản đã ngừng hoạt động. Không thể xuất dữ liệu.');

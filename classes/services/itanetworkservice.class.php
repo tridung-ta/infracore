@@ -6,7 +6,7 @@ class ItaNetworkService
     private function actorLock(): void
     {
         $r=$this->db->fetchOne('SELECT role,enabled,auth_revision FROM ita_user_roles WHERE store_id=? AND user_id=? FOR UPDATE','ii',[$this->actor->storeId,$this->actor->id]);
-        if (!$r || !(int)$r['enabled'] || $r['role']!=='admin_it' || (int)$r['auth_revision']!==$this->actor->revision) { throw new ItaHttpError(403,'Quyền đã thay đổi. Hãy tải lại.'); }
+        if (!$r || !(int)$r['enabled'] || $r['role']!==$this->actor->role || (int)$r['auth_revision']!==$this->actor->revision) { throw new ItaHttpError(403,'Quyền đã thay đổi. Hãy tải lại.'); }
         $native=$this->db->fetchOne('SELECT id FROM dc_users WHERE store_id=? AND id=? AND status=1','ii',[$this->actor->storeId,$this->actor->id]);
         if (!$native) { throw new ItaHttpError(403,'Tài khoản không còn hoạt động.'); }
     }
@@ -26,7 +26,7 @@ class ItaNetworkService
     /** Lock actor then all old/new endpoints ascending before locking the link. */
     public function save(array $input): array
     {
-        $this->actor->requireAdmin();$action=ItaInput::text($input['action'] ?? 'save',10);
+        $this->actor->requireCapability('network.manage');$action=ItaInput::text($input['action'] ?? 'save',10);
         if (!in_array($action,['save','delete'],true)) { throw new ItaHttpError(422,'Thao tác không hợp lệ.'); }
         $id=($input['id'] ?? '')===''?null:ItaInput::positiveInt($input['id']);
         if ($action==='delete' && !$id) { throw new ItaHttpError(422,'Thiếu liên kết cần ngừng sử dụng.'); }
@@ -39,8 +39,9 @@ class ItaNetworkService
             if ($id && !$old) { throw new ItaHttpError(404,'Không tìm thấy liên kết.'); }
             $ids=array_unique([...($old?[(int)$old['source_asset_id'],(int)$old['target_asset_id']]:[]),...($values?[$values['source_asset_id'],$values['target_asset_id']]:[])]);sort($ids,SORT_NUMERIC);
             foreach ($ids as $assetId) {
-                $asset=$this->db->fetchOne('SELECT id,category_id,is_deleted FROM ita_assets WHERE store_id=? AND id=? FOR UPDATE','ii',[$this->actor->storeId,$assetId]);
+                $asset=$this->db->fetchOne('SELECT id,category_id,is_deleted,department_id FROM ita_assets WHERE store_id=? AND id=? FOR UPDATE','ii',[$this->actor->storeId,$assetId]);
                 if (!$asset) { throw new ItaHttpError(404,'Không tìm thấy thiết bị.'); }
+                if ($this->actor->capabilitiesEnabled) { $this->actor->requireDepartment(isset($asset['department_id'])?(int)$asset['department_id']:null); }
                 $category=$this->db->fetchOne('SELECT is_software FROM ita_asset_categories WHERE store_id=? AND id=?','ii',[$this->actor->storeId,(int)$asset['category_id']]);
                 if ($action==='save' && (in_array($assetId,[$values['source_asset_id'],$values['target_asset_id']],true)) && ((int)$asset['is_deleted'] || !$category || (int)$category['is_software'])) { throw new ItaHttpError(422,'Liên kết chỉ dùng thiết bị phần cứng chưa xóa.'); }
             }

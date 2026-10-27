@@ -32,11 +32,12 @@
   $(name==='users'?'user-page-summary':'audit-page-summary').textContent=`Trang ${data.page} · ${data.total} bản ghi`;
  }
  async function users(){
+  $('users-panel').querySelector('thead th:nth-child(3)').textContent=window.ItaPolicy.enabled()?'Quyền sử dụng':'Vai trò IT';
   $('admin-message').textContent='Đang tải tài khoản…';
   try{
    const data=await api('users',{page:state.users});state.users=data.page;
    $('user-rows').replaceChildren(...data.rows.map(user=>{
-    const row=el('tr');[user.username,user.fullname||'—',roles[user.role]||'Chưa cấp quyền',Number(user.enabled)===1?'Đã cấp quyền':'Chưa cho phép'].forEach(value=>row.append(el('td',value)));
+    const row=el('tr');[user.username,user.fullname||'—',window.ItaPolicy.enabled()?'Quyền chức năng':roles[user.role]||'Chưa cấp quyền',Number(user.enabled)===1?'Đã cấp quyền':'Chưa cho phép'].forEach(value=>row.append(el('td',value)));
     const cell=el('td'),button=el('button','Phân quyền');button.type='button';button.className='secondary-button';button.setAttribute('aria-label',`Phân quyền ${user.username}`);button.addEventListener('click',()=>editAccess(user.id));cell.append(button);row.append(cell);return row;
    }));
    pager('users',data);$('admin-message').textContent=data.total?'':'Chưa có tài khoản.';return true;
@@ -51,7 +52,7 @@
     const label=el('label'),box=el('input');box.type='checkbox';box.value=department.value;box.checked=user.department_ids.includes(Number(department.value));label.className='checkbox-label';label.append(box,el('span',department.label));return label;
    }));
    $('access-form').dataset.accountName=user.username;
-   $('admin-message').textContent='';$('access-form').hidden=false;$('access-role').focus();
+   window.ItaPermissionEditor.open(user);$('admin-message').textContent='';$('access-form').hidden=false;(window.ItaPolicy.enabled()?$('permission-function-search'):$('access-role')).focus();
   }catch(error){$('admin-message').textContent=error.message;}
  }
  function view(){
@@ -59,7 +60,7 @@
   const next=location.hash.slice(1);
   if(next!=='users'){openedView='';return;}
   if(openedView===next)return;openedView=next;
-  if(window.itaLiveContext.user.role!=='admin_it'){
+  if(!window.ItaPolicy.can('access.manage',window.itaLiveContext.user.role==='admin_it')){
    $('admin-message').textContent='Bạn không có quyền truy cập chức năng này.';return;
   }
   users();
@@ -70,7 +71,7 @@
    const confirmed=await window.ItaUi.confirm({title:'Cập nhật quyền truy cập?',message:'Quyền mới có hiệu lực ngay. Tài khoản được chỉnh sẽ cần đăng nhập lại.',confirmLabel:'Cập nhật quyền'});
    if(!confirmed)return;
    button.textContent='Đang lưu…';$('access-form').setAttribute('aria-busy','true');$('access-cancel').disabled=true;
-   await api('access',{}, {user_id:$('access-user-id').value,role:$('access-role').value,enabled:$('access-enabled').checked,department_ids:[...document.querySelectorAll('#scope-options input:checked')].map(input=>input.value)});
+   await api('access',{}, {user_id:$('access-user-id').value,...(window.ItaPolicy.enabled()?window.ItaPermissionEditor.payload():{role:$('access-role').value}),enabled:$('access-enabled').checked,department_ids:[...document.querySelectorAll('#scope-options input:checked')].map(input=>input.value)});
    const message=`Đã cập nhật quyền truy cập cho ${$('access-form').dataset.accountName}.`;
    $('access-form').hidden=true;const refreshed=await users();
    announce($('admin-message'),message+(refreshed?'':' Chưa tải lại được danh sách; hãy tải lại trang để kiểm tra.'));

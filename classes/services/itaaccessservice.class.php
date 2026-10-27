@@ -7,6 +7,11 @@ class ItaAccessService
 
     public function update(array $input): void
     {
+        if ($this->actor->capabilitiesEnabled) {
+            require_once __DIR__.'/itacapabilityaccessservice.class.php';
+            (new ItaCapabilityAccessService($this->db,$this->actor))->update($input);
+            return;
+        }
         $this->actor->requireAdmin();
         $userId = ItaInput::positiveInt($input['user_id'] ?? null);
         $role = $input['role'] ?? '';

@@ -6,7 +6,7 @@ class ItaLicenseReveal
     /** Called only by POST+CSRF dispatcher. Audit is durable before plaintext can leave the service. */
     public function reveal(int $id, mixed $password): array
     {
-        $this->actor->requireAdmin();
+        $this->actor->requireCapability('license.reveal');
         if (!is_string($password) || $password==='' || strlen($password)>1024 || str_contains($password,"\0")) {
             throw new ItaHttpError(422,'Nhập lại mật khẩu để xem key.');
         }
@@ -21,7 +21,7 @@ class ItaLicenseReveal
         try {
             $current = (new ItaUserObjects($this->db))->current($this->actor->storeId,$this->actor->id);
             $role = $this->db->fetchOne('SELECT role,enabled,auth_revision FROM ita_user_roles WHERE store_id=? AND user_id=? FOR UPDATE','ii',[$this->actor->storeId,$this->actor->id]);
-            if (!$current || !$current->isAdmin() || !$role || !(int) $role['enabled'] || $role['role']!=='admin_it' || (int) $role['auth_revision']!==$this->actor->revision) {
+            if (!$current || !$current->can('license.reveal') || !$role || !(int) $role['enabled'] || $role['role']!==$this->actor->role || (int) $role['auth_revision']!==$this->actor->revision) {
                 throw new ItaHttpError(403,'Quyền đã thay đổi. Vui lòng đăng nhập lại.');
             }
             $row = (new ItaLicenseObjects($this->db,$current))->row($id,true);

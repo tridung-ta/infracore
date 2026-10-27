@@ -29,7 +29,7 @@
  function refresh(){dispatchEvent(new Event('ita:refresh'));}
  function updateContext(){
   if(!window.itaLiveContext)return;
-  add.hidden=window.itaLiveContext.user.role==='support_technician';manage.hidden=window.itaLiveContext.user.role!=='admin_it';
+  add.hidden=!window.ItaPolicy.can('asset.create',window.itaLiveContext.user.role!=='support_technician');manage.hidden=!window.ItaPolicy.can('category.manage',window.itaLiveContext.user.role==='admin_it');
   loadCategories().then(rows=>{
    catalogNotice.hidden=true;
    const select=$('filter-category_id'),value=select.value;
@@ -55,13 +55,13 @@
      if(key==='category_id')options=[['','Chọn loại tài sản'],...categories.filter(c=>c.status==='active'||String(c.id)===String(editing?.fields.category_id)).map(c=>[String(c.id),c.name+(c.status==='inactive'?' (ngừng sử dụng)':'')])];
      if(key==='department_id')options=[['','Chưa phân bổ'],...window.itaLiveContext.departments.map(d=>[d.value,d.label])];
      const input=field(key,label,{type,value:editing?.fields[key]??'',options});if(max)input.maxLength=max;
-     input.required=['asset_code','name','category_id'].includes(key)||(key==='department_id'&&window.itaLiveContext.user.role!=='admin_it');
+     input.required=['asset_code','name','category_id'].includes(key)||(key==='department_id'&&!window.ItaPolicy.can('scope.store',window.itaLiveContext.user.role==='admin_it'));
      if(key==='purchase_price'){input.inputMode='decimal';input.pattern='[0-9]+(\\.[0-9]{1,2})?';}
     }
    }else{
     $('asset-edit-fields').append(node('p',`${editing.code} · ${editing.name}`,'wide-field'));
     if(mode==='status'){
-     const status=field('status','Trạng thái mới',{type:'select',options:[['','Chọn trạng thái'],...(transitions[editing.status]||[]).filter(s=>s!=='retired'||window.itaLiveContext.user.role==='admin_it').map(s=>[s,labels[s]])]});
+     const status=field('status','Trạng thái mới',{type:'select',options:[['','Chọn trạng thái'],...(transitions[editing.status]||[]).filter(s=>s!=='retired'||window.ItaPolicy.can('asset.retire',window.itaLiveContext.user.role==='admin_it')).map(s=>[s,labels[s]])]});
      status.required=true;
     }
     const reason=field('reason',mode==='note'?'Ghi chú':'Lý do',{type:'textarea'});reason.required=true;reason.maxLength=4000;
@@ -125,9 +125,9 @@
   const generation=++historyGeneration;
   detail=event.detail;const dialog=$('asset-dialog');dialog.querySelectorAll('.asset-tools,.asset-history').forEach(n=>n.remove());
   const controls=node('div',undefined,'asset-tools'),role=window.itaLiveContext.user.role;
-  if(role!=='support_technician')controls.append(button('Sửa thông tin',()=>openEditor('update')));
-  if((transitions[detail.status]||[]).some(s=>s!=='retired'||role==='admin_it'))controls.append(button('Đổi trạng thái',()=>openEditor('status')));
-  controls.append(button('Ghi chú',()=>openEditor('note')));if(role==='admin_it')controls.append(button('Xóa mềm',()=>openEditor('delete')));dialog.append(controls);
+  if(window.ItaPolicy.can('asset.update',role!=='support_technician'))controls.append(button('Sửa thông tin',()=>openEditor('update')));
+  if(window.ItaPolicy.can('asset.status',true)&&(transitions[detail.status]||[]).some(s=>s!=='retired'||window.ItaPolicy.can('asset.retire',role==='admin_it')))controls.append(button('Đổi trạng thái',()=>openEditor('status')));
+  if(window.ItaPolicy.can('asset.note',true))controls.append(button('Ghi chú',()=>openEditor('note')));if(window.ItaPolicy.can('asset.delete',role==='admin_it'))controls.append(button('Xóa mềm',()=>openEditor('delete')));dialog.append(controls);
   const history=createHistory(detail,dialog,generation);
   history.id='asset-history-panel';history.hidden=true;history.setAttribute('role','tabpanel');history.setAttribute('aria-labelledby','asset-history-tab');
   const tabs=node('div',undefined,'asset-tools asset-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Hồ sơ tài sản');

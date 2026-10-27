@@ -13,7 +13,7 @@ class ItaAssetObjects
     {
         $where = 'a.store_id=? AND a.is_deleted=0';
         $params = [$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             if (!$this->actor->departmentIds) {
                 $where .= ' AND 1=0';
             } else {
@@ -28,7 +28,7 @@ class ItaAssetObjects
     {
         $where = "store_id=? AND status='active'";
         $params = [$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $where .= $this->actor->departmentIds ? ' AND id IN ('.implode(',', array_fill(0, count($this->actor->departmentIds), '?')).')' : ' AND 1=0';
             $params = [...$params,...$this->actor->departmentIds];
         }
@@ -90,7 +90,7 @@ class ItaAssetObjects
 
     public function export(array $filters): array
     {
-        if (!in_array($this->actor->role,['admin_it','system_manager'],true)) {
+        if (!$this->actor->can('asset.export')) {
             throw new ItaHttpError(403,'Bạn không có quyền xuất tài sản.');
         }
         [$where,$types,$params] = $this->filteredScope($filters);
@@ -104,6 +104,7 @@ class ItaAssetObjects
 
     public function listing(array $filters, int $page): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('asset.read'); }
         [$where,$types,$params] = $this->filteredScope($filters);
         $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_assets a WHERE '.$where, $types, $params)['n'];
         $page = min($page, max(1, (int) ceil($total/5)));
@@ -114,6 +115,7 @@ class ItaAssetObjects
 
     public function detail(int $id, int $page = 1): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('asset.read'); }
         $row = $this->db->fetchOne(self::SELECT.' WHERE a.store_id=? AND a.id=? AND a.is_deleted=0', 'ii', [$this->actor->storeId,$id]);
         if (!$row) {
             throw new ItaHttpError(404, 'Không tìm thấy thiết bị.');
@@ -130,6 +132,7 @@ class ItaAssetObjects
 
     public function summary(): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('asset.read'); }
         [$where,$types,$params] = $this->scope();
         $counts = array_fill_keys(['in_use','maintenance','broken','retired'], 0);
         foreach ($this->db->fetchAll('SELECT a.status,COUNT(*) n FROM ita_assets a WHERE '.$where.' GROUP BY a.status', $types, $params) as $row) {

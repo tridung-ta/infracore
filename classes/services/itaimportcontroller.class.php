@@ -14,6 +14,7 @@ class ItaImportController
         }
         if ($post) {
             ItaSession::requireCsrf($_SERVER['HTTP_X_CSRF_TOKEN'] ?? null);
+            if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability($action==='import-upload'?'import.upload':'import.confirm'); }
         }
         if ($action==='asset-export') {
             $rows = (new ItaAssetObjects($this->db,$this->actor))->export($_GET);

@@ -3,13 +3,14 @@ class ItaImportService
 {
     public function __construct(private ItaDb $db, private ItaUserObjectInfo $actor, private string $sessionKey)
     {
-        if (!in_array($actor->role,['admin_it','system_manager'],true)) {
+        if (!$actor->can('import.read')) {
             throw new ItaHttpError(403,'Bạn không có quyền import tài sản.');
         }
     }
 
     public function upload(string $path, string $filename): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('import.upload'); }
         $name = ItaInput::text(basename(str_replace('\\','/',$filename)),255);
         $rows = ItaExcel::read($path,$name);
         $rows = (new ItaImportRows($this->db,$this->actor))->validate($rows);
@@ -60,6 +61,7 @@ class ItaImportService
     /** Batch lock makes retries idempotent; all asset rows, audits and completion share one transaction. */
     public function confirm(array $input): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('import.confirm'); }
         $id = ItaInput::positiveInt($input['batch_id'] ?? null);
         $token = ItaInput::text($input['confirm_token'] ?? '',64);
         $this->db->beginTransaction();

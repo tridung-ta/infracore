@@ -17,7 +17,7 @@ class ItaCategoryService
     /** Admin catalog browser; the bounded dropdown contract remains separate. */
     public function paginated(array $input, int $page): array
     {
-        $this->actor->requireAdmin();
+        $this->actor->requireCapability('category.manage');
         if (($input['paged'] ?? null) !== '1') {
             throw new ItaHttpError(422,'Chế độ danh mục không hợp lệ.');
         }
@@ -40,7 +40,7 @@ class ItaCategoryService
     /** Preserve used categories; deactivation hides them from new asset choices. */
     public function save(array $input): int
     {
-        $this->actor->requireAdmin();
+        $this->actor->requireCapability('category.manage');
         $id = ($input['id'] ?? '') === '' ? null : ItaInput::positiveInt($input['id']);
         $code = ItaInput::text($input['code'] ?? '',50);
         $name = ItaInput::text($input['name'] ?? '',150);
@@ -50,6 +50,7 @@ class ItaCategoryService
         }
         $this->db->beginTransaction();
         try {
+            if ($this->actor->capabilitiesEnabled) { ItaPermissions::recheck($this->db,$this->actor,'category.manage'); }
             $before = $id ? $this->db->fetchOne('SELECT id,code,name,status FROM ita_asset_categories WHERE store_id=? AND id=? FOR UPDATE','ii',[$this->actor->storeId,$id]) : null;
             if ($id && !$before) {
                 throw new ItaHttpError(404,'Không tìm thấy danh mục.');

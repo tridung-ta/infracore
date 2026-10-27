@@ -3,7 +3,7 @@ class ItaLicenseRules
 {
     public static function manage(ItaUserObjectInfo $actor): void
     {
-        if (!in_array($actor->role,['admin_it','system_manager'],true)) {
+        if (!$actor->can('license.read')) {
             throw new ItaHttpError(403,'Bạn không có quyền quản lý giấy phép.');
         }
     }
@@ -21,7 +21,7 @@ class ItaLicenseRules
         if ($used<=$seats) {
             return null;
         }
-        $actor->requireAdmin();
+        $actor->requireCapability('license.overage');
         $reason = ItaInput::text($input['override_reason'] ?? '',1000);
         if (($input['confirm_overage'] ?? false)!==true || $reason==='') {
             throw new ItaHttpError(422,'Admin IT phải xác nhận vượt mức và nhập lý do.');

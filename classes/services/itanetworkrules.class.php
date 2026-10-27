@@ -3,7 +3,7 @@ class ItaNetworkRules
 {
     public static function access(ItaUserObjectInfo $actor): void
     {
-        if (!in_array($actor->role,['admin_it','system_manager'],true)) {
+        if (!$actor->can('network.read')) {
             throw new ItaHttpError(403,'Bạn không có quyền xem hạ tầng mạng.');
         }
     }

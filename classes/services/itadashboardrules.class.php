@@ -4,6 +4,12 @@ class ItaDashboardRules
 {
     public static function access(ItaUserObjectInfo $actor,bool $maintenance=false): void
     {
+        if ($actor->capabilitiesEnabled) {
+            if (!$actor->can('dashboard.read') && !$actor->can('alert.read') && !$actor->can('report.read') && !($maintenance && $actor->can('report.maintenance'))) {
+                throw new ItaHttpError(403,'Bạn chưa được cấp quyền xem dữ liệu phân tích này.');
+            }
+            return;
+        }
         if (!in_array($actor->role,['admin_it','system_manager'],true) && !($maintenance && $actor->role==='support_technician')) {
             throw new ItaHttpError(403,'Bạn chỉ được xem bảng bảo trì trong phạm vi phụ trách.');
         }

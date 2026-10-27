@@ -117,7 +117,7 @@
   documentData=d;
   page=d.page??1;
   $('dash-time').textContent='Số liệu tại '+new Date(d.as_of).toLocaleTimeString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',hour:'2-digit',minute:'2-digit'})+' · '+new Date(d.as_of).toLocaleDateString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'})+' · giờ Việt Nam';
-  if(view==='overview'&&role()!=='support_technician'){overview(d);
+  if(view==='overview'&&!window.ItaPolicy.maintenance()){overview(d);
   }else if(view==='alerts'){bell(d.active_total);
   $('dash-output').append(node('p',`${d.total} kết quả khớp / ${d.active_total} cảnh báo đang hiệu lực. Chuông không phải số chưa đọc hoặc số dòng đang lọc.`),table(['Mức độ','Mã','Đối tượng','Lý do'],d.rows.map(r=>[r.level==='critical'?'Nghiêm trọng':'Cần theo dõi',r.code,r.name,r.title]),'Cảnh báo trong phạm vi'));
   }else{$('dash-output').append(node('p',d.source),node('p',`Số dòng dữ liệu: ${d.data_count}. Thiếu dữ liệu: ${d.missing??0}.`));
@@ -127,13 +127,13 @@
   $('dash-page').textContent=`Trang ${d.page??1} / ${Math.max(1,Math.ceil((d.total??0)/(d.per_page??20)))}`;
   $('dash-previous').disabled=(d.page??1)<=1;
   $('dash-next').disabled=(d.page??1)*(d.per_page??20)>=(d.total??0);
-  $('dash-export').hidden=view!=='reports'||role()==='support_technician';
+  $('dash-export').hidden=view!=='reports'||!window.ItaPolicy.can('report.export',!window.ItaPolicy.maintenance());
   }
  function filters(){const input={department_id:$('dash-department').value,group:$('dash-group').value};
   if(view==='reports'){input.report=$('dash-report').value;
   if(input.report==='budget'){input.year=$('dash-year').value;
   if($('dash-plan').value)input.plan_id=$('dash-plan').value;
-  }}if(role()==='support_technician')input.report='maintenance';
+  }}if(window.ItaPolicy.maintenance())input.report='maintenance';
   return input;
   }
  async function load(){if(!role())return;
@@ -144,7 +144,7 @@
   dispose();
   request?.abort();
   request=new AbortController();
-  const action=view==='alerts'?'alerts':view==='reports'||role()==='support_technician'?'report-preview':'dashboard';
+  const action=view==='alerts'?'alerts':view==='reports'||window.ItaPolicy.maintenance()?'report-preview':'dashboard';
   const query=new URLSearchParams({op:'ita',act:action,...applied,page:String(page)});
   $('dash-output').setAttribute('aria-busy','true');
   $('dash-message').textContent='Đang tải…';
@@ -158,7 +158,7 @@
   }catch(e){if(id===sequence&&e.name!=='AbortError')$('dash-message').textContent=(e instanceof SyntaxError?'Máy chủ trả phản hồi không hợp lệ.':e.message)+' Dữ liệu cũ (nếu có) giữ nguyên mốc; bấm Làm mới để thử lại.';
   }finally{if(id===sequence){$('dash-output').setAttribute('aria-busy','false');tableBusy(false);}
   }}
- async function initialBell(){if(badgeLoaded||role()==='support_technician')return;
+ async function initialBell(){if(badgeLoaded||!window.ItaPolicy.can('alert.read',!window.ItaPolicy.maintenance()))return;
   badgeLoaded=true;
   badgeRequest=new AbortController();
   try{const r=await fetch('/admin.php?op=ita&act=alerts',{signal:badgeRequest.signal,cache:'no-store'}),d=await r.json();
@@ -167,7 +167,8 @@
   }}
  function activate(){if(!role())return;
   const next=location.hash.slice(1)||'overview';
-  const supported=['overview','alerts','reports'].includes(next);
+  const permission={overview:'dashboard.read',alerts:'alert.read',reports:'report.read'}[next];
+  const supported=['overview','alerts','reports'].includes(next)&&(!window.ItaPolicy.enabled()||window.ItaPolicy.can(permission)||(next==='overview'&&window.ItaPolicy.maintenance()));
   panel.hidden=!supported;
   if(!supported){++sequence;
   request?.abort();
@@ -187,7 +188,7 @@
   dispose();
   $('dash-output').replaceChildren();
   tableControls=[];
-  const support=role()==='support_technician';
+  const support=window.ItaPolicy.maintenance();
   if(support&&next!=='overview'){$('dash-heading').textContent='Không có quyền';
   $('dash-message').textContent='Hỗ trợ chỉ xem bảng bảo trì tại Tổng quan.';
   $('dash-filters').hidden=true;
@@ -251,7 +252,7 @@
   $('dash-xlsx').addEventListener('click',()=>download('xlsx'));
   $('dash-pdf').addEventListener('click',()=>download('pdf'));
   addEventListener('ita:view',activate);
-  addEventListener('ita:data',()=>{if(role()==='support_technician'){document.querySelector('[data-view="alerts"]').hidden=true;
+  addEventListener('ita:data',()=>{if(window.ItaPolicy.enabled()){$('notification-button').hidden=$('dash-bell-label').hidden=!window.ItaPolicy.can('alert.read');}if(window.ItaPolicy.maintenance()){document.querySelector('[data-view="alerts"]').hidden=true;
   document.querySelector('[data-view="reports"]').hidden=true;
   $('notification-button').hidden=true;
   $('dash-bell-label').hidden=true;

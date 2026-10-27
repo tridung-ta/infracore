@@ -23,13 +23,13 @@ class ItaForecastObjects
                 'maintenance_percent'=>ItaForecastRules::parameter($p['maintenance_percent'] ?? null,100)];
         }
         return ['categories'=>$categories,'version'=>ItaForecastObjectInfo::version(['categories'=>$categories,'setting'=>$setting]),
-            'contingency_percent'=>'10','departments'=>$this->departments(),'can_configure'=>$this->actor->isAdmin()];
+            'contingency_percent'=>'10','departments'=>$this->departments(),'can_configure'=>$this->actor->can('forecast.configure')];
     }
 
     private function departments(): array
     {
         $where='store_id=?';$params=[$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $ids=$this->actor->departmentIds;
             $where.=$ids?' AND id IN ('.implode(',',array_fill(0,count($ids),'?')).')':' AND 1=0';
             $params=[...$params,...$ids];
@@ -43,7 +43,7 @@ class ItaForecastObjects
     {
         $year=ItaForecastRules::year($input['year'] ?? ItaForecastRules::currentYear());
         $where='store_id=? AND year=?';$types='ii';$params=[$this->actor->storeId,$year];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $ids=$this->actor->departmentIds;
             if (count($ids)>500) { throw new ItaHttpError(422,'Phạm vi bộ phận vượt giới hạn.'); }
             $where.=$ids?' AND department_id IN ('.implode(',',array_fill(0,count($ids),'?')).')':' AND 1=0';
@@ -86,7 +86,7 @@ class ItaForecastObjects
         array_pop($assets['params']);$assets['types']=substr($assets['types'],0,-1);
         $now=new DateTimeImmutable('first day of January this year 00:00:00',new DateTimeZone('Asia/Ho_Chi_Minh'));
         $where="a.store_id=? AND a.is_deleted=0 AND a.status<>'retired' AND c.is_software=0";$types='i';$params=[$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $ids=$this->actor->departmentIds;
             $where.=$ids?' AND a.department_id IN ('.implode(',',array_fill(0,count($ids),'?')).')':' AND 1=0';
             $types.=str_repeat('i',count($ids));$params=[...$params,...$ids];

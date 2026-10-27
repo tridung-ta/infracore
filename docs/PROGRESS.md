@@ -1,5 +1,13 @@
 # Tiến độ dự án 5
 
+## 27/10/2026 — BUILD source BE14 theo duyệt, chưa bật trên DB
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|BE14|Quyền từng người +scope, role chỉ compatibility khi cờ tắt|BE/FE|[x] source local; [G] SQL/rollout|Commit chứa mục này|121 fake service/route +19 browser API mock; hồi quy S26 686, unit/HTTP/browser theo PHASE14_CAPABILITIES_VERIFY.md|Không DB/host; cờ chưa bật; SQL007 chỉ gate nháp; không gói/upload/push/merge/tag7–10|
+
+Không sửa tài liệu bảo mật user-owned. Source capability mới mặc định tắt, không tự cấp quyền từ role khi bật. C=asset.read/create +report.read không cần role mới; scope.store độc lập, không tự cấp CRUD. Người cấp không vượt tập quyền mình có; writer giữ version/revision/audit/manager cuối. Bố cục nhật ký/nhóm đã ở commit f215842/6628270; local MOCK cho user xem, không nghiệm thu DB.
+
 27/10/2026 — Review UI nhật ký: sửa dịch nhầm tên/ghi chú giống enum, giữ nguyên dữ liệu tự do và chỉ dịch role/status; Object.hasOwn chống tra nhầm prototype.8formatterchecks local đạt, không DB/host. BE14 source đã duyệt, đang triển khai tiếp; chưa gói/upload.
 
 ## 27/10/2026 — Làm gọn nhật ký/bảng nhóm và nhận duyệt BE14

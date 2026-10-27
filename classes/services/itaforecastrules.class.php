@@ -6,7 +6,7 @@ class ItaForecastRules
 
     public static function access(ItaUserObjectInfo $actor): void
     {
-        if (!in_array($actor->role,['admin_it','system_manager'],true)) {
+        if (!$actor->can('forecast.read') && !($actor->capabilitiesEnabled && $actor->can('report.read'))) {
             throw new ItaHttpError(403,'Bạn không có quyền xem ngân sách.');
         }
     }

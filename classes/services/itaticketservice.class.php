@@ -5,6 +5,7 @@ class ItaTicketService
 
     public function save(array $input): array
     {
+        if ($this->actor->capabilitiesEnabled) { $permission=match($input['operation'] ?? ''){'create'=>'ticket.create','assign'=>'ticket.assign','transition'=>'ticket.process','cost'=>'ticket.cost','ready'=>'ticket.ready',default=>throw new ItaHttpError(422,'Thao tác không hợp lệ.')};$this->actor->requireCapability($permission); }
         $operation = ItaInput::text($input['operation'] ?? '',12);
         if (!in_array($operation,['create','assign','transition','cost','ready'],true)) {
             throw new ItaHttpError(422,'Thao tác phiếu không hợp lệ.');
@@ -80,7 +81,7 @@ class ItaTicketService
             return;
         }
         if ($operation==='cost') {
-            $this->actor->requireAdmin();
+            $this->actor->requireCapability('ticket.cost');
             if (!in_array($ticket['status'],['resolved','failed'],true)) {
                 throw new ItaHttpError(422,'Chỉ sửa chi phí đã đóng bằng thao tác này.');
             }
@@ -89,7 +90,7 @@ class ItaTicketService
             $this->audit('ticket.cost',$id,['cost'=>$ticket['cost']],['cost'=>$cost,'note'=>$note]);
             return;
         }
-        if ($this->actor->role==='system_manager') {
+        if (!$this->actor->can('ticket.process')) {
             throw new ItaHttpError(403,'Quản lý hệ thống chỉ tạo phiếu, xem và gán kỹ thuật viên.');
         }
         $to = ItaInput::text($input['status'] ?? '',10);
@@ -107,7 +108,7 @@ class ItaTicketService
 
     private function assign(array $ticket, array $asset, array $input, string $note): void
     {
-        if ($this->actor->role==='support_technician') {
+        if (!$this->actor->can('ticket.assign')) {
             throw new ItaHttpError(403,'Bạn không có quyền gán kỹ thuật viên.');
         }
         if ($ticket['status']!=='pending') {
@@ -117,6 +118,9 @@ class ItaTicketService
         $technician = (new ItaUserObjects($this->db))->current($this->actor->storeId,$id);
         if (!$technician) {
             throw new ItaHttpError(422,'Kỹ thuật viên không hoạt động hoặc chưa có quyền ITA.');
+        }
+        if ($this->actor->capabilitiesEnabled && !$technician->can('ticket.process')) {
+            throw new ItaHttpError(422,'Tài khoản chưa có quyền xử lý phiếu.');
         }
         $technician->requireDepartment($asset['department_id']===null?null:(int) $asset['department_id']);
         $this->db->execute('UPDATE ita_tickets SET technician_id=?,updated_at=UTC_TIMESTAMP() WHERE store_id=? AND id=?','iii',[$id,$this->actor->storeId,$ticket['id']]);
@@ -128,7 +132,7 @@ class ItaTicketService
         $handled = ItaTicketRules::handled($input,$ticket);
         $cost = ItaTicketRules::cost($input['cost'] ?? '');
         if (!empty($ticket['handled_date']) && !ItaTicketRules::sameCost($cost,(string) $ticket['cost'])) {
-            $this->actor->requireAdmin();
+            $this->actor->requireCapability('ticket.cost');
         }
         $this->db->execute('UPDATE ita_tickets SET status=?,handled_date=?,resolved_at=UTC_TIMESTAMP(),cost=?,resolution_note=?,updated_at=UTC_TIMESTAMP() WHERE store_id=? AND id=?','ssssii',[$to,$handled,$cost,$note,$this->actor->storeId,$ticket['id']]);
         $assigned = $asset['current_user_id']!==null || $this->db->fetchOne('SELECT id FROM ita_assignments WHERE store_id=? AND asset_id=? AND returned_at IS NULL LIMIT 1','ii',[$this->actor->storeId,$asset['id']]);
@@ -144,7 +148,7 @@ class ItaTicketService
 
     private function ready(array $asset, array $input): void
     {
-        $this->actor->requireAdmin();
+        $this->actor->requireCapability('ticket.ready');
         if (!hash_equals(ItaAssetService::version($asset),ItaInput::text($input['asset_version'] ?? '',64))) {
             throw new ItaHttpError(409,'Thiết bị đã thay đổi. Hãy tải lại.');
         }

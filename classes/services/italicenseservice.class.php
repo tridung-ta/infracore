@@ -6,6 +6,7 @@ class ItaLicenseService
     /** Locks the actor/license before any change; audit failure rolls back every ITA write. */
     public function save(array $input): array
     {
+        if ($this->actor->capabilitiesEnabled) { $permission=match($input['operation'] ?? 'save'){'save'=>'license.manage','allocate'=>'license.allocate','release'=>'license.allocate',default=>throw new ItaHttpError(422,'Thao tác không hợp lệ.')};$this->actor->requireCapability($permission); }
         ItaLicenseRules::manage($this->actor);
         $operation = ItaInput::text($input['operation'] ?? 'save',20);
         if (!in_array($operation,['save','allocate','release'],true)) {
@@ -45,7 +46,7 @@ class ItaLicenseService
     private function metadata(?array $before, array $input): int
     {
         // Licenses are shared store-wide: no department ownership column exists.
-        $this->actor->requireAdmin();
+        $this->actor->requireCapability('license.manage');
         $fields = ItaLicenseRules::fields($input);
         if ($before && $before['license_type']!==$fields['license_type']) {
             $history = $this->db->fetchOne('SELECT COUNT(*) n FROM ita_license_allocations WHERE store_id=? AND license_id=?','ii',[$this->actor->storeId,$before['id']]);
@@ -123,7 +124,8 @@ class ItaLicenseService
             }
         } else {
             // Native users have no verified membership relation; never infer it from store_id.
-            $this->actor->requireAdmin();
+            $this->actor->requireCapability('license.allocate_user');
+            if (!$this->actor->hasGlobalScope()) { throw new ItaHttpError(403,'Cấp theo người cần phạm vi toàn hệ thống.'); }
             if (!$this->db->fetchOne('SELECT id FROM dc_users WHERE store_id=? AND id=?'.($releasing?'':' AND status=1'),'ii',[$this->actor->storeId,$target['user_id']])) {
                 throw new ItaHttpError(422,'Tài khoản không hoạt động hoặc ngoài hệ thống.');
             }

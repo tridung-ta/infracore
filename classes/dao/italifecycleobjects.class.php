@@ -7,7 +7,7 @@ class ItaLifecycleObjects
 
     public function __construct(private ItaDb $db,private ItaUserObjectInfo $actor,?string $today=null)
     {
-        if (!in_array($actor->role,['admin_it','system_manager'],true)) {
+        if (!$actor->can('lifecycle.read') && !($actor->capabilitiesEnabled && ($actor->can('forecast.read') || $actor->can('report.read') || $actor->can('dashboard.read') || $actor->can('alert.read')))) {
             throw new ItaHttpError(403,'Bạn không có quyền xem phân tích vòng đời tài sản.');
         }
         $this->window=ItaLifecycleRules::window($today ?? (new DateTimeImmutable('now',new DateTimeZone('Asia/Ho_Chi_Minh')))->format('Y-m-d'));
@@ -24,7 +24,7 @@ class ItaLifecycleObjects
     {
         $where="a.store_id=? AND a.is_deleted=0 AND a.status<>'retired' AND c.is_software=0";
         $params=[$this->actor->storeId];$types='i';
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $ids=$this->actor->departmentIds;
             $where.=$ids?' AND a.department_id IN ('.implode(',',array_fill(0,count($ids),'?')).')':' AND 1=0';
             $params=[...$params,...$ids];$types.=str_repeat('i',count($ids));
@@ -84,6 +84,7 @@ class ItaLifecycleObjects
 
     public function listing(array $input,int $page): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('lifecycle.read'); }
         $plans=$this->queryPlans($input,$page);$total=(int)$this->one($plans['count'])['n'];
         $page=max(1,min($page,max(1,(int)ceil($total/20))));$plans=$this->queryPlans($input,$page);
         $rows=array_map(fn($r)=>ItaLifecycleObjectInfo::present($r,$this->config['values']),$this->all($plans['list']));
@@ -98,6 +99,7 @@ class ItaLifecycleObjects
 
     public function detail(int $id): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('lifecycle.read'); }
         $asset=$this->db->fetchOne('SELECT id,department_id FROM ita_assets WHERE store_id=? AND id=? AND is_deleted=0','ii',[$this->actor->storeId,$id]);
         if (!$asset) { throw new ItaHttpError(404,'Không tìm thấy thiết bị.'); }
         $this->actor->requireDepartment($asset['department_id']===null?null:(int)$asset['department_id']);

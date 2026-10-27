@@ -60,7 +60,7 @@ class ItaLicenseObjects
 
     private function allocationScope(): array
     {
-        if ($this->actor->isAdmin()) {
+        if ($this->actor->hasGlobalScope()) {
             return ['', '', []];
         }
         $ids = $this->actor->departmentIds;
