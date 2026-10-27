@@ -53,7 +53,7 @@
  function changeView() {
   const menuWasOpen=$('sidebar').classList.contains('is-open');
   const candidate = location.hash.slice(1);
-  state.view = Object.hasOwn(titles,candidate)&&(liveMode||!['users','audit'].includes(candidate))?candidate:'overview';
+  state.view = Object.hasOwn(titles,candidate)?candidate:'overview';
   const [title,description] = titles[state.view];
   $('page-title').textContent = title;
   $('page-description').textContent = description;

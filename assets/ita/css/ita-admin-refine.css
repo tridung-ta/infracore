@@ -1,0 +1,18 @@
+.audit-filters{padding:24px;display:grid;grid-template-columns:1.3fr 1.3fr 1fr 1fr;gap:18px;align-items:start;border-bottom:1px solid var(--ita-border)}
+.audit-filters>div{min-width:0}.audit-filters label{display:block;font-size:12px;color:var(--ita-text-muted);margin-bottom:8px}
+.audit-filter-actions{grid-column:1/-1;display:flex;gap:10px}.audit-date-shortcuts{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ita-text-muted)}
+.audit-text-button{border:0;background:var(--ita-transparent);color:var(--ita-accent);padding:8px 0;min-height:40px;font-size:12px;text-align:left}
+.audit-table{min-width:900px}.audit-table td{vertical-align:top;line-height:1.6}.audit-table td:last-child{min-width:280px;max-width:500px}
+.audit-table details{min-width:0}.audit-table summary{color:var(--ita-accent);cursor:pointer;min-height:36px}
+.audit-change-table{width:100%;border-collapse:collapse;margin-top:12px;background:var(--ita-bg)}
+.audit-change-table th,.audit-change-table td{padding:10px!important;min-width:0!important;max-width:240px;border:1px solid var(--ita-border);overflow-wrap:anywhere;white-space:pre-wrap}
+.audit-change-table th{font-weight:600;color:var(--ita-text-muted)}
+.permission-preview{padding:24px;border-top:1px solid var(--ita-border)}
+.permission-toolbar{display:flex;gap:16px;flex-wrap:wrap;margin-block:20px;align-items:end}.permission-toolbar>div{flex:1;min-width:180px}
+.permission-toolbar label{display:block;margin-bottom:8px}.permission-modules{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.permission-module{border:1px solid var(--ita-border);border-radius:8px;padding:16px;min-width:0}.permission-module summary{cursor:pointer;font-weight:600;min-height:36px}
+.permission-module label{display:flex;align-items:start;gap:10px;padding:10px 0;font-size:13px;line-height:1.5}
+.permission-module input{margin-top:4px;flex-shrink:0;accent-color:var(--ita-accent)}
+.permission-summary{padding:16px 0;border-block:1px solid var(--ita-border);line-height:1.8}.permission-summary ul{margin:8px 0;padding-left:20px}
+@media(max-width:900px){.audit-filters{grid-template-columns:1fr 1fr}}
+@media(max-width:767px){.audit-filters{padding:18px;grid-template-columns:1fr}.audit-filter-actions{flex-wrap:wrap}.audit-filter-actions button{flex:1}.permission-modules{grid-template-columns:1fr}.permission-preview{padding:18px}.audit-date-shortcuts button{min-height:44px}}

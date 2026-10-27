@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 27/10/2026 — Làm gọn nhật ký/bảng nhóm và nhận duyệt BE14
+
+FE nhật ký có bộ lọc tên/thao tác/ngày nhanh, bảng thay đổi tiếng Việt thay JSON rỗng; vòng đời ghi rõ Số thiết bị/tuổi hợp lệ/thiếu tuổi và mở danh sách theo nhóm qua filter hiện có. Demo checkbox A/B/C chỉ MOCK, không cấp quyền thật.26checks mới +14admin +30grouppaging đạt; syntax/Smarty đạt, không DB/host. ADMIN_READABILITY_VERIFY.md ghi giới hạn nhóm null/lookup tên theo trang.
+
+User xác nhận **“Duyệt BUILD source BE14 theo gate”** tại BE_GATE_14_CAPABILITIES.md; đang triển khai source quyền theo chức năng, chưa SQL/DB/upload. Không coi phần MOCK là BE đã xong. Không push/merge/tag7–10/deploy.
+
 ## 27/10/2026 — Bàn giao gói delta giao diện19file theo user
 
 User đã xem local và yêu cầu tạo gói để tự upload. ZIP `artifacts/ita-host-20261027/infracore-ui-update-704b818.zip`, source704b8189b7034d8d8b1e1576488437b7d6a0945c,40.491byte; SHA256 ed27ce03c8c4f07fe16e9356cf8920dbb2bab6e5a324894fdb607344e02026ff.19runtime/100.432byte +2metadataentry. Đọc lại ZIP thật kiểm allowlist/path/exclusions/CRC/size/hash/manifest/checksums đạt; PowerShell hash độc lập khớp; review agent đọcZIP/hash19file khôngfindingchặn.66validatorchecks synthetic tách riêng; không chạy lại DB hoặc nhận PASS8.3.

@@ -13,6 +13,7 @@
   $('lifecycle-prev').disabled=busy||page<=1;$('lifecycle-next').disabled=busy||page*perPage>=total;
   $('lifecycle-group-prev').disabled=busy||groupPages[groupMode]<=1;
   $('lifecycle-group-next').disabled=busy||groupPages[groupMode]*20>=groupData[groupMode].length;
+  $('lifecycle-group-tables').querySelectorAll('[data-filter-unavailable]').forEach(button=>button.disabled=busy||button.dataset.filterUnavailable==='true');
  }
  async function request(action,query={}){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
@@ -61,12 +62,18 @@
    groupPages[key]=Math.max(1,Math.min(groupPages[key],Math.max(1,Math.ceil(allRows.length/20))));
    const rows=allRows.slice((groupPages[key]-1)*20,groupPages[key]*20);
    const wrap=el('div','');wrap.className='lifecycle-group-wrap';wrap.dataset.group=key;wrap.hidden=key!==groupMode;const table=el('table','');table.className='lifecycle-table';table.append(el('caption',name));
-   const head=el('thead',''),tr=el('tr','');for(const label of ['Nhóm','Thiết bị','Tuổi TB (năm)','Có tuổi / Thiếu tuổi','Tỷ lệ lỗi']){const th=el('th',label);th.scope='col';tr.append(th);}head.append(tr);table.append(head);
-   const body=el('tbody','');for(const row of rows){const line=el('tr',''),count=Number(row.total);for(const value of [row.group_name||'Chưa phân bổ',row.total,decimal(row.average_age_years),`${row.age_known} / ${count-Number(row.age_known)}`,`${row.failed_assets}/${count} · ${count?decimal(Number(row.failed_assets)*100/count):'0'}%`])line.append(el('td',String(value)));body.append(line);}if(!rows.length){const empty=el('tr',''),cell=el('td','Chưa có dữ liệu nhóm trong bộ lọc này.');cell.colSpan=5;empty.append(cell);body.append(empty);}table.append(body);wrap.append(table);$('lifecycle-group-tables').append(wrap);
+   const head=el('thead',''),tr=el('tr','');for(const label of [key==='category'?'Loại thiết bị':'Bộ phận','Số thiết bị','Tuổi trung bình (năm)','Có tuổi hợp lệ','Thiếu tuổi hợp lệ','Có sửa chữa / Tổng số','Chi tiết']){const th=el('th',label);th.scope='col';tr.append(th);}head.append(tr);table.append(head);
+   const body=el('tbody','');for(const row of rows){const line=el('tr',''),count=Number(row.total);for(const value of [row.group_name||'Chưa phân bổ',row.total,decimal(row.average_age_years),row.age_known,count-Number(row.age_known),`${row.failed_assets}/${count} · ${count?decimal(Number(row.failed_assets)*100/count):'0'}%`])line.append(el('td',String(value)));const action=el('td',''),button=el('button','Xem '+count+' thiết bị');button.type='button';button.className='secondary-button';button.dataset.filterUnavailable=String(row.group_id===null||row.group_id===undefined);button.disabled=busy||button.dataset.filterUnavailable==='true';button.title=button.dataset.filterUnavailable==='true'?'Chưa có mã nhóm để lọc danh sách':'Lọc danh sách theo '+(row.group_name||'nhóm này');button.addEventListener('click',()=>selectGroup(key,row));action.append(button);line.append(action);body.append(line);}if(!rows.length){const empty=el('tr',''),cell=el('td','Chưa có dữ liệu nhóm trong bộ lọc này.');cell.colSpan=7;empty.append(cell);body.append(empty);}table.append(body);wrap.append(table);$('lifecycle-group-tables').append(wrap);
   }
   const count=groupData[groupMode].length;
   $('lifecycle-group-page').textContent=`${groupMode==='category'?'Loại thiết bị':'Bộ phận'} · Trang ${groupPages[groupMode]}/${Math.max(1,Math.ceil(count/20))} · ${count} nhóm`;
   controls();
+ }
+ function selectGroup(key,row){
+  if(busy||row.group_id===null||row.group_id===undefined)return;
+  const select=$(key==='category'?'lifecycle-category':'lifecycle-department'),id=String(row.group_id);
+  if(![...select.options].some(o=>o.value===id)){feedback('Nhóm này chưa có trong danh mục bộ lọc. Hãy tải lại dữ liệu.',true);return;}
+  select.value=id;$('lifecycle-more-filters').open=true;page=1;run(async()=>{await load();$('lifecycle-content').scrollIntoView({block:'start',behavior:'instant'});select.focus({preventScroll:true});});
  }
  function render(data){
   page=data.page;total=data.total;perPage=data.per_page;const s=data.summary,v=data.config.values;

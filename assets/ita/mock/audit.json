@@ -1,0 +1,13 @@
+{
+ "mock":true,
+ "users":[{"id":111,"username":"mock.lan","fullname":"Lan — IT"},{"id":112,"username":"mock.minh","fullname":"Minh — Vận hành"},{"id":113,"username":"mock.hoa","fullname":"Hoa — Kế toán"}],
+ "rows":[
+  {"id":7,"user_id":111,"action":"auth.login","entity_type":"user","entity_id":111,"created_at":"2026-10-27 07:00:00","before_json":null,"after_json":null},
+  {"id":6,"user_id":111,"action":"asset.update","entity_type":"asset","entity_id":3,"created_at":"2026-10-27 06:30:00","before_json":"{\"name\":\"Máy in cũ\",\"purchase_price\":\"5000000\",\"location\":\"Tầng 1\"}","after_json":"{\"name\":\"MOCK — Máy in phòng IT\",\"purchase_price\":\"5000000\",\"location\":\"Tầng 2\"}"},
+  {"id":5,"user_id":112,"action":"network.save","entity_type":"network_link","entity_id":1,"created_at":"2026-10-26 09:00:00","before_json":null,"after_json":"{\"source_asset_id\":3,\"target_asset_id\":4,\"link_type\":\"ethernet\",\"capacity_label\":\"1 Gbps\"}"},
+  {"id":4,"user_id":111,"action":"user.access_update","entity_type":"user","entity_id":113,"created_at":"2026-10-25 03:00:00","before_json":"{\"enabled\":0,\"role\":\"support_technician\"}","after_json":"{\"enabled\":1,\"role\":\"system_manager\"}"},
+  {"id":3,"user_id":113,"action":"assignment.pdf_download","entity_type":"assignment","entity_id":2,"created_at":"2026-10-24 07:00:00","before_json":null,"after_json":null},
+  {"id":2,"user_id":112,"action":"ticket.transition","entity_type":"ticket","entity_id":9,"created_at":"2026-10-22 04:00:00","before_json":"{\"status\":\"pending\",\"cost\":\"0\"}","after_json":"{\"status\":\"resolved\",\"cost\":\"120000\",\"resolution_note\":\"MOCK — Đã thay linh kiện\"}"},
+  {"id":1,"user_id":111,"action":"asset.create","entity_type":"asset","entity_id":3,"created_at":"2026-10-20 01:00:00","before_json":null,"after_json":"{\"asset_code\":\"MOCK-PC-03\",\"name\":\"Máy in cũ\",\"status\":\"in_use\"}"}
+ ]
+}
