@@ -1,5 +1,15 @@
 # Tiến độ dự án 5
 
+## 27/10/2026 — Bàn giao gói delta giao diện19file theo user
+
+User đã xem local và yêu cầu tạo gói để tự upload. ZIP `artifacts/ita-host-20261027/infracore-ui-update-704b818.zip`, source704b8189b7034d8d8b1e1576488437b7d6a0945c,40.491byte; SHA256 ed27ce03c8c4f07fe16e9356cf8920dbb2bab6e5a324894fdb607344e02026ff.19runtime/100.432byte +2metadataentry. Đọc lại ZIP thật kiểm allowlist/path/exclusions/CRC/size/hash/manifest/checksums đạt; PowerShell hash độc lập khớp; review agent đọcZIP/hash19file khôngfindingchặn.66validatorchecks synthetic tách riêng; không chạy lại DB hoặc nhận PASS8.3.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.5 UI delta | Gói bàn giao các cải tiến UI mới | Tool/docs/artifact | [x] gói local | Commit hồ sơ chứa dòng này; payload704b818 | ZIPreadback19file +66synthetic validator; review độc lập | CHƯA UPLOAD; HOST_UPLOAD_UI_20261027.md; không bộ cài độc lập |
+
+KhôngPHP/SQL/config/vendor/MOCK/tests/tmp/private, không sửa credential hoặc DB. Nền host phải tương thích và cóThree.js0.180.0. Userbackupfile+dumpDB riêng, uploadcontentruntime/, Ctrl+F5 và smokehost; rollback đúngsourcebackup, giữ dữliệumới. Chưa nghiệmthuDB/host/PHP8.3, khôngagentupload/push/merge/tag7–10/deploy. Giữ tài liệu bảo mật user-owned ngoài commit và payload.
+
 ## 27/10/2026 — Nâng cấp giao diện đăng nhập đồng bộ hai phong cách
 
 Thêm bố cục thương hiệu/sơ đồ SVG minh họa và form, Command tối/Focus sáng; mobile ưu tiên form. Giữ Smarty và nguyên method/action/names/CSRF/autocomplete/escape; không sửa JS đăng nhập thật hoặc PHP/auth/session. Preview có nhãn MOCK, capture chặn submit không gửi credential, phản hồi riêng để không kẹt nút.
