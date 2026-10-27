@@ -42,6 +42,10 @@ async(page)=>{
    check(await p.locator('#dash-output img').count()===0,'Server text escaped '+role);
    check((await p.locator('#dash-time').textContent()).includes('10:00'),'Shared VN timestamp '+role);
    const statusChart=await p.locator('.dash-chart').first().evaluate(el=>echarts.getInstanceByDom(el).getOption().series.length);check(statusChart===4,'Four stacked status series '+role);
+   const themeReads=requests.length;await p.evaluate(()=>ItaMotion.setEnabled(false));
+   check(requests.length===themeReads,'Theme recolor performs no API request '+role);
+   check(await p.locator('.dash-chart').first().evaluate(el=>echarts.getInstanceByDom(el).getOption().textStyle.color===getComputedStyle(document.body).getPropertyValue('--ita-text').trim()),'Chart text follows Focus palette '+role);
+   check(await p.locator('.dash-chart').first().evaluate(el=>echarts.getInstanceByDom(el).getOption().series.length)===4,'Theme preserves four series '+role);
    for(const width of [1366,768,390]){await p.setViewportSize({width,height:1000});await p.waitForTimeout(80);check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Dashboard bounds '+width+' '+role);await p.screenshot({path:`.playwright-cli/phase10-dashboard-live-${role}-${width}.png`,fullPage:true});}await p.setViewportSize({width:1366,height:1000});
    await p.locator('#dash-group').selectOption('year');await p.locator('#dash-filters button').click();await p.locator('#dash-message').filter({hasText:'Đã tải số liệu'}).waitFor();check(await p.locator('.dash-chart svg').count()===3,'No accumulated charts after filter '+role);
    await p.locator('[data-view="alerts"]').click();await p.locator('#dash-message').filter({hasText:'Đã tải số liệu'}).waitFor();check(await p.locator('.dash-chart svg').count()===0,'Dispose on leaving dashboard '+role);check((await p.locator('#dash-output').textContent()).includes('1 kết quả khớp / 4'),'Filtered count distinct bell '+role);

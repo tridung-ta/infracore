@@ -20,5 +20,6 @@
  $('network-fullscreen-left').addEventListener('click',()=>scene?.rotate(-.2));$('network-fullscreen-right').addEventListener('click',()=>scene?.rotate(.2));$('network-fullscreen-device').addEventListener('change',event=>ItaNetwork.select(event.target.value));
  addEventListener('ita:network-select',event=>{scene?.select(event.detail.id);$('network-fullscreen-device').value=String(event.detail.id);});
  addEventListener('ita:network-render',()=>{if(mode==='3d')try{build();}catch(error){two('Không dựng được scene mới. Đang dùng 2D.');}});
+ addEventListener('ita:theme',()=>{if(mode==='3d')try{build();}catch(error){two('Đã đổi giao diện. Dùng sơ đồ 2D khi 3D chưa sẵn sàng.');}});
  addEventListener('ita:view',()=>{if(location.hash!=='#network')two();});addEventListener('pagehide',()=>two());controls();
 })();

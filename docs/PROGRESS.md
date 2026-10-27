@@ -1,5 +1,15 @@
 # Tiến độ dự án 5
 
+## 27/10/2026 — Hai phong cách Command / Focus theo nút hiệu ứng
+
+User yêu cầu Tắt có giao diện mới rõ rệt. FE thêm Focus sáng, giữ Command tối, tokens semantic và native light/dark controls; preference không phụ thuộc tab ẩn/reduced-motion. Nút vẫn chọn phong cách khi OS/config chặn animation, không ép bật motion. Form/bộ lọc giữ nguyên; ECharts recolor instance không fetch và giữ series; 3D dựng lại palette/giữ lựa chọn, reset góc camera. Không PHP/DB/quyền/config.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F12 UI bổ sung | Hai phong cách Command/Focus | FE | [x] local | Commit chứa dòng này | Browser contrast12, motion21, screens22, UI20, dashboard70; JS syntax/diff check đạt | Static/API mock, không DB/host/PHP8.3; UI_THEME_MODES_VERIFY.md |
+
+Review độc lập không finding. Test reduced/config thay contract nút khóa bằng nút đổi theme được nhưng animation vẫn bị chặn; không bỏ assertion quyền/CSRF/version/reauth/audit. Không gói/upload/merge/tag7–10/push/deploy. Giữ nguyên thay đổi user-owned trong PHASE11_SECURITY_TEST_20.md.
+
 ## 27/10/2026 — Cải tiến UI thông báo, bàn giao, hiệu ứng và thiết bị 3D
 
 Theo yêu cầu user, chỉ FE/template/test và tài liệu: lịch sử bàn giao rõ trạng thái/PDF, thông báo lỗi/thành công rõ hơn; icon ngân sách/báo cáo khác nhau; toggle hiệu ứng có phản hồi bật/tắt khác nhau; sáu nhóm hình thiết bị 3D và màu phân biệt, giữ drag360/fullscreen/picking/touch. Thêm hướng dẫn và kiểm FE theo contract hiện có cho tên/mã, ngày và tiền; không đổi PHP/quyền/SQL/công thức. Preview sáu thiết bị và form giả có hướng dẫn tại UI_REFINEMENTS_20261027.md. Không kết nối DB/host, chưa tạo gói/upload.

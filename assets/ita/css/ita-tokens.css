@@ -10,3 +10,16 @@
  --bs-secondary-color:var(--ita-text-muted);--bs-link-color:var(--ita-accent);--bs-link-hover-color:var(--ita-text);
  --bs-body-font-family:Inter,system-ui,sans-serif;--bs-tertiary-bg:var(--ita-surface-2);
 }
+/* Focus is an alternate work surface, not a change to data or permissions. */
+html[data-ui-theme="focus"],body[data-ui-theme="focus"]{
+ --ita-bg:#f1f4f8;--ita-surface:#ffffff;--ita-surface-2:#e8eef5;
+ --ita-text:#192d45;--ita-text-muted:#50657d;--ita-border:#c5d0dd;
+ --ita-accent:#005f89;--ita-on-accent:#ffffff;--ita-accent-soft:#e2eff7;
+ --ita-success:#146e50;--ita-success-soft:#e3f3eb;--ita-warning:#855000;--ita-warning-soft:#fff0d2;
+ --ita-danger:#b12c43;--ita-danger-soft:#fce7eb;--ita-grid:#d7e1eb;--ita-scrim:#192d4566;
+ --ita-ticket-shadow:0 12px 32px #192d4520;
+ --ita-device-violet:#7854b7;--ita-device-blue:#326db4;--ita-device-pink:#b94482;--ita-device-lime:#547c1d;--ita-device-orange:#b85e17;
+ --bs-body-bg:var(--ita-bg);--bs-body-color:var(--ita-text);--bs-border-color:var(--ita-border);
+ --bs-secondary-color:var(--ita-text-muted);--bs-link-color:var(--ita-accent);--bs-link-hover-color:var(--ita-text);--bs-tertiary-bg:var(--ita-surface-2);
+ color-scheme:light;background:var(--ita-bg);color:var(--ita-text);
+}

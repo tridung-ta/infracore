@@ -24,7 +24,7 @@ async(page)=>{
   await p.locator('#edit-purchase_date').fill('2024-10-27');await p.locator('#qa-form button').click();check(await p.evaluate(()=>window.__qaPosts)===1,'Correcting only purchase date clears paired error');
   await p.locator('#edit-purchase_price').fill('-1');await p.locator('#qa-form button').click();check(await p.evaluate(()=>window.__qaPosts)===1,'Negative purchase price blocks');
   await p.locator('#edit-purchase_price').fill('20000000.25');await p.locator('#qa-form button').click();check(await p.evaluate(()=>window.__qaPosts)===2,'Vietnamese name and valid decimal accepted');
-  await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>document.querySelector('[data-motion-toggle]').disabled);check(await toggle.isDisabled(),'Reduced motion keeps toggle disabled');check(errors.length===0,'No page JS errors');
+  await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>!ItaMotion.enabled());check(await toggle.isEnabled()&&await p.evaluate(()=>!ItaMotion.enabled()),'Reduced motion blocks animation while theme switch stays usable');check(errors.length===0,'No page JS errors');
  }finally{await context.close();}
  return {checks:checks.length,results:checks,scope:'Static MOCK/WebGL and synthetic FE form; no PHP/DB/host'};
 }

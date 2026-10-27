@@ -83,12 +83,17 @@
   return;
   }const c=echarts.init(canvas,null,{renderer:'svg'});
   charts.push(c);
-  const color=getComputedStyle(document.documentElement);
+  const color=getComputedStyle(document.body);
   c.setOption({animation:false,textStyle:{color:color.getPropertyValue('--ita-text').trim()},legend:headers.length===6?{top:0,textStyle:{color:color.getPropertyValue('--ita-text').trim()}}:undefined,grid:{left:65,right:25,top:headers.length===6?45:25,bottom:70},xAxis:{type:'category',data:names,axisLabel:{interval:0,rotate:20}},yAxis:{type:'value',min:0},series:headers.length===6?['in_use','maintenance','broken','retired'].map((status,i)=>({name:headers[i+2],type:'bar',stack:'status',barMaxWidth:60,data:rows.map(r=>r[i+2]),itemStyle:{color:color.getPropertyValue(['--ita-success','--ita-warning','--ita-danger','--ita-text-muted'][i]).trim()}})):[{type:'bar',data:values,barMaxWidth:60,itemStyle:{color:color.getPropertyValue('--ita-accent').trim()}}]});
   const o=new ResizeObserver(()=>c.resize());
   o.observe(canvas);
   observers.push(o);
   }
+ function recolorCharts(){
+  const style=getComputedStyle(document.body),color=name=>style.getPropertyValue('--ita-'+name).trim();
+  for(const c of charts){const series=c.getOption().series||[];c.setOption({textStyle:{color:color('text')},legend:{textStyle:{color:color('text')}},xAxis:{axisLabel:{color:color('text-muted')},axisLine:{lineStyle:{color:color('border')}}},yAxis:{axisLabel:{color:color('text-muted')},splitLine:{lineStyle:{color:color('border')}}},series:series.map((s,i)=>({itemStyle:{color:color(series.length===4?['success','warning','danger','text-muted'][i]:'accent')}}))});}
+ }
+ addEventListener('ita:theme',recolorCharts);
  function overview(d){bell(d.alerts_total);
   const grid=node('div');
   grid.className='kpi-grid';
