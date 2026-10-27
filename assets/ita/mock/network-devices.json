@@ -1,0 +1,16 @@
+{
+ "mock":true,
+ "nodes":[
+  {"id":"mock-printer","name":"MOCK · Máy in 1","kind":"Printer","department":"Văn phòng","status":"healthy","x":150,"y":130},
+  {"id":"mock-monitor","name":"MOCK · Màn hình 2","kind":"Monitor","department":"Văn phòng","status":"healthy","x":500,"y":130},
+  {"id":"mock-desktop","name":"MOCK · Máy tính 3","kind":"Desktop","department":"Văn phòng","status":"healthy","x":850,"y":130},
+  {"id":"mock-laptop","name":"MOCK · Laptop 4","kind":"Laptop","department":"Văn phòng","status":"healthy","x":150,"y":380},
+  {"id":"mock-server","name":"MOCK · Máy chủ 5","kind":"Server","department":"Hạ tầng","status":"healthy","x":500,"y":380},
+  {"id":"mock-switch","name":"MOCK · Switch 6","kind":"Switch","department":"Hạ tầng","status":"healthy","x":850,"y":380}
+ ],
+ "links":[
+  {"source":"mock-switch","target":"mock-printer","kind":"Ethernet","capacity":"1 Gbps","status":"healthy"},
+  {"source":"mock-switch","target":"mock-desktop","kind":"Ethernet","capacity":"1 Gbps","status":"healthy"},
+  {"source":"mock-switch","target":"mock-server","kind":"Ethernet","capacity":"1 Gbps","status":"healthy"}
+ ]
+}

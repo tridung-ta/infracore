@@ -40,7 +40,7 @@
  async function load(){
   if(live||loading)return;loading=true;$('network-message').textContent='Đang tải mô hình MOCK…';$('network-retry').hidden=true;
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
-  try{const response=await fetch('/assets/ita/mock/network.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Chưa tải được mô hình mẫu.');const text=await response.text();if(text.length>250000)throw new Error('Mô hình mẫu vượt giới hạn.');const data=JSON.parse(text);validate(data);source=data;
+  try{const fixture=new URLSearchParams(location.search).get('devices')==='1'?'network-devices.json':'network.json';const response=await fetch('/assets/ita/mock/'+fixture,{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Chưa tải được mô hình mẫu.');const text=await response.text();if(text.length>250000)throw new Error('Mô hình mẫu vượt giới hạn.');const data=JSON.parse(text);validate(data);source=data;
    $('network-department').replaceChildren(new Option('Tất cả bộ phận',''),...[...new Set(data.nodes.map(n=>n.department))].sort().map(name=>new Option(name,name)));
    $('network-content').hidden=false;render();$('network-message').textContent='MOCK · Chỉ minh họa topology, chưa có dữ liệu mạng thật.';
   }catch(error){$('network-content').hidden=true;$('network-message').textContent=error.name==='AbortError'?'Tải mô hình quá thời gian. Hãy thử lại.':error.message;$('network-retry').hidden=false;}finally{clearTimeout(timer);loading=false;}

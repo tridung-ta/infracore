@@ -1,5 +1,15 @@
 # Tiến độ dự án 5
 
+## 27/10/2026 — Cải tiến UI thông báo, bàn giao, hiệu ứng và thiết bị 3D
+
+Theo yêu cầu user, chỉ FE/template/test và tài liệu: lịch sử bàn giao rõ trạng thái/PDF, thông báo lỗi/thành công rõ hơn; icon ngân sách/báo cáo khác nhau; toggle hiệu ứng có phản hồi bật/tắt khác nhau; sáu nhóm hình thiết bị 3D và màu phân biệt, giữ drag360/fullscreen/picking/touch. Thêm hướng dẫn và kiểm FE theo contract hiện có cho tên/mã, ngày và tiền; không đổi PHP/quyền/SQL/công thức. Preview sáu thiết bị và form giả có hướng dẫn tại UI_REFINEMENTS_20261027.md. Không kết nối DB/host, chưa tạo gói/upload.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F11.3/F12/F13 UI bổ sung | Cải tiến giao diện theo phản hồi kiểm thủ công | FE/test/docs | [x] local | Commit chứa dòng này | Browser mới20+12; hồi quy pointer32/fullscreen23/orbit28, asset30/assign29; Smarty render và unit03/05/06/07/09/13:39/203/159/237/134/179 đạt | Static/API mock, PHP8.5.10 fake transport; không chứng minh DB/host/PHP8.3 |
+
+Review độc lập đã sửa hai finding: customValidity ngày liên trường và nhãn chờ xác nhận sai cho bàn giao bộ phận. Test pointer chỉ đổi fixture lấy mesh con sau khi mô hình chuyển thành group; test fullscreen chờ sự kiện trả focus, không bỏ assertion. Impeccable detector lượt chạy trên các target UI chính trả0 finding. Xem ảnh desktop/mobile và sửa demo bị thiếu font/base CSS, sau đó đo cả bounds input; không lấy mỗi scrollWidth làm bằng chứng. Giữ thay đổi có sẵn của user trong PHASE11_SECURITY_TEST_20.md, không stage file đó. Không merge/tag7–10/push/deploy; chờ user xem local trước bàn giao host.
+
 ## 26/10/2026 — Tạm dừng theo user, tổng kết bài học và lập luận
 
 User yêu cầu tạm dừng và học lại việc hôm nay, từ lỗi sai đến cách lập luận. Đã dừng BUILD; chỉ lưu RETROSPECTIVE_20261026.md và cập nhật LESSONS/CURRENT_BUILD_STATUS. Bản tổng kết tách lỗi sản phẩm/test/công cụ, runtime8.5/8.3, bằngchứngmock/host/DB, importplaceholder/guard, kịchbảnP4, hover/orbit/touch/fullscreen/nhãn, packaging vàủyquyền. ĐợtUI mới chỉ đọc source/context, reviewràngbuộc; chưa sửa runtimeFE/PHP, chưa endpoint/uploadcustom3D, chưa gói/host/DB. Trackedtree trước tổngkết sạch ở3045b62; ghi nhớkhông phải quyềnresume hoặcnghiệmthu. Không hooks/daemon/tựhọcnền/push/merge/tag7–10/deploy. Không chạy lại test sản phẩm trongbước tài liệunày.

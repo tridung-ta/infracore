@@ -37,13 +37,13 @@ async(page)=>{
    await p.locator('#network-node-list button').nth(2).click();check((await p.locator('#network-detail-title').textContent()).includes('Switch trung tâm'),'List selection preserved with pointer control');
    const selected=await canvas.evaluate(n=>{
     const click=(x,y)=>{for(const type of ['pointerdown','pointerup'])n.dispatchEvent(new PointerEvent(type,{pointerType:'mouse',pointerId:7,button:0,clientX:x,clientY:y}));};const r=n.getBoundingClientRect();click(r.left+r.width/2,r.top+r.height/2);
-    const mesh=window.__testGroup.children.find(x=>x.isMesh),v=mesh.position.clone();mesh.localToWorld(v.set(0,0,0));v.project(window.__testCamera);
+    const mesh=window.__testGroup.children.find(x=>x.isGroup).children.find(x=>x.isMesh),v=mesh.position.clone();mesh.localToWorld(v.set(0,0,0));v.project(window.__testCamera);
     click(r.left+(v.x+1)*r.width/2,r.top+(1-v.y)*r.height/2);return mesh.userData.id;
    });
    check(await p.locator('#network-node-list [aria-pressed="true"]').getAttribute('data-network-node')===String(selected),'Raycast click on 3D block still selects device');
    for(const type of ['touch','pen']){
     const result=await canvas.evaluate((n,type)=>{
-     const r=n.getBoundingClientRect(),mesh=window.__testGroup.children.find(x=>x.isMesh),v=mesh.localToWorld(mesh.position.clone().set(0,0,0)).project(window.__testCamera),x=r.left+(v.x+1)*r.width/2,y=r.top+(1-v.y)*r.height/2;
+     const r=n.getBoundingClientRect(),mesh=window.__testGroup.children.find(x=>x.isGroup).children.find(x=>x.isMesh),v=mesh.localToWorld(mesh.position.clone().set(0,0,0)).project(window.__testCamera),x=r.left+(v.x+1)*r.width/2,y=r.top+(1-v.y)*r.height/2;
      let hits=0;const count=()=>hits++;addEventListener('ita:network-select',count);
      const fire=(event,dx=0,dy=0)=>n.dispatchEvent(new PointerEvent(event,{pointerType:type,pointerId:9,button:0,clientX:x+dx,clientY:y+dy}));
      fire('pointerdown');fire('pointerup');const tap=hits;

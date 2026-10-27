@@ -31,7 +31,9 @@
   registrations.push(record);if(enabled())record.observer.observe(target,{childList:true,attributes:true,attributeFilter:['hidden','open']});
   if(active(record))play(target);
  }
- function setEnabled(value){preference=Boolean(value);try{localStorage.setItem('ita.motion',preference?'on':'off');}catch(error){}refresh();}
+ function setEnabled(value){preference=Boolean(value);try{localStorage.setItem('ita.motion',preference?'on':'off');}catch(error){}refresh();
+  if(!reduced.matches&&window.UI_MOTION_ENABLED!==false){for(const button of document.querySelectorAll('[data-motion-toggle]')){const animation=button.animate(preference?[{transform:'scale(.96)',opacity:.65},{transform:'scale(1)',opacity:1}]:[{transform:'translateX(0)',opacity:1},{transform:'translateX(-5px)',opacity:.7},{transform:'translateX(0)',opacity:1}],{duration:preference?260:160,easing:'ease-out'});animations.add(animation);animation.finished.catch(()=>{}).finally(()=>animations.delete(animation));}}
+ }
  window.ItaMotion={register,play,cancel,setEnabled,enabled,refresh};
  document.querySelectorAll('[data-motion-toggle]').forEach(button=>button.addEventListener('click',()=>setEnabled(!preference)));
  reduced.addEventListener('change',refresh);

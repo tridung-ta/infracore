@@ -1,0 +1,7 @@
+.mock-validation{margin:0;background:var(--ita-bg);color:var(--ita-text);font:14px/1.6 Inter,system-ui,sans-serif}
+.mock-validation *{box-sizing:border-box}.mock-validation main{max-width:1000px;padding:28px 20px}
+.mock-validation a{color:var(--ita-accent)}.mock-validation form{padding:24px;margin-block:24px}
+.mock-validation .detail-grid{margin-block:20px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.mock-validation .detail-grid>div{min-width:0}.mock-validation label{display:block;margin-bottom:8px}
+.mock-validation input{display:block;width:100%;padding:10px;font:inherit}
+@media(max-width:767px){.mock-validation .detail-grid{grid-template-columns:1fr}.mock-validation form{padding:18px}.mock-validation h1{font-size:26px}}

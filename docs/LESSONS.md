@@ -1,5 +1,12 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 27/10/2026 — Validation liên trường và bounds bên trong panel
+
+- Triệu chứng: bảo hành trước ngày mua bị chặn; sửa riêng ngày mua vẫn không submit được. Phân loại: FE customValidity liên trường.
+- Bằng chứng/nguyên nhân: customValidity còn nằm trên ô bảo hành; native validation chặn trước listener submit có thể tính lại. Đã xóa lỗi liên trường khi một trong hai ngày thay đổi; hồi quy dùng đúng thao tác sửa ngày bắt đầu, không sửa ô kết thúc.
+- Kiểm: ita_ui_refinements_browser20checks và ita_ui_manual_preview_browser12checks; API giả/static, không DB. Quy tắc server vẫn quyết định.
+- Phạm vi: cặp ngày phụ thuộc nhau, không tự xóa mọi lỗi server. Tương tự, đo scrollWidth toàn trang không thấy input bị clip trong panel overflow:hidden; phải đo bounding box từng input. Demo độc lập cần base font/layout riêng, không giả định đã tải Bootstrap từ shell.
+
 ## 26/10/2026 — Tổng kết cuối ngày theo yêu cầu tạm dừng
 
 Đã lưu [RETROSPECTIVE_20261026.md](RETROSPECTIVE_20261026.md): trạng thái/commit/artifact, lỗi sản phẩm so với lỗi test/công cụ, bằng chứng và cách sửa, ràng buộc source và việc dở. Đọc cùng PROGRESS/DECISIONS/gitstatus trước khi tiếp tục; bản ghi nhớ không cấp quyền mới.

@@ -5,7 +5,7 @@
  let record=null,assetPage=1,assetTotal=0,userPage=1,userTotal=0,busy=false,stale=false,started=false;
  const status={in_use:'Đang sử dụng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Thanh lý'};
  function node(tag,text){const n=document.createElement(tag);n.textContent=text;return n;}
- function message(text,error=false){const n=$('handover-message');n.textContent=text;n.setAttribute('role',error?'alert':'status');}
+ function message(text,error=false){const n=$('handover-message');n.textContent=text;n.dataset.state=error?'error':'success';n.setAttribute('role',error?'alert':'status');if(error)n.focus({preventScroll:true});}
  function buttons(){
   const canAssign=window.itaLiveContext?.user.role!=='support_technician';
   $('handover-assign').disabled=busy||stale||!record||!!record.active||record.asset.status!=='in_use'||!!record.asset.current_user_id||!canAssign||!$('handover-target').value;
@@ -50,8 +50,11 @@
    $('handover-ack-help').textContent=active.acknowledged_at?`Đã xác nhận nhận lúc ${active.acknowledged_at} UTC.`:active.to_user_id?'Chỉ chính tài khoản người nhận có quyền ITA và phạm vi thiết bị được xác nhận.':'Bàn giao cho bộ phận dùng biên bản ký nhận; chưa có xác nhận điện tử.';
   }
   $('handover-history').replaceChildren(...history.map(item=>{
-   const p=node('p','');p.append(node('strong',item.handover_no),document.createElement('br'),node('span',`${item.assigned_at} UTC · ${item.returned_at?'Đã thu hồi '+item.returned_at+' UTC':item.acknowledged_at?'Đã xác nhận nhận':'Đang giao, chưa xác nhận'} · ${item.to_user_id?'Tài khoản #'+item.to_user_id:'Bộ phận #'+item.to_department_id}`));
-   const button=node('button','Tải PDF '+item.handover_no);button.type='button';button.className='secondary-button';button.disabled=busy||!record.pdf_available;button.addEventListener('click',()=>task(()=>downloadPdf(item.id)));p.append(document.createElement('br'),button);return p;
+   const p=node('article','');p.className='handover-history-item';
+   const content=node('div',''),badge=node('span',item.returned_at?'Đã thu hồi':item.acknowledged_at?'Đã nhận':item.to_user_id?'Chờ xác nhận':'Bàn giao bộ phận');badge.className='handover-state';badge.dataset.state=item.returned_at?'returned':item.acknowledged_at?'received':'pending';
+   content.append(node('strong',item.handover_no),node('p',`${item.assigned_at} UTC · ${item.to_user_id?'Tài khoản #'+item.to_user_id:'Bộ phận #'+item.to_department_id}`));
+   if(item.returned_at)content.append(node('p','Thu hồi: '+item.returned_at+' UTC'));
+   const button=node('button','Tải biên bản PDF');button.setAttribute('aria-label','Tải PDF '+item.handover_no);button.type='button';button.className='secondary-button';button.disabled=busy||!record.pdf_available;button.addEventListener('click',()=>task(()=>downloadPdf(item.id)));p.append(content,badge,button);return p;
   }));
   if(!history.length)$('handover-history').append(node('p','Chưa có lịch sử phân bổ.'));
   $('handover-history-page').textContent=`Trang ${record.page}/${Math.max(1,Math.ceil(record.total/20))} · ${record.total} lượt`;

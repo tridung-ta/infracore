@@ -18,7 +18,7 @@ async(page)=>{
   const selected=await p.locator('#network-fullscreen-device option').nth(2).getAttribute('value');await p.locator('#network-fullscreen-device').selectOption(selected);check(await p.locator('#network-node-list [aria-pressed=true]').getAttribute('data-network-node')===selected,'Fullscreen accessible device selection updates selected block');
   await p.waitForFunction(()=>{const c=document.querySelector('#network-3d canvas');return Math.abs(c.clientWidth-innerWidth)<3&&Math.abs(c.clientHeight-innerHeight)<3;});check(true,'Canvas resizes to fullscreen viewport');
   await p.screenshot({path:'.playwright-cli/phase13-fullscreen-1366.png'});
-  await p.locator('#network-fullscreen-exit').click();await p.waitForFunction(()=>!document.fullscreenElement);check(await p.locator('#network-fullscreen').evaluate(n=>n===document.activeElement),'Exit restores button focus');
+  await p.locator('#network-fullscreen-exit').click();await p.waitForFunction(()=>!document.fullscreenElement&&document.activeElement===document.getElementById('network-fullscreen'));check(await p.locator('#network-fullscreen').evaluate(n=>n===document.activeElement),'Exit restores button focus');
   await p.locator('#network-fullscreen').click();await p.waitForFunction(()=>document.fullscreenElement);await p.keyboard.press('Escape');
   await p.waitForFunction(()=>!document.fullscreenElement);escapeExited=true;
   await p.waitForFunction(()=>!document.fullscreenElement);check(await p.locator('#network-fullscreen').getAttribute('aria-pressed')==='false','Browser/API exit synchronizes controls');
