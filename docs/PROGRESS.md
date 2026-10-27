@@ -1,5 +1,15 @@
 # Tiến độ dự án 5
 
+## 27/10/2026 — Nâng cấp giao diện đăng nhập đồng bộ hai phong cách
+
+Thêm bố cục thương hiệu/sơ đồ SVG minh họa và form, Command tối/Focus sáng; mobile ưu tiên form. Giữ Smarty và nguyên method/action/names/CSRF/autocomplete/escape; không sửa JS đăng nhập thật hoặc PHP/auth/session. Preview có nhãn MOCK, capture chặn submit không gửi credential, phản hồi riêng để không kẹt nút.
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+| F2.1/F12 UI bổ sung | Nâng cấp trình bày đăng nhập | FE/test | [x] local | Commit chứa dòng này | Browser42 +login motion9; Smarty login14 +render shell; syntax/diff check đạt | LOGIN_REDESIGN_VERIFY.md; chưa authHTTP/DB/host/PHP8.3 |
+
+Đã xem ảnh hai theme1366/390 và đo768. Detector6warning: giữ Inter/palette đã ghim, sửa chữ phụ login9→11px và tracking; không ghi0finding. Review độc lập không finding về contract/escaping/preview. Không gói/upload/push/merge/tag7–10/deploy; chờ user xem local.
+
 ## 27/10/2026 — Hai phong cách Command / Focus theo nút hiệu ứng
 
 User yêu cầu Tắt có giao diện mới rõ rệt. FE thêm Focus sáng, giữ Command tối, tokens semantic và native light/dark controls; preference không phụ thuộc tab ẩn/reduced-motion. Nút vẫn chọn phong cách khi OS/config chặn animation, không ép bật motion. Form/bộ lọc giữ nguyên; ECharts recolor instance không fetch và giữ series; 3D dựng lại palette/giữ lựa chọn, reset góc camera. Không PHP/DB/quyền/config.

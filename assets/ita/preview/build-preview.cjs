@@ -13,6 +13,6 @@ const login = expand('admin/ita/login.tpl.html')
  .replace(/\{if \$itaError\}[\s\S]*?\{\/if\}/g, '')
  .replace(/\{\$itaCsrf\|escape:'html'\}/g, 'mock-csrf-no-session')
  .replace('<section class="login-card"', '<p class="mock-notice">MOCK · Giao diện đăng nhập, không xác thực hoặc gửi dữ liệu.</p><section class="login-card"')
- .replace('</body>', '<script>document.getElementById("login-form").addEventListener("submit",event=>event.preventDefault());</script></body>');
+ .replace('</body>', '<script>document.body.dataset.mode="mock";document.getElementById("login-form").addEventListener("submit",event=>{event.preventDefault();event.stopImmediatePropagation();let note=document.getElementById("mock-login-result");if(!note){note=document.createElement("p");note.id="mock-login-result";note.className="admin-message";note.setAttribute("role","status");document.getElementById("login-form").after(note);}note.textContent="MOCK · Chỉ xem giao diện, không gửi tài khoản hoặc xác thực.";},true);</script></body>');
 fs.writeFileSync(path.join(root, 'assets/ita/mock/login-preview.html'), login);
 console.log('Preview generated from Smarty presentation templates.');

@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 27/10/2026 — Hai phong cách theo nút hiệu ứng và nâng cấp đăng nhập
+
+User muốn khi Tắt là diện mạo mới, đăng nhập được nâng cấp. Chọn Command tối/cyan cho Bật, Focus sáng/tập trung cho Tắt; dùng semantic tokens và preference ita.motion hiện có. Theme là lựa chọn trình bày, không phụ thuộc tab ẩn hoặc reduced-motion; nút vẫn đổi phong cách trong reduced/config-off nhưng animation thật luôn bị chặn. Không dùng đổi theme để reload/fetch/reset dữ liệu hoặc thay quyền. Login giữ Smarty/form/auth contract, chỉ trình bày; preview MOCK chặn submit. Không PHP/DB/config/package mới, không gói/upload/push/merge/tag7–10. Kiểm local không thay nghiệm thu host.
+
 ## 26/10/2026 — Cho phép đóng gói để user kiểm host8.3
 
 Nguồn user: **“tôi đã cài host ở 8.3 nếu muốn test thì bạn cứ đóng gói tôi đẩy lên host rồi test”**. Cho agent chuẩn bị/kiểm gói local, upload và kiểm host do user; thay lệnh dừng đóng gói trước đó, không cho agent truy cập host/DB/push/merge/tag7–10. User gửi thư mục D:\Hoc_PHP\php\php-8.5.10-nts-Win32-vs17-x64; chạy đúng php.exe ở đó trả **PHP8.5.10**, không8.3. Không có kết quả S26/unit/export trên8.3, không dựng số giả. Gói kiểm cộng dồn phải sourcefixed/manifest/hash/ZIPreadback/exclusions/backuprollback, không tự chạy migration005/006 hoặc giả định schemahost đầy đủ. Auto_prepend/HSTS vẫn không duyệt; kết quả host tương lai ghi phạm vi hạn chế, không tự nghiệm thuDB.
