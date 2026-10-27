@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+27/10/2026 — Review UI nhật ký: sửa dịch nhầm tên/ghi chú giống enum, giữ nguyên dữ liệu tự do và chỉ dịch role/status; Object.hasOwn chống tra nhầm prototype.8formatterchecks local đạt, không DB/host. BE14 source đã duyệt, đang triển khai tiếp; chưa gói/upload.
+
 ## 27/10/2026 — Làm gọn nhật ký/bảng nhóm và nhận duyệt BE14
 
 FE nhật ký có bộ lọc tên/thao tác/ngày nhanh, bảng thay đổi tiếng Việt thay JSON rỗng; vòng đời ghi rõ Số thiết bị/tuổi hợp lệ/thiếu tuổi và mở danh sách theo nhóm qua filter hiện có. Demo checkbox A/B/C chỉ MOCK, không cấp quyền thật.26checks mới +14admin +30grouppaging đạt; syntax/Smarty đạt, không DB/host. ADMIN_READABILITY_VERIFY.md ghi giới hạn nhóm null/lookup tên theo trang.

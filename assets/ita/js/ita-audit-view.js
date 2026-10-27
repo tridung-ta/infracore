@@ -7,15 +7,16 @@
  const entities={asset:'Tài sản',user:'Tài khoản',assignment:'Bàn giao',license:'Giấy phép',ticket:'Phiếu bảo trì',category:'Loại tài sản',import_batch:'Lô nhập',network_link:'Liên kết mạng',budget_plan:'Kế hoạch ngân sách',report:'Báo cáo'};
  const values={in_use:'Đang sử dụng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Thanh lý',pending:'Đang chờ',resolved:'Đã hoàn tất',failed:'Chưa khắc phục',active:'Hoạt động',inactive:'Ngừng hoạt động',admin_it:'Admin IT',system_manager:'Quản lý hệ thống',support_technician:'Hỗ trợ kỹ thuật'};
  const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
- function value(v,depth=0){if(v===null||v===undefined||v==='')return 'Chưa có';if(typeof v==='boolean')return v?'Có':'Không';if(Array.isArray(v))return v.slice(0,30).map(n=>value(n,depth+1)).join(', ');if(typeof v==='object'){if(depth>2)return '(Dữ liệu chi tiết)';return Object.entries(v).filter(([k])=>!sensitive(k)).slice(0,30).map(([k,n])=>(fields[k]||k)+': '+value(n,depth+1)).join('; ');}const text=values[String(v)]||String(v);return text.length>1000?text.slice(0,1000)+'… (rút gọn)':text;}
+ function value(v,field='',depth=0){if(v===null||v===undefined||v==='')return 'Chưa có';if(depth>3)return '(Dữ liệu chi tiết)';if(typeof v==='boolean')return v?'Có':'Không';if(Array.isArray(v))return v.slice(0,30).map(n=>value(n,field,depth+1)).join(', ');if(typeof v==='object')return Object.entries(v).filter(([k])=>!sensitive(k)).slice(0,30).map(([k,n])=>(Object.hasOwn(fields,k)?fields[k]:k)+': '+value(n,k,depth+1)).join('; ');const text=['status','role'].includes(field)&&Object.hasOwn(values,String(v))?values[String(v)]:String(v);return text.length>1000?text.slice(0,1000)+'… (rút gọn)':text;}
+ const own=(object,key)=>object&&Object.hasOwn(object,key)?object[key]:undefined;
  const sensitive=key=>/password|secret|csrf|token|license_key|auth_key/i.test(key);
  function changes(item){
   let before,after;try{before=item.before_json?JSON.parse(item.before_json):null;after=item.after_json?JSON.parse(item.after_json):null;}catch(error){return el('p','Không đọc được chi tiết của bản ghi này.');}
-  const keys=[...new Set([...Object.keys(before||{}),...Object.keys(after||{})])].filter(k=>!sensitive(k)&&JSON.stringify(before?.[k])!==JSON.stringify(after?.[k]));
+  const keys=[...new Set([...Object.keys(before||{}),...Object.keys(after||{})])].filter(k=>!sensitive(k)&&JSON.stringify(own(before,k))!==JSON.stringify(own(after,k)));
   if(!keys.length)return el('span','Sự kiện này không có thay đổi dữ liệu.');
   const details=el('details'),summary=el('summary',keys.length+' nội dung thay đổi'),table=el('table');table.className='audit-change-table';
   const head=el('thead'),line=el('tr');for(const title of ['Nội dung','Trước','Sau'])line.append(el('th',title));head.append(line);table.append(head);
-  const body=el('tbody');for(const key of keys){const row=el('tr');for(const text of [fields[key]||key,value(before?.[key]),value(after?.[key])])row.append(el('td',text));body.append(row);}table.append(body);details.append(summary,table);return details;
+  const body=el('tbody');for(const key of keys){const row=el('tr');for(const text of [Object.hasOwn(fields,key)?fields[key]:key,value(own(before,key),key),value(own(after,key),key)])row.append(el('td',text));body.append(row);}table.append(body);details.append(summary,table);return details;
  }
  window.ItaAuditView={actions,labels,entities,changes,el};
 })();

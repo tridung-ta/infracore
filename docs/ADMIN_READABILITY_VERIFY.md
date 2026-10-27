@@ -18,3 +18,5 @@ Mock local: http://127.0.0.1:18766/#audit và /#users, /#lifecycle. Users có v�
 | node --check JS mới/sửa; php tests/ita_phase03_render.php |Đạt|Syntax/Smarty dữ liệu giả, không DB|
 
 Test mới ban đầu đếm cả tr trong bảng chi tiết lồng nhau, gây chờ sai sau lọc; sửa selector thành `#audit-rows > tr`, giữ assertion số bản ghi cấp ngoài. Không nới assertion quyền/CSRF/version/reauth/audit. Chưa host/PHP8.3/DB; chưa gói mới/upload/push/merge/tag7–10.
+
+Review độc lập phát hiện formatter dịch nhầm tên/ghi chú trùng chuỗi enum (ví dụ active). Đã giới hạn dịch vào trường role/status, tra map bằng Object.hasOwn, giữ dữ liệu tự do nguyên văn. `ita_audit_formatter_browser.js`:8checks đạt, gồm nested secret/malformed JSON/XSS/prototype name. Script permissions-preview đang chỉ MOCK và phải được thay bằng editor production trong BE14 trước đóng gói live; chưa tạo gói mới.

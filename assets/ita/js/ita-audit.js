@@ -25,7 +25,7 @@
    const data=await read('audit',query);if(current!==generation||location.hash!=='#audit'||!allowed())return;state.audit=data.page;
    $('audit-rows').replaceChildren(...data.rows.map(item=>{
     const row=el('tr');const date=new Date(item.created_at.replace(' ','T')+'Z');
-    const person=people.get(Number(item.user_id));[date.toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}),person?(person.fullname||person.username):'Tài khoản #'+item.user_id,labels[item.action]||item.action,`${entities[item.entity_type]||item.entity_type} #${item.entity_id}`].forEach(value=>row.append(el('td',value)));
+    const person=people.get(Number(item.user_id));[date.toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}),person?(person.fullname||person.username):'Tài khoản #'+item.user_id,Object.hasOwn(labels,item.action)?labels[item.action]:item.action,`${Object.hasOwn(entities,item.entity_type)?entities[item.entity_type]:item.entity_type} #${item.entity_id}`].forEach(value=>row.append(el('td',value)));
     const cell=el('td');cell.append(changes(item));row.append(cell);return row;
    }));$('audit-page-summary').textContent=`Trang ${data.page}/${Math.max(1,Math.ceil(data.total/data.per_page))} · ${data.total} sự kiện`;$('audit-previous').dataset.blocked=Number(data.page<=1);$('audit-next').dataset.blocked=Number(data.page*data.per_page>=data.total);$('audit-message').textContent=(live?'':'MOCK · ')+(data.total?`Tìm thấy ${data.total} sự kiện. Thời gian theo giờ Việt Nam.`:'Không có sự kiện phù hợp. Thử bỏ bớt bộ lọc.');
   }catch(error){if(current===generation){$('audit-message').textContent=error.message;$('audit-message').setAttribute('role','alert');}}
