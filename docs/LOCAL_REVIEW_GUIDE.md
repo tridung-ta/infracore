@@ -8,6 +8,8 @@ Thanh trên cùng có chọn quyền và kịch bản. Desktop mở sẵn; mobil
 
 ## Bấm thử lần lượt
 
+**Mới: Admin tạo tài khoản.** Chọn Admin ở thanh LOCAL MOCK →Tài khoản & phân quyền →Thêm tài khoản. Nhập `mock-new-user`, họ tên giả, email `mock-new-user@example.invalid`, mật khẩu giả `MOCK-password-123` hai lần; mở nhóm Tài sản chọn Xem +Thêm, chọn bộ phận Văn phòng. Bấm Tạo tài khoản & cấp quyền, thử Hủy rồi xác nhận. User mới chỉ nằm trong RAM; mở Phân quyền để đối chiếu, không đăng nhập native thật. Xem PHASE14_ACCOUNT_CREATE_VERIFY.md. Không dùng mật khẩu/tài khoản thật trong bản local.
+
 | Phần | Thao tác cụ thể | Mong đợi |
 |---|---|---|
 |Đăng nhập/motion|Bấm **Xem giao diện đăng nhập** ở thanh LOCAL MOCK. Thử hiện/ẩn password và đổi hiệu ứng/theme. Quay lại tab app thử Bật/Tắt|Giao diện đã nâng cấp; form MOCK không gửi credential thật. Không nhập mật khẩu thật|

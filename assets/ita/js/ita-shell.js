@@ -4,7 +4,7 @@
  const $ = (id) => document.getElementById(id);
  const statuses = {in_use:'Đang sử dụng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Thanh lý'};
  const liveMode=document.body.dataset.mode==='live';
- const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Quản lý quyền IT và phạm vi bộ phận cho tài khoản hiện có.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
+ const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Tạo tài khoản, chọn chức năng và giới hạn dữ liệu theo bộ phận.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
  const state = {data:null,page:1,pageSize:5,view:'overview'};
  titles.licenses=['Phần mềm & giấy phép','Theo dõi số chỗ, thời hạn và cấp phát trong phạm vi quản lý.'];
  titles.forecast=['Dự báo & ngân sách','Lập dự toán, đối chiếu từng thành phần và lưu kế hoạch theo năm.'];

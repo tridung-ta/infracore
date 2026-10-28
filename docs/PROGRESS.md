@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Admin tạo tài khoản và gán quyền từng người
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 account-create|POST user-create +native mới +quyền/scope/audit và form Admin|BE/FE|[x] source/local; chưa DB/host|Commit chứa mục này|57PHP mới,23browser mới;121quyền/29auth/13routes/109HTTP/Smarty/21model/38browser hồi quy đạt; review độc lập|BE_GATE_14_ACCOUNT_CREATE/VERIFY; user “bát đầu” duyệt source. MyISAM compensation không atomic; không config/gói/upload/push/merge/tag|
+
 ## 28/10/2026 — Bản local tương tác để user review trước upload
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

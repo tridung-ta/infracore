@@ -1,5 +1,12 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 28/10/2026 — Pattern HTML trong Smarty phải render thật
+
+- Triệu chứng: pattern username có quantifier `{2,49}` trong attribute làm Smarty báo Unexpected comma, dù preview HTML tĩnh vẫn mở.
+- Nguyên nhân đã tái hiện: Smarty đọc dấu ngoặc regex như delimiter template khi compile access.tpl.html.
+- Sửa: biểu diễn ngoặc bằng HTML entities trong attribute, giữ pattern DOM sau decode; không đổi validator PHP để né lỗi.
+- Kiểm: ita_phase03_render.php render Smarty thật đạt; browser tạo user/validation/bounds đạt. Preview không thay kiểm compiler.
+
 ## 28/10/2026 — Cảnh báo hiệu lực khác nhắc chưa xem; boot/cache và phản hồi muộn
 
 - Triệu chứng: user mở cảnh báo vẫn thấy8 và nghĩ chưa đọc; lọc bộ phận có thể thay badge toàn phạm vi. Source cũ dùng active_total làm badge, không có read receipt. Browser override baseline1652264 tái hiện kiểm ẩn badge đỏ.

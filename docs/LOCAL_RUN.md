@@ -1,5 +1,7 @@
 # Chạy InfraCore trên Laragon — chuẩn bị 26/10/2026, CHƯA KẾT NỐI DB
 
+**Bổ sung28/10 — tạo tài khoản mới:** BE_GATE_14_ACCOUNT_CREATE đã duyệt source. Khi tính năng mới được rollout, runtime cần INSERT dc_users và UPDATE status của đúng tài khoản vừa tạo, ngoài login UPDATE hash/last_login. Native INSERT gồm store_id/username/fullname/email/password placeholder/password_hash/type/status; id auto_increment. Cột bắt buộc khác chỉ dùng allowlist theo gate, không đoán hoặc ALTER; unknown schema →503. Không dùng credential DDL trong app, không cấp DELETE/DDL để xử lý lỗi. Bảng đọc/ghi bên dưới là baseline trước chức năng này; không áp dụng chữ “Không INSERT” cho luồng tạo mới vừa bổ sung. Chưa cấp grants hoặc chạy DB.
+
 User tự dựng Apache + PHP8.3.x + MariaDB10.6.x và vhost HTTPS cục bộ. Đây là hướng dẫn/script **chưa chạy trên DB**. Agent chỉ được kết nối sau câu xác nhận riêng: **«Tôi xác nhận cho chạy trên DB local [tên DB]»**, thay phần trong ngoặc bằng tên thực. Xác nhận phải nêu đúng một schema. Không dùng cấu hình, credential, dump dữ liệu hoặc khóa host. Không đóng gói/upload/merge/tag7–10/push/deploy.
 
 ## 1. Chuẩn bị môi trường riêng

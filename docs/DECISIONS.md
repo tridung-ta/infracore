@@ -1,5 +1,9 @@
 # Quyết định của dự án 5
 
+## 28/10/2026 — Duyệt Admin tạo native user và quyền từng người
+
+User “bát đầu” sau gate bổ sung tạo tài khoản mới +gán permissions/scope. Chọn dùng access.manage +scope.store trong capabilities mode, không tạo role4 hoặc key mới (preset47 giữ nguyên); role metadata support_technician, native type='1' staff, không native Admin. Native status0 trước map/audit, activation cuối và compensation khóa đúng ID mới nếu lỗi; giữ giới hạn MyISAM/commit không rõ, không DELETE/reset credential cũ. Hash PASSWORD_DEFAULT, password placeholder ngẫu nhiên không MD5 mật khẩu thật. Unknown mandatory column →503, không ALTER/đoán giá trị. Chỉ source/test local giả; không đọc config private/DB/host/gói/upload. Chi tiết BE_GATE_14_ACCOUNT_CREATE và PHASE14_ACCOUNT_CREATE_VERIFY.
+
 ## 28/10/2026 — Năm/tiền đúng nghĩa, nhắc cảnh báo chỉ trong phiên
 
 User chọn nguyên văn **“Bỏ nhắc mới trong phiên, giữ cảnh báo cần xử lý”** và **“Giữ quy tắc hiện tại, làm rõ và xác nhận trước lưu”**. Không thêm unread/read receipt trên server/DB. Chọn session/tab theo account, giữ active_total riêng; view thành công mới ẩn badge/chấm nhắc, lỗi đọc không mark. Snapshot chỉ tổng/trang canonical đầu, không hứa theo dõi mọi item. Không polling hoặc tự giải quyết cảnh báo nghiệp vụ.

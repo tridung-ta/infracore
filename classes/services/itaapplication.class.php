@@ -88,6 +88,13 @@ class ItaApplication
 
     private function api(): void
     {
+        if ($this->action==='user-create') {
+            $this->requirePost();
+            require_once __DIR__.'/itausercreationservice.class.php';
+            $data=(new ItaUserCreationService($this->db,$this->user))->create($this->readJson(16384));
+            $this->json(['success'=>true,'data'=>$data,'message'=>'Đã tạo tài khoản và cấp quyền sử dụng.']);
+            return;
+        }
         if ($_SERVER['REQUEST_METHOD']==='GET' && $this->user?->capabilitiesEnabled) {
             ItaPermissions::read($this->user,$this->action,$_GET);
         }
