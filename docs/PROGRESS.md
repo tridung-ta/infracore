@@ -1,5 +1,12 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Mạng vượt cap vẫn lọc được; rà khả năng1triệu dòng
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 network recovery|Giữ bộ lọc khi422/quá200thiết bị|FE|[x] local|Commit chứa mục này|35 browser API mock +179unit/query-contract; baseline red/review|Không tăng200/400 hoặc đổiSQL; PHASE14_NETWORK_LIMIT_RECOVERY_VERIFY.md|
+|Rà1triệu dòng|Giới hạn source và kế hoạch tải lớn|Docs|[x] kế hoạch; [ ] thực nghiệm|Commit chứa mục này|Chỉ đọc source, benchmark/DB chưa chạy|MILLION_ROW_READINESS.md; chưa sinh1triệu hoặc kết nốiDB/host|
+
 ## 28/10/2026 — Cải tiến chọn file/xem trước import
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

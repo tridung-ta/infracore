@@ -1,5 +1,7 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
+**28/10 — import/mạng dữ liệu lớn:** đã làm gọn chọn file/xem trước và xác nhận cả lô (38browser mock+88unit), giữ bộ lọc mạng khi422/quá200 (35browser mock+179unit); không PHP/SQL/tăngcap/gói/upload. MILLION_ROW_READINESS.md chỉ rà giới hạn/kế hoạch; chưa sinh/đo1triệu dòng, chưa DB/host. Có phân trang không tự chứng minh hiệu năng DB lớn.
+
 **28/10 — sửa5ảnh user, chỉ FE:** nhắc phiên17checks (active risks giữ nguyên), bảo trì70/thống kê49/giấy phép32, bàn giao35/PDF18 browser API mock đạt; baseline1652264 tái hiện các lỗi date/auto-select/badge. Giữ năm lọc/numeric name/nonnegative cost theo user; có xác nhận tổng VND, ngày giấy phép1000–9999 trên form, không tự mở hồ sơ đầu. Năm2011/tiền22 trong ảnh không bị agent tự đổi trên host. Không PHP/DB/SQL/gói/upload/push/merge/tag7–10; BE14 SQL vẫn chưa duyệt/chạy. Chi tiết PHASE14_ALERT_REMINDER_VERIFY, PHASE14_INPUT_FEEDBACK_VERIFY, PHASE14_HANDOVER_SELECTION_VERIFY.
 
 **27/10 — cập nhật mới nhất:** user đã tiếp tục và duyệt source BE14. Nhật ký/bảng nhóm đã cải tiến; quyền theo chức năng và scope đã build/test local qua fake transport/API mock (121 +19 kiểm mới), PHASE14_CAPABILITIES_VERIFY.md. Cờ mặc định tắt; SQL007/mapping ở BE_GATE_14_SQL.md chưa duyệt/chạy, không DB/host hoặc gói/upload/push/merge/tag7–10. Dòng tạm dừng26/10 dưới đây là checkpoint lịch sử, không thay chỉ đạo mới.

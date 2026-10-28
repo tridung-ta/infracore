@@ -66,12 +66,12 @@
  }
  async function load(){
   if(!allowed()||location.hash!=='#network')return;
-  controller?.abort();const pending=new AbortController();controller=pending;const current=++sequence;busy=true;controls();message('Đang tải liên kết…');$('network-retry').hidden=true;
+  controller?.abort();const pending=new AbortController();controller=pending;const current=++sequence;busy=true;controls();$('network-message').setAttribute('role','status');message('Đang tải liên kết…');$('network-retry').hidden=true;
   const timer=setTimeout(()=>pending.abort(),15000);
   try{const data=await request('network',{...applied,page},pending.signal);if(current!==sequence||location.hash!=='#network'||!allowed())return;
    if(data.mock!==false||!Array.isArray(data.nodes)||!Array.isArray(data.links)||!Array.isArray(data.rows)||data.nodes.length>200||data.links.length>400||data.rows.length>20)throw new Error('Phản hồi sơ đồ không hợp lệ.');
    render(data);message('Liên kết do Admin khai báo; không đo trạng thái kết nối hoặc lưu lượng mạng.');
-  }catch(error){if(current!==sequence||location.hash!=='#network')return;$('network-content').hidden=true;visible={nodes:[],links:[]};dispatchEvent(new CustomEvent('ita:network-render'));message(error.name==='AbortError'?'Tải quá thời gian. Hãy thử lại.':error.message);$('network-retry').hidden=false;}
+  }catch(error){if(current!==sequence||location.hash!=='#network')return;$('network-content').hidden=true;visible={nodes:[],links:[]};dispatchEvent(new CustomEvent('ita:network-render'));$('network-message').setAttribute('role','alert');message(error.name==='AbortError'?'Tải quá thời gian. Hãy thử lại.':error.message);$('network-retry').hidden=false;}
   finally{clearTimeout(timer);if(current===sequence){busy=false;controls();}}
  }
  async function save(payload){
@@ -81,7 +81,7 @@
   finally{posting=false;controls();}
  }
  function activate(){
-  $('network-nav').hidden=!allowed();if(location.hash!=='#network'){sequence++;controller?.abort();busy=false;return;}
+  $('network-nav').hidden=!allowed();$('network-filters').hidden=$('network-limit-help').hidden=!allowed();if(location.hash!=='#network'){sequence++;controller?.abort();busy=false;return;}
   if(!allowed()){sequence++;controller?.abort();busy=false;$('network-content').hidden=true;visible={nodes:[],links:[]};dispatchEvent(new CustomEvent('ita:network-render'));message('Bạn không có quyền xem hạ tầng mạng.');return;}
   const departments=window.itaLiveContext.departments||[],selected=$('network-department').value;
   $('network-department').replaceChildren(new Option('Tất cả bộ phận',''),...departments.map(d=>new Option(d.label,d.value)));$('network-department').value=selected;

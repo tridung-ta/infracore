@@ -2,8 +2,10 @@
  <div class="panel-heading"><div><h2 id="network-heading">Bản đồ kết nối hạ tầng</h2><p id="network-description">MOCK · Mô hình minh họa, không quét hoặc giám sát mạng thật.</p></div><span id="network-badge" class="mock-label">MOCK</span></div>
  <div class="network-body">
   <p id="network-message" role="status" aria-live="polite"></p>
-  <div id="network-content" hidden>
    <form id="network-filters" class="network-controls"><div><label for="network-search">Tìm thiết bị mẫu</label><input id="network-search" class="form-control" type="search" maxlength="100"></div><div><label for="network-department">Bộ phận mẫu</label><select id="network-department" class="form-select"><option value="">Tất cả bộ phận</option></select></div><button class="secondary-button" type="submit">Áp dụng</button><button id="network-reset" class="secondary-button" type="button">Xóa lọc</button></form>
+  <p class="muted" id="network-limit-help">Mỗi sơ đồ tối đa 200 thiết bị và 400 liên kết. Nếu vượt giới hạn, chọn bộ phận hoặc tìm một nhóm mã/tên rồi bấm Áp dụng.</p>
+  <div id="network-content" hidden>
+
    <p id="network-count" class="muted" aria-live="polite"></p>
    <div class="network-controls" role="group" aria-label="Chế độ sơ đồ"><button id="network-show-2d" class="secondary-button" type="button" aria-pressed="true">Sơ đồ 2D</button><button id="network-show-3d" class="secondary-button" type="button" aria-pressed="false">Xem 3D (MOCK)</button><button id="network-rotate-left" class="secondary-button" type="button" disabled>Xoay trái</button><button id="network-rotate-right" class="secondary-button" type="button" disabled>Xoay phải</button></div><p id="network-3d-status" role="status" aria-live="polite"></p>
    <div class="network-controls"><button id="network-flow-play" class="secondary-button" type="button">Minh họa luồng (MOCK)</button><button id="network-flow-stop" class="secondary-button" type="button" disabled>Dừng hiệu ứng</button><span class="muted">Chạy một lần, không phản ánh lưu lượng mạng.</span></div>

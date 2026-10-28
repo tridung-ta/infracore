@@ -1,7 +1,7 @@
 async(page)=>{
  const checks=[],errors=[],check=(ok,label)=>{if(!ok)throw new Error(label);checks.push(label);};
  for(const role of ['admin_it','system_manager','support_technician']){
-  const context=await page.context().browser().newContext({viewport:{width:1366,height:1000}}),p=await context.newPage(),reads=[],posts=[];let fail=false,saveFails=false,mockReads=0,hold=false,release;
+  const context=await page.context().browser().newContext({viewport:{width:1366,height:1000}}),p=await context.newPage(),reads=[],posts=[];let oversized=false,fail=false,saveFails=false,mockReads=0,hold=false,release;
   const row=id=>({id,source_asset_id:2,target_asset_id:3,source_name:'QA <img src=x>',target_name:'QA B',link_type:'fiber',source_port:'A',target_port:'B',capacity_label:'1G',note:'<b>text</b>',version:'version-'+id});
   const data=number=>({mock:false,can_manage:role==='admin_it',nodes:[{id:2,asset_code:'QA-A',name:'QA <img src=x>',kind:'Switch',department:'QA A',status:'in_use'},{id:3,asset_code:'QA-B',name:'QA B',kind:'Router',department:'QA A',status:'broken'}],links:[{id:1,source_asset_id:2,target_asset_id:3,link_type:'fiber',capacity_label:'1G'}],rows:[row(number===2?21:1)],page:number,total:21,per_page:20});
   const json=(route,data,status=200,message='')=>route.fulfill({status,contentType:'application/json',body:JSON.stringify({success:status===200,data,message})});
@@ -16,7 +16,7 @@ async(page)=>{
    if(act==='categories')return json(route,[]);
    if(act==='network'){
     reads.push(Object.fromEntries(url.searchParams));if(hold){hold=false;await new Promise(r=>release=r);}
-    if(fail)return json(route,null,503,'QA unavailable');return json(route,data(Number(url.searchParams.get('page'))||1));
+    if(oversized&&!url.searchParams.get('q'))return json(route,null,422,'Sơ đồ vượt 200 thiết bị. Hãy thu hẹp bộ phận hoặc tìm kiếm.');if(fail)return json(route,null,503,'QA unavailable');return json(route,data(Number(url.searchParams.get('page'))||1));
    }
    if(act==='network-save'){posts.push({payload:req.postDataJSON(),csrf:req.headers()['x-csrf-token'],method:req.method()});return json(route,saveFails?null:{id:7},saveFails?409:200,'QA stale version');}
    return json(route,{rows:[],total:0,active_total:0,alerts_total:0});
@@ -48,6 +48,10 @@ async(page)=>{
    }
    fail=true;await p.locator('#network-reset').click();await p.locator('#network-retry').waitFor({state:'visible'});check(await p.locator('#network-content').isHidden(),'Read failure hides stale topology');
    fail=false;await p.locator('#network-retry').click();await p.locator('#network-content').waitFor({state:'visible'});
+   oversized=true;await p.locator('#network-reset').click();await p.locator('#network-retry').waitFor({state:'visible'});
+   check(await p.locator('#network-filters').isVisible()&&await p.locator('#network-content').isHidden(),'Over-limit hides graph but retains recovery filters '+role);
+   await p.locator('#network-search').fill('QA-');await p.locator('#network-filters button[type=submit]').click();await p.locator('#network-content').waitFor({state:'visible'});
+   check(reads.at(-1).q==='QA-'&&await p.locator('#network-nodes g').count()===2,'Filter recovers from over200 response '+role);oversized=false;
    hold=true;await p.locator('#network-reset').click();await p.waitForTimeout(100);await p.evaluate(()=>{window.itaLiveContext.user.role='support_technician';dispatchEvent(new CustomEvent('ita:data'));});release?.();await p.waitForTimeout(100);
    check(await p.locator('#network-content').isHidden()&&await p.locator('#network-nav').isHidden(),'Late response cannot restore UI after role change');
   }finally{await context.close();}
