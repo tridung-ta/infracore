@@ -73,6 +73,26 @@ ckCreate(count(array_filter($db->writes,fn($s)=>str_starts_with($s,'INSERT INTO 
 foreach (['username'=>'bad name','email'=>'not-email','fullname'=>'','password'=>'short','password_confirmation'=>'wrong','permissions'=>[],'department_ids'=>[]] as $key=>$value) {
     $db=new ItaDb();$bad=$input;$bad[$key]=$value;denyCreate(fn()=>(new ItaUserCreationService($db,ownerCreate()))->create($bad),422,'Invalid '.$key);ckCreate(!$db->writes,'No writes on invalid '.$key);
 }
+$invalidCases=[
+ ['username','ab'],['username',str_repeat('a',51)],['username','name@example.invalid'],['username','-name'],['username','tên-mới'],['username',['forged']],
+ ['fullname','   '],['fullname',"MOCK\nNAME"],['fullname',"MOCK\u{0085}NAME"],['fullname',str_repeat('a',101)],['fullname',['forged']],['fullname',"bad\0name"],
+ ['email','plain-address'],['email','a@@example.invalid'],['email','a b@example.invalid'],['email',str_repeat('a',90).'@example.invalid'],['email',['forged']],
+ ['password',null],['password',['forged']],['password',str_repeat(' ',12)],['password',"MOCK-secret\0-12345"],['password',str_repeat('a',73)],
+ ['password_confirmation',['forged']],['permissions',['forged.root']],['permissions',['asset.create']],['permissions','asset.read'],['permissions',[1]],
+ ['department_ids','10'],['department_ids',[0]],['department_ids',[-1]],['department_ids',['1.5']],['department_ids',[[10]]],['department_ids',array_fill(0,501,10)]
+];
+foreach ($invalidCases as $index=>[$key,$value]) {
+    $db=new ItaDb();$bad=$input;$bad[$key]=$value;
+    denyCreate(fn()=>(new ItaUserCreationService($db,ownerCreate()))->create($bad),422,'Invalid shape/boundary '.$index.' '.$key);
+    ckCreate(!$db->began&&!$db->writes,'Malformed input denied before DB '.$index);
+}
+$normal=$input;$normal['username']='  mock.valid-1  ';$normal['email']=' mock.valid@example.invalid ';$normal['fullname']=' MOCK Họ Tên ';$normal['permissions']=['asset.read','asset.read'];$normal['department_ids']=[10,'10'];$normal['password']='   MOCK-password-123   ';$normal['password_confirmation']=$normal['password'];
+$clean=ItaUserCreationInput::validate($normal,ownerCreate());ckCreate($clean['username']==='mock.valid-1'&&$clean['fullname']==='MOCK Họ Tên'&&$clean['email']==='mock.valid@example.invalid'&&$clean['password']===$normal['password'],'Trim identity fields without mutating password');
+ckCreate($clean['department_ids']===[10]&&$clean['permissions']===['asset.read'],'Duplicate grants/scopes canonicalized');
+$forged=$input+['store_id'=>999,'id'=>111,'role'=>'admin_it','type'=>9,'status'=>1,'enabled'=>false];$db=new ItaDb();
+(new ItaUserCreationService($db,ownerCreate()))->create($forged);
+ckCreate($db->native[800]['store_id']===1&&$db->native[800]['type']==='1','Client cannot forge native store/type');
+ckCreate(str_contains(implode("\n",$db->writes),"'support_technician',1"),'Client cannot choose metadata admin role');
 $db=new ItaDb();denyCreate(fn()=>(new ItaUserCreationService($db,ownerCreate([])))->create($input),403,'Role label cannot bypass access.manage');ckCreate(!$db->writes&&!$db->began,'Forbidden no write/transaction');
 $db=new ItaDb();$restricted=ownerCreate(['scope.store','access.read','access.manage']);denyCreate(fn()=>(new ItaUserCreationService($db,$restricted))->create($input),403,'Cannot grant keys outside actor');
 foreach (['duplicate'=>409,'stale'=>403,'badScope'=>422,'extraRequired'=>503] as $fault=>$status) {
@@ -85,8 +105,17 @@ foreach (['auditFail','activationFail','commitFail','revokeAfterAudit'] as $faul
 }
 $bad=$input;$bad['password']=str_repeat('é',37);$bad['password_confirmation']=$bad['password'];denyCreate(fn()=>ItaUserCreationInput::validate($bad,ownerCreate()),422,'UTF8 byte limit, not character count');
 $unicode=$input;$unicode['password']=str_repeat('é',8);$unicode['password_confirmation']=$unicode['password'];ckCreate(ItaUserCreationInput::validate($unicode,ownerCreate())['password']===$unicode['password'],'Unicode password minimum is byte-based');
+$blankName=$input;$blankName['fullname']=str_repeat("\u{00a0}",4);denyCreate(fn()=>ItaUserCreationInput::validate($blankName,ownerCreate()),422,'Unicode whitespace fullname denied');
+$blankPassword=$input;$blankPassword['password']=str_repeat("\u{00a0}",12);$blankPassword['password_confirmation']=$blankPassword['password'];denyCreate(fn()=>ItaUserCreationInput::validate($blankPassword,ownerCreate()),422,'Unicode whitespace password denied');
+$invisible=$input;$invisible['fullname']=str_repeat("\u{200b}",4);denyCreate(fn()=>ItaUserCreationInput::validate($invisible,ownerCreate()),422,'Format-only fullname denied');
+$invisiblePassword=$input;$invisiblePassword['password']=str_repeat("\u{200b}",6);$invisiblePassword['password_confirmation']=$invisiblePassword['password'];denyCreate(fn()=>ItaUserCreationInput::validate($invisiblePassword,ownerCreate()),422,'Format-only password denied');
+$global=$input;$global['permissions']=['asset.read','scope.store'];$global['department_ids']=[];ckCreate(ItaUserCreationInput::validate($global,ownerCreate())['department_ids']===[],'Explicit global scope permits empty department list');
 $columns=(new ItaDb())->fetchAll('SHOW COLUMNS FROM dc_users');$columns[]= ['Field'=>'extra_optional','Type'=>'varchar(50)','Null'=>'YES','Default'=>null,'Extra'=>''];
 $fields=ItaUserCreationInput::nativeFields($columns,$input+['store_id'=>1]);ckCreate(!array_key_exists('extra_optional',$fields),'Optional native columns use schema defaults');
+$missing=array_values(array_filter($columns,fn($c)=>$c['Field']!=='password_hash'));denyCreate(fn()=>ItaUserCreationInput::nativeFields($missing,$input+['store_id'=>1]),503,'Missing modern-hash column fail closed');
+$noAuto=$columns;$noAuto[0]['Extra']='';denyCreate(fn()=>ItaUserCreationInput::nativeFields($noAuto,$input+['store_id'=>1]),503,'Native ID without auto increment rejected');
+$small=$columns;foreach($small as &$column){if($column['Field']==='username')$column['Type']='varchar(3)';}unset($column);
+denyCreate(fn()=>ItaUserCreationInput::nativeFields($small,$input+['store_id'=>1]),422,'Actual shorter schema width enforced');
 require __DIR__.'/../includes/ita_mode.inc.php';ckCreate(itaRequestDecision('/admin.php',['op'=>'ita','act'=>'user-create'],'POST',['enabled'=>true,'legacy_enabled'=>false])==='shell','POST gate allows approved endpoint');
 require __DIR__.'/../classes/security/itasession.class.php';
 require __DIR__.'/../classes/services/itaapplication.class.php';

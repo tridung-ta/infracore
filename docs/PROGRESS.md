@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Bổ sung kiểm ràng buộc thêm nhân viên
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 account constraints|Biên/kiểu dữ liệu/giả quyền/schema; chặn blank Unicode|BE/FE/test|[x] local|Commit chứa mục này|135PHP +27browser đạt; test đỏ NBSP trước sửa, lint/Smarty/syntax/diff-check|PHASE14_ACCOUNT_CONSTRAINTS; chưa DB/host/PHP8.3; không đọc config private/gói/upload/push/merge/tag|
+
 ## 28/10/2026 — Admin tạo tài khoản và gán quyền từng người
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

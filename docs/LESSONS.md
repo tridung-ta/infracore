@@ -1,5 +1,12 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 28/10/2026 — Trim không đủ kiểm dữ liệu chỉ có ký tự vô hình
+
+- Triệu chứng: test mới cho fullname toàn NBSP được validator tạo tài khoản chấp nhận (test đỏ No denial), dù yêu cầu tên không trống.
+- Nguyên nhân: PHP trim mặc định không loại mọi khoảng trắng Unicode; chuỗi zero-width cũng không rỗng theo trim.
+- Sửa trong tạo tài khoản: kiểm blank-only bằng nhóm Unicode whitespace/separator/format ở PHP và JS. Không xóa ký tự định dạng nằm trong tên có nội dung hoặc trim mật khẩu thật.
+- Kiểm:135checks PHP và27browser local đạt; form-guidance có thể bắt NBSP bằng field validity trước handler mới. Không dùng test mock làm bằng chứng DB/host.
+
 ## 28/10/2026 — Pattern HTML trong Smarty phải render thật
 
 - Triệu chứng: pattern username có quantifier `{2,49}` trong attribute làm Smarty báo Unexpected comma, dù preview HTML tĩnh vẫn mở.

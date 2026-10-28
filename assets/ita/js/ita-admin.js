@@ -82,8 +82,9 @@
   try{
    if(isCreate){
     if(createUncertain)throw Error('Chưa xác nhận lượt tạo trước. Kiểm danh sách tài khoản trước khi tạo lại.');
+    if(/^[\s\p{Z}\p{Cf}]*$/u.test($('user-create-fullname').value)||/\p{Cc}/u.test($('user-create-fullname').value))throw Error('Họ tên không được chứa ký tự điều khiển hoặc chỉ gồm khoảng trắng/ký tự vô hình.');
     const password=$('user-create-password').value;
-    if(new TextEncoder().encode(password).length<12||new TextEncoder().encode(password).length>72||password!==$('user-create-confirmation').value)throw Error('Mật khẩu cần 12–72 byte và nhập lại trùng khớp.');
+    if(new TextEncoder().encode(password).length<12||new TextEncoder().encode(password).length>72||/^[\s\p{Z}\p{Cf}]*$/u.test(password)||password!==$('user-create-confirmation').value)throw Error('Mật khẩu cần 12–72 byte, không chỉ khoảng trắng/ký tự vô hình và nhập lại trùng khớp.');
    }
    const confirmed=await window.ItaUi.confirm({title:isCreate?'Tạo tài khoản và cấp quyền?':'Cập nhật quyền truy cập?',message:isCreate?'Tài khoản mới có thể đăng nhập với đúng quyền và bộ phận bạn đang chọn.':'Quyền mới có hiệu lực ngay. Tài khoản được chỉnh sẽ cần đăng nhập lại.',confirmLabel:isCreate?'Tạo tài khoản':'Cập nhật quyền'});
    if(!confirmed)return;

@@ -9,13 +9,13 @@ class ItaUserCreationInput
         $email=ItaInput::text($input['email'] ?? '',100);
         $password=$input['password'] ?? null;
         if (!preg_match('/\A[A-Za-z0-9][A-Za-z0-9_.-]{2,49}\z/D',$username)
-            || $name==='' || preg_match('/[\x00-\x1f\x7f]/u',$name)
+            || preg_match('/\A[\s\p{Z}\p{Cf}]*\z/u',$name) || preg_match('/\p{Cc}/u',$name)
             || !filter_var($email,FILTER_VALIDATE_EMAIL)) {
             throw new ItaHttpError(422,'Tên đăng nhập cần 3–50 ký tự chữ/số, dấu chấm, gạch ngang hoặc gạch dưới; họ tên và email hợp lệ là bắt buộc.');
         }
-        if (!is_string($password) || strlen($password)<12 || strlen($password)>72 || str_contains($password,"\0") || trim($password)===''
+        if (!is_string($password) || strlen($password)<12 || strlen($password)>72 || str_contains($password,"\0") || preg_match('/\A[\s\p{Z}\p{Cf}]*\z/u',$password)
             || !is_string($input['password_confirmation'] ?? null) || !hash_equals($password,$input['password_confirmation'])) {
-            throw new ItaHttpError(422,'Mật khẩu cần 12–72 byte và xác nhận trùng khớp. Không dùng mật khẩu thật trong bản thử local.');
+            throw new ItaHttpError(422,'Mật khẩu cần 12–72 byte, không chỉ gồm khoảng trắng/ký tự vô hình và xác nhận phải trùng khớp.');
         }
         $permissions=ItaPermissions::validate($input['permissions'] ?? null);
         ItaPermissions::dependencies($permissions);

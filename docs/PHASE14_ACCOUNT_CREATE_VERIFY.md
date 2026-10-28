@@ -1,5 +1,7 @@
 # Phase14 — Admin tạo tài khoản và gán quyền, kiểm local28/10/2026
 
+**Bổ sung sau yêu cầu ràng buộc:** bộ PHP hiện có135checks và browser27checks đạt, chi tiết PHASE14_ACCOUNT_CONSTRAINTS.md. Đã tái hiện rồi sửa tên/mật khẩu chỉ chứa Unicode whitespace/format vô hình ở FE/PHP. Bảng57/23checks dưới đây là kết quả lượt BUILD trước; không sửa/xóa số lịch sử. Chưa DB/host/PHP8.3.
+
 User duyệt source theo BE_GATE_14_ACCOUNT_CREATE. Đã build PHP/Smarty/JS; không đọc private config, kết nối DB/host, tạo tài khoản thật, bật cờ hoặc đóng gói/upload. Sửa source không tự xác nhận quyền INSERT/UPDATE native trên hosting.
 
 ## Hành vi
