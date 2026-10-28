@@ -226,7 +226,7 @@
    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
   }
  });
- $('notification-button').addEventListener('click',()=>{if(location.hash==='#alerts')notify(liveMode?'Bạn đang xem trung tâm cảnh báo.':'Bạn đang xem cảnh báo minh họa.');else location.hash='alerts';});
+ $('notification-button').addEventListener('click',()=>{if(location.hash==='#alerts'){if(liveMode)dispatchEvent(new Event('ita:alerts-open'));else notify('Bạn đang xem cảnh báo minh họa.');}else location.hash='alerts';});
  $('close-dialog').addEventListener('click',()=>$('asset-dialog').close());
  $('asset-dialog').addEventListener('close',()=>{detailRequest++;if(returnFocus?.isConnected)returnFocus.focus();});
  $('filter-form').addEventListener('submit',(event)=>event.preventDefault());

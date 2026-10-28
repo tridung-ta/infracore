@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Nhắc cảnh báo theo phiên, giữ rủi ro còn hiệu lực
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 nhắc phiên|Xem thành công thì bỏ badge/chấm nhắc; tổng cảnh báo giữ riêng|FE|[x] local|Commit chứa mục này|17 browser mới +70 dashboard +19 quyền; API mock, ảnh/bounds1366/768/390|Theo lựa chọn user, session/tab only; không DB/read receipt; PHASE14_ALERT_REMINDER_VERIFY.md; chưa gói/upload/push|
+
 ## 27/10/2026 — BUILD source BE14 theo duyệt, chưa bật trên DB
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

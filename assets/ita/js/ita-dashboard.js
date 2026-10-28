@@ -6,7 +6,7 @@
   if(!panel)return;
  const tiers={replace:'Thay thế',watch:'Theo dõi',normal:'Bình thường',missing:'Chưa đủ dữ liệu'};
  let view='',page=1,sequence=0,request,exportRequest,documentData,applied={},charts=[],observers=[],busy=false,badgeLoaded=false,badgeRequest;
- let tableControls=[],tableLoading=false;
+ let tableControls=[],tableLoading=false,badgeGeneration=0,badgeWork;
  const node=(tag,text)=>{const n=document.createElement(tag);
   if(text!==undefined)n.textContent=String(text);
   return n;
@@ -64,12 +64,6 @@
   nav.append(previous,label,next);section.append(body,nav);tableControls.push(controls);draw();return section;
  }
  function tableBusy(value){tableLoading=value;tableControls.forEach(update=>update());}
- function bell(n){$('dash-bell-label').textContent=n+' cảnh báo hiệu lực';
-  $('nav-alert-count').textContent=String(n);
-  $('notification-button').setAttribute('aria-label',`${n} cảnh báo đang hiệu lực, không phải chưa đọc`);
-  $('notification-button').title=`${n} cảnh báo đang hiệu lực`;
-  $('notification-button').querySelector('.notification-dot').hidden=n===0;
-  }
  function chart(title,names,values,headers,rows){const card=node('section');
   card.className='dash-chart-card';
   card.append(node('h3',title));
@@ -94,7 +88,7 @@
   for(const c of charts){const series=c.getOption().series||[];c.setOption({textStyle:{color:color('text')},legend:{textStyle:{color:color('text')}},xAxis:{axisLabel:{color:color('text-muted')},axisLine:{lineStyle:{color:color('border')}}},yAxis:{axisLabel:{color:color('text-muted')},splitLine:{lineStyle:{color:color('border')}}},series:series.map((s,i)=>({itemStyle:{color:color(series.length===4?['success','warning','danger','text-muted'][i]:'accent')}}))});}
  }
  addEventListener('ita:theme',recolorCharts);
- function overview(d){bell(d.alerts_total);
+ function overview(d){
   const grid=node('div');
   grid.className='kpi-grid';
   const s=d.summary;
@@ -111,15 +105,15 @@
   $('dash-output').append(node('p','Các bảng hiển thị 20 dòng/trang. Biểu đồ và KPI giữ toàn bộ dữ liệu trong bộ lọc; chuyển trang bảng không tải lại số liệu.'));
   $('dash-output').append(pagedTable(['Mã','Thiết bị','Điểm','Nhóm'],d.replacements.map(r=>[r.asset_code,r.name,r.score_display,tiers[r.tier]]),'Đề xuất theo điểm gốc, hiển thị 3 số lẻ; điểm có thể vượt 1'));
   }
- function render(d){dispose();
+ function render(d,reminderReady=true){dispose();
   $('dash-output').replaceChildren();
   tableControls=[];
   documentData=d;
   page=d.page??1;
   $('dash-time').textContent='Số liệu tại '+new Date(d.as_of).toLocaleTimeString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',hour:'2-digit',minute:'2-digit'})+' · '+new Date(d.as_of).toLocaleDateString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'})+' · giờ Việt Nam';
   if(view==='overview'&&!window.ItaPolicy.maintenance()){overview(d);
-  }else if(view==='alerts'){bell(d.active_total);
-  $('dash-output').append(node('p',`${d.total} kết quả khớp / ${d.active_total} cảnh báo đang hiệu lực. Chuông không phải số chưa đọc hoặc số dòng đang lọc.`),table(['Mức độ','Mã','Đối tượng','Lý do'],d.rows.map(r=>[r.level==='critical'?'Nghiêm trọng':'Cần theo dõi',r.code,r.name,r.title]),'Cảnh báo trong phạm vi'));
+  }else if(view==='alerts'){if(reminderReady)window.ItaNotifications.viewed();
+  $('dash-output').append(node('p',`${d.total} kết quả khớp / ${d.active_total} cảnh báo đang hiệu lực. Nhắc mới được ẩn sau khi xem trong phiên này; cảnh báo chỉ hết khi nguyên nhân được xử lý.`),table(['Mức độ','Mã','Đối tượng','Lý do'],d.rows.map(r=>[r.level==='critical'?'Nghiêm trọng':'Cần theo dõi',r.code,r.name,r.title]),'Cảnh báo trong phạm vi'));
   }else{$('dash-output').append(node('p',d.source),node('p',`Số dòng dữ liệu: ${d.data_count}. Thiếu dữ liệu: ${d.missing??0}.`));
   if(d.using_defaults)$('dash-output').append(node('p','Đang dùng giá trị mặc định'));
   $('dash-output').append(table(d.headers,d.rows,'Báo cáo trong phạm vi'));
@@ -149,22 +143,26 @@
   $('dash-output').setAttribute('aria-busy','true');
   $('dash-message').textContent='Đang tải…';
   $('dash-export').hidden=true;
-  try{const r=await fetch('/admin.php?'+query,{signal:request.signal,cache:'no-store'});
+  try{const [r,reminderReady]=await Promise.all([fetch('/admin.php?'+query,{signal:request.signal,cache:'no-store'}),action==='alerts'?initialBell(true):Promise.resolve(true)]);
   const result=await r.json();
   if(!r.ok||!result.success)throw Error(result.message||'Chưa tải được số liệu.');
   if(id!==sequence)return;
-  render(result.data);
+  render(result.data,reminderReady);
   $('dash-message').textContent='Đã tải số liệu. Không tự làm mới.';
   }catch(e){if(id===sequence&&e.name!=='AbortError')$('dash-message').textContent=(e instanceof SyntaxError?'Máy chủ trả phản hồi không hợp lệ.':e.message)+' Dữ liệu cũ (nếu có) giữ nguyên mốc; bấm Làm mới để thử lại.';
   }finally{if(id===sequence){$('dash-output').setAttribute('aria-busy','false');tableBusy(false);}
   }}
- async function initialBell(){if(badgeLoaded||!window.ItaPolicy.can('alert.read',!window.ItaPolicy.maintenance()))return;
-  badgeLoaded=true;
-  badgeRequest=new AbortController();
-  try{const r=await fetch('/admin.php?op=ita&act=alerts',{signal:badgeRequest.signal,cache:'no-store'}),d=await r.json();
-  if(r.ok&&d.success)bell(d.data.active_total);
-  }catch{badgeLoaded=false;
-  }}
+ function initialBell(force=false){if(!window.ItaPolicy.can('alert.read',!window.ItaPolicy.maintenance()))return Promise.resolve(false);
+  if(badgeLoaded&&!force)return badgeWork||Promise.resolve(true);
+  badgeLoaded=true;badgeRequest?.abort();
+  badgeRequest=new AbortController();const identity=window.itaLiveContext?.user?.id,generation=++badgeGeneration;
+  const signal=badgeRequest.signal;
+  badgeWork=(async()=>{try{const r=await fetch('/admin.php?op=ita&act=alerts',{signal,cache:'no-store'}),d=await r.json();
+   if(generation!==badgeGeneration)return false;
+   if(r.ok&&d.success&&identity===window.itaLiveContext?.user?.id&&window.ItaNotifications.update(d.data))return true;
+  }catch{/* Keep the previous reminder if the canonical read failed. */}
+  if(generation===badgeGeneration)badgeLoaded=false;return false;})();return badgeWork;
+ }
  function activate(){if(!role())return;
   const next=location.hash.slice(1)||'overview';
   const permission={overview:'dashboard.read',alerts:'alert.read',reports:'report.read'}[next];
@@ -252,11 +250,13 @@
   $('dash-xlsx').addEventListener('click',()=>download('xlsx'));
   $('dash-pdf').addEventListener('click',()=>download('pdf'));
   addEventListener('ita:view',activate);
+  addEventListener('ita:alerts-open',()=>{if(view==='alerts')load();});
+  addEventListener('ita:refresh',()=>initialBell(true));
   addEventListener('ita:data',()=>{if(window.ItaPolicy.enabled()){$('notification-button').hidden=$('dash-bell-label').hidden=!window.ItaPolicy.can('alert.read');}if(window.ItaPolicy.maintenance()){document.querySelector('[data-view="alerts"]').hidden=true;
   document.querySelector('[data-view="reports"]').hidden=true;
   $('notification-button').hidden=true;
   $('dash-bell-label').hidden=true;
-  }if(!['','overview','alerts'].includes(location.hash.slice(1)))initialBell();
+  }initialBell();
   activate();
   });
   addEventListener('pageshow',e=>{if(e.persisted){view='';
@@ -268,5 +268,6 @@
   badgeRequest?.abort();
   dispose();
   });
+  if(role())initialBell();
   activate();
 })();

@@ -1,5 +1,12 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 28/10/2026 — Cảnh báo hiệu lực khác nhắc chưa xem; boot/cache và phản hồi muộn
+
+- Triệu chứng: user mở cảnh báo vẫn thấy8 và nghĩ chưa đọc; lọc bộ phận có thể thay badge toàn phạm vi. Source cũ dùng active_total làm badge, không có read receipt. Browser override baseline1652264 tái hiện kiểm ẩn badge đỏ.
+- Sửa trong phạm vi user chọn: trạng thái nhắc chỉ trong session/tab; giữ số còn cần xử lý riêng; canonical GET không filter, chờ snapshot và danh sách thành công rồi mark. Generation/identity bỏ response cũ; fallback storage chỉ bộ nhớ. Fingerprint trang đầu không phải read receipt mọi item.
+- Khi thử reload gặp khởi tạo chuông bị bỏ lỡ nếu data boot đến trước listener: thêm init khi context đã có; không nhận0 giả khi chưa có snapshot. Review phát hiện cache URL JS cũ; tăng version các asset sửa và kiểm URL thực trong DOM.
+- Kiểm: alert_session_browser17 +dashboard70 +capabilities19 qua API mock, không DB/host. Không dùng mở trang để tự giải quyết rủi ro nghiệp vụ hoặc ghi đã đọc trên server.
+
 ## 27/10/2026 — Validation liên trường và bounds bên trong panel
 
 - Triệu chứng: bảo hành trước ngày mua bị chặn; sửa riêng ngày mua vẫn không submit được. Phân loại: FE customValidity liên trường.
