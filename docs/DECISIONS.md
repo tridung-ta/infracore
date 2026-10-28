@@ -1,5 +1,11 @@
 # Quyết định của dự án 5
 
+## 28/10/2026 — Năm/tiền đúng nghĩa, nhắc cảnh báo chỉ trong phiên
+
+User chọn nguyên văn **“Bỏ nhắc mới trong phiên, giữ cảnh báo cần xử lý”** và **“Giữ quy tắc hiện tại, làm rõ và xác nhận trước lưu”**. Không thêm unread/read receipt trên server/DB. Chọn session/tab theo account, giữ active_total riêng; view thành công mới ẩn badge/chấm nhắc, lỗi đọc không mark. Snapshot chỉ tổng/trang canonical đầu, không hứa theo dõi mọi item. Không polling hoặc tự giải quyết cảnh báo nghiệp vụ.
+
+Giữ năm thống kê2000–2199 theo năm mở phiếu,2011 hợp lệ khi người dùng chọn; không ép mọi query thành năm hiện tại. Giữ tên chỉ gồm số và số tiền không âm theo validator;22 là22VND, không tự nhân1000. Thêm xác nhận tổng chi phí, bounds ngày giấy phép trên FE và feedback cụ thể. Trang bàn giao chờ tìm/chọn thiết bị; GET boot chung và readback sau thao tác chủ động vẫn cần thiết. Không thay PHP/SQL/quyền, không chỉnh dữ liệu host hoặc tự upload.
+
 ## 27/10/2026 — BE14 đã duyệt source; kích hoạt qua SQL gate riêng
 
 User xác nhận nguyên văn **“Duyệt BUILD source BE14 theo gate”**. Xây guard capability trên mọi route/suboperation, dùng quyền từng người và scope.store thay suy Admin từ role. Role hiện tại chỉ compatibility khi cờ chưa bật; không thêm role4, không fallback role trong mode mới. Scope toàn store không đồng nghĩa có mọi chức năng. access.read cần scope.store; access.manage/audit.read phụ thuộc access.read: chưa hỗ trợ quản trị/audit giới hạn từng bộ phận. assignment.read và ticket.create cần asset.read cho bộ chọn tài sản. Chọn thiếu dependency bị422, không âm thầm thêm quyền.

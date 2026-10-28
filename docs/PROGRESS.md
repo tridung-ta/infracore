@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Bàn giao chờ tìm/chọn thiết bị rõ ràng
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 chọn hồ sơ|Không tự request bàn giao/người nhận trước tương tác|FE|[x] local|Commit chứa mục này|35 browser bàn giao +18 PDF; API mock3vai trò và bounds; baseline red được tái hiện|GET boot chung vẫn có; không tự ghi; PHASE14_HANDOVER_SELECTION_VERIFY.md; chưa DB/host hoặc gói/upload|
+
 ## 28/10/2026 — Làm rõ năm/chi phí và chặn ngày giấy phép sai trên FE
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

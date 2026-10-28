@@ -36,7 +36,9 @@ async(page)=>{
    }
    return json(route,null,404);
   });
-  await p.goto('http://127.0.0.1:18766/#assignments');await p.locator('#handover-record').waitFor({state:'visible'});
+  await p.goto('http://127.0.0.1:18766/#assignments');await p.waitForFunction(()=>window.itaLiveContext);
+  check(!reads.some(r=>r.action==='assignments'||r.action==='assignment-recipients'),'No handover/recipient fetch before interaction '+role);
+  await p.locator('#handover-search-form button').click();await p.locator('#handover-asset option[value="7"]').waitFor({state:'attached'});check(!reads.some(r=>r.action==='assignments'),'Search waits for explicit asset selection '+role);await p.locator('#handover-asset').selectOption('7');await p.locator('#handover-record').waitFor({state:'visible'});
   return {p,context,posts,reads,fail:value=>failure=value,failGet:()=>getFailure=true};
  }
  const admin=await scenario('admin_it');

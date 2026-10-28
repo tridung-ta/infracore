@@ -7,6 +7,7 @@
  function node(tag,text){const n=document.createElement(tag);n.textContent=text;return n;}
  function message(text,error=false){const n=$('handover-message');n.textContent=text;n.dataset.state=error?'error':'success';n.setAttribute('role',error?'alert':'status');if(error)n.focus({preventScroll:true});}
  function buttons(){
+  $('handover-asset').disabled=busy||$('handover-asset').options.length<=1;$('handover-reload').disabled=busy||!$('handover-asset').value;
   const canAssign=window.ItaPolicy.can('assignment.create',window.itaLiveContext?.user.role!=='support_technician');
   $('handover-assign').disabled=busy||stale||!record||!!record.active||record.asset.status!=='in_use'||!!record.asset.current_user_id||!canAssign||!$('handover-target').value;
   $('handover-return').disabled=busy||stale||!record?.active||!window.ItaPolicy.can('assignment.return',true);
@@ -27,13 +28,13 @@
  async function loadAssets(page=1){
   record=null;$('handover-record').hidden=true;stale=true;
   const data=await api('data',{page,q:$('handover-search').value});assetPage=data.pagination.page;assetTotal=data.pagination.total;
-  $('handover-asset').replaceChildren(...data.assets.map(asset=>new Option(`${asset.code} · ${asset.name}`,asset.id)));
+  $('handover-asset').replaceChildren(new Option('Chọn thiết bị để mở hồ sơ',''),...data.assets.map(asset=>new Option(`${asset.code} · ${asset.name}`,asset.id)));
   $('handover-assets-page').textContent=`Trang ${assetPage}/${Math.max(1,Math.ceil(assetTotal/5))} · ${assetTotal} thiết bị`;
-  if(data.assets.length)await loadRecord();else message('Không có thiết bị phù hợp trong phạm vi của bạn.');
+  message(data.assets.length?'Tìm thấy '+assetTotal+' thiết bị. Chọn một thiết bị để mở hồ sơ; chưa có thao tác ghi.':'Không có thiết bị phù hợp trong phạm vi của bạn.');
  }
  async function loadRecord(page=1){
   stale=true;$('handover-record').hidden=true;record=null;
-  const id=$('handover-asset').value;if(!id)return;
+  const id=$('handover-asset').value;if(!id){message('Chọn thiết bị để mở hồ sơ bàn giao.');return;}
   const data=await api('assignments',{asset_id:id,page});record=data;stale=false;render();message('Đã tải hồ sơ bàn giao mới nhất.');
   if(!data.active&&data.asset.status==='in_use'&&window.ItaPolicy.can('assignment.create',window.itaLiveContext.user.role!=='support_technician'))await loadRecipients(1);
  }
@@ -96,7 +97,7 @@
   finally{clearTimeout(timer);}
  }
  $('handover-search-form').addEventListener('submit',e=>{e.preventDefault();task(()=>loadAssets(1));});
- $('handover-asset').addEventListener('change',()=>task(()=>loadRecord()));$('handover-reload').addEventListener('click',()=>task(()=>loadAssets(assetPage)));
+ $('handover-asset').addEventListener('change',()=>task(()=>loadRecord()));$('handover-reload').addEventListener('click',()=>task(()=>loadRecord()));
  $('handover-create').addEventListener('submit',e=>{e.preventDefault();task(()=>save('assign'));});
  $('handover-return-form').addEventListener('submit',e=>{e.preventDefault();task(()=>save('return'));});
  $('handover-acknowledge').addEventListener('click',()=>task(()=>save('acknowledge')));
@@ -108,6 +109,6 @@
  $('assignment-live').nextElementSibling.hidden=true;$('assignment-live').hidden=false;
  document.querySelector('[data-view=assignments] .nav-count')?.remove();
  for(const [value,label] of [['assignment.assign','Giao thiết bị'],['assignment.return','Thu hồi thiết bị'],['assignment.acknowledge','Xác nhận nhận thiết bị'],['assignment.pdf_download','Tải biên bản bàn giao']])$('audit-action').append(new Option(label,value));
- function activate(){if(!window.ItaPolicy.can('assignment.read',true))return;if(!started&&location.hash==='#assignments'&&window.itaLiveContext){started=true;task(()=>loadAssets());}}
+ function activate(){if(!window.ItaPolicy.can('assignment.read',true))return;if(!started&&location.hash==='#assignments'&&window.itaLiveContext){started=true;$('handover-asset').replaceChildren(new Option('Tìm rồi chọn thiết bị',''));message('Nhấn Tìm thiết bị, sau đó chọn thiết bị để mở hồ sơ. Chưa tải hồ sơ hoặc ghi dữ liệu bàn giao.');buttons();}}
  addEventListener('ita:view',activate);addEventListener('ita:data',activate);activate();
 })();
