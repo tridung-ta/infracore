@@ -12,6 +12,9 @@
   'ticket-cost':'Tổng chi phí của phiếu, không phải phần tăng thêm. Nhập số không âm, dùng dấu chấm thập phân.',
   'ticket-correct-cost':'Nhập tổng chi phí sau điều chỉnh; bắt buộc có lý do riêng.',
   'license-seats':'Số nguyên từ 1 đến 1.000.000. Giảm dưới số đã cấp cần xác nhận và lý do theo quyền.',
+  'license-start':'Ngày hợp lệ từ năm 1000 đến 9999; có thể để trống. Không nhập năm quá 4 chữ số.',
+  'license-expire':'Ngày từ năm 1000 đến 9999, không trước ngày bắt đầu; để trống nếu không thời hạn.',
+  'ticket-year':'Năm mở phiếu, không phải năm sửa chi phí. Chọn đúng năm cần đối chiếu.',
   'license-name':'Tên bắt buộc, tối đa 200 ký tự; không chỉ nhập khoảng trắng.'
  };
  function today(){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()),get=type=>parts.find(p=>p.type===type).value;return get('year')+'-'+get('month')+'-'+get('day');}
@@ -19,7 +22,7 @@
   if(!input?.matches('input,textarea,select'))return;
   const text=help[input.id];
   if(text&&!document.getElementById(input.id+'-guidance')){const note=document.createElement('small');note.id=input.id+'-guidance';note.className='field-guidance';note.textContent=text;input.after(note);input.setAttribute('aria-describedby',((input.getAttribute('aria-describedby')||'')+' '+note.id).trim());}
-  if(['edit-purchase_date','edit-warranty_end'].includes(input.id)){input.min='1000-01-01';input.max='9999-12-31';}
+  if(['edit-purchase_date','edit-warranty_end','license-start','license-expire'].includes(input.id)){input.min='1000-01-01';input.max='9999-12-31';}
   if(input.id==='handover-due')input.min=today();
   if(input.id==='ticket-handled')input.max=today();
   if(['ticket-cost','ticket-correct-cost'].includes(input.id)){input.pattern='(?:0|[1-9][0-9]{0,15})(?:\\.[0-9]{1,2})?';input.maxLength=19;input.inputMode='decimal';}

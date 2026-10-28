@@ -24,7 +24,7 @@ async(page)=>{
   try{
    await p.goto('http://127.0.0.1:18766/#tickets');await p.locator('#ticket-live').waitFor({state:'visible'});
    await p.locator('#ticket-year').fill('2026');await p.locator('#ticket-filter-asset').fill('7');
-   await p.locator('#ticket-stat-form button').click();await p.waitForFunction(()=>document.getElementById('ticket-stat-page').textContent.includes('Trang 1/2'));
+   await p.locator('#ticket-stat-form button[type=submit]').click();await p.waitForFunction(()=>document.getElementById('ticket-stat-page').textContent.includes('Trang 1/2'));
    check(await p.locator('#ticket-statistics tbody tr').count()===20,`${role} first page rows`);
    check(await p.locator('#ticket-stat-prev').isDisabled(),`${role} first previous disabled`);
    check((await p.locator('#ticket-stat-summary').textContent()).includes('52 phiếu')&&(await p.locator('#ticket-stat-summary').textContent()).includes('9.999.999.999.999.999,99'),`${role} global exact totals`);
@@ -43,9 +43,12 @@ async(page)=>{
     check(await p.locator('#ticket-stat-pagination').evaluate(n=>{const r=n.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&document.documentElement.scrollWidth<=innerWidth;}),`${role} pagination bounds ${width}`);
    }
    if(role==='admin_it')await p.screenshot({path:'.playwright-cli/phase11-ticket-statistics-390.png',fullPage:true});
-   empty=true;await p.locator('#ticket-stat-form button').click();await p.waitForFunction(()=>document.getElementById('ticket-statistics').textContent.includes('Chưa có phiếu'));
+   empty=true;await p.locator('#ticket-stat-form button[type=submit]').click();await p.waitForFunction(()=>document.getElementById('ticket-statistics').textContent.includes('Chưa có phiếu'));
    check(requests.at(-1).year==='2025'&&requests.at(-1).asset==='8'&&requests.at(-1).page===1,`${role} submitting applies edits and resets page`);
    check(await p.locator('#ticket-stat-pagination').isHidden()&&(await p.locator('#ticket-stat-summary').textContent()).includes('0 phiếu'),`${role} empty result totals`);
+   await p.locator('#ticket-year').fill('2011');await p.locator('#ticket-stat-form button[type=submit]').click();await p.waitForFunction(()=>document.getElementById('ticket-message').textContent.includes('năm 2011'));
+   check(requests.at(-1).year==='2011'&&(await p.locator('#ticket-message').textContent()).includes('Không có phiếu'),'2011 reflects selected opened year, clear empty feedback');
+   await p.locator('#ticket-year-current').click();check(Number(await p.locator('#ticket-year').inputValue())===Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Ho_Chi_Minh'}).format(new Date())),'Reset to current VN year without fetching');
    check(requests.every(r=>r.method==='GET'),`${role} no POST`);
   }finally{await context.close();}
  }

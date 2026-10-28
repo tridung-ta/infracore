@@ -14,7 +14,7 @@
   return integer+(fraction?','+fraction:'');
  }
  function badge(value){const n=el('span',displayLabel(value));n.className='ticket-badge';n.dataset.state=value;return n;}
- function localTime(value){const date=new Date(String(value).replace(' ','T')+'Z');return Number.isNaN(date.getTime())?String(value):new Intl.DateTimeFormat('vi-VN',{dateStyle:'short',timeStyle:'short',timeZone:'Asia/Ho_Chi_Minh'}).format(date);}
+ function localTime(value){const date=new Date(String(value).replace(' ','T')+'Z');return Number.isNaN(date.getTime())?String(value):new Intl.DateTimeFormat('vi-VN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Ho_Chi_Minh'}).format(date);}
  function message(text,error=false,recovery=error){
   const n=$('ticket-message'),box=$('ticket-feedback'),pending=text==='Đang thực hiện yêu cầu…';
   n.textContent=text;box.hidden=false;box.dataset.state=error?'error':pending?'loading':'success';
@@ -127,8 +127,8 @@
  function transitionFields(){const closing=$('ticket-to-status').value!=='pending';$('ticket-handled').required=closing;$('ticket-handled').disabled=!closing;$('ticket-cost').readOnly=!closing||(!window.ItaPolicy.can('ticket.cost',admin())&&!!current?.ticket.handled_date);}
  async function save(body){
   stale=true;const result=await api('ticket-save',{}, {id:current?.ticket.id,version:current?.ticket.version,...body});message('Đã lưu, đang đọc lại…');
-  try{await listing();if(result.id)await detail(result.id);else if(current)await detail(current.ticket.id);stale=false;if(body.operation==='create')$('ticket-create-section').open=false;message('Đã lưu và đọc lại phiếu.');dispatchEvent(new Event('ita:refresh'));}
-  catch(error){message('Đã lưu nhưng chưa tải lại được. Mở lại phiếu trước khi tiếp tục.',true);$('ticket-record').hidden=true;}
+  try{await listing();if(result.id)await detail(result.id);else if(current)await detail(current.ticket.id);stale=false;if(body.operation==='create')$('ticket-create-section').open=false;message('Đã lưu và đọc lại phiếu.');dispatchEvent(new Event('ita:refresh'));return true;}
+  catch(error){message('Đã lưu nhưng chưa tải lại được. Mở lại phiếu trước khi tiếp tục.',true);$('ticket-record').hidden=true;return false;}
  }
  $('ticket-dismiss').addEventListener('click',()=>{$('ticket-feedback').hidden=true;});
  $('ticket-retry').addEventListener('click',()=>task(async()=>{await listing();if(current)await detail(current.ticket.id);}));
@@ -144,12 +144,13 @@
  $('ticket-create').addEventListener('submit',e=>{e.preventDefault();task(()=>save({operation:'create',asset_id:$('ticket-asset').value,type:$('ticket-type').value,severity:$('ticket-severity').value,note:$('ticket-issue').value}));});
  $('ticket-assign').addEventListener('submit',e=>{e.preventDefault();task(()=>save({operation:'assign',technician_id:$('ticket-technician').value,note:$('ticket-assign-note').value}));});
  $('ticket-transition').addEventListener('submit',e=>{e.preventDefault();task(()=>save({operation:'transition',status:$('ticket-to-status').value,handled_date:$('ticket-handled').value,cost:$('ticket-cost').value,note:$('ticket-resolution').value}));});
- $('ticket-cost-form').addEventListener('submit',e=>{e.preventDefault();task(()=>save({operation:'cost',cost:$('ticket-correct-cost').value,note:$('ticket-cost-reason').value}));});
+ $('ticket-cost-form').addEventListener('submit',e=>{e.preventDefault();task(async()=>{const old=current.ticket.cost,next=$('ticket-correct-cost').value,note=$('ticket-cost-reason').value;const confirmed=await window.ItaUi.confirm({title:'Xác nhận tổng chi phí mới',message:money(old)+' VND → '+money(next)+' VND. Đây là tổng chi phí của phiếu, không phải số tiền cộng thêm. Lý do: '+note,confirmLabel:'Lưu chi phí mới'});if(!confirmed){message('Đã hủy điều chỉnh. Chi phí chưa thay đổi.');return;}if(await save({operation:'cost',cost:next,note}))message('Đã lưu tổng chi phí '+money(next)+' VND và đọc lại phiếu.');});});
  $('ticket-ready').addEventListener('submit',e=>{e.preventDefault();task(()=>save({operation:'ready',asset_id:current.asset.id,asset_version:current.asset.version,note:$('ticket-ready-reason').value}));});
  $('ticket-to-status').addEventListener('change',transitionFields);
  $('ticket-year').value=new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Asia/Ho_Chi_Minh'}).format(new Date());
  async function statistics(nextPage,filter=statFilter){
    const data=await api('ticket-statistics',{...filter,page:nextPage});
+   if(Number(data.year)!==Number(filter.year))throw new Error('Năm thống kê trả về không khớp năm đã chọn. Hãy tải lại.');
    statFilter={...filter};statPage=data.page;statTotal=data.total;statPerPage=data.per_page;
    const table=el('table','');table.className='license-table ticket-stat-table';
    const caption=el('caption',`Kết quả năm ${data.year} · giờ Việt Nam · ${statFilter.asset_id?'ID thiết bị '+statFilter.asset_id:'mọi thiết bị trong phạm vi'}`);table.append(caption);
@@ -159,8 +160,9 @@
    $('ticket-stat-summary').hidden=false;$('ticket-stat-summary').textContent=`Toàn bộ bộ lọc: ${data.summary.ticket_count} phiếu · ${money(data.summary.cost)} VND. Mỗi dòng là một nhóm thiết bị / loại / trạng thái.`;
    $('ticket-stat-page').textContent=`Trang ${statPage}/${Math.max(1,Math.ceil(statTotal/statPerPage))} · ${statTotal} nhóm`;
    $('ticket-stat-pagination').hidden=statTotal===0;
-   message(`Đã tải thống kê năm ${data.year}, trang ${statPage}.`);
+   message(data.summary.ticket_count===0?`Không có phiếu mở trong năm ${data.year}. Đổi năm nếu bạn muốn xem kỳ khác.`:`Đã tải thống kê theo năm mở phiếu ${data.year}: ${data.summary.ticket_count} phiếu, trang ${statPage}.`);
  }
+ const currentYear=$('ticket-year').value;const yearReset=el('button','Năm hiện tại');yearReset.type='button';yearReset.className='secondary-button';yearReset.id='ticket-year-current';yearReset.addEventListener('click',()=>{$('ticket-year').value=currentYear;$('ticket-year').focus();});$('ticket-stat-form').append(yearReset);
  $('ticket-stat-form').addEventListener('submit',e=>{e.preventDefault();task(()=>statistics(1,{year:$('ticket-year').value,asset_id:$('ticket-filter-asset').value}));});
  $('ticket-stat-prev').addEventListener('click',()=>task(()=>statistics(statPage-1)));
  $('ticket-stat-next').addEventListener('click',()=>task(()=>statistics(statPage+1)));

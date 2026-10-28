@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Làm rõ năm/chi phí và chặn ngày giấy phép sai trên FE
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 nhập/phản hồi|Năm mở phiếu rõ ràng; xác nhận tổng tiền trước lưu; bounds ngày giấy phép|FE|[x] local|Commit chứa mục này|Ticket70, thống kê49, giấy phép32, UI20 browser API mock; Smarty/syntax|Giữ tên số/chi phí không âm; không tự sửa2011/22 trên DB; PHASE14_INPUT_FEEDBACK_VERIFY.md; chưa host/upload|
+
 ## 28/10/2026 — Nhắc cảnh báo theo phiên, giữ rủi ro còn hiệu lực
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

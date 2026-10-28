@@ -43,6 +43,15 @@ async(page)=>{
   await p.evaluate(()=>location.hash='alerts');await p.locator('#dash-output').getByText('Giấy phép hết hạn',{exact:true}).waitFor();
   check((await p.locator('#dash-output').textContent()).includes('Giấy phép QA'),'License alert shown in current notification center');
   await p.evaluate(()=>location.hash='licenses');await p.locator('#licenses-panel').waitFor({state:'visible'});
+  const beforeInvalid=admin.posts.length;
+  await p.locator('#license-name').fill('1');await p.locator('#license-vendor').fill('1');
+  await p.locator('#license-start').fill('111111-11-11');await p.locator('#license-expire').fill('111111-11-11');await p.locator('#license-editor button[type=submit]').click();
+  check(admin.posts.length===beforeInvalid&&!await p.locator('#license-start').evaluate(n=>n.checkValidity()),'Six-digit year blocked before any POST');
+  await p.locator('#license-start').fill('2026-10-28');await p.locator('#license-expire').fill('2025-10-28');await p.locator('#license-editor button[type=submit]').click();
+  check(admin.posts.length===beforeInvalid&&!await p.locator('#license-expire').evaluate(n=>n.checkValidity()),'Expiry before start blocked');
+  await p.locator('#license-start').fill('2024-10-28');check(await p.locator('#license-expire').evaluate(n=>n.checkValidity()),'Changing start clears paired error');
+  check(await p.locator('#license-name').evaluate(n=>n.checkValidity()),'Numeric-only software name remains allowed by current contract');
+  await p.locator('#license-start').fill('');await p.locator('#license-expire').fill('2026-10-20');
   await p.locator('#license-name').fill('QA updated');await p.locator('#license-key-input').fill('QA-new-key');await p.locator('#license-editor button[type=submit]').click();
   await p.waitForFunction(()=>document.getElementById('license-message').textContent.includes('đọc lại hồ sơ.'));
   check(admin.posts.at(-1).body.software_name==='QA updated'&&admin.posts.at(-1).body.license_key==='QA-new-key','Metadata form sends name and new key');
