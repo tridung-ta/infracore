@@ -27,3 +27,6 @@ playwright-cli -s=infracore run-code --filename assets/ita/preview/verify-ui.js
 ```
 
 The browser checks validate the mock UI, including a deliberately simulated HTTP 503 and recovery. That case produces an expected failed-resource console entry. They do not validate database pagination, permissions, security middleware, or production integration.
+# Bản review tương tác đầy đủ (28/10/2026)
+
+Nhấp đúp `start-local-review.cmd` ở root hoặc chạy `node assets/ita/preview/serve-review.cjs --open`, mở **http://127.0.0.1:18767/**. Xem `docs/LOCAL_REVIEW_GUIDE.md`. Đây là transport Node/RAM **LOCAL MOCK**, không PHP/DB/auth thật, không upload host. Có kịch bản lỗi/role/reset và số tổng1triệu ảo, không sinh1triệu dữ liệu. Nút Lưu chỉ mô phỏng, không chứng minh SQL hay phân quyền server. Không deploy preview/launcher/tests/sample files. Phần preview tĩnh18766 bên dưới vẫn dùng riêng như trước.

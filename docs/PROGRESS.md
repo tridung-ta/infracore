@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Bản local tương tác để user review trước upload
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 review local|Launcher +Node loopback/RAM, UI thật và kịch bản giả toàn bộ phần sửa|FE/tool MOCK|[x] local, chờ user xem|Commit chứa mục này|37 browser directlocal +21 mock contract; ZIP/XML/ảnh/bounds/review|LOCAL_REVIEW_GUIDE/VERIFY; không PHP/DB/host, không auth/SQL/benchmark thật; không gói/upload/push/merge/tag|
+
 ## 28/10/2026 — Mạng vượt cap vẫn lọc được; rà khả năng1triệu dòng
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

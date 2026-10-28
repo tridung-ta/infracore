@@ -67,6 +67,10 @@ PHP kiểm local8.5.10; host theo hồ sơ8.3.33; **chưa chạy test trên8.3**
 
 ## B. Checklist host và kế hoạch bàn giao
 
+### 28/10/2026 — Bản review chỉ local, không thuộc payload host
+
+`start-local-review.cmd`, `assets/ita/preview/serve-review.cjs`, `review-model.cjs`, `review-files.cjs`, `review-client.js`, `review.css`, toàn bộ preview/MOCK/tests/tmp và file LOCAL-MOCK tải thử **phải loại khỏi runtime/manifest deploy**. Node18767 chỉ loopback/RAM, không PHP/DB hoặc xác nhận source host. Không tạo gói hoặc upload trong bước bàn giao local; không dùng mô phỏng quyền như bằng chứng SQL007 đã áp dụng. Hướng dẫn LOCAL_REVIEW_GUIDE.md, kết quả LOCAL_REVIEW_VERIFY.md. Không zip toàn workspace.
+
 ### 26/10 — Công cụ chuẩn bị và validator, chưa đóng gói
 
 Xem RELEASE_PREPARATION_VERIFY.md. Đã có prepare_ita_release.py (chỉ inventory JSON, không ZIP) và ita_release_validation.py với66checks ZIP synthetic trong memory. Inventory cũ dd03897 gồm1415file/105032697byte, chưa phải release mới; đóng gói/upload vẫn dừng theo PREUPLOAD_SECURITY_VERIFY.md. Tool mới loại preview/temp/MOCK, có Inter OFL, giữ project-start và dependency; .htaccess tách manual-review exacthash, SQL handoff exacthash, không config/key/marker runtime. Khi được giao tiếp phải chốt source/inventory cuối và kiểm ZIP thật; chưa có archive hash/manifest release hoặc bằng chứng host. Đặc tả lịch sử “chưa viết validator” bên dưới là thời điểm trước cập nhật này; không suy các script lịch sử đã được nâng cấp.
