@@ -1,7 +1,7 @@
 async(page)=>{
  const browser=page.context().browser(),checks=[],errors=[];
  const check=(ok,label)=>{if(!ok)throw new Error(label);checks.push(label);};
- async function scenario(role){
+ async function scenario(role,capabilities=false){
   const context=await browser.newContext({viewport:{width:1366,height:1000}}),p=await context.newPage();
   let invalid=false,completed=false,ambiguous=false,expired=false,uploaded=0,confirms=0;
   const requests=[];
@@ -15,7 +15,7 @@ async(page)=>{
    }
    if(url.pathname!=='/admin.php')return route.continue();
    const action=url.searchParams.get('act');requests.push({action,url,req});
-   if(action==='data')return json(route,{assets:[],departments:[{value:'10',label:'QA'}],pagination:{page:1,total:0,per_page:5},user:{id:111,role,display_name:'QA',role_label:role},summary:{total:0,by_status:{},by_department:[],alerts:[],alerts_total:0}});
+   if(action==='data')return json(route,{assets:[],departments:[{value:'10',label:'QA'}],pagination:{page:1,total:0,per_page:5},user:{id:111,role,display_name:'QA',role_label:role,...(capabilities?{capabilities_enabled:true,permissions:['asset.read','import.read','import.upload','import.confirm']}: {})},summary:{total:0,by_status:{},by_department:[],alerts:[],alerts_total:0}});
    if(action==='categories')return json(route,[]);
    if(['import-template','import-errors','asset-export'].includes(action))return route.fulfill({contentType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',body:Buffer.from('QA binary transport mock; real XLSX tested in PHP')});
    if(action==='import-confirm'){
@@ -44,15 +44,20 @@ async(page)=>{
   await p.locator('#import-preview-tab').click();
   await p.locator('#import-file').setInputFiles({name:'bad.txt',mimeType:'text/plain',buffer:Buffer.from('qa')});
   check(await p.locator('#import-upload').isDisabled(),'Invalid extension cannot upload');
+  await p.locator('#import-file').setInputFiles({name:'remove.xlsx',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',buffer:Buffer.from('transport mock')});await p.locator('#import-clear').click();
+  check(await p.locator('#import-file').evaluate(n=>n.files.length)===0&&await p.locator('#import-review').isHidden(),'Clear removes file and old preview without POST');
+
   await p.locator('#import-file').setInputFiles({name:'qa.xlsx',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',buffer:Buffer.from('transport mock')});
   await p.locator('#import-guide-tab').click();await p.locator('#import-preview-tab').click();
   check(await p.locator('#import-file').evaluate(n=>n.files[0].name)==='qa.xlsx','Live selected file retained across tabs');
   check(admin.counts().uploaded===0,'File selection does not silently upload');
+  check(await p.locator('#import-review').isHidden(),'No stale result before file check');check(await p.locator('#import-clear').isEnabled(),'Can remove selected file before upload');
   await p.locator('#import-upload').click();await p.locator('#import-confirm').waitFor({state:'visible'});await p.waitForFunction(()=>!document.getElementById('import-confirm').disabled);
   const upload=admin.requests.find(r=>r.action==='import-upload');
   check(upload.req.headers()['x-csrf-token']==='qa-token'&&upload.req.headers()['content-type'].includes('multipart/form-data'),'Upload sends multipart and CSRF token');
   check(await p.locator('#import-rows tr').count()===20&&await p.locator('#import-rows img').count()===0,'Preview pagination and text escaping');
   check(admin.counts().confirms===0,'Preview never automatically confirms');
+  check((await p.locator('#import-total').textContent())==='24'&&(await p.locator('#import-valid').textContent())==='24','Whole-batch review totals separated from page rows');
   await p.locator('#import-next').click();await p.waitForFunction(()=>document.getElementById('import-page-summary').textContent.includes('Trang 2/2'));
   check(await p.locator('#import-rows tr').count()===4&&await p.locator('#import-next').isDisabled(),'Server preview next page');
   for(const width of [1366,768,390]){
@@ -62,17 +67,19 @@ async(page)=>{
    if(width===390)await p.screenshot({path:'.playwright-cli/phase04-live-390.png',fullPage:true});
   }
   await p.setViewportSize({width:1366,height:1000});
-  await p.locator('#import-confirm').click();await p.locator('#import-summary').filter({hasText:'Đã nhập thành công'}).waitFor();
+  await p.locator('#import-confirm').click();check(admin.counts().confirms===0,'Final dialog does not write before acceptance');await p.locator('#confirm-cancel').click();await p.waitForFunction(()=>document.getElementById('import-workspace').getAttribute('aria-busy')==='false');check(admin.counts().confirms===0,'Cancelling all-batch import sends no POST');
+  await p.locator('#import-confirm').click();await p.locator('#confirm-accept').click();await p.locator('#import-summary').filter({hasText:'Đã nhập thành công'}).waitFor();
   check(await p.locator('#import-confirm').isDisabled(),'Successful batch cannot be submitted again');
   const confirm=admin.requests.find(r=>r.action==='import-confirm').req.postDataJSON();
   check(confirm.batch_id===9&&confirm.confirm_token==='qa-confirm-token'&&Object.keys(confirm).length===2,'Confirm sends batch token, never trusted browser rows');
   await p.locator('#import-upload').click();await p.waitForFunction(()=>!document.getElementById('import-confirm').disabled);
-  admin.ambiguous();await p.locator('#import-confirm').click();await p.locator('#import-summary').filter({hasText:'Kiểm tra trạng thái lô'}).waitFor();
-  check(await p.locator('#import-confirm').isDisabled()&&await p.locator('#import-upload').isDisabled()&&await p.locator('#import-file').isDisabled(),'Lost confirm response blocks blind retry and re-upload');
+  admin.ambiguous();await p.locator('#import-confirm').click();await p.locator('#confirm-accept').click();await p.locator('#import-summary').filter({hasText:'Kiểm tra trạng thái lô'}).waitFor();
+  check(await p.locator('#import-confirm').isDisabled()&&await p.locator('#import-upload').isDisabled()&&await p.locator('#import-file').isDisabled()&&await p.locator('#import-clear').isDisabled(),'Lost confirm response blocks blind retry and re-upload');
   await p.locator('#import-check').click();await p.locator('#import-summary').filter({hasText:'đã hoàn tất'}).waitFor();
   check(await p.locator('#import-confirm').isDisabled()&&admin.counts().confirms===2,'Status check recovers completed batch without second write');
   admin.invalid();await p.locator('#import-upload').click();await p.locator('#import-summary').filter({hasText:'1 lỗi'}).waitFor();
   check(await p.locator('#import-confirm').isDisabled()&&await p.locator('#import-errors').isEnabled(),'Invalid batch blocks confirm and enables error workbook');
+  check((await p.locator('#import-review-help').textContent()).includes('Tải Excel lỗi')&&(await p.locator('#import-invalid').textContent())==='1','Invalid preview explains repair instead of silent disabled button');
   const errorFile=p.waitForEvent('download');await p.locator('#import-errors').click();check((await errorFile).suggestedFilename()==='ita-import-errors.xlsx','Error workbook download');
   admin.expire();await p.locator('#import-check').click();await p.locator('#import-summary').filter({hasText:'hết hạn'}).waitFor();
   check(await p.locator('#import-confirm').isDisabled(),'Expired batch stays blocked');
@@ -85,6 +92,7 @@ async(page)=>{
   const test=await scenario(role);
   try{check(await test.p.locator('#import-workspace').isVisible()===(role==='system_manager'),`Import role UI ${role}`);}finally{await test.context.close();}
  }
+ const custom=await scenario('support_technician',true);try{check(await custom.p.locator('#import-workspace').isVisible(),'Capability grant opens import independently of old Support role');}finally{await custom.context.close();}
  check(errors.length===0,'No browser JavaScript runtime errors');
  return {result:'PASS (API mocked; real XLSX tested in PHP)',checks};
 }

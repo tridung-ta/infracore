@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Cải tiến chọn file/xem trước import
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 import UX|File card, tổng lô/lỗi/hướng sửa, xác nhận rõ trước nhập|FE|[x] local|Commit chứa mục này|38 browser API mock +88 unit/XLSX +Smarty/syntax/review|Không tự upload; giữ khóa unknown/CSRF/token; không PHP/DB/SQL/tăng cap/gói/upload; PHASE14_IMPORT_USABILITY_VERIFY.md|
+
 ## 28/10/2026 — Bàn giao chờ tìm/chọn thiết bị rõ ràng
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
