@@ -31,7 +31,7 @@ async(page)=>{
   stage='changed identity';await p.evaluate(()=>location.hash='assets');version='B';await p.evaluate(()=>dispatchEvent(new Event('ita:refresh')));await p.waitForFunction(()=>!document.getElementById('nav-alert-count').hidden);
   check(true,'Changed alert identity detected even with same count');
   identity=222;await p.reload();await p.waitForFunction(()=>window.itaLiveContext?.user.id===222&&document.getElementById('nav-alert-count').textContent==='9');check(await p.locator('#nav-alert-count').isVisible(),'Session state isolated per account');
-  check(await p.evaluate(()=>['shell','dashboard','tickets','assignments-live','form-guidance'].every(name=>[...document.scripts].some(script=>script.src.endsWith('/ita-'+name+'.js?v=20261028-feedback')))),'All five modified assets have new cache URLs');
+  check(await p.evaluate(()=>Object.entries({shell:'20261028-usercreate',dashboard:'20261028-feedback',tickets:'20261028-feedback','assignments-live':'20261028-feedback','form-guidance':'20261028-feedback'}).every(([name,version])=>[...document.scripts].some(script=>script.src.endsWith('/ita-'+name+'.js?v='+version)))),'All five modified assets have their current cache URLs');
   await p.addInitScript(()=>{Storage.prototype.getItem=()=>{throw Error('MOCK storage disabled');};Storage.prototype.setItem=()=>{throw Error('MOCK storage disabled');};});
   identity=333;await p.reload();await p.waitForFunction(()=>window.itaLiveContext?.user.id===333&&document.getElementById('nav-alert-count').textContent==='9');await p.locator('#notification-button').click();await p.waitForFunction(()=>document.getElementById('nav-alert-count').hidden);
   check(true,'Storage unavailable falls back to in-memory view state');

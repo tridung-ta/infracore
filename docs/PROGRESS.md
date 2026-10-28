@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 28/10/2026 — Rà lại local và tạo gói cập nhật để user kiểm host
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F11.5/F14 handoff|Gói runtime mới nhất +dependency/manifest/hash/backup/rollback|Tool/tài liệu|[x] đóng gói local, chưa upload|Payload a7c2da1; commit hồ sơ riêng|26browser/948checks,1.145PHP lint, unit/service/HTTP/file export/ZIP readback/review đạt|PHASE14_PREUPLOAD_VERIFY_20261028/HOST_UPLOAD_PHASE14_20261028; deprecation8.5 còn; chưa8.3/DB/host/grants/native schema; không autoenableflag/push/merge/tag/deploy|
+
 ## 28/10/2026 — Bổ sung kiểm ràng buộc thêm nhân viên
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
