@@ -1,8 +1,12 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
+**29/10 — tiếp tục kiểm yêu cầu:** BUILD_VERIFY_20261029 ghi lượt kiểm local không DB và cập nhật bằng chứng user: SQL007/mapping 47 quyền đã COMMIT; nút thêm tài khoản hiện sau user bật flag; CHECK ticket_events tồn tại theo SHOW CREATE. Chưa có bằng chứng enforcement CHECK, runtime grants, tạo tài khoản thật hay nghiệm thu DB/host. Các dòng SQL007 chưa chạy/cờ chưa bật bên dưới là checkpoint cũ. PHP local 8.5.10, chưa kiểm 8.3/FPM; gói cũ không chứa sửa 29/10, chưa tạo gói mới.
+
 **28/10 — gói cập nhật đã tạo, chưa upload:** payload cố định a7c2da1, ZIP infracore-update-phase14-a7c2da1.zip (49.310.447byte), manifest/hash/ZIP readback +review độc lập đạt.26browser/948checks và1.145PHP lint cùng unit/service/HTTP/exports được chạy lại theo PHASE14_PREUPLOAD_VERIFY_20261028. Không tự bật flag; PHP8.3/FPM/DB/grants/native schema chưa xác nhận, còn deprecation vendor8.5. User dùng HOST_UPLOAD_PHASE14_20261028, backup rồi upload runtime; khôngSQL/config/marker/MOCK trong ZIP, không agentdeploy/push/merge/tag7–10. Các dòng chưa đóng gói dưới đây là checkpoint trước gói này.
 
 **28/10 — Admin tạo tài khoản:** user duyệt source; có form mới +POST user-create, chọn quyền từng chức năng/bộ phận, native mới hash hiện đại, audit và compensation MyISAM.57checks PHP +23browser mới đạt; hồi quy121quyền/29auth/13routes/109HTTP/Smarty/21model/38browser đạt. PHASE14_ACCOUNT_CREATE_VERIFY và gate ghi phạm vi/giới hạn. Chưa native schema/grants/DB/host/PHP8.3; cờ/config chưa bật, không gói/upload/push/merge/tag. Bản Node local18767 chỉ RAM, không tạo native thật.
+
+**28/10 — đối chiếu lại Phase0–14 với 10 yêu cầu user:** có implementation cho 10 nhóm chính, chưa đủ căn cứ nghiệm thu toàn bộ hoặc tạo gói “đã hoàn tất”. PHASE00_14_REQUIREMENTS_REVIEW.md có bảng từng yêu cầu/phase; chặn chính là SQL007/mapping/cờ Phase14 chưa duyệt, PHP8.3/DB/EXPLAIN/tải chưa kiểm đủ và baseline host chưa xác định toàn bộ. Source có readonly nên không tương thích PHP8.0. Review chỉ đọc source/hồ sơ, không chạy lại test/DB/host; chưa tạo ZIP/upload/push/merge/tag.
 
 **28/10 — bàn giao local tương tác:** mở http://127.0.0.1:18767/ hoặc start-local-review.cmd. UI hiện tại với transport Node/RAM mô phỏng,37browser+21contract đạt, LOCAL_REVIEW_GUIDE/VERIFY. Có chọn quyền/kịch bản/reset, không PHP/auth thật/DB/host/benchmark1triệu; preview/launcher phải loại khỏi deploy. Chưa user review/SQL007/gói/upload/push/merge/tag7–10.
 

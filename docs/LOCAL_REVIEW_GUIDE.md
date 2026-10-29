@@ -30,6 +30,8 @@ Thanh trên cùng có chọn quyền và kịch bản. Desktop mở sẵn; mobil
 
 ## Giới hạn và phản hồi
 
+Nút **Đặt lại tất cả dữ liệu giả** có hộp xác nhận: chọn **Hủy** để giữ các thay đổi đang thử; đồng ý mới trở về dữ liệu ban đầu. Không tác động DB/host. Lượt kiểm28/10 bổ sung xác nhận này đã chạy38browser checks và21contract checks, gồm cả hai nhánh Hủy/Đồng ý.
+
 Không kiểm auth/password hash, CSRF/session thật, SQL/transaction/locking/concurrency, hiệu năng1triệu, PHP8.3/FPM hoặc header cuối host bằng bản này. Phân quyền mock giúp xem UI, không thay các test PHP thật trước đó hoặc duyệt migration. Mọi thao tác Node mock đều trong process; không có schema/migration/credential thật.
 
 Nếu thấy lỗi, gửi **menu → quyền/kịch bản đang chọn → thao tác → mong đợi → kết quả/ảnh**. Chỉ gửi dữ liệu mẫu. Không upload launcher, assets/ita/preview/**, MOCK, tests, tmp hoặc file LOCAL-MOCK lên host. Đây không phải gói deploy. Sau user review mới chuẩn bị gói riêng khi được yêu cầu.

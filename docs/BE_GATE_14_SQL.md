@@ -1,5 +1,7 @@
 # BE-GATE #14 SQL — NHÁP, CHƯA DUYỆT/CHƯA CHẠY
 
+**Cập nhật28/10:** user yêu cầu “liên qua tới sql thì để tôi thao tác thủ công bạn chỉ càn gửi tôi câu lệnh chạy tren sql là được”. Đã cho phép soạn007 và backfill theo preset; hướng dẫn hiện hành PHASE14_SQL_MANUAL.md. Chưa cho agent kết nối/chạy DB, bật cờ hoặc upload. Tiêu đề/trình tự nháp dưới đây là checkpoint trước yêu cầu này; không còn hiểu là chưa được phép soạn file. File đã soạn không chứng minh user đã chạy hoặc duyệt rollout.
+
 Source BE14 đã duyệt riêng; tài liệu này **không phải quyền chạy SQL, kết nối DB, bật config hoặc upload**. Không có migration007 đã áp dụng. Không dùng config/credential host để soạn.
 
 Phạm vi đề xuất: thêm một bảng ita_user_permissions cho catalogue trong ItaPermissions::KEYS, mapping ban đầu từ ba preset source đã review; không thay schema/dữ liệu dc_*. Scope toàn store dùng permission scope.store, không thêm cột vào bảng cũ.

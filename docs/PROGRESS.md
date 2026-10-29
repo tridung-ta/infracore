@@ -1,5 +1,19 @@
 # Tiến độ dự án 5
 
+## 29/10/2026 — Tiếp tục BUILD và kiểm 10 nhóm yêu cầu
+
+Lượt kiểm local không DB: unit/service các Phase03–10/13/14, S11/S26, lọc tài khoản, Smarty, HTTP fixture, SQL contract tĩnh, validator ZIP giả và export thật đều exit 0; browser mock tạo tài khoản đạt 28 checks gồm ranh giới mật khẩu 5/6 ký tự. Export trên PHP8.5 còn 33/37 dòng deprecation. BUILD_VERIFY_20261029 ghi số liệu và bằng chứng host hạn chế user đã gửi; chưa nghiệm thu DB/host, chưa PHP8.3/FPM/EXPLAIN/concurrency. Chưa gói mới/upload/push/merge/tag.
+
+## 29/10/2026 — Rà giao diện, bộ lọc tài khoản và thông báo
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|UX/14 | Lọc tài khoản, lỗi theo trường, thông báo 4 giây | FE/BE | [~] local | Chưa commit | 27 browser suites/962 checks trong đợt; filter query contract13, account139, Smarty/lint | UX_REVIEW_20261029; chưa DB/host/EXPLAIN, không gói/upload. Các lỗi vận hành giữ để người dùng đọc; không tuyên bố mọi lỗi host đã kiểm. |
+
+## 29/10/2026 — Mật khẩu tài khoản mới tối thiểu 6 ký tự
+
+User duyệt giảm độ dài tối thiểu: PHP/JS kiểm ít nhất 6 ký tự Unicode, tối đa 72 byte; giữ xác nhận, kiểm ký tự NUL, khoảng trắng và hash. Không đổi đăng nhập, mật khẩu cũ hoặc cấu hình riêng. Kiểm thử local với transport giả; chưa kiểm DB/host.
+
 ## 28/10/2026 — Rà lại local và tạo gói cập nhật để user kiểm host
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
@@ -17,6 +31,28 @@
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
 |---|---|---|---|---|---|---|
 |F14 account-create|POST user-create +native mới +quyền/scope/audit và form Admin|BE/FE|[x] source/local; chưa DB/host|Commit chứa mục này|57PHP mới,23browser mới;121quyền/29auth/13routes/109HTTP/Smarty/21model/38browser hồi quy đạt; review độc lập|BE_GATE_14_ACCOUNT_CREATE/VERIFY; user “bát đầu” duyệt source. MyISAM compensation không atomic; không config/gói/upload/push/merge/tag|
+
+## 28/10/2026 — User áp dụng SQL007/mapping trên host
+
+Ảnh user xác nhận schema dung_infracore có bảng quyền; store1/user111 Admin active. Lượt thử: ready1,47quyền,revision2; ROLLBACK về0quyền/revision1. Sau user chạy COMMIT, ảnh ngay sau cho47quyền/revision2. Ghi nhận **kiểm thủ công trên host, phạm vi hạn chế**; chưa nghiệm thu toàn DB/Phase14, chưa chứng minh runtime grants/cờ/source BE14 hiện chạy. Agent không kết nối DB. phpMyAdmin lượt đầu ROW_COUNT nhận0 dù INSERT47; artifact đã đổi sang COUNT trực tiếp, không kết luận nguyên nhân nội bộ công cụ. Một lượt sai delimiter báo1064; sau sửa dấu phân tách user chạy block thành công.
+
+## 28/10/2026 — SQL007 để user thao tác thủ công
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 SQL artifacts|007 bảng quyền, preflight/backfill/verify và hướng dẫn thủ công|SQL/tài liệu|[x] soạn; chưa áp dụng|Chưa commit|python tests/ita_phase14_sql_contract.py đạt,88 preset pairs; review thêm InnoDB guard|User tự chạy, default ROLLBACK; không agent DB/config/host/gói; chưa nghiệm thu|
+
+## 28/10/2026 — Hoàn thiện xác nhận đặt lại bản local
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 review reset|Xác nhận trước đặt lại RAM; Hủy giữ dữ liệu|FE/tool MOCK|[x] local|Chưa commit|38browser +21contract, node syntax/diff-check; ảnh390 đã xem|Không PHP/DB/host/gói; SQL007 vẫn chưa duyệt/chạy|
+
+## 28/10/2026 — Đối chiếu toàn bộ yêu cầu trước gói upload
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F0–14 rà bàn giao|Đối chiếu 10 yêu cầu và trạng thái từng phase|Tài liệu/review|[x] rà source; chưa nghiệm thu toàn bộ|HEAD rà 65465bf|Đọc dispatcher/DAO/guard/gate và báo cáo; review độc lập đồng thuận; không chạy lại test hoặc DB|PHASE00_14_REQUIREMENTS_REVIEW; SQL007 và kiểm PHP8.3/DB/hiệu năng còn mở; không tạo gói/upload/push/merge/tag|
 
 ## 28/10/2026 — Bản local tương tác để user review trước upload
 
@@ -67,7 +103,7 @@ Không sửa tài liệu bảo mật user-owned. Source capability mới mặc �
 
 ## 27/10/2026 — Làm gọn nhật ký/bảng nhóm và nhận duyệt BE14
 
-FE nhật ký có bộ lọc tên/thao tác/ngày nhanh, bảng thay đổi tiếng Việt thay JSON rỗng; vòng đời ghi rõ Số thiết bị/tuổi hợp lệ/thiếu tuổi và mở danh sách theo nhóm qua filter hiện có. Demo checkbox A/B/C chỉ MOCK, không cấp quyền thật.26checks mới +14admin +30grouppaging đạt; syntax/Smarty đạt, không DB/host. ADMIN_READABILITY_VERIFY.md ghi giới hạn nhóm null/lookup tên theo trang.
+FE nhật ký có bộ lọc tên/thao tác/ngày nhanh, bảng thay đổi tiếng Việt thay JSON rỗng; vòng đời ghi rõ Số thiết bị/tuổi hợp lệ/thiếu tuổi và mở danh sách theo nhóm qua filter hiện có. Demo checkbox A/B/C chỉ MOCK, không cấp quyền thật.27checks mới +14admin +30grouppaging đạt; syntax/Smarty đạt, không DB/host. ADMIN_READABILITY_VERIFY.md ghi giới hạn nhóm null/lookup tên theo trang.
 
 User xác nhận **“Duyệt BUILD source BE14 theo gate”** tại BE_GATE_14_CAPABILITIES.md; đang triển khai source quyền theo chức năng, chưa SQL/DB/upload. Không coi phần MOCK là BE đã xong. Không push/merge/tag7–10/deploy.
 

@@ -8,7 +8,7 @@ Rà theo yêu cầu user “nhớ cần phải có đầy đủ các ràng buộ
 |Họ tên|Bắt buộc sau trim, tối đa100 ký tự UTF-8 hợp lệ, không NUL/ký tự điều khiển hoặc chỉ khoảng trắng/format vô hình|422, không ghi DB; không tự cấm tên quốc tế hoặc tên có số|
 |Email|Bắt buộc, định dạng hợp lệ, tối đa100 ký tự; trim ngoài|422, không ghi DB|
 |Trùng định danh|Kiểm username/email cả hai chiều trong store, kể cả native đã khóa; serialized theo role locks của các writer ITA|409; tên/email case/collation/race writer ngoài ITA còn cần DB thật, không bảo đảm uniqueness toàn hệ thống từ fake test|
-|Mật khẩu ban đầu|Chuỗi12–72byte, không NUL/không toàn khoảng trắng; giữ nguyên byte, không trim; xác nhận trùng chính xác|422; byte UTF-8 kiểm ở JS và PHP, không dùng minlength ký tự để thay|
+|Mật khẩu ban đầu|Ít nhất 6 ký tự Unicode, tối đa 72 byte; không NUL/không toàn khoảng trắng; giữ nguyên byte, không trim; xác nhận trùng chính xác|422; kiểm số ký tự và byte UTF-8 ở JS và PHP|
 |Lưu mật khẩu|PASSWORD_DEFAULT hash; native password chỉ placeholder ngẫu nhiên, không MD5 mật khẩu thật; không trả/lưu credential trong DTO/audit/browser storage của app|Input xóa sau request/Hủy/đổi trang; không có chức năng đổi mật khẩu user cũ trong luồng này|
 |Quyền chức năng|Ít nhất1 key thuộc catalogue, đủ dependency, không vượt quyền hiện tại của người cấp; keys trùng chuẩn hóa|422/403; role gửi giả không cấp Admin|
 |Bộ phận|Array tối đa500, mỗi ID nguyên dương theo ItaInput; chuẩn hóa trùng; phải active/cùng store; nếu không có scope.store phải chọn ít nhất1|422; kiểm references lại dưới khóa|

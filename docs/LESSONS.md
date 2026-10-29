@@ -1,5 +1,11 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 29/10/2026 — Timer và lỗi form cũ che trạng thái mới
+
+- Triệu chứng được review source: timer thông báo thành công có thể ẩn thông báo kết quả tìm tiếp; lỗi form loại có thể còn khi chọn bản ghi khác.
+- Sửa: hủy timer khi cập nhật trạng thái tài khoản; hướng dẫn lỗi native hiển thị cạnh trường không gắn custom validity lâu dài, reset form khi chọn loại có sẵn.
+- Kiểm local: 12 browser checks lọc/timer, 26 kiểm danh mục gồm nhập sai rồi chọn bản ghi; API mock, không DB/host.
+
 ## 28/10/2026 — Trim không đủ kiểm dữ liệu chỉ có ký tự vô hình
 
 - Triệu chứng: test mới cho fullname toàn NBSP được validator tạo tài khoản chấp nhận (test đỏ No denial), dù yêu cầu tên không trống.
