@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+29/10 — Theo yêu cầu chỉ file sửa, đã tách delta22file từ a7c2da1→171edde,73.089byte; actual ZIP inventory/CRC/hash/exclusions đạt. HOST_UPLOAD_DELTA_20261029; không đổi runtime đã kiểm, khôngvendor/font/config/SQL, chưa upload/DB/host. Gói đầy đủ49MB không cần dùng khi nền a7c2da1 đã có.
+
 ## 29/10/2026 — Kiểm lại và tạo gói cập nhật theo yêu cầu
 
 Runtime source171edde:36browser/1.119checks,1.147PHP lint; unit/service/auth/HTTP267/exports đạt theo PHASE14_PREUPLOAD_VERIFY_20261029. Gói `artifacts/ita-host-20261029/infracore-update-phase14-171edde.zip`49.322.000byte, actual ZIP readback +Get-FileHash +review độc lập đạt; hướng dẫn HOST_UPLOAD_PHASE14_20261029. Chưa upload/PHP8.3/FPM/DB, còn deprecation vendor8.5/MyISAM/legacy sessions/grants; không merge/tag7–10/push/deploy. Không lấy thay đổi riêng PHASE11_SECURITY_TEST_20 vào gói hoặc commit.
