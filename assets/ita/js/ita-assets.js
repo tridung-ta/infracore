@@ -11,7 +11,7 @@
  let categories=[],editing=null,detail=null,mode='',busy=false,loadingEditor=false,previousFocus=null,historyGeneration=0;
  let categoryPage=1,categoryTotal=0,categoryQuery='',categoryLoading=false,categorySaving=false,categorySequence=0;
  function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
- function message(id,text,error=false){const n=$(id);n.textContent=text;n.hidden=false;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);n.focus({preventScroll:true});n.scrollIntoView({block:'nearest'});}
+ function message(id,text,error=false){const n=$(id);n.textContent=text;n.hidden=false;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);window.ItaUi.autoDismiss(n,error);n.focus({preventScroll:true});n.scrollIntoView({block:'nearest'});}
  function button(text,callback){const n=node('button',text,'secondary-button');n.type='button';n.addEventListener('click',callback);return n;}
  const tools=node('div',undefined,'asset-tools');const add=button('Thêm tài sản',()=>openEditor('create'));
  const manage=button('Quản lý loại tài sản',openCategories);tools.append(add,manage);$('assets-panel').querySelector('.panel-heading').after(tools);
@@ -162,7 +162,7 @@
    const data=await api('categories',{paged:'1',page:nextPage,q:query});if(sequence!==categorySequence||!$('category-editor').open)return;
    categoryPage=data.page;categoryTotal=data.total;categoryQuery=query;
    $('category-list').replaceChildren(...data.rows.map(c=>button(`${c.code} · ${c.name} · ${c.status==='active'?'Hoạt động':'Ngừng sử dụng'}`,()=>{
-   $('category-id').value=c.id;$('category-version').value=c.version;$('category-code').value=c.code;$('category-name').value=c.name;$('category-status').value=c.status;$('category-code').focus();
+   $('category-form').reset();$('category-id').value=c.id;$('category-version').value=c.version;$('category-code').value=c.code;$('category-name').value=c.name;$('category-status').value=c.status;$('category-code').focus();
    })));
    $('category-page').textContent=`Trang ${categoryPage}/${Math.max(1,Math.ceil(categoryTotal/20))} · ${categoryTotal} loại`;
    $('category-list-status').textContent=categoryTotal?`Kết quả tìm: ${categoryQuery||'Tất cả loại'}. Chọn loại để sửa hoặc thêm loại mới bên dưới.`:'Không có loại phù hợp. Thử mã hoặc tên khác.';

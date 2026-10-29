@@ -16,6 +16,9 @@
  function labelMock(){document.querySelector('.environment').textContent='LOCAL MOCK';document.querySelector('.mock-notice').textContent='LOCAL MOCK · Không đăng nhập thật, không kết nối DB hoặc host. Dữ liệu và quyền chỉ là mô phỏng.';document.getElementById('connection-label').textContent='Dữ liệu giả trong RAM';}
  addEventListener('ita:data',labelMock);labelMock();
  async function change(input){reset.disabled=role.disabled=mode.disabled=true;try{const response=await fetch('/review/control',{method:'POST',headers:{'Content-Type':'application/json','X-Local-Review':'mock-only'},body:JSON.stringify(input)});if(!response.ok)throw Error('Không đổi được mô phỏng.');if(input.reset){try{for(const key of Object.keys(sessionStorage))if(key.startsWith('ita.alert-reminder.'))sessionStorage.removeItem(key);}catch{/* Optional presentation storage. */}}location.reload();}catch(error){status.textContent=error.message;reset.disabled=role.disabled=mode.disabled=false;}}
- role.addEventListener('change',()=>change({role:role.value}));mode.addEventListener('change',()=>change({mode:mode.value}));reset.addEventListener('click',()=>change({reset:true}));
+ role.addEventListener('change',()=>change({role:role.value}));mode.addEventListener('change',()=>change({mode:mode.value}));reset.addEventListener('click',()=>{
+  if(!window.confirm('Đặt lại dữ liệu giả của bản local? Các thay đổi tài sản, nhập lô và quyền mô phỏng sẽ mất. Không tác động DB hoặc host.'))return;
+  change({reset:true});
+ });
  fetch('/review/status').then(r=>r.json()).then(r=>{role.value=r.data.role;mode.value=r.data.mode;status.textContent='Đang giữ '+r.data.allocated_assets+' tài sản giả trong RAM. Kịch bản1triệu chỉ thay số tổng, không tạo1triệu bản ghi. Tắt server thì mất các thay đổi.';}).catch(()=>{status.textContent='Chưa đọc được trạng thái mô phỏng.';});
 })();

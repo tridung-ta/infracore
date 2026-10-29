@@ -8,14 +8,16 @@ class ItaUserCreationInput
         $name=ItaInput::text($input['fullname'] ?? '',100);
         $email=ItaInput::text($input['email'] ?? '',100);
         $password=$input['password'] ?? null;
-        if (!preg_match('/\A[A-Za-z0-9][A-Za-z0-9_.-]{2,49}\z/D',$username)
-            || preg_match('/\A[\s\p{Z}\p{Cf}]*\z/u',$name) || preg_match('/\p{Cc}/u',$name)
-            || !filter_var($email,FILTER_VALIDATE_EMAIL)) {
-            throw new ItaHttpError(422,'Tên đăng nhập cần 3–50 ký tự chữ/số, dấu chấm, gạch ngang hoặc gạch dưới; họ tên và email hợp lệ là bắt buộc.');
+        if (!preg_match('/\A[A-Za-z0-9][A-Za-z0-9_.-]{2,49}\z/D',$username)) {
+            throw new ItaHttpError(422,'Tên đăng nhập không hợp lệ: cần 3–50 ký tự không dấu, bắt đầu bằng chữ hoặc số; chỉ thêm dấu chấm, gạch ngang, gạch dưới, không có khoảng trắng.');
         }
-        if (!is_string($password) || strlen($password)<12 || strlen($password)>72 || str_contains($password,"\0") || preg_match('/\A[\s\p{Z}\p{Cf}]*\z/u',$password)
+        if ($name==='' || preg_match('/\A[\s\p{Z}\p{Cf}]*\z/u',$name) || preg_match('/\p{Cc}/u',$name)) {
+            throw new ItaHttpError(422,'Họ tên bị trống hoặc chứa ký tự điều khiển. Hãy nhập họ tên có nội dung, không chỉ khoảng trắng hay ký tự vô hình.');
+        }
+        if (!filter_var($email,FILTER_VALIDATE_EMAIL)) { throw new ItaHttpError(422,'Email không đúng định dạng. Hãy nhập địa chỉ dạng ten@example.com.'); }
+        if (!is_string($password) || !mb_check_encoding($password,'UTF-8') || mb_strlen($password,'UTF-8')<6 || strlen($password)>72 || str_contains($password,"\0") || preg_match('/\A[\s\p{Z}\p{Cf}]*\z/u',$password)
             || !is_string($input['password_confirmation'] ?? null) || !hash_equals($password,$input['password_confirmation'])) {
-            throw new ItaHttpError(422,'Mật khẩu cần 12–72 byte, không chỉ gồm khoảng trắng/ký tự vô hình và xác nhận phải trùng khớp.');
+            throw new ItaHttpError(422,'Mật khẩu không hợp lệ: cần ít nhất 6 ký tự và tối đa 72 byte, không chứa ký tự NUL hoặc chỉ gồm khoảng trắng/ký tự vô hình. Nhập lại mật khẩu phải giống hệt.');
         }
         $permissions=ItaPermissions::validate($input['permissions'] ?? null);
         ItaPermissions::dependencies($permissions);
@@ -46,7 +48,8 @@ class ItaUserCreationInput
         }
         foreach ($fields as $key=>$value) {
             if (preg_match('/^(?:var)?char\((\d+)\)/i',$schema[$key]['Type'] ?? '',$match) && mb_strlen((string)$value,'UTF-8')>(int)$match[1]) {
-                throw new ItaHttpError(422,'Dữ liệu dài hơn giới hạn cột của tài khoản nền.');
+                $label=['username'=>'Tên đăng nhập','fullname'=>'Họ tên','email'=>'Email'][$key] ?? 'Thông tin tài khoản';
+                throw new ItaHttpError(422,$label.' vượt giới hạn '.$match[1].' ký tự của hệ thống hiện tại. Hãy rút ngắn trường này rồi lưu lại.');
             }
         }
         return $fields;

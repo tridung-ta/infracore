@@ -124,4 +124,14 @@ $_SERVER['REQUEST_METHOD']='GET';denyCreate(fn()=>$method->invoke($app),405,'GET
 $_SERVER['REQUEST_METHOD']='POST';$_SESSION['ita_csrf']='synthetic-token';unset($_SERVER['HTTP_X_CSRF_TOKEN']);$_POST=[];
 denyCreate(fn()=>$method->invoke($app),403,'Missing CSRF denied by actual route before service/db');
 $_SERVER['HTTP_X_CSRF_TOKEN']='wrong';denyCreate(fn()=>$method->invoke($app),403,'Wrong CSRF denied by actual route');
+
+// User-approved six-character minimum; maximum remains byte-based.
+foreach (['abc123','??????'] as $password) {
+    $case=inputCreate();$case['password']=$password;$case['password_confirmation']=$password;
+    ckCreate(ItaUserCreationInput::validate($case,ownerCreate())['password']===$password,'Six characters accepted');
+}
+foreach (['abc12','?????'] as $password) {
+    $case=inputCreate();$case['password']=$password;$case['password_confirmation']=$password;
+    denyCreate(fn()=>ItaUserCreationInput::validate($case,ownerCreate()),422,'Five characters rejected even with six or more bytes');
+}
 echo "PASS: $checks account creation checks, real service/fake transport; no DB.\n";

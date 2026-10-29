@@ -22,7 +22,7 @@
   $('ticket-feedback-icon').querySelector('use').setAttribute('href',error?'#ita-icon-warning':pending?'#ita-icon-clock':'#ita-icon-check');
   $('ticket-retry').hidden=!recovery;$('ticket-dismiss').disabled=pending;
   clearTimeout(feedbackTimer);
-  if(!error&&!pending)feedbackTimer=setTimeout(()=>{if(!box.contains(document.activeElement))box.hidden=true;},6000);
+  if(!error&&!pending)feedbackTimer=setTimeout(()=>{if(!box.contains(document.activeElement))box.hidden=true;},4000);
  }
  function historyNote(h){
   if(h.note)return h.note;

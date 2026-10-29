@@ -32,6 +32,11 @@ async(page)=>{
    if(role!=='admin_it'){check(await manage.isHidden(),`${role} management hidden`);check(reads.length===0,`${role} only legacy dropdown requests`);continue;}
    const ready=async text=>p.waitForFunction(value=>document.getElementById('category-page').textContent.includes(value)&&!document.getElementById('category-list').hasAttribute('aria-busy'),text);
    await manage.click();await ready('Trang 1/3');
+   await p.locator('#category-save').click();
+   check(await p.locator('#category-code-error').isVisible()&&posts.length===0,'Empty category identifies required field before POST');
+   await p.locator('#category-list button').first().click();
+   check(await p.locator('#category-code').evaluate(n=>n.checkValidity())&&await p.locator('#category-code-error').count()===0,'Selecting existing category clears stale error');
+   await p.locator('#category-form button[type=reset]').click();
    check(await p.locator('#category-list button').count()===20&&await p.locator('#category-prev').isDisabled(),'First page bounded');
    check(await p.locator('#category-list img').count()===0&&(await p.locator('#category-list').textContent()).includes('Ngừng sử dụng'),'Escaped and inactive rows included');
    await p.locator('#category-search').fill('%_!');await p.locator('#category-search').press('Enter');await ready('Trang 1/3');

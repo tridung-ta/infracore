@@ -5,7 +5,7 @@
  let record=null,assetPage=1,assetTotal=0,userPage=1,userTotal=0,busy=false,stale=false,started=false;
  const status={in_use:'Đang sử dụng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Thanh lý'};
  function node(tag,text){const n=document.createElement(tag);n.textContent=text;return n;}
- function message(text,error=false){const n=$('handover-message');n.textContent=text;n.dataset.state=error?'error':'success';n.setAttribute('role',error?'alert':'status');if(error)n.focus({preventScroll:true});}
+ function message(text,error=false){const n=$('handover-message');n.textContent=text;n.dataset.state=error?'error':'success';n.setAttribute('role',error?'alert':'status');window.ItaUi.autoDismiss(n,error);if(error)n.focus({preventScroll:true});}
  function buttons(){
   $('handover-asset').disabled=busy||$('handover-asset').options.length<=1;$('handover-reload').disabled=busy||!$('handover-asset').value;
   const canAssign=window.ItaPolicy.can('assignment.create',window.itaLiveContext?.user.role!=='support_technician');

@@ -29,8 +29,32 @@
  }
  document.querySelectorAll('input,textarea,select').forEach(prepare);
  document.addEventListener('focusin',event=>prepare(event.target));
- document.addEventListener('input',event=>{const input=event.target;if(typeof input.setCustomValidity==='function'){input.setCustomValidity('');input.removeAttribute('aria-invalid');}for(const pair of [['edit-purchase_date','edit-warranty_end'],['license-start','license-expire']])if(pair.includes(input.id)){const end=document.getElementById(pair[1]);end?.setCustomValidity('');end?.removeAttribute('aria-invalid');}});
- document.addEventListener('invalid',event=>{event.target.setAttribute('aria-invalid','true');},true);
+ function clearError(input){
+  input.setCustomValidity?.('');input.removeAttribute('aria-invalid');document.getElementById(input.id+'-error')?.remove();
+  const refs=(input.getAttribute('aria-describedby')||'').split(/\s+/).filter(id=>id&&id!==input.id+'-error');
+  if(refs.length)input.setAttribute('aria-describedby',refs.join(' '));else input.removeAttribute('aria-describedby');
+ }
+ document.addEventListener('reset',event=>{for(const input of event.target.querySelectorAll('input,textarea,select'))clearError(input);});
+ document.addEventListener('input',event=>{const input=event.target;if(typeof input.setCustomValidity==='function')clearError(input);for(const pair of [['edit-purchase_date','edit-warranty_end'],['license-start','license-expire']])if(pair.includes(input.id)){const end=document.getElementById(pair[1]);if(end)clearError(end);}});
+ document.addEventListener('invalid',event=>{
+  const input=event.target;input.setAttribute('aria-invalid','true');
+  const label=input.labels?.[0]?.textContent.trim()||'Trường này',v=input.validity;
+  let reason='Giá trị chưa đúng định dạng. Hãy kiểm tra hướng dẫn bên dưới trường.';
+  if(v.customError)reason=input.validationMessage;
+  else if(v.valueMissing)reason='Chưa nhập hoặc chưa chọn giá trị bắt buộc. Hãy bổ sung trước khi lưu.';
+  else if(v.typeMismatch)reason=input.type==='email'?'Email chưa đúng định dạng. Hãy nhập địa chỉ dạng ten@example.com.':'Giá trị không đúng loại dữ liệu yêu cầu.';
+  else if(v.badInput)reason='Không đọc được giá trị đã nhập. Hãy nhập số hoặc chọn ngày hợp lệ trên lịch.';
+  else if(v.rangeUnderflow)reason=`Giá trị nhỏ hơn mức cho phép (${input.min}). Hãy chọn lại.`;
+  else if(v.rangeOverflow)reason=`Giá trị vượt mức cho phép (${input.max}). Hãy chọn lại.`;
+  else if(v.tooShort)reason=`Chưa đủ độ dài tối thiểu ${input.minLength} ký tự.`;
+  else if(v.tooLong)reason=`Vượt độ dài tối đa ${input.maxLength} ký tự. Hãy rút ngắn nội dung.`;
+  else if(v.stepMismatch)reason='Giá trị không đúng bước số cho phép. Hãy nhập theo hướng dẫn của trường.';
+  else if(v.patternMismatch)reason=help[input.id]||'Nội dung chưa đúng định dạng yêu cầu. Hãy kiểm tra hướng dẫn của trường và nhập lại.';
+  if(!input.id)return;
+  let note=document.getElementById(input.id+'-error');
+  if(!note){note=document.createElement('small');note.id=input.id+'-error';note.className='danger-text';note.setAttribute('role','alert');input.after(note);input.setAttribute('aria-describedby',((input.getAttribute('aria-describedby')||'')+' '+note.id).trim());}
+  note.textContent=`${label}: ${reason}`;
+ },true);
  document.addEventListener('submit',event=>{
   const form=event.target;if(!(form instanceof HTMLFormElement))return;
   for(const input of form.querySelectorAll('input,textarea,select')){

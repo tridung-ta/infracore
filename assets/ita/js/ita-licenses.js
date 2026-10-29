@@ -5,7 +5,7 @@
  const admin=()=>window.itaLiveContext?.user.role==='admin_it';
  const types={per_device:'Theo máy',per_user:'Theo người',per_department:'Theo bộ phận'};
  function el(tag,text){const node=document.createElement(tag);node.textContent=text;return node;}
- function message(text,error=false){const n=$('license-message');n.textContent=text;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);}
+ function message(text,error=false){const n=$('license-message');n.textContent=text;n.setAttribute('role',error?'alert':'status');n.classList.toggle('danger-text',error);window.ItaUi.autoDismiss(n,error);}
  function hideKey(){clearTimeout(timer);$('license-key-output').textContent='';$('license-key-output').hidden=true;$('license-password').value='';$('license-key-input').value='';sequence++;}
  async function api(action,query={},body){
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);

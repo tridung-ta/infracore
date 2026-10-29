@@ -31,15 +31,39 @@ class ItaUserObjects
         return new ItaUserObjectInfo($row, array_map(fn($r)=>(int) $r['department_id'], $scopes));
     }
 
-    public function listing(ItaUserObjectInfo $actor, int $page): array
+    public function listing(ItaUserObjectInfo $actor, int $page, array $filters=[]): array
     {
         $actor->requireCapability('access.read');
-        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM dc_users WHERE store_id=?', 'i', [$actor->storeId])['n'];
+        [$where,$types,$params]=$this->listingFilters($actor,$filters);
+        $from=' FROM dc_users u LEFT JOIN ita_user_roles r ON r.store_id=u.store_id AND r.user_id=u.id WHERE '.$where;
+        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n'.$from,$types,$params)['n'];
         $page = max(1, min($page, max(1, (int) ceil($total/20))));
         $rows = $this->db->fetchAll('SELECT u.id,u.username,u.fullname,u.status,COALESCE(r.role,\'\') role,COALESCE(r.enabled,0) enabled
-            FROM dc_users u LEFT JOIN ita_user_roles r ON r.store_id=u.store_id AND r.user_id=u.id
-            WHERE u.store_id=? ORDER BY u.id LIMIT 20 OFFSET ?', 'ii', [$actor->storeId,($page-1)*20]);
+            '.$from.' ORDER BY u.id LIMIT 20 OFFSET ?',$types.'i',[...$params,($page-1)*20]);
         return ['rows'=>$rows,'page'=>$page,'per_page'=>20,'total'=>$total];
+    }
+
+    private function listingFilters(ItaUserObjectInfo $actor,array $filters): array
+    {
+        $where=['u.store_id=?'];$types='i';$params=[$actor->storeId];
+        $q=ItaInput::text($filters['q'] ?? '',100);
+        if ($q!=='') {
+            $where[]="(u.username LIKE ? ESCAPE '!' OR u.fullname LIKE ? ESCAPE '!')";
+            $term='%'.str_replace(['!','%','_'],['!!','!%','!_'],$q).'%';
+            $types.='ss';array_push($params,$term,$term);
+        }
+        $status=ItaInput::text($filters['access_status'] ?? '',20);
+        $conditions=['allowed'=>'u.status=1 AND r.enabled=1','not_allowed'=>'u.status=1 AND COALESCE(r.enabled,0)<>1','locked'=>'u.status<>1'];
+        if ($status!=='') {
+            if (!isset($conditions[$status])) { throw new ItaHttpError(422,'Trạng thái tài khoản không hợp lệ. Hãy chọn lại trong bộ lọc.'); }
+            $where[]='('.$conditions[$status].')';
+        }
+        if (($filters['department_id'] ?? '')!=='') {
+            $id=ItaInput::positiveInt($filters['department_id']);
+            $where[]='EXISTS (SELECT 1 FROM ita_user_scopes s WHERE s.store_id=u.store_id AND s.user_id=u.id AND s.active=1 AND s.department_id=?)';
+            $types.='i';$params[]=$id;
+        }
+        return [implode(' AND ',$where),$types,$params];
     }
 
     public function access(ItaUserObjectInfo $actor, int $userId): array

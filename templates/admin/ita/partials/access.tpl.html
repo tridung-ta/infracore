@@ -1,4 +1,10 @@
 <section id="users-panel" class="admin-panel panel" hidden aria-labelledby="users-title"><div class="panel-heading"><div><h2 id="users-title">Tài khoản & phân quyền</h2><p class="muted">Tạo tài khoản mới và chọn quyền cho từng người. Giới hạn dữ liệu theo bộ phận phụ trách; không đổi mật khẩu tài khoản hiện có.</p></div></div><p id="admin-message" class="admin-message" role="status" aria-live="polite"></p><div class="admin-table-wrap"><table class="asset-table"><thead><tr><th scope="col">Tài khoản</th><th scope="col">Họ tên</th><th scope="col">Vai trò IT</th><th scope="col">Truy cập IT</th><th scope="col">Thao tác</th></tr></thead><tbody id="user-rows"></tbody></table></div><div class="table-footer"><span id="user-page-summary"></span><nav aria-label="Phân trang tài khoản" class="pagination-controls"><button type="button" class="secondary-button" id="users-previous">Trước</button><button type="button" class="secondary-button" id="users-next">Sau</button></nav></div>
+<form id="user-filters" class="scope-options" role="search" aria-label="Tìm tài khoản">
+ <div><label for="user-search">Tên đăng nhập hoặc họ tên</label><input id="user-search" type="search" class="form-control" maxlength="100" placeholder="Nhập tên cần tìm…"></div>
+ <div><label for="user-status">Trạng thái truy cập</label><select id="user-status" class="form-select"><option value="">Tất cả trạng thái</option><option value="allowed">Được truy cập IT</option><option value="not_allowed">Chưa cho phép truy cập IT</option><option value="locked">Tài khoản bị khóa</option></select></div>
+ <div><label for="user-department">Bộ phận được phân công</label><select id="user-department" class="form-select"><option value="">Tất cả bộ phận</option></select><p class="muted">Lọc bộ phận được gán trực tiếp; tài khoản toàn hệ thống không nhất thiết được gán riêng từng bộ phận.</p></div>
+ <div><button class="primary-button" type="submit">Tìm tài khoản</button> <button class="secondary-button" id="user-filter-reset" type="button">Xóa bộ lọc</button></div>
+</form>
 <button type="button" class="primary-button" id="user-create-open" hidden>Thêm tài khoản</button>
 <form id="access-form" class="access-form" hidden><h3 id="access-title">Phân quyền tài khoản</h3>
 <fieldset id="user-create-fields" hidden>
@@ -8,7 +14,7 @@
   <div><label for="user-create-username">Tên đăng nhập</label><input id="user-create-username" class="form-control" autocomplete="off" minlength="3" maxlength="50" pattern="[A-Za-z0-9][A-Za-z0-9_.\-]&#123;2,49&#125;" disabled><p class="muted">3–50 ký tự chữ/số, dấu chấm, gạch ngang hoặc gạch dưới; không dấu cách.</p></div>
   <div><label for="user-create-fullname">Họ tên</label><input id="user-create-fullname" class="form-control" autocomplete="off" maxlength="100" disabled></div>
   <div><label for="user-create-email">Email</label><input id="user-create-email" type="email" class="form-control" autocomplete="off" maxlength="100" disabled></div>
-  <div><label for="user-create-password">Mật khẩu ban đầu</label><input id="user-create-password" type="password" class="form-control" autocomplete="new-password" maxlength="72" disabled><p class="muted">12–72 byte; mật khẩu được hash, không hiện lại sau lưu.</p></div>
+  <div><label for="user-create-password">Mật khẩu ban đầu</label><input id="user-create-password" type="password" class="form-control" autocomplete="new-password" maxlength="72" disabled><p class="muted">6 ký tự trở lên, tối đa 72 byte; mật khẩu được hash, không hiện lại sau lưu.</p></div>
   <div><label for="user-create-confirmation">Nhập lại mật khẩu</label><input id="user-create-confirmation" type="password" class="form-control" autocomplete="new-password" maxlength="72" disabled></div>
  </div>
 </fieldset>

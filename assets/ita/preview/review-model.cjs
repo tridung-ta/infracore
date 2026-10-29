@@ -36,7 +36,13 @@ function read(action,q){state.reads++;const map={users:'access.read',access:'acc
  case 'data':{const user=actor(),all=assets(q),p=paginate(all,q,5);if(state.mode==='million-ui'&&!q.q&&!q.department_id){p.total=1000000;p.page=Math.max(1,Math.min(Number(q.page)||1,200000));p.rows=Array.from({length:5},(_,i)=>({...all[i%all.length],id:(p.page-1)*5+i+1,code:'MOCK-VIRTUAL-'+((p.page-1)*5+i+1)}));}return {assets:allowed('asset.read')?p.rows:[],pagination:{...p,rows:undefined},departments,user:{...user,display_name:'MOCK · '+user.fullname,capabilities_enabled:true,permission_catalog:allowed('access.manage')?keys:[]},summary:{total:p.total,by_status:{in_use:5,maintenance:1},by_department:[],alerts:[],alerts_total:0}};}
  case 'categories':return q.paged?paginate(categories,q):categories;
  case 'asset':{const a=asset(q.id),p=paginate(state.audits.filter(r=>r.entity_type==='asset'&&r.entity_id===a.id),q);return {...a,fields:{...a},history:p.rows,history_pagination:{page:p.page,total:p.total,per_page:p.per_page}};}
- case 'users':return paginate(state.users,q);
+ case 'users':return paginate(state.users.filter(u=>{
+  const term=String(q.q||'').toLocaleLowerCase();if(term&&!`${u.username} ${u.fullname}`.toLocaleLowerCase().includes(term))return false;
+  if(q.access_status==='allowed'&&!(Number(u.status)===1&&Number(u.enabled)===1))return false;
+  if(q.access_status==='not_allowed'&&!(Number(u.status)===1&&Number(u.enabled)!==1))return false;
+  if(q.access_status==='locked'&&Number(u.status)===1)return false;
+  return !q.department_id||u.department_ids.includes(Number(q.department_id));
+ }),q);
  case 'access':{const u=state.users.find(u=>u.id===Number(q.id));if(!u)error(404,'Không có người dùng mẫu.');return {...u,capabilities_enabled:true};}
  case 'audit':return paginate(state.audits.filter(r=>(!q.action||r.action===q.action)&&(!q.user_id||r.user_id===Number(q.user_id))&&(!q.from||r.created_at.slice(0,10)>=q.from)&&(!q.to||r.created_at.slice(0,10)<=q.to)),q);
  case 'assignments':{const a=asset(q.asset_id),rows=state.assignments.filter(r=>r.asset_id===a.id),p=paginate(rows,q);return {...p,asset:a,active:rows.find(r=>!r.returned_at)||null,history:p.rows,pdf_available:true};}
@@ -74,7 +80,7 @@ function write(action,input){state.writes++;const revision=()=>String(++state.se
  case 'category-save':{const c=categories.find(c=>c.id===Number(input.id));if(c)Object.assign(c,input,{id:c.id});else categories.push({...input,id:categories.length+1,version:revision()});return {id:c?.id||categories.length};}
  case 'user-create':{
   if(!/^[A-Za-z0-9][A-Za-z0-9_.-]{2,49}$/.test(input.username||'')||!String(input.fullname||'').trim()||!/^\S+@\S+\.\S+$/.test(input.email||''))error(422,'Thông tin tài khoản giả chưa hợp lệ.');
-  if(typeof input.password!=='string'||Buffer.byteLength(input.password)<12||Buffer.byteLength(input.password)>72||input.password!==input.password_confirmation)error(422,'Mật khẩu giả cần12–72byte và xác nhận trùng.');
+  if(typeof input.password!=='string'||Array.from(input.password).length<6||Buffer.byteLength(input.password)>72||input.password!==input.password_confirmation)error(422,'Mật khẩu giả cần ít nhất 6 ký tự, tối đa 72 byte và xác nhận trùng.');
   if(state.users.some(u=>[u.username,u.email].filter(Boolean).some(v=>[input.username,input.email].some(n=>n.toLowerCase()===v.toLowerCase()))))error(409,'Tài khoản giả đã tồn tại.');
   if(!Array.isArray(input.permissions)||!input.permissions.length||input.permissions.some(k=>!keys.includes(k)||!allowed(k)))error(422,'Chọn quyền hợp lệ.');
   if(!input.permissions.includes('scope.store')&&!input.department_ids?.length)error(422,'Chọn bộ phận phụ trách.');

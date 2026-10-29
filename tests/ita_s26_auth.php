@@ -164,6 +164,13 @@ foreach(['md5','bcrypt','old-cost','long-md5','scope-order'] as $case){
     s26Check(S26ServiceCalls::$verify-$beforeVerify===1&&S26ServiceCalls::$hash-$beforeHash===($upgrade?1:0),'actual success verify/hash count '.$case);
 }
 // Correct bcrypt credential denied after verification must also be native-write-free.
+// The six-character creation policy must remain compatible with real ITA login.
+$shortPassword='qa1234';$shortHash=password_hash($shortPassword,PASSWORD_DEFAULT);
+$db=new S26Db(['password'=>str_repeat('a',32),'password_hash'=>$shortHash]);$svc=s26Service($db);
+$shortUser=$svc->authenticate('qa',$shortPassword,'192.0.2.1');
+s26Check($shortUser->id===99&&$svc->verifies===[$shortHash]&&count($db->nativeWrites())===1,'six-character modern password authenticates and records login');s26NoPm();
+try{(s26Service(new S26Db(['password'=>str_repeat('a',32),'password_hash'=>$shortHash])))->authenticate('qa','wrong6','192.0.2.1');throw new RuntimeException('Expected 401');}
+catch(ItaHttpError $e){s26Check($e->status===401,'six-character account rejects wrong password');}
 foreach(['disable','mapping','identity','credential'] as $revoke){
     $db=new S26Db($modern);$svc=s26Service($db);$beforeVerify=S26ServiceCalls::$verify;$beforeHash=S26ServiceCalls::$hash;
     $svc->afterVerify=function()use($db,$revoke){

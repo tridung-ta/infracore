@@ -195,7 +195,7 @@ class ItaApplication
             'categories' => array_key_exists('paged',$_GET)
                 ? (new ItaCategoryService($this->db,$this->user))->paginated($_GET,$page)
                 : array_map(fn($r)=>$r+['version'=>ItaAssetService::version($r)],(new ItaCategoryService($this->db,$this->user))->listing()),
-            'users' => (new ItaUserObjects($this->db))->listing($this->user,$page),
+            'users' => (new ItaUserObjects($this->db))->listing($this->user,$page,$_GET),
             'access' => (new ItaUserObjects($this->db))->access($this->user,ItaInput::positiveInt($_GET['id'] ?? null)),
             'audit' => (new ItaAuditService($this->db,$this->user))->listing($_GET,$page),
             default => throw new ItaHttpError(404, 'Không tìm thấy chức năng.'),
