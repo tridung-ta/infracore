@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 29/10/2026 — Thông báo toàn bộ quản lý tài khoản
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14-feedback|Thông báo trường lỗi, chờ/lưu/hủy/kết quả cho tạo/sửa/reset/phân quyền/xóa quyền|FE|[x] local|Commit fix(rbac) lượt này|Browser14+21+9+28+6 mock; JS/Smarty đạt; detector0|PHASE14_ACCOUNT_FEEDBACK_VERIFY; không DB/host/gói/upload|
+
 ## 29/10/2026 — Hoàn thiện bảo vệ mật khẩu tài khoản
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

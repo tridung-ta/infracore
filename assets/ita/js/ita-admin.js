@@ -14,10 +14,25 @@
   $('access-save').textContent=active?'Tạo tài khoản & cấp quyền':'Lưu quyền truy cập';
  }
  function clearPasswords(){for(const key of ['password','confirmation'])$('user-create-'+key).value='';}
- function adminStatus(message){const node=$('admin-message');node.textContent=message;window.ItaUi.autoDismiss(node,true);}
+ function adminStatus(message,error=false){const node=$('admin-message');node.textContent=message;node.setAttribute('role',error?'alert':'status');node.classList.toggle('danger-text',error);window.ItaUi.autoDismiss(node,error||message.startsWith('Đang'));if(!message)node.hidden=true;}
  function el(tag,text){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;}
  const feedback=el('p');feedback.id='access-message';feedback.className='admin-message';feedback.hidden=true;
  $('access-form').insertBefore(feedback,$('access-form').lastElementChild);
+ const accountForms=['access-form','user-profile-form','user-password-form'];
+ function formFeedback(form){return form.id==='access-form'?feedback:$('user-profile-message');}
+ function invalidMessage(field){
+  const label=document.querySelector(`label[for="${field.id}"]`)?.textContent.trim()||'Thông tin';
+  if(field.validity.customError)return `${label}: ${field.validationMessage}`;
+  if(field.validity.valueMissing)return `${label}: chưa nhập. Hãy điền trường này trước khi lưu.`;
+  if(field.validity.typeMismatch)return `${label}: sai định dạng. Hãy nhập địa chỉ email như ten@example.com.`;
+  if(field.validity.patternMismatch)return `${label}: dùng 3–50 ký tự chữ/số không dấu, dấu chấm, gạch ngang hoặc gạch dưới; bắt đầu bằng chữ/số.`;
+  if(field.validity.tooShort)return `${label}: quá ngắn. Hãy nhập ít nhất ${field.minLength} ký tự.`;
+  return `${label}: dữ liệu chưa hợp lệ. Hãy kiểm tra định dạng và độ dài trước khi lưu.`;
+ }
+ for(const id of accountForms){const form=$(id);form.addEventListener('invalid',event=>{
+  const field=event.target;field.setAttribute('aria-invalid','true');
+  if([...form.elements].find(n=>n.willValidate&&!n.validity.valid)===field)announce(formFeedback(form),invalidMessage(field),true);
+ },true);form.addEventListener('input',event=>event.target.removeAttribute('aria-invalid'));}
  function announce(node,message,error=false){
   node.textContent=message;node.hidden=false;node.tabIndex=-1;
   node.setAttribute('role',error?'alert':'status');
@@ -62,8 +77,10 @@
     else cell.textContent='Chỉ xem';row.append(cell);return row;
    }));
    if(!data.rows.length){const row=el('tr'),cell=el('td','Không có tài khoản phù hợp. Hãy đổi từ khóa, trạng thái hoặc xóa bộ lọc.');cell.colSpan=5;row.append(cell);$('user-rows').append(row);}
-   pager('users',data);adminStatus(`Tìm thấy ${data.total} tài khoản theo bộ lọc hiện tại.`);return true;
-  }catch(error){if(request!==userRequest)return false;$('user-rows').replaceChildren();$('users-previous').disabled=true;$('users-next').disabled=true;$('user-page-summary').textContent='Chưa tải được danh sách';adminStatus(error.message);return false;}
+   pager('users',data);
+   if(profileUncertain.size||accessUncertain.size||createUncertain)adminStatus('Có thao tác tài khoản chưa xác nhận được kết quả. Không gửi lại; hãy kiểm tra tài khoản và nhật ký trước khi tiếp tục. Các nút liên quan đang được khóa trong phiên này.',true);
+   else adminStatus(`Tìm thấy ${data.total} tài khoản theo bộ lọc hiện tại.`);return true;
+  }catch(error){if(request!==userRequest)return false;$('user-rows').replaceChildren();$('users-previous').disabled=true;$('users-next').disabled=true;$('user-page-summary').textContent='Chưa tải được danh sách';adminStatus(error.message,true);return false;}
  }
  async function removeAccess(id,name){
   if(accessSaving||accessUncertain.has(id)){adminStatus('Đang xử lý hoặc kết quả trước chưa rõ. Hãy kiểm tra lại tài khoản trước khi tiếp tục.');return;}
@@ -79,7 +96,7 @@
    announce($('admin-message'),`Đã xóa quyền truy cập InfraCore của ${name}. Tài khoản nền và lịch sử vẫn được giữ.`+(refreshed?'':' Chưa tải lại được danh sách; hãy kiểm tra trước khi thao tác tiếp.'));
   }catch(error){
    if(posted&&(!error.status||error.status>=500))accessUncertain.add(id);
-   adminStatus(error.message+(accessUncertain.has(id)?' Kết quả chưa rõ; kiểm tra tài khoản trước khi thao tác lại.':''));
+   adminStatus(error.message+(accessUncertain.has(id)?' Kết quả chưa rõ; kiểm tra tài khoản trước khi thao tác lại.':''),true);
   }finally{accessSaving=false;}
  }
  async function editAccess(id){
@@ -95,7 +112,7 @@
    }));
    $('access-form').dataset.accountName=user.username;
    window.ItaPermissionEditor.open(user);adminStatus('');$('access-form').hidden=false;(window.ItaPolicy.enabled()?$('permission-function-search'):$('access-role')).focus();
-  }catch(error){if(request===accessRequest&&location.hash==='#users')adminStatus(error.message);}
+  }catch(error){if(request===accessRequest&&location.hash==='#users')adminStatus(error.message,true);}
  }
  function clearProfilePasswords(){for(const id of ['user-password-new','user-password-confirm','user-password-actor'])$(id).value='';}
  function closeProfile(){clearProfilePasswords();$('user-profile-panel').hidden=true;profileState=null;}
@@ -108,12 +125,12 @@
    $('user-profile-form').hidden=mode!=='profile';$('user-password-form').hidden=mode!=='password';$('user-profile-message').hidden=true;
    for(const key of ['username','fullname','email'])$('user-profile-'+key).value=data[key];
    $('user-profile-panel').hidden=false;adminStatus('');$(mode==='profile'?'user-profile-username':'user-password-new').focus();
-  }catch(error){if(request===accessRequest&&location.hash==='#users')adminStatus(error.message);}
+  }catch(error){if(request===accessRequest&&location.hash==='#users')adminStatus(error.message,true);}
  }
  async function saveProfile(event,mode){
   event.preventDefault();if(accessSaving||!profileState||profileState.mode!==mode)return;
   const request=accessRequest,selected={...profileState},button=$(mode==='profile'?'user-profile-save':'user-password-save'),message=$('user-profile-message');
-  accessSaving=true;button.disabled=true;message.hidden=true;let posted=false;
+  const originalLabel=button.textContent;accessSaving=true;button.disabled=true;message.hidden=true;let posted=false;
   try{
    let payload={user_id:selected.id,version:selected.version};
    if(mode==='profile'){for(const key of ['username','fullname','email'])payload[key]=$('user-profile-'+key).value;}
@@ -121,20 +138,23 @@
     const password=$('user-password-new').value;
     if(Array.from(password).length<6||new TextEncoder().encode(password).length>72||password.includes('\0')||/^[\s\p{Z}\p{Cf}]*$/u.test(password))throw Error('Mật khẩu mới cần ít nhất 6 ký tự, tối đa 72 byte và không chỉ gồm khoảng trắng.');
     if(password!==$('user-password-confirm').value)throw Error('Mật khẩu nhập lại chưa khớp. Hãy nhập giống hệt mật khẩu mới.');
+    if(!$('user-password-actor').value)throw Error('Mật khẩu của bạn để xác nhận: chưa nhập. Hãy nhập mật khẩu quản trị đang dùng.');
     payload.password=password;payload.password_confirmation=$('user-password-confirm').value;payload.actor_password=$('user-password-actor').value;
    }
    const confirmed=await window.ItaUi.confirm({title:mode==='profile'?'Lưu thông tin tài khoản nền?':'Đặt lại mật khẩu tài khoản?',message:mode==='profile'?'Tên đăng nhập, họ tên và email sẽ thay đổi trong tài khoản dùng chung với hệ thống cũ.':'Mật khẩu cũ bị thay thế. Đăng nhập cũ chỉ hỗ trợ MD5 có thể ngừng hoạt động; phiên hệ thống cũ không tự đóng.',confirmLabel:mode==='profile'?'Lưu thông tin':'Đặt lại mật khẩu'});
-   if(!confirmed||request!==accessRequest||location.hash!=='#users'||profileState?.id!==selected.id){clearProfilePasswords();delete payload.password;delete payload.password_confirmation;delete payload.actor_password;return;}
+   if(!confirmed||request!==accessRequest||location.hash!=='#users'||profileState?.id!==selected.id){clearProfilePasswords();delete payload.password;delete payload.password_confirmation;delete payload.actor_password;if(request===accessRequest&&location.hash==='#users')announce(message,'Đã hủy xác nhận. Thông tin và mật khẩu chưa thay đổi.');return;}
+   button.textContent='Đang lưu…';$(mode==='profile'?'user-profile-form':'user-password-form').setAttribute('aria-busy','true');announce(message,'Đang lưu. Vui lòng đợi kết quả trước khi thao tác tiếp.');
    posted=true;try{await api(mode==='profile'?'user-profile-save':'user-password-reset',{},payload);}finally{clearProfilePasswords();delete payload.password;delete payload.password_confirmation;delete payload.actor_password;}
    closeProfile();const refreshed=await users();announce($('admin-message'),(mode==='profile'?'Đã cập nhật thông tin của ':'Đã đặt lại mật khẩu của ')+selected.name+'.'+(refreshed?'':' Chưa tải lại danh sách; hãy kiểm tra trước khi tiếp tục.'));
   }catch(error){
    if(posted&&(!error.status||error.status>=500)){profileUncertain.add(selected.id);button.disabled=true;}
+   if(profileUncertain.has(selected.id))adminStatus(error.message+' Kết quả chưa rõ; không gửi lại. Kiểm tra tài khoản và nhật ký trước khi tiếp tục.',true);
    announce(message,error.message+(profileUncertain.has(selected.id)?' Kết quả chưa rõ; kiểm tra tài khoản trước khi thao tác lại.':''),true);
-  }finally{accessSaving=false;button.disabled=profileUncertain.has(selected.id);}
+  }finally{accessSaving=false;button.disabled=profileUncertain.has(selected.id);button.textContent=originalLabel;$(mode==='profile'?'user-profile-form':'user-password-form').removeAttribute('aria-busy');}
  }
  $('user-profile-form').addEventListener('submit',event=>saveProfile(event,'profile'));
  $('user-password-form').addEventListener('submit',event=>saveProfile(event,'password'));
- for(const id of ['user-profile-cancel','user-password-cancel'])$(id).addEventListener('click',()=>{if(!accessSaving){accessRequest++;closeProfile();}});
+ for(const id of ['user-profile-cancel','user-password-cancel'])$(id).addEventListener('click',()=>{if(!accessSaving){accessRequest++;closeProfile();announce($('admin-message'),'Đã đóng biểu mẫu. Chưa gửi thay đổi tài khoản.');}});
  function view(){
   if(!window.itaLiveContext)return;
   const next=location.hash.slice(1);
@@ -148,7 +168,7 @@
  }
  $('access-form').addEventListener('submit',async event=>{
   event.preventDefault();if(accessSaving)return;accessSaving=true;const button=$('access-save');button.disabled=true;feedback.hidden=true;
-  const isCreate=creating,accountName=$('access-form').dataset.accountName;let posted=false;
+  const request=accessRequest,isCreate=creating,accountName=$('access-form').dataset.accountName;let posted=false;
   try{
    if(isCreate){
     if(createUncertain)throw Error('Chưa xác nhận lượt tạo trước. Kiểm danh sách tài khoản trước khi tạo lại.');
@@ -160,7 +180,8 @@
     if(password!==$('user-create-confirmation').value)throw Error('Nhập lại mật khẩu chưa khớp. Hãy nhập hai ô mật khẩu giống hệt nhau.');
    }
    const confirmed=await window.ItaUi.confirm({title:isCreate?'Tạo tài khoản và cấp quyền?':'Cập nhật quyền truy cập?',message:isCreate?'Tài khoản mới có thể đăng nhập với đúng quyền và bộ phận bạn đang chọn.':'Quyền mới có hiệu lực ngay. Tài khoản được chỉnh sẽ cần đăng nhập lại.',confirmLabel:isCreate?'Tạo tài khoản':'Cập nhật quyền'});
-   if(!confirmed)return;
+   if(!confirmed){announce(feedback,'Đã hủy xác nhận. Chưa tạo tài khoản hoặc thay đổi quyền.');return;}
+   if(request!==accessRequest||location.hash!=='#users')return;
    button.textContent='Đang lưu…';$('access-form').setAttribute('aria-busy','true');$('access-cancel').disabled=true;
    const payload={user_id:$('access-user-id').value,...(window.ItaPolicy.enabled()?window.ItaPermissionEditor.payload():{role:$('access-role').value}),enabled:$('access-enabled').checked,department_ids:[...document.querySelectorAll('#scope-options input:checked')].map(input=>input.value)};
    if(isCreate){for(const key of ['username','fullname','email','password'])payload[key]=$('user-create-'+key).value;payload.password_confirmation=$('user-create-confirmation').value;}
@@ -180,7 +201,7 @@
    accessSaving=false;button.disabled=isCreate&&createUncertain;button.textContent=isCreate?'Tạo tài khoản & cấp quyền':'Lưu quyền truy cập';$('access-cancel').disabled=false;$('access-form').removeAttribute('aria-busy');
   }
  });
- $('access-cancel').addEventListener('click',()=>{clearPasswords();$('access-form').hidden=true;});
+ $('access-cancel').addEventListener('click',()=>{if(accessSaving)return;accessRequest++;clearPasswords();$('access-form').hidden=true;announce($('admin-message'),'Đã đóng biểu mẫu. Chưa tạo tài khoản hoặc thay đổi quyền.');});
  $('user-create-open').addEventListener('click',()=>{
   if(accessSaving||!window.ItaPolicy.enabled()||!window.ItaPolicy.can('access.manage')||!window.ItaPolicy.can('scope.store')||createUncertain)return;
   accessRequest++;

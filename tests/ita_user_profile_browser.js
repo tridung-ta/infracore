@@ -27,6 +27,7 @@ async(page)=>{
   await p.goto('http://127.0.0.1:18767/#users');await p.getByRole('button',{name:'Đặt lại mật khẩu MOCK-C',exact:true}).click();await newPassword();
   await p.route('**/admin.php?op=ita&act=user-password-reset',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({success:false,message:'MOCK uncertain reset'})}));
   await p.locator('#user-password-save').click();await p.locator('#confirm-accept').click();await p.locator('#user-profile-message').filter({hasText:'Kết quả chưa rõ'}).waitFor();assert(await p.locator('#user-password-save').isDisabled(),'Unknown reset result prevents blind retry');
+  await p.goto('http://127.0.0.1:18767/#assets');await p.evaluate(()=>{location.hash='#users';});await p.locator('#admin-message').filter({hasText:'chưa xác nhận được kết quả'}).waitFor();assert(await p.getByRole('button',{name:'Đặt lại mật khẩu MOCK-C',exact:true}).isDisabled(),'Returning to account list retains uncertain warning and blocks retry');
   await context.request.post('http://127.0.0.1:18767/review/control',{headers,data:{role:'system_manager'}});await p.reload();assert(await p.getByRole('button',{name:/Đặt lại mật khẩu MOCK-C/}).count()===0,'No reset control without management permission');
   assert(errors.length===0,'No JS exceptions');return `${checks} profile/reset browser checks passed; Node RAM mock, no native credentials or DB.`;
  }finally{await context.request.post('http://127.0.0.1:18767/review/control',{headers,data:{reset:true}});await context.close();}
