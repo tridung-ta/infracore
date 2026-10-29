@@ -9,7 +9,7 @@
 .audit-change-table th{font-weight:600;color:var(--ita-text-muted)}
 .permission-preview{padding:24px;border-top:1px solid var(--ita-border)}
 .permission-toolbar{display:flex;gap:16px;flex-wrap:wrap;margin-block:20px;align-items:end}.permission-toolbar>div{flex:1;min-width:180px}
-.permission-toolbar label{display:block;margin-bottom:8px}.permission-modules{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.permission-toolbar label{display:block;margin-bottom:8px}.permission-modules{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 .permission-module{border:1px solid var(--ita-border);border-radius:8px;padding:16px;min-width:0}.permission-module summary{cursor:pointer;font-weight:600;min-height:36px}
 .permission-module label{display:flex;align-items:start;gap:10px;padding:10px 0;font-size:13px;line-height:1.5}
 .permission-module input{margin-top:4px;flex-shrink:0;accent-color:var(--ita-accent)}

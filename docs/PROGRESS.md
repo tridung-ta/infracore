@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 29/10/2026 — Khung nhóm quyền mở/đóng độc lập
+
+CSS permission-modules dùng align-items:start, tránh khung đóng bị kéo cao bằng khung mở bên cạnh. Áp dụng chung các nhóm quyền live/MOCK. Browser tests/ita_permission_layout_browser.js đạt15 checks ở1366/768/390: mở lần lượt từng nhóm không đổi chiều cao/trạng thái nhóm khác và không đổi checkbox. Chỉ CSS/cache version/test; không PHP/DB/host/gói/upload.
+
 ## 29/10/2026 — Thông báo toàn bộ quản lý tài khoản
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
