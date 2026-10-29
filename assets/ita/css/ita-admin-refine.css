@@ -19,6 +19,10 @@
 #user-filters label{display:block;margin-bottom:6px}
 #user-filters p{margin:6px 0 0;line-height:1.5}
 #user-filters button{margin:4px 4px 0 0}
+#user-rows td:last-child{min-width:220px}
+#user-rows td:last-child button{margin:3px 4px 3px 0}
+#user-profile-panel label{display:block;margin:8px 0 6px;font-size:13px}
+#user-profile-panel p{line-height:1.6}
 #permission-live-editor .permission-modules{margin-top:16px}body[data-capability-blocked="true"] main .panel{display:none!important}
 @media(max-width:900px){.audit-filters{grid-template-columns:1fr 1fr}}
 @media(max-width:767px){.audit-filters{padding:18px;grid-template-columns:1fr}.audit-filter-actions{flex-wrap:wrap}.audit-filter-actions button{flex:1}.permission-modules{grid-template-columns:1fr}.permission-preview{padding:18px}.audit-date-shortcuts button{min-height:44px}}

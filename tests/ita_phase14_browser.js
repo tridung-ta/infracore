@@ -19,7 +19,7 @@ async(page)=>{
  }
  const owner=await session(true);
  try{
-  const p=owner.p;await p.goto('http://127.0.0.1:18766/#users');await p.locator('#user-rows button').click();await p.locator('#permission-live-editor').waitFor();
+  const p=owner.p;await p.goto('http://127.0.0.1:18766/#users');await p.getByRole('button',{name:'Phân quyền MOCK-C',exact:true}).click();await p.locator('#permission-live-editor').waitFor();
   check(await p.locator('#access-role').isHidden(),'Legacy role input hidden in capability mode');
   check(await p.locator('#permission-live-editor input:checked').count()===3,'C exact three function grants shown');
   check(await p.locator('#permission-live-editor input[value="report.read"]').isChecked(),'C report right independent of legacy Support role');

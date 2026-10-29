@@ -6,6 +6,30 @@
  <div><button class="primary-button" type="submit">Tìm tài khoản</button> <button class="secondary-button" id="user-filter-reset" type="button">Xóa bộ lọc</button></div>
 </form>
 <button type="button" class="primary-button" id="user-create-open" hidden>Thêm tài khoản</button>
+<section id="user-profile-panel" class="access-form" hidden aria-labelledby="user-profile-title">
+ <h3 id="user-profile-title">Thông tin tài khoản</h3>
+ <p class="muted">Chỉ sửa tài khoản nhân viên được tạo từ InfraCore và có nhật ký nguồn gốc. Thông tin dùng chung với hệ thống cũ; tài khoản cũ và tài khoản quản trị nền cần quy trình riêng.</p>
+ <p id="user-profile-message" class="admin-message" role="status" aria-live="polite" hidden></p>
+ <form id="user-profile-form" hidden>
+  <div class="scope-options">
+   <div><label for="user-profile-username">Tên đăng nhập</label><input id="user-profile-username" class="form-control" minlength="3" maxlength="50" pattern="[A-Za-z0-9][A-Za-z0-9_.\-]&#123;2,49&#125;" required autocomplete="off"></div>
+   <div><label for="user-profile-fullname">Họ tên</label><input id="user-profile-fullname" class="form-control" maxlength="100" required autocomplete="off"></div>
+   <div><label for="user-profile-email">Email</label><input id="user-profile-email" type="email" class="form-control" maxlength="100" required autocomplete="off"></div>
+  </div>
+  <p class="muted">Tên đăng nhập, họ tên và email thay đổi ở tài khoản nền và có thể ảnh hưởng hệ thống cũ. Giới hạn thực phụ thuộc cấu trúc tài khoản nền.</p>
+  <div class="confirmation-actions"><button type="button" class="secondary-button" id="user-profile-cancel">Hủy</button><button type="submit" class="primary-button" id="user-profile-save">Lưu thông tin</button></div>
+ </form>
+ <form id="user-password-form" hidden>
+  <p class="muted">Mật khẩu cũ bị thay thế. Đăng nhập cũ chỉ hỗ trợ MD5 có thể không còn hoạt động; phiên InfraCore đang mở sẽ bị yêu cầu đăng nhập lại. Phiên của hệ thống cũ không tự đóng.</p>
+  <div class="scope-options">
+   <div><label for="user-password-new">Mật khẩu mới</label><input id="user-password-new" type="password" class="form-control" autocomplete="new-password" maxlength="72" required></div>
+   <div><label for="user-password-confirm">Nhập lại mật khẩu mới</label><input id="user-password-confirm" type="password" class="form-control" autocomplete="new-password" maxlength="72" required></div>
+   <div><label for="user-password-actor">Mật khẩu của bạn để xác nhận</label><input id="user-password-actor" type="password" class="form-control" autocomplete="current-password" required></div>
+  </div>
+  <p class="muted">Mật khẩu mới từ 6 ký tự, tối đa 72 byte. Không gửi mật khẩu qua chat.</p>
+  <div class="confirmation-actions"><button type="button" class="secondary-button" id="user-password-cancel">Hủy</button><button type="submit" class="primary-button" id="user-password-save">Đặt lại mật khẩu</button></div>
+ </form>
+</section>
 <form id="access-form" class="access-form" hidden><h3 id="access-title">Phân quyền tài khoản</h3>
 <fieldset id="user-create-fields" hidden>
  <legend>Thông tin tài khoản mới</legend>

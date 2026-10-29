@@ -1,5 +1,11 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 29/10/2026 — Reset mật khẩu và request đăng nhập cũ
+
+- Rà source thấy UPDATE rehash/last_login không gắn credential đã đọc, nên request đăng nhập cũ có thể ghi đè reset. Test fake transport dựng reset ngay trước native UPDATE để kiểm hợp đồng; chưa chứng minh đồng thời DB thật.
+- Sửa CAS cả password/password_hash và trạng thái, refetch khi affected=0 để phân biệt cùng giây với credential đã đổi. Reset chặn tái sử dụng cả modern và MD5 cũ, chặn revision MAX trước native write và kiểm affected revision.
+- Native MyISAM không rollback cùng ITA; lỗi sau ghi phải báo kết quả chưa rõ, không retry mù. Kiểm nguồn gốc audit user.create hạn chế đối tượng quản lý nhưng không chứng minh quyền của tài khoản ở ứng dụng khác luôn thấp.
+
 ## 29/10/2026 — Form phân quyền và phản hồi tới trễ
 
 - Review source chỉ ra form trước có thể bị ghi đè bởi phản hồi cũ; tên tài khoản có thể đổi trong lúc lưu. Không có bằng chứng lỗi thực trên host.

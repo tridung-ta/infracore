@@ -15,10 +15,10 @@ class SecurityPmDb extends PmDb
 function securityAuth(SecurityPmDb $db): PmAuth {$r=new ReflectionClass(PmAuth::class);$auth=$r->newInstanceWithoutConstructor();(new ReflectionProperty(PmAuth::class,'database'))->setValue($auth,$db);return $auth;}
 $pw='QA-only-secret-2026';$db=new SecurityPmDb();$db->row=['id'=>99,'status'=>1,'password'=>md5($pw),'password_hash'=>''];
 $auth=securityAuth($db);securityCheck($auth->authenticate(1,'qa',$pw)===99,'MD5 native test credential accepted');
-$write=$db->writes[0];securityCheck(str_contains($write[0],'SET password_hash = ?, last_login = NOW()')&&$write[1]==='sii','native migration uses bound columns');
+$write=$db->writes[0];securityCheck(str_contains($write[0],'SET password_hash = ?, last_login = NOW()')&&$write[1]==='siiss'&&array_slice($write[2],1)===[1,99,md5($pw),''],'native migration binds original credential guards');
 securityCheck(password_verify($pw,$write[2][0])&&in_array(password_get_info($write[2][0])['algoName'],['bcrypt','argon2i','argon2id'],true),'actual PmAuth produces supported modern hash');
 securityCheck(!password_verify('incorrect',$write[2][0]),'modern hash rejects wrong password');
-securityCheck(!str_contains($write[0],'SET password =')&&!str_contains($write[0],'status='),'login does not rewrite MD5 or status');
+securityCheck(!str_contains($write[0],'SET password =')&&!str_contains(explode(' WHERE ',$write[0])[0],'status='),'login does not rewrite MD5 or status');
 $db->row['password_hash']=$write[2][0];$db->writes=[];
 securityCheck($auth->authenticate(1,'qa',$pw)===99&&str_contains($db->writes[0][0],'SET last_login = NOW()'),'modern login only updates last_login when rehash not needed');
 $db->writes=[];securityCheck($auth->authenticate(1,'qa','bad')===0&&!$db->writes,'incorrect credential has no native write');

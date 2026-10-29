@@ -81,6 +81,12 @@ $db=new ItaDb();$owner=actor14(ItaPermissions::KEYS,1,'admin_it');$input=payload
 check14($db->commits===1&&$db->rollbacks===0,'Capability grant transaction committed');check14(count($db->permissions[111])===3&&in_array('report.read',$db->permissions[111],true),'C exact grants persisted in fake transport');check14($db->users[111]['role']==='support_technician','Forged role ignored; no new role');check14($db->users[111]['auth_revision']===4,'Grant changes invalidate old revision');check14(count($db->audits)===1&&str_contains($db->audits[0][6],'permissions'),'Grant audit includes explicit permissions');check14(!array_filter($db->writes,fn($q)=>preg_match('/(?:UPDATE|INSERT INTO)\s+dc_/i',$q)),'No native writes');
 denied14(fn()=>(new ItaAccessService($db,$owner))->update($input),409,'Stale access version denied');
 $db=new ItaDb();$input=payload14($db,$owner,1);$input['enabled']=false;denied14(fn()=>(new ItaAccessService($db,$owner))->update($input),409,'Last capability manager protected');check14(!$db->writes&&$db->rollbacks===1,'Last manager denial no writes');
+$db=new ItaDb();$input=payload14($db,$owner);$input['enabled']=false;
+(new ItaAccessService($db,$owner))->update($input);
+check14($db->users[111]['enabled']===0&&$db->users[111]['auth_revision']===4,'ITA revoke disables mapping and invalidates old revision');
+check14($db->users[111]['status']===1&&!array_filter($db->writes,fn($q)=>preg_match('/(?:UPDATE|INSERT INTO|DELETE FROM)\s+dc_/i',$q)),'ITA revoke never changes native account');
+check14($db->scopes[111]===[10]&&$db->permissions[111]===['asset.read'],'ITA revoke preserves selected scope and permission for restoration');
+check14(count($db->audits)===1&&$db->audits[0][2]==='user.access_update','ITA revoke recorded in audit');
 $db=new ItaDb();$input=payload14($db,$owner);$input['permissions']=['asset.create'];denied14(fn()=>(new ItaAccessService($db,$owner))->update($input),422,'Writer rejects incomplete dependencies');check14($db->begins===0,'Dependency failure before transaction');
 $db=new ItaDb();$input=payload14($db,$owner);$input['department_ids']=[20];denied14(fn()=>(new ItaAccessService($db,$owner))->update($input),422,'Foreign/inactive department rejected');
 $db=new ItaDb();$limited=actor14(['access.read','access.manage','scope.store'],1,'admin_it');$input=payload14($db,$limited);$input['permissions']=['report.read'];denied14(fn()=>(new ItaAccessService($db,$limited))->update($input),403,'Cannot delegate function not owned');

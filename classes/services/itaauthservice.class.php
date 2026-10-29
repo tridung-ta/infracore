@@ -87,12 +87,15 @@ class ItaAuthService
     /** Preserve PmAuth success writes, including the no-bcrypt-upgrade rule above72 bytes. */
     private function recordNativeLogin(ItaUserObjectInfo $user, array $row, string $password): void
     {
+        $where=" WHERE store_id = ? AND id = ? AND status=1 AND BINARY COALESCE(password,'')=BINARY ? AND BINARY COALESCE(password_hash,'')=BINARY ?";
         if (strlen($password)<=72 && ($row['password_hash']==='' || password_needs_rehash($row['password_hash'],PASSWORD_DEFAULT))) {
             $hash=password_hash($password,PASSWORD_DEFAULT);
-            $this->db->execute('UPDATE dc_users SET password_hash = ?, last_login = NOW() WHERE store_id = ? AND id = ? AND status=1', 'sii', [$hash,$user->storeId,$user->id]);
+            $changed=$this->db->execute('UPDATE dc_users SET password_hash = ?, last_login = NOW()'.$where, 'siiss', [$hash,$user->storeId,$user->id,$row['password'],$row['password_hash']]);
         } else {
-            $this->db->execute('UPDATE dc_users SET last_login = NOW() WHERE store_id = ? AND id = ? AND status=1', 'ii', [$user->storeId,$user->id]);
+            $changed=$this->db->execute('UPDATE dc_users SET last_login = NOW()'.$where, 'iiss', [$user->storeId,$user->id,$row['password'],$row['password_hash']]);
         }
+        // A same-second last_login may legitimately affect zero rows; changed credentials must still reject.
+        if ($changed!==1 && $this->credential($user)!==$row) { throw new ItaHttpError(401,self::REJECTED); }
     }
 
     public function current(): ?ItaUserObjectInfo

@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 29/10/2026 — Hoàn thiện bảo vệ mật khẩu tài khoản
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14-account|Sửa tài khoản có nguồn gốc InfraCore, reset mật khẩu, xóa quyền ITA và CAS login|BE/FE|[x] local|Commit feat(rbac) lượt này|Service77; PmAuth race13; S26756; auth29; routes16; unit125; Smarty đạt; HTTP267; browser20+9 mock|PHASE14_ACCOUNT_PASSWORD_VERIFY; không DB/host/PHP8.3/gói/upload; MyISAM và phiên legacy còn giới hạn|
+
 ## 29/10/2026 — Ổn định phân quyền theo chức năng
 
 | Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |

@@ -88,6 +88,27 @@ class ItaApplication
 
     private function api(): void
     {
+        if ($this->action==='access-revoke') {
+            $this->requirePost();
+            if (!$this->user->capabilitiesEnabled) { throw new ItaHttpError(503,'Cần bật quyền chức năng để xóa quyền ITA.'); }
+            require_once __DIR__.'/itacapabilityaccessservice.class.php';
+            (new ItaCapabilityAccessService($this->db,$this->user))->revoke($this->readJson(16384));
+            $this->json(['success'=>true,'data'=>null,'message'=>'Đã xóa quyền truy cập ITA.']);return;
+        }
+        if (in_array($this->action,['user-profile','user-profile-save','user-password-reset'],true)) {
+            require_once __DIR__.'/itauserprofileservice.class.php';
+            $service=new ItaUserProfileService($this->db,$this->user,$this->config);
+            header('Cache-Control: no-store, private');
+            if ($this->action==='user-profile' && $_SERVER['REQUEST_METHOD']==='GET') {
+                $data=$service->read(ItaInput::positiveInt($_GET['id'] ?? null));
+                $this->json(['success'=>true,'data'=>$data,'message'=>'']);return;
+            }
+            if ($this->action==='user-profile') { throw new ItaHttpError(405,'Chỉ hỗ trợ GET.'); }
+            $this->requirePost();$input=$this->readJson(16384);
+            if ($this->action==='user-profile-save') { $service->update($input); }
+            else { $service->resetPassword($input,$_SERVER['REMOTE_ADDR'] ?? ''); }
+            $this->json(['success'=>true,'data'=>null,'message'=>'Đã cập nhật tài khoản.']);return;
+        }
         if ($this->action==='user-create') {
             $this->requirePost();
             require_once __DIR__.'/itausercreationservice.class.php';

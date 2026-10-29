@@ -1,5 +1,13 @@
 # Quyết định của dự án 5
 
+## 29/10/2026 — Phạm vi sửa tài khoản và bảo vệ mật khẩu
+
+User chọn: **“Chỉ tài khoản được tạo từ InfraCore, có nhật ký nguồn gốc (khuyến nghị)”**. Server yêu cầu tài khoản nhân viên type=1, mapping ITA, quyền mục tiêu không vượt actor và audit user.create cùng store/entity. Quyền thao tác cần access.manage +scope.store; không cấp quyền sửa mọi tài khoản nền chỉ vì được map ITA.
+
+User duyệt sửa PmAuth để chặn request đăng nhập cũ ghi đè mật khẩu vừa reset: CAS đối chiếu cả hai credential đã đọc trước UPDATE. Reset dùng hash hiện đại và placeholder ngẫu nhiên thay MD5 cũ; không lưu MD5 mật khẩu mới. Mật khẩu cũ hết hiệu lực; legacy chỉ hỗ trợ MD5 có thể ngừng đăng nhập. Phiên legacy không tự đóng; writer legacy khác vẫn có thể đổi credential theo quyền riêng.
+
+Xóa là **xóa quyền ITA**, giữ tài khoản nền/dữ liệu/lịch sử. MyISAM không rollback cùng audit InnoDB; lỗi sau native write là kết quả chưa rõ, không gửi lại mù. Chỉ source/test local, không DB/host/gói/push/deploy.
+
 ## 29/10/2026 — Mật khẩu tài khoản mới tối thiểu 6 ký tự
 
 User duyệt giảm độ dài tối thiểu: PHP/JS kiểm ít nhất 6 ký tự Unicode, tối đa 72 byte; giữ xác nhận, kiểm ký tự NUL, khoảng trắng và hash. Không đổi đăng nhập, mật khẩu cũ hoặc cấu hình riêng. Kiểm thử local với transport giả; chưa kiểm DB/host.

@@ -28,6 +28,26 @@ class ItaCapabilityAccessService
         } catch (Throwable $error) { $this->db->rollBack();throw $error; }
     }
 
+    /** Revoke ITA access without rewriting scope or touching the shared native account. */
+    public function revoke(array $input): void
+    {
+        $this->actor->requireCapability('access.manage');$id=ItaInput::positiveInt($input['user_id'] ?? null);
+        $this->db->beginTransaction();
+        try {
+            $rows=$this->db->fetchAll('SELECT user_id,enabled,auth_revision FROM ita_user_roles WHERE store_id=? ORDER BY user_id FOR UPDATE','i',[$this->actor->storeId]);
+            $this->checkActor($rows);$before=(new ItaUserObjects($this->db))->access($this->actor,$id);
+            if (array_diff($before['permissions'],$this->actor->permissions)) { throw new ItaHttpError(403,'Tài khoản có quyền vượt phạm vi bạn được ủy quyền quản lý.'); }
+            if (!hash_equals($before['version'],ItaInput::text($input['version'] ?? '',64))) { throw new ItaHttpError(409,'Quyền tài khoản đã thay đổi. Hãy mở lại trước khi xóa quyền.'); }
+            if ((int)($before['enabled'] ?? 0)!==1) { throw new ItaHttpError(409,'Tài khoản đã không còn quyền truy cập ITA.'); }
+            $this->lastManager($id,false,[]);
+            foreach ($rows as $row) { if ((int)$row['user_id']===$id && (int)$row['auth_revision']>=4294967295) { throw new ItaHttpError(503,'Phiên bản bảo vệ tài khoản đã đạt giới hạn. Cần quản trị kiểm tra trước khi xóa quyền.'); } }
+            $changed=$this->db->execute('UPDATE ita_user_roles SET enabled=0,auth_revision=auth_revision+1,updated_by=? WHERE store_id=? AND user_id=? AND enabled=1 AND auth_revision<4294967295','iii',[$this->actor->id,$this->actor->storeId,$id]);
+            if ($changed!==1) { throw new ItaHttpError(409,'Quyền tài khoản đã thay đổi. Hãy tải lại danh sách.'); }
+            (new ItaAuditService($this->db,$this->actor))->record('user.access_update','user',$id,['before'=>['enabled'=>true],'after'=>['enabled'=>false]]);
+            $this->db->commit();
+        } catch (Throwable $error) { $this->db->rollBack();throw $error; }
+    }
+
     private function validate(array $input): array
     {
         $id=ItaInput::positiveInt($input['user_id'] ?? null);$enabled=$input['enabled'] ?? null;

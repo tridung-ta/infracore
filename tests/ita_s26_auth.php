@@ -52,7 +52,7 @@ S26DownstreamSpy::reset();
 class S26Db extends ItaDb
 {
     public string $kind='md5';
-    public bool $active=true,$mapping=true,$failIdentity=false,$failAudit=false,$failNative=false,$blocked=false,$flipScopeOrder=false;
+    public bool $active=true,$mapping=true,$failIdentity=false,$failAudit=false,$failNative=false,$blocked=false,$flipScopeOrder=false,$resetDuringNative=false,$sameSecondNative=false;
     public int $revision=3,$identities=1,$currentReads=0;
     public array $credential,$writes=[],$calls=[],$attempts=[];
     public function __construct(array $credential){$this->credential=$credential;}
@@ -85,6 +85,11 @@ class S26Db extends ItaDb
     {
         $this->log($sql,$types,$params);
         if(str_starts_with($sql,'UPDATE dc_users')&&$this->failNative)throw new RuntimeException('QA native unavailable');
+        if(str_starts_with($sql,'UPDATE dc_users')&&($this->resetDuringNative||$this->sameSecondNative)){
+            s26Check(str_contains($sql,"BINARY COALESCE(password,'')=BINARY ?")&&str_contains($sql,"BINARY COALESCE(password_hash,'')=BINARY ?"),'native login compares original credentials');
+            if($this->resetDuringNative)$this->credential=['password'=>'random-reset-placeholder','password_hash'=>'reset-hash-fixture'];
+            return 0;
+        }
         if(str_starts_with($sql,'INSERT INTO ita_audit_logs')&&$this->failAudit)throw new RuntimeException('QA audit unavailable');
         $this->writes[]=[$sql,$types,$params];
         if(str_contains($sql,'SET attempts=attempts+1'))$this->attempts[$params[1]]=($this->attempts[$params[1]]??0)+1;
@@ -171,6 +176,13 @@ $shortUser=$svc->authenticate('qa',$shortPassword,'192.0.2.1');
 s26Check($shortUser->id===99&&$svc->verifies===[$shortHash]&&count($db->nativeWrites())===1,'six-character modern password authenticates and records login');s26NoPm();
 try{(s26Service(new S26Db(['password'=>str_repeat('a',32),'password_hash'=>$shortHash])))->authenticate('qa','wrong6','192.0.2.1');throw new RuntimeException('Expected 401');}
 catch(ItaHttpError $e){s26Check($e->status===401,'six-character account rejects wrong password');}
+$db=new S26Db($modern);$db->resetDuringNative=true;$svc=s26Service($db);
+try{$svc->authenticate('qa',$pw,'192.0.2.1');throw new RuntimeException('Expected reset race rejection');}
+catch(ItaHttpError $e){s26Check($e->status===401&&count($svc->verifies)===1,'reset between recheck and native write rejects with one verify');}
+s26Check($db->credential['password_hash']==='reset-hash-fixture'&&!$db->nativeWrites(),'old login cannot overwrite simulated reset');
+s26Check(!array_filter($db->writes,fn($w)=>str_starts_with($w[0],'INSERT INTO ita_audit_logs')),'rejected reset race has no login success audit');
+$db=new S26Db($modern);$db->sameSecondNative=true;
+s26Check(s26Service($db)->authenticate('qa',$pw,'192.0.2.1')->id===99,'unchanged same-second last_login does not falsely reject');
 foreach(['disable','mapping','identity','credential'] as $revoke){
     $db=new S26Db($modern);$svc=s26Service($db);$beforeVerify=S26ServiceCalls::$verify;$beforeHash=S26ServiceCalls::$hash;
     $svc->afterVerify=function()use($db,$revoke){
@@ -191,7 +203,7 @@ foreach([['password'=>md5(str_repeat('x',80).'tail'),'password_hash'=>''],['pass
 if(defined('PASSWORD_ARGON2ID')){
     $long=str_repeat('a',80).'argon-tail';$hash=password_hash($long,PASSWORD_ARGON2ID);
     foreach([true,false] as $correct){$db=new S26Db(['password'=>'','password_hash'=>$hash]);$svc=s26Service($db);
-        try{$svc->authenticate('qa',$correct?$long:'bad','192.0.2.1');s26Check($correct&&count($db->nativeWrites())===1&&!str_contains($db->nativeWrites()[0][0],'password_hash'),'long Argon success retained');}
+        try{$svc->authenticate('qa',$correct?$long:'bad','192.0.2.1');s26Check($correct&&count($db->nativeWrites())===1&&str_starts_with($db->nativeWrites()[0][0],'UPDATE dc_users SET last_login ='),'long Argon success retained without changing hash');}
         catch(ItaHttpError $e){s26Check(!$correct&&$e->status===401&&!$db->nativeWrites(),'Argon failure exception401/no write');}
         s26Check(count($svc->verifies)===1&&$svc->verifies[0]===$hash,'Argon real verify only, no dummy');s26NoPm();
     }

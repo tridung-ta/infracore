@@ -68,7 +68,7 @@ class ItaPermissions
     /** Exact external GET gates, separate from shared internal read-model helpers. */
     public static function read(ItaUserObjectInfo $actor,string $action,array $query): void
     {
-        $map=['asset'=>'asset.read','users'=>'access.read','access'=>'access.manage','audit'=>'audit.read',
+        $map=['asset'=>'asset.read','users'=>'access.read','access'=>'access.manage','user-profile'=>'access.manage','audit'=>'audit.read',
             'assignments'=>'assignment.read','assignment-recipients'=>'assignment.create','assignment-pdf'=>'assignment.pdf',
             'licenses'=>'license.read','license'=>'license.read','tickets'=>'ticket.read','ticket'=>'ticket.read','ticket-technicians'=>'ticket.assign',
             'lifecycle'=>'lifecycle.read','lifecycle-detail'=>'lifecycle.read',
