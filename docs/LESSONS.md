@@ -1,5 +1,11 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 29/10/2026 — Form phân quyền và phản hồi tới trễ
+
+- Review source chỉ ra form trước có thể bị ghi đè bởi phản hồi cũ; tên tài khoản có thể đổi trong lúc lưu. Không có bằng chứng lỗi thực trên host.
+- Sửa bằng sequence theo lượt mở, hủy hiệu lực khi đổi view/tạo mới, khóa mở form khác khi đang lưu và giữ tên tại thời điểm gửi; xóa validity cũ khi mở lại form.
+- Browser Node mock 6 checks gồm giữ GET/POST rồi nhả có kiểm soát; không thay kiểm transaction hay đồng thời DB.
+
 ## 29/10/2026 — Timer và lỗi form cũ che trạng thái mới
 
 - Triệu chứng được review source: timer thông báo thành công có thể ẩn thông báo kết quả tìm tiếp; lỗi form loại có thể còn khi chọn bản ghi khác.

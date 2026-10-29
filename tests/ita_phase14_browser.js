@@ -10,7 +10,7 @@ async(page)=>{
    if(req.isNavigationRequest()){const response=await route.fetch();return route.fulfill({response,body:(await response.text()).replace('data-mode="mock"','data-mode="live"')});}
    if(u.pathname!=='/admin.php')return route.continue();const act=u.searchParams.get('act');requests.push(act);
    if(req.method()==='POST'){posts.push(JSON.parse(req.postData()));return json({});}
-   if(act==='data')return json({assets:[],pagination:{page:1,per_page:5,total:0},departments:[{value:'10',label:'Bộ phận A'}],summary:{total:0,by_status:{},by_department:[],alerts:[],alerts_total:0},user:{id:1,role:'support_technician',display_name:'MOCK',capabilities_enabled:true,permissions:owner?catalog:['asset.read','asset.create','report.read'],permission_catalog:owner?catalog:[]}});
+   if(act==='data')return json({assets:[],pagination:{page:1,per_page:5,total:0},departments:[{value:'10',label:'Bộ phận A'}],summary:{total:0,by_status:{},by_department:[],alerts:[],alerts_total:0},user:{id:1,role:'support_technician',display_name:'MOCK',capabilities_enabled:true,permissions:owner==='reader'?['access.read','scope.store']:owner?catalog:['asset.read','asset.create','report.read'],permission_catalog:owner===true?catalog:[]}});
    if(act==='users')return json({rows:[{id:111,username:'MOCK-C',fullname:'Tài khoản C',role:'support_technician',enabled:1}],page:1,total:1,per_page:20});
    if(act==='access')return json({id:111,username:'MOCK-C',role:'support_technician',enabled:1,department_ids:[10],capabilities_enabled:true,permissions:['asset.read','asset.create','report.read'],version:'a'.repeat(64)});
    if(act==='categories')return json([]);
@@ -30,6 +30,13 @@ async(page)=>{
   const payload=await p.evaluate(()=>window.ItaPermissionEditor.payload());check(payload.version==='a'.repeat(64)&&payload.permissions.length===3&&!('role'in payload),'Editor payload carries version and exact permissions, no role');
   check(await p.locator('[data-view="users"]').isVisible(),'Support-labelled manager can open access UI by capability');
  }finally{await owner.context.close();}
+ const reader=await session('reader');
+ try{
+  const p=reader.p;await p.goto('http://127.0.0.1:18766/#users');await p.locator('#user-rows tr').waitFor();
+  check(await p.locator('[data-view="users"]').isVisible(),'Read-only capability opens account menu');
+  check((await p.locator('#user-rows').textContent()).includes('MOCK-C'),'Read-only capability loads accounts');
+  check(await p.locator('#user-rows button').count()===0&&await p.locator('#user-create-open').isHidden(),'Read-only account cannot open editing or creation');
+ }finally{await reader.context.close();}
  const c=await session(false);
  try{
   const p=c.p;await p.goto('http://127.0.0.1:18766/#assets');await p.waitForFunction(()=>window.itaLiveContext?.user?.capabilities_enabled);

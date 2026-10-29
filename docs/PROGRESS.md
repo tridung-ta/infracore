@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 29/10/2026 — Ổn định phân quyền theo chức năng
+
+| Mã | Chức năng | Vùng | Trạng thái | Commit | Verify | Ghi chú |
+|---|---|---|---|---|---|---|
+|F14 | Quyền chỉ xem và form phân quyền khi phản hồi trễ | FE | [x] local | Commit sửa FE riêng | Browser mock: 6 race/22 permission/28 tạo user; PHP unit121/Smarty/syntax | PHASE14_ACCESS_STABILITY_20261029; không DB/host; chưa gói mới hoặc upload. |
+
 ## 29/10/2026 — Tiếp tục BUILD và kiểm 10 nhóm yêu cầu
 
 Lượt kiểm local không DB: unit/service các Phase03–10/13/14, S11/S26, lọc tài khoản, Smarty, HTTP fixture, SQL contract tĩnh, validator ZIP giả và export thật đều exit 0; browser mock tạo tài khoản đạt 28 checks gồm ranh giới mật khẩu 5/6 ký tự. Export trên PHP8.5 còn 33/37 dòng deprecation. BUILD_VERIFY_20261029 ghi số liệu và bằng chứng host hạn chế user đã gửi; chưa nghiệm thu DB/host, chưa PHP8.3/FPM/EXPLAIN/concurrency. Chưa gói mới/upload/push/merge/tag.
