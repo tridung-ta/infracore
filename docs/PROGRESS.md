@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 29/10/2026 — Kiểm lại và tạo gói cập nhật theo yêu cầu
+
+Runtime source171edde:36browser/1.119checks,1.147PHP lint; unit/service/auth/HTTP267/exports đạt theo PHASE14_PREUPLOAD_VERIFY_20261029. Gói `artifacts/ita-host-20261029/infracore-update-phase14-171edde.zip`49.322.000byte, actual ZIP readback +Get-FileHash +review độc lập đạt; hướng dẫn HOST_UPLOAD_PHASE14_20261029. Chưa upload/PHP8.3/FPM/DB, còn deprecation vendor8.5/MyISAM/legacy sessions/grants; không merge/tag7–10/push/deploy. Không lấy thay đổi riêng PHASE11_SECURITY_TEST_20 vào gói hoặc commit.
+
 ## 29/10/2026 — Khung nhóm quyền mở/đóng độc lập
 
 CSS permission-modules dùng align-items:start, tránh khung đóng bị kéo cao bằng khung mở bên cạnh. Áp dụng chung các nhóm quyền live/MOCK. Browser tests/ita_permission_layout_browser.js đạt15 checks ở1366/768/390: mở lần lượt từng nhóm không đổi chiều cao/trạng thái nhóm khác và không đổi checkbox. Chỉ CSS/cache version/test; không PHP/DB/host/gói/upload.
