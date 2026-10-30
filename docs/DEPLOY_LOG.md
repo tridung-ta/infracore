@@ -8,6 +8,8 @@ Tái cấu trúc ngày **22/10/2026**: chuyển vị trí các mục, giữ nguy
 
 ## A. Trạng thái host hiện tại
 
+30/10/2026 — Sau gói cuối, user xác nhận nguyênvăn **“tôi đã upload thành công”**. Đã nhận lời xác nhận upload; chưa nhận hash/inventory27file trênhost nên không xác nhận mọi bytes đãkhớp hoặc toànDB/PHPFPM đãnghiệmthu. Ảnh thôngbáo chặn sửa nativeAdmin phùhợp guard. Rà COMPLETION_REVIEW_20261030; không yêu cầuuploadlại/gói mới trong lượt này. Các dòng CHƯAUPLOAD bên dưới là checkpoint lúcagentchuẩnbịgói.
+
 30/10/2026 — Chốt theo yêu cầu user hoàn thiện và uploadmộtlượt: delta cuối `artifacts/ita-host-20261030/infracore-delta-final-20261030-a7c2da1-to-6a9d1eb.zip`,27runtime+2metadata,80.865byte; SHA256437913a471e3dabd05a956ba2fffe7346a75ac71591e023e379691a23c4d6acd. Gom sửa29–30/10, nền a7c2da1; khôngvendor/font/config/SQL/marker/data.37browser/1.141checks,service/HTTP/export/lint10PHPpayloadđạt; actualZIPreadback/CRC/hash/exclusionsđạt. FINAL_BUILD_VERIFY_20261030/HOST_UPLOAD_FINAL_20261030. Chưa upload/PHP8.3/FPM/DB; không push/merge/tag/deploy. Dùng gói cuối thay các delta cũ cho lượt này, không yêu cầuuploadnhiềugói.
 
 29/10/2026 — User yêu cầu **chỉ upload file sửa**: đã tách `artifacts/ita-host-20261029/infracore-delta-a7c2da1-to-171edde.zip`,22runtimefiles/73.089byte, SHA25616c52c75287afe0e09f196a052b99bfbedc0778e82db4e9007fdd837edfdbe5a. So baseline a7c2da1→171edde, không vendor/font/config/SQL. ZIP readback/CRC/hash/allowlist đạt; dùng delta này thay gói cộng dồn khi host đã có bản nền. Hướng dẫn HOST_UPLOAD_DELTA_20261029; chưa upload/DB/host.

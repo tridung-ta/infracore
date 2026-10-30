@@ -1,5 +1,9 @@
 # Tiến độ dự án 5
 
+## 30/10/2026 — Rà hoàn thành sau user báo upload
+
+User nguyênvăn **“tôi đã upload thành công”**. Ghi nhận upload theo lời user, không suy sourcehash/hostDBpass. COMPLETION_REVIEW_20261030 đốichiếu10nhóm cósource và BUILDđãduyệt; còn nghiệmthu host/DB/PHP8.3/FPM/EXPLAIN. Lượt rà đọcsource và chạy lại77profile+125permissions+16routes=218checksđạt; ZIP27file hash/bytecommit/CRC/exclusionsđạt. Không chạy lại37browser hoặc kết nốiDB/host, không sửa runtime/gói mới.
+
 ## 30/10/2026 — Chốt BUILD và gói delta một lượt
 
 |Mã|Chức năng|Vùng|Trạng thái|Commit|Verify|Ghi chú|
