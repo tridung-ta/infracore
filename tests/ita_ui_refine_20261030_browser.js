@@ -5,7 +5,7 @@ async(page)=>{
  try{
   await c.request.post('http://127.0.0.1:18767/review/control',{headers:{'X-Local-Review':'mock-only'},data:{reset:true}});
   await p.goto('http://127.0.0.1:18767/#assignments');await p.locator('#handover-browse').waitFor();ck(records===0,'No record automatically opened');
-  await p.locator('#handover-browse').click();await p.waitForFunction(()=>document.getElementById('handover-asset').options.length>1);
+  await p.waitForFunction(()=>document.getElementById('handover-asset').options.length>1);
   ck(await p.locator('#handover-search').inputValue()==='','Can browse without entering text');ck((await p.locator('#handover-asset option').allTextContents()).some(n=>n.includes('TEST-LOCAL')&&n.includes(' · ')),'Picker shows code and name');ck(records===0,'Browsing does not open first record');
   await p.locator('#handover-assets-next').click();await p.waitForFunction(()=>document.getElementById('handover-assets-page').textContent.includes('2/'));ck(records===0,'Paging list never opens a record');await p.locator('#handover-assets-previous').click();await p.waitForFunction(()=>document.getElementById('handover-assets-page').textContent.includes('1/'));ck(await p.locator('#handover-asset').inputValue()==='','Paging preserves explicit selection requirement');
   await p.locator('#handover-asset').selectOption({index:1});await p.locator('#handover-record').waitFor();ck(records===1,'Selecting machine opens exactly its record');ck(posts===0,'Read-only device selection');

@@ -110,6 +110,6 @@
  $('assignment-live').nextElementSibling.hidden=true;$('assignment-live').hidden=false;
  document.querySelector('[data-view=assignments] .nav-count')?.remove();
  for(const [value,label] of [['assignment.assign','Giao thiết bị'],['assignment.return','Thu hồi thiết bị'],['assignment.acknowledge','Xác nhận nhận thiết bị'],['assignment.pdf_download','Tải biên bản bàn giao']])$('audit-action').append(new Option(label,value));
- function activate(){if(!window.ItaPolicy.can('assignment.read',true))return;if(!started&&location.hash==='#assignments'&&window.itaLiveContext){started=true;$('handover-asset').replaceChildren(new Option('Bấm Mở danh sách thiết bị để chọn máy',''));message('Chọn Mở danh sách thiết bị để xem tên máy; không bắt buộc nhập tìm kiếm. Chưa mở hồ sơ hoặc ghi dữ liệu bàn giao.');buttons();}}
+ function activate(){if(!window.ItaPolicy.can('assignment.read',true))return;if(!started&&location.hash==='#assignments'&&window.itaLiveContext){started=true;$('handover-asset').replaceChildren(new Option('Đang tải danh sách thiết bị…',''));message('Đang tải danh sách thiết bị trong phạm vi của bạn…');buttons();task(()=>loadAssets(1));}}
  addEventListener('ita:view',activate);addEventListener('ita:data',activate);activate();
 })();

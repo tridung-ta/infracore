@@ -1,5 +1,7 @@
 # Tiến độ dự án 5
 
+30/10 — Theo user, danh sách máy tự tải GET trangđầu khi mở Phân bổ/Thu hồi; không tự chọn/mởhồsơ/ghi. Nút tải lại danh sách giữ để phục hồi lỗi. Browser22+35/Smarty/JSsyntaxđạt, không DB/host/gói/upload. Chi tiết UI_REFINEMENTS_20261030.
+
 ## 30/10/2026 — Bộ chọn máy và giao diện Focus/thông báo
 
 |Mã|Chức năng|Vùng|Trạng thái|Commit|Verify|Ghi chú|

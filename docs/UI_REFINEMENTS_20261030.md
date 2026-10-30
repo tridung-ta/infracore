@@ -1,5 +1,7 @@
 # Cải tiến chọn máy, icon, thông báo và Focus — 30/10/2026
 
+**Điều chỉnh sau phản hồi user:** danh sách thiết bị tự tải trang đầu bằng GET khi mở Phân bổ/Thu hồi; không cần bấm mở. Nút đổi thành “Tải lại danh sách” để thử lại khi lỗi/làm mới. Giữ chọn máy tường minh, không tự mở hồ sơ/người nhận/ghi. Kiểm lại22browser UI +35hồi quy phân bổ ba vai trò/Smarty/JSsyntax đạt; không DB/host. Các mô tả nút “Mở danh sách” bên dưới là checkpoint trước điều chỉnh này.
+
 Theo4ảnh user: chỉ FE, không PHP/SQL/API/schema/config, không kết nối DB hoặc host. Không tạo gói mới/upload/push/merge/tag7–10. Gói delta29/10 không chứa thay đổi này.
 
 ## Hành vi
