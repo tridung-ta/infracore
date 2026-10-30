@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 30/10/2026 — Bộ chọn máy và giao diện Focus/thông báo
+
+|Mã|Chức năng|Vùng|Trạng thái|Commit|Verify|Ghi chú|
+|---|---|---|---|---|---|---|
+|F14-UI30|Danh sách chọn máy không cần gõ, iconmenu khác nhau, feedbackcard, Focus dễđọc|FE|[x]local|Commit feat(ui) lượt này|Browser22+14+35+21+12+42; JSsyntax/Smarty/diffđạt|UI_REFINEMENTS_20261030; không DB/host/gói/push/deploy; không lấy thay đổi riêng security20|
+
 29/10 — Theo yêu cầu chỉ file sửa, đã tách delta22file từ a7c2da1→171edde,73.089byte; actual ZIP inventory/CRC/hash/exclusions đạt. HOST_UPLOAD_DELTA_20261029; không đổi runtime đã kiểm, khôngvendor/font/config/SQL, chưa upload/DB/host. Gói đầy đủ49MB không cần dùng khi nền a7c2da1 đã có.
 
 ## 29/10/2026 — Kiểm lại và tạo gói cập nhật theo yêu cầu

@@ -14,8 +14,18 @@
   $('access-save').textContent=active?'Tạo tài khoản & cấp quyền':'Lưu quyền truy cập';
  }
  function clearPasswords(){for(const key of ['password','confirmation'])$('user-create-'+key).value='';}
- function adminStatus(message,error=false){const node=$('admin-message');node.textContent=message;node.setAttribute('role',error?'alert':'status');node.classList.toggle('danger-text',error);window.ItaUi.autoDismiss(node,error||message.startsWith('Đang'));if(!message)node.hidden=true;}
+ function adminStatus(message,error=false){const node=$('admin-message');renderFeedback(node,message,error);window.ItaUi.autoDismiss(node,error||message.startsWith('Đang'));if(!message)node.hidden=true;}
  function el(tag,text){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;}
+ function renderFeedback(node,message,error=false){
+  const pending=message.startsWith('Đang'),success=message.startsWith('Đã')&&!message.startsWith('Đã hủy')&&!message.startsWith('Đã đóng');
+  node.dataset.state=error?'error':pending?'pending':success?'success':'info';node.setAttribute('role',error?'alert':'status');node.setAttribute('aria-live',error?'assertive':'polite');
+  node.classList.toggle('danger-text',error);node.classList.toggle('success-text',!error&&success);
+  node.replaceChildren();if(!message)return;
+  const mark=el('span',error?'!':pending?'…':success?'✓':'i');mark.className='account-feedback-mark';mark.setAttribute('aria-hidden','true');
+  const content=el('div');content.className='account-feedback-content';content.append(el('strong',error?'Cần kiểm tra':pending?'Đang xử lý':success?'Hoàn tất':'Thông tin'),el('p',message));
+  const close=el('button','×');close.type='button';close.className='account-feedback-close';close.setAttribute('aria-label','Đóng thông báo');close.disabled=pending;close.addEventListener('click',()=>node.hidden=true);
+  node.append(mark,content,close);
+ }
  const feedback=el('p');feedback.id='access-message';feedback.className='admin-message';feedback.hidden=true;
  $('access-form').insertBefore(feedback,$('access-form').lastElementChild);
  const accountForms=['access-form','user-profile-form','user-password-form'];
@@ -34,10 +44,8 @@
   if([...form.elements].find(n=>n.willValidate&&!n.validity.valid)===field)announce(formFeedback(form),invalidMessage(field),true);
  },true);form.addEventListener('input',event=>event.target.removeAttribute('aria-invalid'));}
  function announce(node,message,error=false){
-  node.textContent=message;node.hidden=false;node.tabIndex=-1;
-  node.setAttribute('role',error?'alert':'status');
-  node.classList.toggle('danger-text',error);node.classList.toggle('success-text',!error);
-  window.ItaUi.autoDismiss(node,error);
+  renderFeedback(node,message,error);node.hidden=false;node.tabIndex=-1;
+  window.ItaUi.autoDismiss(node,error||message.startsWith('Đang'));
   node.focus({preventScroll:true});node.scrollIntoView({block:'nearest'});
  }
  async function api(action,query={},body){

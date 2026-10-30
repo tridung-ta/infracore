@@ -97,6 +97,7 @@
   finally{clearTimeout(timer);}
  }
  $('handover-search-form').addEventListener('submit',e=>{e.preventDefault();task(()=>loadAssets(1));});
+ $('handover-browse').addEventListener('click',async()=>{if(busy)return;$('handover-search').value='';await task(()=>loadAssets(1));if($('handover-asset').options.length>1)$('handover-asset').focus();});
  $('handover-asset').addEventListener('change',()=>task(()=>loadRecord()));$('handover-reload').addEventListener('click',()=>task(()=>loadRecord()));
  $('handover-create').addEventListener('submit',e=>{e.preventDefault();task(()=>save('assign'));});
  $('handover-return-form').addEventListener('submit',e=>{e.preventDefault();task(()=>save('return'));});
@@ -109,6 +110,6 @@
  $('assignment-live').nextElementSibling.hidden=true;$('assignment-live').hidden=false;
  document.querySelector('[data-view=assignments] .nav-count')?.remove();
  for(const [value,label] of [['assignment.assign','Giao thiết bị'],['assignment.return','Thu hồi thiết bị'],['assignment.acknowledge','Xác nhận nhận thiết bị'],['assignment.pdf_download','Tải biên bản bàn giao']])$('audit-action').append(new Option(label,value));
- function activate(){if(!window.ItaPolicy.can('assignment.read',true))return;if(!started&&location.hash==='#assignments'&&window.itaLiveContext){started=true;$('handover-asset').replaceChildren(new Option('Tìm rồi chọn thiết bị',''));message('Nhấn Tìm thiết bị, sau đó chọn thiết bị để mở hồ sơ. Chưa tải hồ sơ hoặc ghi dữ liệu bàn giao.');buttons();}}
+ function activate(){if(!window.ItaPolicy.can('assignment.read',true))return;if(!started&&location.hash==='#assignments'&&window.itaLiveContext){started=true;$('handover-asset').replaceChildren(new Option('Bấm Mở danh sách thiết bị để chọn máy',''));message('Chọn Mở danh sách thiết bị để xem tên máy; không bắt buộc nhập tìm kiếm. Chưa mở hồ sơ hoặc ghi dữ liệu bàn giao.');buttons();}}
  addEventListener('ita:view',activate);addEventListener('ita:data',activate);activate();
 })();

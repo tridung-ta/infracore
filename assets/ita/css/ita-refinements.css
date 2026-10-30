@@ -3,6 +3,29 @@
 .admin-message[role="alert"]{background:var(--ita-danger-soft);border-color:var(--ita-danger);color:var(--ita-text)}
 .admin-message[data-state="success"]{background:var(--ita-success-soft);border-color:var(--ita-success);color:var(--ita-text)}
 .admin-message:empty{display:none}
+#users-panel .admin-message:not(:empty){display:flex;align-items:start;gap:12px}
+#users-panel .admin-message[data-state="info"],#users-panel .admin-message[data-state="pending"]{background:var(--ita-accent-soft);border-color:var(--ita-accent)}
+.account-feedback-mark{display:grid;place-items:center;flex:0 0 28px;min-height:28px;border:1px solid currentColor;border-radius:50%;font-weight:700}
+.account-feedback-content{min-width:0;flex:1}.account-feedback-content strong{display:block;font-size:14px}.account-feedback-content p{margin:4px 0 0;font-size:13px;line-height:1.6}
+.account-feedback-close{flex:0 0 36px;min-height:36px;border:1px solid var(--ita-border);border-radius:8px;background:var(--ita-transparent);color:var(--ita-text);font-size:22px;line-height:1;cursor:pointer}
+.account-feedback-close:hover{background:var(--ita-surface-2)}.account-feedback-close:focus-visible{outline:2px solid var(--ita-accent);outline-offset:2px}
+.handover-picker{padding:20px;border:1px solid var(--ita-border);border-radius:12px;background:var(--ita-surface-2)}.handover-picker .muted{margin:8px 0 0;font-size:12px;line-height:1.6}
+body[data-ui-theme="focus"] .sidebar{background:var(--ita-surface);border-inline-end:1px solid var(--ita-border)}
+body[data-ui-theme="focus"] .main-nav a{border-radius:8px;margin-block:3px}
+body[data-ui-theme="focus"] .main-nav a[aria-current="page"]{background:var(--ita-accent-soft);border-color:var(--ita-accent);box-shadow:inset 3px 0 var(--ita-accent);font-weight:650}
+body[data-ui-theme="focus"] .panel{box-shadow:var(--ita-focus-shadow);border-radius:14px}
+body[data-ui-theme="focus"] .panel-heading{background:var(--ita-surface);border-bottom:1px solid var(--ita-border);padding-block:24px}
+body[data-ui-theme="focus"] .asset-table thead,body[data-ui-theme="focus"] .audit-table thead,body[data-ui-theme="focus"] .forecast-table thead{background:var(--ita-surface-2)}
+body[data-ui-theme="focus"] tbody tr:nth-child(even){background:var(--ita-focus-row)}
+body[data-ui-theme="focus"] tbody tr:hover{background:var(--ita-accent-soft)}
+body[data-ui-theme="focus"] .form-control,body[data-ui-theme="focus"] .form-select{background-color:var(--ita-surface);border-color:var(--ita-border);min-height:42px}
+body[data-ui-theme="focus"] .form-control:focus,body[data-ui-theme="focus"] .form-select:focus{border-color:var(--ita-accent);box-shadow:0 0 0 3px var(--ita-accent-soft)}
+body[data-ui-theme="focus"] .secondary-button{background:var(--ita-surface);font-weight:550}
+body[data-ui-theme="focus"] .primary-button{font-weight:650;box-shadow:var(--ita-focus-shadow)}
+body[data-ui-theme="focus"] .permission-module{background:var(--ita-surface);border-radius:10px}
+body[data-ui-theme="focus"] .permission-module[open] summary{border-bottom:1px solid var(--ita-border);padding-bottom:12px;margin-bottom:8px}
+body[data-ui-theme="focus"] .network-graph,body[data-ui-theme="focus"] .network-3d{border-color:var(--ita-border);background:var(--ita-focus-row);border-radius:12px}
+@media(max-width:767px){.handover-picker{padding:16px}.handover-picker>button{width:100%}.account-feedback-mark{flex-basis:24px;min-height:24px}}
 #handover-details{padding-block:20px;border-block:1px solid var(--ita-border);margin-block:24px}
 #handover-active{padding-block:8px 24px;border-bottom:1px solid var(--ita-border)}
 #handover-active-text{line-height:1.8;overflow-wrap:anywhere;max-width:80ch}
