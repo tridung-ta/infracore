@@ -1,0 +1,75 @@
+async(page)=>{
+ const context=await page.context().browser().newContext({viewport:{width:1366,height:1000},reducedMotion:'reduce'}),p=await context.newPage(),checks=[],requests=[],errors=[];
+ const check=(ok,label)=>{if(!ok)throw new Error(label);checks.push(label);};
+ let failed=false;
+ await p.clock.setFixedTime(new Date('2026-10-21T10:00:00+07:00'));
+ p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>requests.push({url:r.url(),method:r.method()}));
+ await context.route('**/*',r=>{if(!r.request().url().startsWith('http://127.0.0.1:18766/'))return r.abort();if(failed&&r.request().url().endsWith('/dashboard.json'))return r.fulfill({status:503,body:'unavailable'});return r.continue();});
+ try{
+  await p.goto('http://127.0.0.1:18766/assets/ita/mock/dashboard.html');await p.waitForFunction(()=>window.itaDashboardPreview?.chartCount()===3);
+  check((await p.locator('.mock-label').textContent()).includes('MOCK'),'MOCK prominent');
+  check(await p.evaluate(()=>echarts.version==='6.1.0'),'Pinned local ECharts runtime');
+  const numbers=await p.locator('#preview-kpis dd').allTextContents();check(numbers.join('|')==='9|8|50.0%|3','Hand metrics9/8/4of8/3');
+  check((await p.locator('#preview-bell').getAttribute('aria-label')).includes('4 cảnh báo đang hiệu lực'),'Effective bell count, not unread');
+  check(await p.evaluate(()=>new Set(['dashboard','alerts','maintenance'].map(v=>document.getElementById('preview-'+v).dataset.asOf)).size===1),'One shared timestamp');
+  check(/^Số liệu tại \d\d:\d\d$/.test(await p.locator('#preview-asof').textContent()),'HH:mm VN visible');
+  check(await p.locator('#preview-replace-table tbody tr').count()===3,'Replacement raw threshold, not rounded');
+  check(!(await p.locator('#preview-replace-table').textContent()).includes('MOCK-004'),'Raw0.7996 not included as replace');
+  check((await p.locator('#preview-replace-table').textContent()).includes('1.250'),'Score above1 displayed');
+  check((await p.locator('#preview-missing-score').textContent()).startsWith('1 hồ sơ thiếu điểm'),'Missing score explicitly unranked');
+  check(await p.evaluate(()=>echarts.getInstanceByDom(document.getElementById('preview-status-chart')).getOption().animation===false),'Reduced motion charts static');
+  check(await p.evaluate(()=>echarts.getInstanceByDom(document.getElementById('preview-status-chart')).getOption().legend[0].top===0),'Legend above plot, not over axes');
+  await p.evaluate(()=>{window.oldPreviewCharts=['status','fault','replace'].map(v=>echarts.getInstanceByDom(document.getElementById('preview-'+v+'-chart')));});
+  await p.locator('#preview-group').selectOption('year');await p.locator('#preview-apply').click();
+  check(await p.evaluate(()=>oldPreviewCharts.every(c=>c.isDisposed())),'Dispose on filter change');
+  check((await p.locator('#preview-status-table').textContent()).includes('Chưa ghi nhận'),'Missing purchase year not year0');
+  check(await p.locator('.preview-chart svg').count()===3,'Exactly3 chart SVGs after filter');
+  await p.locator('#preview-bell').focus();await p.keyboard.press('Enter');await p.locator('#preview-alerts').waitFor({state:'visible'});
+  check(await p.evaluate(()=>itaDashboardPreview.chartCount()===0),'Dispose on leaving chart view');
+  check(await p.locator('#preview-alert-table tbody tr').count()===4,'Active alerts exclude inactive');
+  check(await p.locator('#preview-alert-table tbody tr').filter({hasText:'MOCK-001'}).count()===2,'Two reasons for one device');
+  await p.locator('#preview-dashboard-tab').click();await p.waitForFunction(()=>itaDashboardPreview.chartCount()===3);
+  await p.locator('#preview-department').selectOption('ops');await p.locator('#preview-apply').click();
+  check((await p.locator('#preview-kpis dd').allTextContents()).join('|')==='3|3|33.3%|1','Admin Operations subset');
+  await p.locator('#preview-role').selectOption('system_manager');check((await p.locator('#preview-kpis dd').allTextContents()).join('|')==='5|4|75.0%|2','Manager fixture scopeIT');
+  check(await p.locator('#preview-department').inputValue()==='it','Displayed scope matches manager metrics');
+  check(await p.locator('#preview-department').isDisabled(),'Manager cannot choose other scope');
+  await p.locator('#preview-role').selectOption('support_technician');
+  check(await p.locator('#preview-dashboard').isHidden()&&await p.locator('#preview-maintenance').isVisible(),'Support only maintenance view');
+  check(await p.locator('#preview-bell').isHidden()&&await p.locator('#preview-alerts-tab').isHidden(),'Support no alert dashboard');
+  check(await p.locator('button').filter({hasText:/Xuất/}).count()===0,'No export in preview or support');
+  check(await p.evaluate(()=>itaDashboardPreview.chartCount()===0),'No charts retained for support');
+  await p.locator('#preview-role').selectOption('admin_it');await p.locator('#preview-dashboard-tab').click();
+  await p.locator('#preview-department').selectOption('unassigned');await p.locator('#preview-apply').click();
+  check((await p.locator('#preview-kpis dd').allTextContents()).join('|')==='1|1|0.0%|0','Unassigned filter and empty replacements');
+  check((await p.locator('#preview-replace-table').textContent()).includes('Không có dữ liệu'),'Empty state');
+  await p.locator('#preview-department').selectOption('');await p.locator('#preview-apply').click();
+  for(const width of [1366,768,390]){
+   await p.setViewportSize({width,height:1000});await p.waitForTimeout(120);
+   check(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No page overflow '+width);
+   check(await p.locator('#preview-filters').evaluate(n=>[...n.querySelectorAll('select,button')].every(n=>{const b=n.getBoundingClientRect();return b.left>=0&&b.right<=innerWidth+1;})),'Control bounds '+width);
+   await p.screenshot({path:`.playwright-cli/phase10-preview-${width}.png`,fullPage:true});
+  }
+  const before=requests.filter(r=>r.url.endsWith('/dashboard.json')).length;await p.waitForTimeout(200);
+  check(requests.filter(r=>r.url.endsWith('/dashboard.json')).length===before,'No automatic fixture refresh');
+  await p.clock.setFixedTime(new Date('2026-10-21T10:01:00+07:00'));failed=true;await p.locator('#preview-refresh').click();await p.locator('#preview-message').filter({hasText:'Không tải được'}).waitFor();
+  check((await p.locator('#preview-asof').textContent()).endsWith('10:00'),'Failed refresh retains previous timestamp');
+  check(await p.locator('#preview-refresh').isEnabled(),'Load failure retry available');failed=false;
+  await p.locator('#preview-refresh').click();await p.locator('#preview-message').filter({hasText:'Đã áp dụng'}).waitFor();
+  check((await p.locator('#preview-asof').textContent()).endsWith('10:01'),'Manual refresh advances shared timestamp');
+  check(requests.filter(r=>r.url.endsWith('/dashboard.json')).length===before+2,'Only manual data refreshes');
+  check(requests.every(r=>r.method==='GET')&&!requests.some(r=>r.url.includes('admin.php')),'No writes or PHP endpoints');
+  check(requests.every(r=>r.url.startsWith('http://127.0.0.1:18766/')),'All requests local, no CDN');
+  const math=await p.evaluate(()=>[itaDashboardPreview.windowStart('2024-02-29'),itaDashboardPreview.windowStart('2026-10-21')]);
+  check(math[0]==='2023-02-28'&&math[1]==='2025-10-21','Calendar12months clamped leapday');
+  await p.evaluate(()=>dispatchEvent(new PageTransitionEvent('pagehide')));check(await p.evaluate(()=>itaDashboardPreview.chartCount()===0),'Dispose on pagehide');
+  await context.route('**/echarts.min.js',r=>r.abort());
+  await context.route('**/dashboard.json',async r=>{const response=await r.fetch(),data=await response.json();data.assets[0].name='<img src=x onerror=alert(1)>';return r.fulfill({json:data});});
+  const fallback=await context.newPage();fallback.on('pageerror',e=>errors.push(e.message));await fallback.clock.setFixedTime(new Date('2026-10-21T10:00:00+07:00'));
+  await fallback.goto('http://127.0.0.1:18766/assets/ita/mock/dashboard.html');await fallback.locator('#preview-status-chart').filter({hasText:'Không tải được biểu đồ'}).waitFor();
+  check(await fallback.locator('#preview-replace-table tbody tr').count()===3,'Chart-load failure retains data tables');
+  check((await fallback.locator('#preview-replace-table').textContent()).includes('<img src=x')&&await fallback.locator('#preview-replace-table img').count()===0,'Table names escaped as text');
+  await fallback.close();
+  check(errors.length===0,'No runtime errors');return {checks:checks.length,results:checks,scope:'standalone FE MOCK only, no BE/DB'};
+ }finally{await context.close();}
+}

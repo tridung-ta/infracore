@@ -4,19 +4,21 @@
  if(document.body.dataset.mode!=='live')return;
  const $=id=>document.getElementById(id);
  let batch=null,busy=false,uncertain=false,unknown=false;
- const controls=['import-upload','import-confirm','import-errors','import-check','import-template','import-export-download','import-previous','import-next'];
- const allowed=()=>['admin_it','system_manager'].includes(window.itaLiveContext?.user.role);
+ const controls=['import-clear','import-upload','import-confirm','import-errors','import-check','import-template','import-export-download','import-previous','import-next'];
+ const allowed=()=>window.ItaPolicy.enabled()?(window.ItaPolicy.can('import.read')||window.ItaPolicy.can('asset.export')):['admin_it','system_manager'].includes(window.itaLiveContext?.user.role);
  function message(text,error=false){$('import-summary').textContent=text;$('import-summary').setAttribute('role',error?'alert':'status');}
  function state(){
   const disabled=busy||!allowed();
-  $('import-file').disabled=disabled||unknown;
+  $('import-file').disabled=disabled||unknown||!window.ItaPolicy.can('import.upload',true);
   controls.forEach(id=>$(id).disabled=disabled);
-  $('import-upload').disabled=disabled||unknown||!$('import-file').files.length;
-  $('import-confirm').disabled=disabled||uncertain||!batch||batch.error_rows>0||batch.status!=='validated';
-  $('import-errors').disabled=disabled||!batch||!batch.error_rows;
+  $('import-clear').disabled=disabled||unknown||!$('import-file').files.length;
+  $('import-upload').disabled=disabled||unknown||!window.ItaPolicy.can('import.upload',true)||!$('import-file').files.length;
+  $('import-confirm').disabled=disabled||uncertain||!window.ItaPolicy.can('import.confirm',true)||!batch||batch.error_rows>0||batch.status!=='validated';
+  $('import-template').disabled=disabled||!window.ItaPolicy.can('import.read',true);$('import-export-download').disabled=disabled||!window.ItaPolicy.can('asset.export',true);$('import-errors').disabled=disabled||!window.ItaPolicy.can('import.read',true)||!batch||!batch.error_rows;
   $('import-check').disabled=disabled||!batch;
   $('import-previous').disabled=disabled||!batch||batch.page<=1;
   $('import-next').disabled=disabled||!batch||batch.page*batch.per_page>=batch.total_rows;
+  $('import-confirm').textContent=batch?.status==='completed'?'Đã nhập lô này':unknown?'Chưa rõ kết quả — kiểm tra trạng thái':Number(batch?.error_rows)>0?'Chưa thể nhập — còn dòng lỗi':'Xác nhận nhập toàn bộ lô';
   $('import-workspace').setAttribute('aria-busy',String(busy));
  }
  async function request(action,options={}){
@@ -35,9 +37,9 @@
   try{await callback();}catch(error){message(error.message||'Không kết nối được. Hãy thử lại.',true);}finally{busy=false;state();}
  }
  function render(data){
-  batch=data;uncertain=false;unknown=false;
+  batch=data;uncertain=false;unknown=false;window.ItaImportUi.review(data);$('import-file-status').textContent=data.status==='completed'?'File đã được xử lý trong lô #'+data.batch_id+'. Không nhập lại.':'Đã kiểm tra file · lô #'+data.batch_id+'. Chưa nhập tài sản.';
   $('import-rows').replaceChildren(...data.rows.map(row=>{
-   const tr=document.createElement('tr');for(const value of [row.line,row.asset_code,row.name,row.error||'Hợp lệ']){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}return tr;
+   const tr=document.createElement('tr');tr.dataset.error=String(!!row.error);for(const value of [row.line,row.asset_code,row.name,row.error||'Hợp lệ']){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}return tr;
   }));
   $('import-page-summary').textContent=`Trang ${data.page}/${Math.ceil(data.total_rows/data.per_page)} · ${data.total_rows} dòng`;
   message(data.status==='completed'?`Lô #${data.batch_id} đã hoàn tất: ${data.ok_rows} tài sản. Không nhập lại file này.`:
@@ -56,24 +58,26 @@
   message('Đã tải file Excel.');
  }
  $('import-file').addEventListener('change',()=>{
-  batch=null;uncertain=false;unknown=false;$('import-rows').replaceChildren();$('import-page-summary').textContent='Chưa có bản xem trước';
+  batch=null;uncertain=false;unknown=false;window.ItaImportUi.review(null);$('import-rows').replaceChildren();$('import-page-summary').textContent='Chưa có bản xem trước';
   const file=$('import-file').files[0],valid=file&&/\.xlsx$/i.test(file.name)&&file.size>0&&file.size<=5*1024*1024;
   if(file&&!valid)$('import-file').value='';
-  $('import-file-status').textContent=valid?`Đã chọn ${file.name}. Bấm kiểm tra để tải lên; chưa ghi tài sản.`:'Chọn file .xlsx có dữ liệu, tối đa 5 MB.';
+  $('import-file-status').textContent=valid?`Đã chọn ${file.name} · ${Math.max(1,Math.ceil(file.size/1024)).toLocaleString('vi-VN')} KB. Bấm Kiểm tra để tải lên; chưa nhập tài sản.`:'Chọn file .xlsx có dữ liệu, tối đa 5 MB.';
   message('Chưa có bản xem trước của file này.');state();
  });
+ $('import-clear').addEventListener('click',()=>{if(busy||unknown)return;$('import-file').value='';$('import-file').dispatchEvent(new Event('change'));$('import-file').focus();});
  $('import-upload').addEventListener('click',()=>task(async()=>{
-  batch=null;uncertain=false;const body=new FormData();body.append('file',$('import-file').files[0]);
+  batch=null;uncertain=false;window.ItaImportUi.review(null);$('import-rows').replaceChildren();const body=new FormData();body.append('file',$('import-file').files[0]);
   message('Đang tải và kiểm tra file…');
   const response=await request('import-upload',{method:'POST',headers:{'X-CSRF-Token':document.querySelector('meta[name=ita-csrf]').content},body});
   render((await response.json()).data);
  }));
  $('import-confirm').addEventListener('click',()=>task(async()=>{
   if(!batch||batch.status!=='validated'||batch.error_rows)return;
+  const confirmed=await window.ItaUi.confirm({title:'Nhập toàn bộ '+batch.ok_rows+' tài sản?',message:'Chỉ bấm Nhập cả lô khi đã xem lại dữ liệu. Hệ thống sẽ nhập toàn bộ lô #'+batch.batch_id+', không chỉ trang đang hiển thị.',confirmLabel:'Nhập cả lô'});if(!confirmed){message('Đã hủy xác nhận. Chưa nhập tài sản.');return;}
   uncertain=true;unknown=true;message('Đang ghi toàn bộ lô. Vui lòng chờ…');
   try{
    const response=await request('import-confirm',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':document.querySelector('meta[name=ita-csrf]').content},body:JSON.stringify({batch_id:batch.batch_id,confirm_token:batch.confirm_token})});
-   const result=(await response.json()).data;batch.status='completed';uncertain=false;unknown=false;
+   const result=(await response.json()).data;batch.status='completed';uncertain=false;unknown=false;window.ItaImportUi.review(batch);$('import-file-status').textContent='File đã được xử lý trong lô #'+batch.batch_id+'. Không nhập lại.';
    message(`Đã nhập thành công ${result.imported_rows} tài sản${result.already_completed?' (lô đã hoàn tất trước đó, không ghi lại)':''}.`);dispatchEvent(new Event('ita:refresh'));
   }catch(error){if(error.status)unknown=false;throw new Error(`${error.message} Kiểm tra trạng thái lô trước khi thử lại. Không tải lại file khi chưa biết kết quả.`);}
  }));
@@ -99,6 +103,6 @@
  $('import-summary').classList.add('admin-message');
  $('import-workspace').querySelector('.import-tabs').after($('import-summary'));
  for(const [id,label] of [['import-template','Tải mẫu Excel'],['import-confirm','Xác nhận nhập toàn bộ lô'],['import-errors','Tải Excel lỗi'],['import-export-download','Xuất Excel']])$(id).textContent=label;
- $('import-upload').hidden=false;$('import-check').hidden=false;
+ $('import-upload').hidden=false;$('import-upload').textContent='Kiểm tra file & xem kết quả';$('import-check').hidden=false;
  addEventListener('ita:data',state);state();
 })();

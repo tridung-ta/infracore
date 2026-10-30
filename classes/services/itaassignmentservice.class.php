@@ -8,6 +8,7 @@ class ItaAssignmentService
     /** Asset lock, unique active assignment and audit protect one handover transaction. */
     public function save(array $input): array
     {
+        if ($this->actor->capabilitiesEnabled) { $permission=match($input['operation'] ?? ''){'assign'=>'assignment.create','return'=>'assignment.return','acknowledge'=>'assignment.acknowledge',default=>throw new ItaHttpError(422,'Thao tác không hợp lệ.')};$this->actor->requireCapability($permission); }
         $operation = ItaInput::text($input['operation'] ?? '',20);
         if (!in_array($operation,['assign','return','acknowledge'],true)) {
             throw new ItaHttpError(422,'Thao tác bàn giao không hợp lệ.');
@@ -67,6 +68,7 @@ class ItaAssignmentService
 
     private function assign(array $asset, ?array $active, array $input): int
     {
+        ItaTicketGuard::clear($this->db,$this->actor->storeId,(int) $asset['id']);
         ItaAssignmentRules::assignable($asset,$active,$this->actor);
         $target = $this->target($asset,$input);
         $due = ItaAssignmentRules::dueDate($input['due_return'] ?? '');

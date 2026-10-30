@@ -1,5 +1,9 @@
 # Hoàn tác schema ITA Phase 1
 
+## Bổ sung006 / SQL #13, 26/10/2026
+
+006_ita_network_links.sql chỉ thêm ita_network_links theo gate đã duyệt, không seed hoặc sửa bảng cũ. Agent chưa áp dụng. DDL có implicit commit, không có DOWN tự chạy. Nếu lỗi hoặc rollback source: giữ bảng/link/audit và dữ liệu mới, phục hồi đúng source backup; không DROP/DELETE/TRUNCATE hoặc restore dump đè. Nếu bảng đã có thì đối chiếu SHOW CREATE TABLE, không chạy lại CREATE mù hoặc IF NOT EXISTS. Gỡ bảng là gate riêng với backup/phụ thuộc/phạm vi được xác nhận. Xem docs/PHASE13_SQL_HOST_GUIDE.md; phần Phase1 dưới đây giữ nguyên lịch sử.
+
 Các migration 001–004 chỉ tạo bảng mới, không chạm bảng `dc_`. DDL tạo bảng có implicit commit; `ROLLBACK` không hoàn tác được cả lô tạo bảng. Không bọc migration trong transaction rồi coi đó là bảo vệ toàn bộ lô.
 
 Nguồn MariaDB: https://mariadb.com/docs/server/reference/sql-statements/transactions/sql-statements-that-cause-an-implicit-commit

@@ -1,0 +1,32 @@
+<section id="network-panel" class="panel network-panel" aria-labelledby="network-heading" hidden>
+ <div class="panel-heading"><div><h2 id="network-heading">Bản đồ kết nối hạ tầng</h2><p id="network-description">MOCK · Mô hình minh họa, không quét hoặc giám sát mạng thật.</p></div><span id="network-badge" class="mock-label">MOCK</span></div>
+ <div class="network-body">
+  <p id="network-message" role="status" aria-live="polite"></p>
+   <form id="network-filters" class="network-controls"><div><label for="network-search">Tìm thiết bị mẫu</label><input id="network-search" class="form-control" type="search" maxlength="100"></div><div><label for="network-department">Bộ phận mẫu</label><select id="network-department" class="form-select"><option value="">Tất cả bộ phận</option></select></div><button class="secondary-button" type="submit">Áp dụng</button><button id="network-reset" class="secondary-button" type="button">Xóa lọc</button></form>
+  <p class="muted" id="network-limit-help">Mỗi sơ đồ tối đa 200 thiết bị và 400 liên kết. Nếu vượt giới hạn, chọn bộ phận hoặc tìm một nhóm mã/tên rồi bấm Áp dụng.</p>
+  <div id="network-content" hidden>
+
+   <p id="network-count" class="muted" aria-live="polite"></p>
+   <div class="network-controls" role="group" aria-label="Chế độ sơ đồ"><button id="network-show-2d" class="secondary-button" type="button" aria-pressed="true">Sơ đồ 2D</button><button id="network-show-3d" class="secondary-button" type="button" aria-pressed="false">Xem 3D (MOCK)</button><button id="network-rotate-left" class="secondary-button" type="button" disabled>Xoay trái</button><button id="network-rotate-right" class="secondary-button" type="button" disabled>Xoay phải</button></div><p id="network-3d-status" role="status" aria-live="polite"></p>
+   <div class="network-controls"><button id="network-flow-play" class="secondary-button" type="button">Minh họa luồng (MOCK)</button><button id="network-flow-stop" class="secondary-button" type="button" disabled>Dừng hiệu ứng</button><span class="muted">Chạy một lần, không phản ánh lưu lượng mạng.</span></div>
+   <div id="network-graph" class="network-graph" tabindex="0" role="region" aria-label="Sơ đồ mạng 2D mẫu, có thể cuộn ngang"><svg id="network-svg" viewBox="0 0 1100 500" role="group" aria-labelledby="network-svg-title"><title id="network-svg-title">MOCK · Kết nối thiết bị minh họa</title><g id="network-links"></g><g id="network-nodes"></g></svg></div>
+   <button id="network-fullscreen" class="secondary-button" type="button" aria-controls="network-3d" aria-pressed="false" disabled>Toàn màn hình 3D</button>
+   <div id="network-3d" class="network-3d" hidden><div id="network-fullscreen-controls" class="network-fullscreen-controls" role="group" aria-label="Điều khiển 3D toàn màn hình" hidden><label for="network-fullscreen-device">Chọn thiết bị</label><select id="network-fullscreen-device" class="form-select"></select><button id="network-fullscreen-left" class="secondary-button" type="button">Xoay trái</button><button id="network-fullscreen-right" class="secondary-button" type="button">Xoay phải</button><button id="network-fullscreen-exit" class="secondary-button" type="button">Thoát toàn màn hình</button></div></div>
+   <p class="muted">Chọn một thiết bị trong sơ đồ hoặc danh sách bên dưới. Trạng thái và tốc độ đều là dữ liệu giả, không phải số đo hiện tại.</p>
+   <div id="network-node-list" class="network-node-list" aria-label="Chọn thiết bị mẫu"></div>
+   <section id="network-detail" class="network-detail" aria-labelledby="network-detail-title" hidden><h3 id="network-detail-title">Thiết bị mẫu</h3><dl id="network-detail-values"></dl></section>
+   <div class="table-scroll"><table class="network-table"><caption>MOCK · Bảng đối chiếu liên kết trong bộ lọc</caption><thead><tr><th scope="col">Đầu nguồn</th><th scope="col">Đầu đích</th><th scope="col">Loại</th><th scope="col">Tốc độ mẫu</th><th scope="col">Trạng thái mẫu</th></tr></thead><tbody id="network-link-rows"></tbody></table></div>
+   <nav id="network-paging" class="network-controls" aria-label="Trang liên kết" hidden><button id="network-prev" class="secondary-button" type="button">Trước</button><span id="network-page" aria-live="polite"></span><button id="network-next" class="secondary-button" type="button">Sau</button></nav>
+   <form id="network-editor" hidden>
+    <h3>Quản lý liên kết</h3><p>Chọn hai thiết bị phần cứng trong phạm vi đang xem. Mỗi cặp có một liên kết đang sử dụng.</p>
+    <input id="network-edit-id" type="hidden"><input id="network-edit-version" type="hidden">
+    <div class="network-controls"><div><label for="network-source">Thiết bị thứ nhất</label><select id="network-source" class="form-select" required></select></div><div><label for="network-target">Thiết bị thứ hai</label><select id="network-target" class="form-select" required></select></div><div><label for="network-type">Loại liên kết</label><select id="network-type" class="form-select"><option value="ethernet">Ethernet</option><option value="fiber">Cáp quang</option><option value="wireless">Không dây</option></select></div></div>
+    <div class="network-controls"><div><label for="network-source-port">Cổng thiết bị thứ nhất</label><input id="network-source-port" class="form-control" maxlength="64"></div><div><label for="network-target-port">Cổng thiết bị thứ hai</label><input id="network-target-port" class="form-control" maxlength="64"></div><div><label for="network-capacity">Dung lượng mô tả</label><input id="network-capacity" class="form-control" maxlength="64"></div></div>
+    <label for="network-note">Ghi chú</label><textarea id="network-note" class="form-control" maxlength="1000"></textarea>
+    <div class="network-controls"><button id="network-save" class="primary-button" type="submit">Lưu liên kết</button><button id="network-new" class="secondary-button" type="button">Tạo liên kết khác</button></div>
+    <p id="network-save-message" role="status" aria-live="polite"></p>
+   </form>
+  </div>
+  <button id="network-retry" class="secondary-button" type="button" hidden>Tải lại mô hình mẫu</button>
+ </div>
+</section>

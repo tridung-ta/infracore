@@ -54,6 +54,7 @@ class Phase03Adapter extends ItaDb
     public bool $committed = false;
     public bool $rolledBack = false;
     public bool $failAudit = false;
+    public bool $pendingTicket = false;
     public string $categoryStatus = 'active';
     public function __construct(public array $asset)
     {
@@ -63,6 +64,7 @@ class Phase03Adapter extends ItaDb
     public function rollBack(): void { $this->rolledBack = true; }
     public function fetchOne(string $sql, string $types = '', array $params = []): ?array
     {
+        if (str_contains($sql,'ita_tickets')) return $this->pendingTicket ? ['id'=>9] : null;
         if (str_contains($sql,'ita_assignments')) return null;
         if (str_contains($sql,'ita_asset_categories')) return ['id'=>$params[1],'status'=>$this->categoryStatus];
         if (str_contains($sql,'ita_departments')) return ['id'=>$params[1]];
@@ -108,4 +110,9 @@ expect($db->committed,'Unchanged inactive category allowed for existing asset');
 $db = new Phase03Adapter($row);$db->categoryStatus='inactive';
 rejects(fn()=>(new ItaAssetService($db,actor('admin_it')))->save($input+['operation'=>'create']),422);
 rejects(fn()=>(new ItaAssetService($db,actor('admin_it')))->save(array_replace($input,['category_id'=>'3','operation'=>'update','id'=>'7','version'=>ItaAssetService::version($row)])),422);
+$db = new Phase03Adapter($row);$db->pendingTicket=true;
+foreach (['delete','status'] as $op) {
+    rejects(fn()=>(new ItaAssetService($db,actor('admin_it')))->save(['operation'=>$op,'id'=>7,'version'=>ItaAssetService::version($row),'status'=>'retired','reason'=>'QA']),409);
+}
+expect(!$db->writes,'Pending ticket prevents delete and retirement even inconsistent asset status');
 echo $checks." pure/scripted checks passed; no database connection.\n";

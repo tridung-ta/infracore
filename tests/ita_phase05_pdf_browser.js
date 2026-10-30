@@ -24,7 +24,7 @@ async(page)=>{
    }
    return json(route,null,404);
   });
-  await p.goto('http://127.0.0.1:18766/#assignments');await p.locator('#handover-active').waitFor({state:'visible'});
+  await p.goto('http://127.0.0.1:18766/#assignments');await p.locator('#handover-search-form button').click();await p.locator('#handover-asset option[value="7"]').waitFor({state:'attached'});await p.locator('#handover-asset').selectOption('7');await p.locator('#handover-active').waitFor({state:'visible'});
   return {p,context,downloads,fail:kind=>failure=kind};
  }
  for(const role of ['admin_it','system_manager','support_technician']){

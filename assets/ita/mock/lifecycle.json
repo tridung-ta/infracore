@@ -1,0 +1,218 @@
+{
+    "mock": true,
+    "rows": [
+        {
+            "id": 2,
+            "asset_code": "MOCK-NAS-02",
+            "name": "Thiết bị lưu trữ",
+            "status": "broken",
+            "category_id": 2,
+            "category_name": "Thiết bị lưu trữ",
+            "department_id": 1,
+            "department_name": "Công nghệ thông tin",
+            "purchase_date": "2016-10-21",
+            "purchase_price": "30000000",
+            "lifespan_years": 5,
+            "age_days": 3652,
+            "age_years": 9.998631074606434,
+            "age_ratio": 1.9997262149212869,
+            "repair_count": 4,
+            "repair_cost": "12000000",
+            "age_part": 0.9998631074606434,
+            "repairs_part": 0.3,
+            "cost_part": 0.2,
+            "score_raw": "1.4998631074606434",
+            "tier": "replace",
+            "score_display": "1.500",
+            "missing_reasons": []
+        },
+        {
+            "id": 1,
+            "asset_code": "MOCK-PC-01",
+            "name": "Máy tính văn phòng",
+            "status": "in_use",
+            "category_id": 1,
+            "category_name": "Máy tính",
+            "department_id": 1,
+            "department_name": "Công nghệ thông tin",
+            "purchase_date": "2021-10-21",
+            "purchase_price": "15000000",
+            "lifespan_years": 5,
+            "age_days": 1826,
+            "age_years": 4.999315537303217,
+            "age_ratio": 0.9998631074606434,
+            "repair_count": 3,
+            "repair_cost": "0",
+            "age_part": 0.4999315537303217,
+            "repairs_part": 0.3,
+            "cost_part": 0,
+            "score_raw": "0.7999315537303218",
+            "tier": "watch",
+            "score_display": "0.800",
+            "missing_reasons": []
+        },
+        {
+            "id": 6,
+            "asset_code": "MOCK-PRN-06",
+            "name": "Máy in hành chính",
+            "status": "in_use",
+            "category_id": 4,
+            "category_name": "Máy in",
+            "department_id": 2,
+            "department_name": "Vận hành",
+            "purchase_date": "2021-10-21",
+            "purchase_price": "10000000",
+            "lifespan_years": 5,
+            "age_days": 1826,
+            "age_years": 4.999315537303217,
+            "age_ratio": 0.9998631074606434,
+            "repair_count": 1,
+            "repair_cost": "1000000",
+            "age_part": 0.4999315537303217,
+            "repairs_part": 0.09999999999999999,
+            "cost_part": 0.020000000000000004,
+            "score_raw": "0.6199315537303217",
+            "tier": "watch",
+            "score_display": "0.620",
+            "missing_reasons": []
+        },
+        {
+            "id": 3,
+            "asset_code": "MOCK-MON-03",
+            "name": "Màn hình phòng họp",
+            "status": "in_use",
+            "category_id": 3,
+            "category_name": "Màn hình",
+            "department_id": 2,
+            "department_name": "Vận hành",
+            "purchase_date": "2023-10-21",
+            "purchase_price": "5000000",
+            "lifespan_years": 6,
+            "age_days": 1096,
+            "age_years": 3.0006844626967832,
+            "age_ratio": 0.5001140771161305,
+            "repair_count": 0,
+            "repair_cost": "0",
+            "age_part": 0.25005703855806527,
+            "repairs_part": 0,
+            "cost_part": 0,
+            "score_raw": "0.2500570385580653",
+            "tier": "normal",
+            "score_display": "0.250",
+            "missing_reasons": []
+        },
+        {
+            "id": 4,
+            "asset_code": "MOCK-PRN-04",
+            "name": "Máy in cần bổ sung hồ sơ",
+            "status": "maintenance",
+            "category_id": 4,
+            "category_name": "Máy in",
+            "department_id": 2,
+            "department_name": "Vận hành",
+            "purchase_date": null,
+            "purchase_price": null,
+            "lifespan_years": 5,
+            "age_days": null,
+            "age_years": null,
+            "age_ratio": null,
+            "repair_count": 0,
+            "repair_cost": "0",
+            "age_part": null,
+            "repairs_part": 0,
+            "cost_part": null,
+            "score_raw": null,
+            "tier": "missing",
+            "score_display": null,
+            "missing_reasons": [
+                "Ngày mua thiếu hoặc ở tương lai",
+                "Giá mua thiếu hoặc bằng 0"
+            ]
+        },
+        {
+            "id": 5,
+            "asset_code": "MOCK-SW-05",
+            "name": "Switch dự kiến tiếp nhận",
+            "status": "in_use",
+            "category_id": 5,
+            "category_name": "Switch \/ Router",
+            "department_id": 1,
+            "department_name": "Công nghệ thông tin",
+            "purchase_date": "2027-01-01",
+            "purchase_price": "8000000",
+            "lifespan_years": 7,
+            "age_days": null,
+            "age_years": null,
+            "age_ratio": null,
+            "repair_count": 0,
+            "repair_cost": "0",
+            "age_part": null,
+            "repairs_part": 0,
+            "cost_part": 0,
+            "score_raw": null,
+            "tier": "missing",
+            "score_display": null,
+            "missing_reasons": [
+                "Ngày mua thiếu hoặc ở tương lai"
+            ]
+        }
+    ],
+    "page": 1,
+    "per_page": 20,
+    "total": 6,
+    "window": {
+        "as_of": "2026-10-21",
+        "start_date": "2025-10-21",
+        "start_utc": "2025-10-20 17:00:00",
+        "end_utc": "2026-10-21 17:00:00"
+    },
+    "config": {
+        "values": {
+            "lifecycle_weight_age": "0.5",
+            "lifecycle_weight_repairs": "0.3",
+            "lifecycle_weight_cost": "0.2",
+            "lifecycle_replace_threshold": "0.8",
+            "lifecycle_watch_threshold": "0.6"
+        },
+        "default_keys": [
+            "lifecycle_weight_age",
+            "lifecycle_weight_repairs",
+            "lifecycle_weight_cost",
+            "lifecycle_replace_threshold",
+            "lifecycle_watch_threshold"
+        ],
+        "using_defaults": true
+    },
+    "departments": [
+        {
+            "value": "1",
+            "label": "Công nghệ thông tin"
+        },
+        {
+            "value": "2",
+            "label": "Vận hành"
+        }
+    ],
+    "categories": [
+        {
+            "id": 1,
+            "name": "Máy tính"
+        },
+        {
+            "id": 2,
+            "name": "Thiết bị lưu trữ"
+        },
+        {
+            "id": 3,
+            "name": "Màn hình"
+        },
+        {
+            "id": 4,
+            "name": "Máy in"
+        },
+        {
+            "id": 5,
+            "name": "Switch \/ Router"
+        }
+    ]
+}

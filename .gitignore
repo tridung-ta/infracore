@@ -52,7 +52,23 @@ desktop.ini
 # Fixed local delivery snapshots; never stage generated bundles/manifests.
 /artifacts/ita-phase03/
 /artifacts/ita-phase05/
+/artifacts/ita-phase07/
+/artifacts/ita-phase08/
 /.cache/composer-ita-pdf/
 /.cache/composer-ita-home/
 /tmp/pdfs/
 /classes/ita-pdf/vendor/
+# Synthetic read-only EXPLAIN plans generated from lifecycle query builder.
+!docs/PHASE08_EXPLAIN.sql
+
+# Read-only generated forecast EXPLAIN contract
+!docs/PHASE09_EXPLAIN.sql
+/artifacts/ita-phase09/
+
+# Private host listings: never commit or package.
+/tmp/host-inventory/
+/tmp/phase11-error-ui/
+/artifacts/ita-host-20261026/
+/artifacts/ita-host-20261027/
+/artifacts/ita-host-20261028/
+/artifacts/ita-manual-uat-*/

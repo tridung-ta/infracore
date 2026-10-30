@@ -1,0 +1,30 @@
+.login-page{display:block;padding:0;background:var(--ita-bg);color:var(--ita-text)}
+main.login-content{width:min(1160px,100%);max-width:1160px;min-height:100dvh;margin:auto;padding:44px 32px;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);align-items:center;gap:70px}
+.login-hero{min-width:0}.login-hero .brand{justify-content:flex-start;padding:0;margin-bottom:54px;width:max-content}
+.login-hero .brand-text small{font-size:11px;letter-spacing:.05em}
+.login-hero h2{font-size:42px;line-height:1.18;letter-spacing:-1.3px;font-weight:650;margin:0 0 22px}
+.login-intro{font-size:16px;line-height:1.8;color:var(--ita-text-muted);max-width:43ch;margin-bottom:22px}
+.login-hero-foot{font-size:11px;color:var(--ita-text-muted);margin:12px 0 0}
+.login-topology{display:block;width:100%;height:auto;max-width:480px;overflow:visible}
+.login-topology-lines{fill:none;stroke:var(--ita-border);stroke-width:1.5}
+.login-topology-center{fill:var(--ita-accent-soft);stroke:var(--ita-accent);stroke-width:2}
+.login-topology-device rect{fill:var(--ita-surface);stroke:var(--ita-border);stroke-width:1}
+.login-topology-device use{fill:none;stroke:var(--ita-accent);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.login-topology-device text{fill:var(--ita-text-muted);font-family:Inter,system-ui,sans-serif;font-size:12px;text-anchor:middle}
+.login-form-panel{min-width:0;max-width:470px;width:100%;justify-self:end}
+.login-form-panel .login-mode-toggle{margin:0 0 22px auto;width:max-content;max-width:100%;font-size:12px;padding:10px 14px;min-height:44px}
+.login-card{padding:36px;border-radius:16px}
+.login-card h1{font-size:26px;line-height:1.3}.login-card>p{line-height:1.7}
+.login-card .form-control{min-height:50px;padding:12px 14px;border-radius:7px}
+.login-card label{margin-top:22px}.login-card .password-field button{min-height:50px}
+.login-submit{display:flex;align-items:center;justify-content:center;gap:12px;min-height:50px;margin-top:28px;border-radius:7px}
+.login-footer{line-height:1.7;margin-top:20px}.login-error{overflow-wrap:anywhere}
+.login-focus-note{display:none}
+body[data-ui-theme="focus"] .login-topology{display:none}
+body[data-ui-theme="focus"] .login-focus-note{display:block;border-top:1px solid var(--ita-border);margin:32px 0;padding-top:24px;line-height:1.9;color:var(--ita-text-muted)}
+body[data-ui-theme="focus"] .login-hero h2{font-size:36px;letter-spacing:-.9px}
+body[data-ui-theme="focus"] .login-hero .brand{margin-bottom:40px}
+body[data-ui-theme="focus"] .login-card{background:var(--ita-surface);border-color:var(--ita-border);border-radius:12px}
+@media(min-width:1600px){main.login-content{gap:90px}}
+@media(max-width:900px){main.login-content{gap:32px;padding:32px 24px}.login-hero h2{font-size:32px}.login-card{padding:26px}.login-intro{font-size:14px}}
+@media(max-width:767px){main.login-content{display:block;min-height:100dvh;padding:28px 20px;max-width:500px}.login-hero .brand{margin-bottom:24px}.login-hero h2,.login-intro,.login-topology,.login-hero-foot,body[data-ui-theme="focus"] .login-focus-note{display:none}.login-form-panel{max-width:none}.login-form-panel .login-mode-toggle{margin:0 0 18px;width:100%;justify-content:center}.login-card{padding:26px 22px}.login-card h1{font-size:24px}.login-card .form-control{font-size:16px}.login-footer{font-size:12px}}

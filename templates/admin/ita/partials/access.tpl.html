@@ -1,2 +1,52 @@
-<section id="users-panel" class="admin-panel panel" hidden aria-labelledby="users-title"><div class="panel-heading"><div><h2 id="users-title">Tài khoản & phân quyền</h2><p class="muted">Cấp quyền IT cho tài khoản hiện có. Không thay đổi mật khẩu hoặc quyền PM.</p></div></div><p id="admin-message" class="admin-message" role="status" aria-live="polite"></p><div class="admin-table-wrap"><table class="asset-table"><thead><tr><th scope="col">Tài khoản</th><th scope="col">Họ tên</th><th scope="col">Vai trò IT</th><th scope="col">Truy cập IT</th><th scope="col">Thao tác</th></tr></thead><tbody id="user-rows"></tbody></table></div><div class="table-footer"><span id="user-page-summary"></span><nav aria-label="Phân trang tài khoản" class="pagination-controls"><button type="button" class="secondary-button" id="users-previous">Trước</button><button type="button" class="secondary-button" id="users-next">Sau</button></nav></div>
-<form id="access-form" class="access-form" hidden><h3 id="access-title">Phân quyền tài khoản</h3><input type="hidden" id="access-user-id"><label for="access-role">Vai trò IT</label><select class="form-select" id="access-role"><option value="admin_it">Admin IT</option><option value="system_manager">Quản lý hệ thống</option><option value="support_technician">Hỗ trợ kỹ thuật</option></select><label class="checkbox-label"><input type="checkbox" id="access-enabled"> Cho phép truy cập IT</label><fieldset><legend>Bộ phận phụ trách</legend><p class="muted">Admin IT có phạm vi toàn hệ thống. Các vai trò khác cần chọn ít nhất một bộ phận.</p><div id="scope-options" class="scope-options"></div></fieldset><div class="confirmation-actions"><button type="button" class="secondary-button" id="access-cancel">Hủy</button><button type="submit" class="primary-button" id="access-save">Lưu quyền truy cập</button></div></form></section>
+<section id="users-panel" class="admin-panel panel" hidden aria-labelledby="users-title"><div class="panel-heading"><div><h2 id="users-title">Tài khoản & phân quyền</h2><p class="muted">Tạo tài khoản mới và chọn quyền cho từng người. Giới hạn dữ liệu theo bộ phận phụ trách; sửa thông tin và đặt lại mật khẩu tài khoản do InfraCore tạo khi có quyền.</p></div></div><p id="admin-message" class="admin-message" role="status" aria-live="polite"></p><div class="admin-table-wrap"><table class="asset-table"><thead><tr><th scope="col">Tài khoản</th><th scope="col">Họ tên</th><th scope="col">Vai trò IT</th><th scope="col">Truy cập IT</th><th scope="col">Thao tác</th></tr></thead><tbody id="user-rows"></tbody></table></div><div class="table-footer"><span id="user-page-summary"></span><nav aria-label="Phân trang tài khoản" class="pagination-controls"><button type="button" class="secondary-button" id="users-previous">Trước</button><button type="button" class="secondary-button" id="users-next">Sau</button></nav></div>
+<form id="user-filters" class="scope-options" role="search" aria-label="Tìm tài khoản">
+ <div><label for="user-search">Tên đăng nhập hoặc họ tên</label><input id="user-search" type="search" class="form-control" maxlength="100" placeholder="Nhập tên cần tìm…"></div>
+ <div><label for="user-status">Trạng thái truy cập</label><select id="user-status" class="form-select"><option value="">Tất cả trạng thái</option><option value="allowed">Được truy cập IT</option><option value="not_allowed">Chưa cho phép truy cập IT</option><option value="locked">Tài khoản bị khóa</option></select></div>
+ <div><label for="user-department">Bộ phận được phân công</label><select id="user-department" class="form-select"><option value="">Tất cả bộ phận</option></select><p class="muted">Lọc bộ phận được gán trực tiếp; tài khoản toàn hệ thống không nhất thiết được gán riêng từng bộ phận.</p></div>
+ <div><button class="primary-button" type="submit">Tìm tài khoản</button> <button class="secondary-button" id="user-filter-reset" type="button">Xóa bộ lọc</button></div>
+</form>
+<button type="button" class="primary-button" id="user-create-open" hidden>Thêm tài khoản</button>
+<section id="user-profile-panel" class="access-form" hidden aria-labelledby="user-profile-title">
+ <h3 id="user-profile-title">Thông tin tài khoản</h3>
+ <p class="muted">Chỉ sửa tài khoản nhân viên được tạo từ InfraCore và có nhật ký nguồn gốc. Thông tin dùng chung với hệ thống cũ; tài khoản cũ và tài khoản quản trị nền cần quy trình riêng.</p>
+ <p id="user-profile-message" class="admin-message" role="status" aria-live="polite" hidden></p>
+ <form id="user-profile-form" hidden>
+  <div class="scope-options">
+   <div><label for="user-profile-username">Tên đăng nhập</label><input id="user-profile-username" class="form-control" minlength="3" maxlength="50" pattern="[A-Za-z0-9][A-Za-z0-9_.\-]&#123;2,49&#125;" required autocomplete="off"></div>
+   <div><label for="user-profile-fullname">Họ tên</label><input id="user-profile-fullname" class="form-control" maxlength="100" required autocomplete="off"></div>
+   <div><label for="user-profile-email">Email</label><input id="user-profile-email" type="email" class="form-control" maxlength="100" required autocomplete="off"></div>
+  </div>
+  <p class="muted">Tên đăng nhập, họ tên và email thay đổi ở tài khoản nền và có thể ảnh hưởng hệ thống cũ. Giới hạn thực phụ thuộc cấu trúc tài khoản nền.</p>
+  <div class="confirmation-actions"><button type="button" class="secondary-button" id="user-profile-cancel">Hủy</button><button type="submit" class="primary-button" id="user-profile-save">Lưu thông tin</button></div>
+ </form>
+ <form id="user-password-form" hidden>
+  <p class="muted">Mật khẩu cũ bị thay thế. Đăng nhập cũ chỉ hỗ trợ MD5 có thể không còn hoạt động; phiên InfraCore đang mở sẽ bị yêu cầu đăng nhập lại. Phiên của hệ thống cũ không tự đóng.</p>
+  <div class="scope-options">
+   <div><label for="user-password-new">Mật khẩu mới</label><input id="user-password-new" type="password" class="form-control" autocomplete="new-password" maxlength="72" required></div>
+   <div><label for="user-password-confirm">Nhập lại mật khẩu mới</label><input id="user-password-confirm" type="password" class="form-control" autocomplete="new-password" maxlength="72" required></div>
+   <div><label for="user-password-actor">Mật khẩu của bạn để xác nhận</label><input id="user-password-actor" type="password" class="form-control" autocomplete="current-password" required></div>
+  </div>
+  <p class="muted">Mật khẩu mới từ 6 ký tự, tối đa 72 byte. Không gửi mật khẩu qua chat.</p>
+  <div class="confirmation-actions"><button type="button" class="secondary-button" id="user-password-cancel">Hủy</button><button type="submit" class="primary-button" id="user-password-save">Đặt lại mật khẩu</button></div>
+ </form>
+</section>
+<form id="access-form" class="access-form" hidden><h3 id="access-title">Phân quyền tài khoản</h3>
+<fieldset id="user-create-fields" hidden>
+ <legend>Thông tin tài khoản mới</legend>
+ <p class="muted">Chọn chức năng được phép sử dụng và bộ phận phụ trách. Mật khẩu này chỉ dành cho tài khoản mới.</p>
+ <div class="scope-options">
+  <div><label for="user-create-username">Tên đăng nhập</label><input id="user-create-username" class="form-control" autocomplete="off" minlength="3" maxlength="50" pattern="[A-Za-z0-9][A-Za-z0-9_.\-]&#123;2,49&#125;" disabled><p class="muted">3–50 ký tự chữ/số, dấu chấm, gạch ngang hoặc gạch dưới; không dấu cách.</p></div>
+  <div><label for="user-create-fullname">Họ tên</label><input id="user-create-fullname" class="form-control" autocomplete="off" maxlength="100" disabled></div>
+  <div><label for="user-create-email">Email</label><input id="user-create-email" type="email" class="form-control" autocomplete="off" maxlength="100" disabled></div>
+  <div><label for="user-create-password">Mật khẩu ban đầu</label><input id="user-create-password" type="password" class="form-control" autocomplete="new-password" maxlength="72" disabled><p class="muted">6 ký tự trở lên, tối đa 72 byte; mật khẩu được hash, không hiện lại sau lưu.</p></div>
+  <div><label for="user-create-confirmation">Nhập lại mật khẩu</label><input id="user-create-confirmation" type="password" class="form-control" autocomplete="new-password" maxlength="72" disabled></div>
+ </div>
+</fieldset>
+<input type="hidden" id="access-user-id"><label for="access-role">Vai trò IT</label><select class="form-select" id="access-role"><option value="admin_it">Admin IT</option><option value="system_manager">Quản lý hệ thống</option><option value="support_technician">Hỗ trợ kỹ thuật</option></select><label class="checkbox-label"><input type="checkbox" id="access-enabled"> Cho phép truy cập IT</label><fieldset><legend>Bộ phận phụ trách</legend><p class="muted">Admin IT có phạm vi toàn hệ thống. Các vai trò khác cần chọn ít nhất một bộ phận.</p><div id="scope-options" class="scope-options"></div></fieldset><div class="confirmation-actions"><button type="button" class="secondary-button" id="access-cancel">Hủy</button><button type="submit" class="primary-button" id="access-save">Lưu quyền truy cập</button></div></form><section id="permission-preview" class="permission-preview" aria-labelledby="permission-heading" hidden>
+ <h3 id="permission-heading">MOCK · Phân quyền theo chức năng</h3><p class="muted">A dùng 1–2–3; B dùng 4–5–6; C dùng 1–2–6. Chọn từng chức năng, không tạo thêm vai trò cho mỗi tổ hợp.</p>
+ <div class="permission-toolbar"><div><label for="permission-account">Tài khoản minh họa</label><select id="permission-account" class="form-select"><option value="a">MOCK · Tài khoản A</option><option value="b">MOCK · Tài khoản B</option><option value="c" selected>MOCK · Tài khoản C</option></select></div><button type="button" id="permission-reset" class="secondary-button">Khôi phục ví dụ</button></div>
+ <div id="permission-modules" class="permission-modules"></div>
+ <div class="permission-summary"><strong id="permission-count"></strong><ul id="permission-selection"></ul></div><p id="permission-preview-message" class="admin-message" role="status" aria-live="polite"></p>
+ <p class="muted">Bản xem trước chưa lưu vào server. Phạm vi bộ phận, ràng buộc trạng thái, xác thực lại và nhật ký vẫn cần kiểm phía server; tick ô không tự cấp quyền thật. Phụ thuộc giữa các quyền sẽ được kiểm ở bước BE được duyệt.</p>
+</section>
+</section>

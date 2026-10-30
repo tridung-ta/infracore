@@ -5,18 +5,54 @@
  <meta name="color-scheme" content="dark"><title>InfraCore — Tổng quan hạ tầng</title>
  <meta name="ita-csrf" content="{$itaCsrf|default:''|escape:'html'}">
  <link rel="icon" href="data:,">
+ <script src="/assets/ita/js/ita-appearance.js?v=20261027-1"></script>
  <link rel="stylesheet" href="/assets/ita/vendor/bootstrap/5.3.8/bootstrap.min.css">
- <link rel="stylesheet" href="/assets/ita/css/ita-tokens.css">
+ <link rel="stylesheet" href="/assets/ita/css/ita-tokens.css?v=20261030-ui">
+ <link rel="stylesheet" href="/assets/ita/css/ita-licenses.css?v=20261020-ticket1">
  <link rel="stylesheet" href="/assets/ita/css/ita-shell.css?v=20261019-phase5-live">
- <script src="/assets/ita/js/ita-shell.js?v=20261019-phase5-live" defer></script>
- <script src="/assets/ita/js/ita-components.js" defer></script>
- <script src="/assets/ita/js/ita-admin.js?v=20261016-access1" defer></script>
- <script src="/assets/ita/js/ita-audit.js" defer></script>
- <script src="/assets/ita/js/ita-assets.js?v=20261019-phase3" defer></script>
- <script src="/assets/ita/js/ita-import.js?v=20261019-phase4" defer></script>
- <script src="/assets/ita/js/ita-import-live.js?v=20261019-phase4" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-errors.css?v=20261022-11">
+ <script src="/assets/ita/js/ita-errors.js?v=20261022-11" defer></script>
+ <script src="/assets/ita/js/ita-permissions.js?v=20261029-accessread" defer></script>
+ <script src="/assets/ita/js/ita-notifications.js?v=20261028-session" defer></script>
+ <script src="/assets/ita/js/ita-shell.js?v=20261028-usercreate" defer></script>
+ <script src="/assets/ita/js/ita-components.js?v=20261029-feedback4s" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-refinements.css?v=20261030-ui">
+ <script src="/assets/ita/js/ita-form-guidance.js?v=20261029-errors" defer></script>
+ <script src="/assets/ita/js/ita-admin.js?v=20261030-ui" defer></script>
+ <script src="/assets/ita/js/ita-audit-view.js?v=20261029-accountcrud" defer></script>
+ <script src="/assets/ita/js/ita-audit.js?v=20261027-capabilities" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-admin-refine.css?v=20261029-permission-layout">
+ <script src="/assets/ita/js/ita-assets.js?v=20261029-feedback4s" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-import-refine.css?v=20261028-import">
+ <script src="/assets/ita/js/ita-import.js?v=20261028-import" defer></script>
+ <script src="/assets/ita/js/ita-import-live.js?v=20261028-import" defer></script>
  <script src="/assets/ita/js/ita-assignments.js?v=20261019-phase5" defer></script>
- <script src="/assets/ita/js/ita-assignments-live.js?v=20261020-pdf1" defer></script>
+ <script src="/assets/ita/js/ita-assignments-live.js?v=20261030-autolist" defer></script>
+ <script src="/assets/ita/js/ita-licenses.js?v=20261029-feedback4s" defer></script>
+ <script src="/assets/ita/js/ita-tickets.js?v=20261029-feedback4s" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-tickets.css?v=20261021-ticket-picker1">
+ <link rel="stylesheet" href="/assets/ita/css/ita-motion.css?v=20261021-life-ui2">
+ <script src="/assets/ita/js/motion/ita-core.js?v=20261027-themes" defer></script>
+ <script src="/assets/ita/js/motion/ita-tickets.js?v=20261029-feedback4s" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-lifecycle.css?v=20261021-life-ui2">
+ <script src="/assets/ita/js/ita-lifecycle.js?v=20261027-capabilities" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-forecast.css?v=20261021-1">
+ <script src="/assets/ita/js/ita-forecast.js?v=20261027-capabilities" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-dashboard.css?v=20261021-10">
+ <script src="/assets/ita/vendor/echarts/6.1.0/echarts.min.js" defer></script>
+ <script src="/assets/ita/js/ita-dashboard.js?v=20261028-feedback" defer></script>
+ <script src="/assets/ita/js/motion/ita-alerts.js?v=20261023-12" defer></script>
+ <script src="/assets/ita/js/motion/ita-overview.js?v=20261023-12" defer></script>
+ <script src="/assets/ita/js/motion/ita-assets.js?v=20261029-feedback4s" defer></script>
+ <script src="/assets/ita/js/motion/ita-asset-detail.js?v=20261023-12" defer></script>
+ <script src="/assets/ita/js/motion/ita-lifecycle.js?v=20261023-12" defer></script>
+ <script src="/assets/ita/js/motion/ita-forecast.js?v=20261023-12" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-network.css?v=20261026-labels">
+ <script src="/assets/ita/js/ita-network.js?v=20261023-13be" defer></script>
+ <script src="/assets/ita/js/ita-network-live.js?v=20261028-import" defer></script>
+ <script src="/assets/ita/js/ita-network-motion.js?v=20261023-13" defer></script>
+ <script src="/assets/ita/js/ita-network-3d.js?v=20261027-themes" defer></script>
+ <link rel="stylesheet" href="/assets/ita/css/ita-focus.css?v=20261027-1">
 </head>
 <body data-renderer="{$itaRenderer|default:'static'|escape:'html'}" data-mode="{$itaMode|default:'mock'|escape:'html'}">
  {include file="admin/ita/partials/icons.tpl.html"}
@@ -31,6 +67,12 @@
    {include file="admin/ita/partials/audit.tpl.html"}
    {include file="admin/ita/partials/import.tpl.html"}
    {include file="admin/ita/partials/assignments.tpl.html"}
+   {include file="admin/ita/partials/licenses.tpl.html"}
+   {include file="admin/ita/partials/tickets.tpl.html"}
+   {include file="admin/ita/partials/lifecycle.tpl.html"}
+   {include file="admin/ita/partials/forecast.tpl.html"}
+   {include file="admin/ita/partials/dashboard.tpl.html"}
+   {include file="admin/ita/partials/network.tpl.html"}
   </main>
   <footer class="app-footer"><span>InfraCore · Quản lý hạ tầng CNTT</span><span>Phiên bản giao diện 0.1</span></footer>
  </div>

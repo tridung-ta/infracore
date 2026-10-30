@@ -1,0 +1,16 @@
+# Upload bản cập nhật đến Phase 7 bằng FileZilla
+
+Gói cập nhật cộng dồn cho host đã đăng nhập ITA Phase2 thành công; không phải bộ cài website mới. User đã yêu cầu chuẩn bị gói ngày 20/10/2026. Agent không upload, merge hoặc kết nối DB. Không có SQL mới.
+
+1. Sao lưu source host và export DB ra nơi riêng trước khi upload. Giữ bản sao includes/ita_database.local.php, auth_key, .ita-enabled và khóa ITA_LICENSE_KEY; không gửi chúng vào chat/Git. Chọn lúc không có người ghi dữ liệu, tạm dừng thao tác trong suốt upload để tránh file cũ/mới lẫn nhau.
+2. Giải nén ZIP trên máy. Trong FileZilla mở **/domains/infracore.dung.derasoft.com/public_html** — không phải thư mục cha. Thư mục này phải đang chứa admin.php của ứng dụng đăng nhập được.
+3. Upload **nội dung bên trong runtime/** vào public_html, giữ nguyên cây thư mục, ghi đè các file cùng tên. Không tạo public_html/runtime. Không xóa thư mục hoặc file host không có trong gói. Upload lại dependency kể cả khi host đã có để giữ bộ đi kèm đồng nhất.
+4. Không upload handoff/, MANIFEST.json, verification.json, ZIP, docs, tests hoặc SQL vào webroot. Gói không chứa config host, dump, session, secret hoặc dữ liệu MOCK. admin.php, Smarty và PmAuth/PmDb dùng bản nền đã có trên host; giữ .ita-enabled hiện có, không đổi cờ legacy.
+5. Chờ FileZilla hoàn tất; kiểm tab Failed transfers bằng 0. Bật PHP8.3+ cùng mysqli, openssl, mbstring, GD, zip, XML/DOM và zlib cần cho Excel/PDF. Thư mục temp PHP phải ghi được và nằm ngoài document root. Nếu OPcache không tự cập nhật file, dùng công cụ hosting reload PHP theo quyền có sẵn, không sửa server tùy tiện.
+6. Giấy phép: cấu hình ITA_LICENSE_KEY riêng như PHASE06_HOST_TEST.md. Nếu chưa có, các thao tác cần key sẽ báo lỗi có kiểm soát; không tạo khóa thay thế nếu đã có ciphertext cần giải mã. Bộ `handoff/preflight/` tự chứa script và hai class cần thiết; giữ nguyên cây ở ngoài webroot, chạy CLI `php /duong-dan-private/preflight/scripts/check_ita_license.php` trong môi trường có cùng biến env PHP-FPM. Không upload handoff vào public_html. Không cần Composer/Node trên hosting; dependency PDF/Excel đã gom vào runtime.
+7. Mở https://infracore.dung.derasoft.com/admin.php?op=ita&act=login, Ctrl+F5, đăng nhập tài khoản hiện có. Phải thấy Phần mềm & giấy phép và Bảo trì & hỗ trợ. Nếu lỗi, dừng thao tác ghi, gửi thông báo lỗi đã che dữ liệu nhạy cảm.
+8. Thực hiện PHASE07_HOST_TEST.md theo từng bước bằng bản ghi kiểm thử riêng. Bắt đầu một tài sản và một phiếu, đối chiếu DB trước khi thử thêm. Không tự gây lỗi bảng/audit hoặc tắt CHECK trên DB thật. CHECK=ON trong phpMyAdmin chưa chứng minh session PHP có cùng cấu hình hoặc transaction đã đúng.
+
+Rollback code: khi không có request đang ghi, khôi phục các file tương ứng từ backup trước upload. Giữ DB/ticket/event/audit/dữ liệu mới, không DROP/DELETE hoặc import dump đè. Giữ khóa mã hóa cũ. Lỗi schema/data cần đối chiếu riêng, không chạy lại CREATE làm lối tắt.
+
+Không merge Phase7 hoặc bắt đầu Phase8 trước khi user xác nhận DB UAT Phase1–7. Bằng chứng mới từ ảnh user: DB dung_infracore/MariaDB10.6.28, 5 bảng assets/tickets/events/assignments/audit đều InnoDB, check_constraint_checks=ON trong phiên phpMyAdmin. Chưa chứng minh SQL nghiệp vụ, lock/rollback hoặc CHECK enforcement thực tế.

@@ -8,18 +8,20 @@ class ItaAssetService
     /** Each write and its audit entry commit together; failures leave both unchanged. */
     public function save(array $input): int
     {
+        if ($this->actor->capabilitiesEnabled) { $permission=match($input['operation'] ?? ''){'create'=>'asset.create','update'=>'asset.update','status'=>'asset.status','note'=>'asset.note','delete'=>'asset.delete',default=>throw new ItaHttpError(422,'Thao tác không hợp lệ.')};$this->actor->requireCapability($permission); }
         $operation = ItaInput::text($input['operation'] ?? '', 20);
         if (!in_array($operation, ['create','update','status','note','delete'], true)) {
             throw new ItaHttpError(422, 'Thao tác tài sản không hợp lệ.');
         }
-        if (in_array($operation, ['create','update'], true) && $this->actor->role === 'support_technician') {
+        if (in_array($operation, ['create','update'], true) && !$this->actor->can('asset.'.$operation)) {
             throw new ItaHttpError(403, 'Bạn chỉ được cập nhật trạng thái và ghi chú.');
         }
         if ($operation === 'delete') {
-            $this->actor->requireAdmin();
+            $this->actor->requireCapability('asset.delete');
         }
         $this->db->beginTransaction();
         try {
+            if ($this->actor->capabilitiesEnabled) { ItaPermissions::recheck($this->db,$this->actor,$permission); }
             $before = $operation === 'create' ? null : $this->lockAsset($input);
             if ($operation === 'create' || $operation === 'update') {
                 $id = $this->saveFields($input, $before);
@@ -67,7 +69,9 @@ class ItaAssetService
         $values = ItaAssetValidation::fields($input);
         $this->actor->requireDepartment($values['department_id']);
         $this->validateReferences($values,$before);
+        $values = ItaMaintenanceSchedule::initial($this->db,$this->actor->storeId,$values,$before);
         if ($before && (int) $before['department_id'] !== (int) $values['department_id']) {
+            ItaTicketGuard::clear($this->db,$this->actor->storeId,(int) $before['id']);
             $this->assertUnassigned((int) $before['id']);
         }
         $columns = array_keys($values);
@@ -105,6 +109,7 @@ class ItaAssetService
             throw new ItaHttpError(422, 'Vui lòng nhập lý do hoặc ghi chú.');
         }
         if ($operation === 'delete') {
+            ItaTicketGuard::clear($this->db,$this->actor->storeId,$id);
             $this->assertUnassigned($id);
             $this->db->execute('UPDATE ita_assets SET is_deleted=1,status_reason=?,updated_by=? WHERE store_id=? AND id=?', 'siii', [$reason,$this->actor->id,$this->actor->storeId,$id]);
             return 'asset.soft_delete';
@@ -114,7 +119,14 @@ class ItaAssetService
             return 'asset.update';
         }
         $status = ItaInput::text($input['status'] ?? '', 20);
-        ItaAssetValidation::status($before['status'],$status,$this->actor->role);
+        if ($status!=='maintenance') {
+            ItaTicketGuard::clear($this->db,$this->actor->storeId,$id);
+        }
+        if ($status==='in_use' && ItaTicketGuard::waiting($this->db,$this->actor->storeId,$before)) {
+            $this->actor->requireCapability('ticket.ready');
+        }
+        if ($this->actor->capabilitiesEnabled && $status==='retired') { $this->actor->requireCapability('asset.retire'); }
+        ItaAssetValidation::status($before['status'],$status,$this->actor->can('asset.retire')?'admin_it':$this->actor->role);
         if ($status === 'retired') {
             $this->assertUnassigned($id);
         }

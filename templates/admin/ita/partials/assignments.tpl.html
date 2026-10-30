@@ -2,9 +2,9 @@
  <div class="panel-heading"><div><h2 id="assignment-title">Giao thiết bị &amp; thu hồi</h2><p class="muted" id="assignment-mode">MOCK · Chỉ xem trước với dữ liệu giả. Chưa ghi phân bổ, xác nhận hoặc tạo PDF.</p></div></div>
  <div id="assignment-live" class="import-step" hidden>
   <p id="handover-message" class="admin-message" role="status" tabindex="-1"></p>
-  <form id="handover-search-form" class="assignment-controls"><div><label for="handover-search">Tìm thiết bị theo mã, tên hoặc seri</label><input id="handover-search" class="form-control" maxlength="100"></div><button type="submit" class="secondary-button">Tìm thiết bị</button></form>
-  <div class="assignment-controls"><div><label for="handover-asset">Thiết bị trong phạm vi của bạn</label><select id="handover-asset" class="form-select"></select></div><button type="button" class="secondary-button" id="handover-reload">Tải lại hồ sơ</button></div>
+  <div class="assignment-controls handover-picker"><div><label for="handover-asset">Chọn thiết bị theo tên</label><select id="handover-asset" class="form-select" aria-describedby="handover-picker-help"></select><p class="muted" id="handover-picker-help">Danh sách tự tải khi mở trang. Bấm mũi tên để chọn mã và tên máy; dùng Trước/Sau để xem thêm. Chưa chọn thì chưa mở hồ sơ.</p></div><button type="button" class="secondary-button" id="handover-browse">Tải lại danh sách</button><button type="button" class="secondary-button" id="handover-reload">Tải lại hồ sơ</button></div>
   <div class="table-footer"><span id="handover-assets-page"></span><button type="button" class="secondary-button" id="handover-assets-previous">Trước</button><button type="button" class="secondary-button" id="handover-assets-next">Sau</button></div>
+  <form id="handover-search-form" class="assignment-controls"><div><label for="handover-search">Tìm nhanh (không bắt buộc)</label><input id="handover-search" class="form-control" maxlength="100" placeholder="Lọc theo mã, tên hoặc số seri…"></div><button type="submit" class="secondary-button">Tìm thiết bị</button></form>
   <section id="handover-record" hidden>
    <dl class="detail-grid" id="handover-details"></dl><p id="handover-eligible" class="muted"></p>
    <form id="handover-create" hidden>

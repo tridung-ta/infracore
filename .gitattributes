@@ -1,0 +1,6 @@
+# Preserve downloaded ECharts bytes so SOURCE.json checksums survive checkout.
+assets/ita/vendor/echarts/6.1.0/echarts.min.js -text
+assets/ita/vendor/echarts/6.1.0/LICENSE -text
+assets/ita/vendor/echarts/6.1.0/NOTICE -text
+# Preserve pinned Three.js source/license bytes for provenance checksums.
+assets/ita/vendor/three/0.180.0/* -text

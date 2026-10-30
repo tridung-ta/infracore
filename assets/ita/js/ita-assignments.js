@@ -16,7 +16,7 @@
   const blocked=asset.status==='retired'||asset.assigned;
   $('assignment-preview').disabled=blocked;
   $('assignment-eligibility').textContent=asset.status==='retired'?'Không thể giao thiết bị đã thanh lý.':asset.assigned?'Thiết bị đang được giao. Cần thu hồi trước khi tạo lượt giao mới.':'MOCK · Có thể xem trước bàn giao; chưa kiểm quyền, trạng thái hoặc nhân viên trong DB.';
-  $('assignment-history').replaceChildren(...asset.history.map(item=>{const entry=document.createElement('p');entry.append(text('strong',`${item.date} · ${item.receipt}`),document.createElement('br'),text('span',item.event));return entry;}));
+  $('assignment-history').replaceChildren(...asset.history.map(item=>{const entry=document.createElement('article');entry.className='handover-history-item';const content=document.createElement('div');content.append(text('strong',item.receipt),text('p',item.date+' · '+item.event));entry.append(content);return entry;}));
   if(!asset.history.length)$('assignment-history').append(text('p','MOCK · Chưa có lịch sử phân bổ.'));
   $('assignment-return-help').textContent=asset.assigned?'MOCK · Có lượt giao đang mở. Thu hồi và xác nhận nhận bàn giao cần backend kiểm đúng người, bộ phận và phiên bản bản ghi.':'MOCK · Không có lượt giao đang mở để thu hồi hoặc xác nhận.';
  }

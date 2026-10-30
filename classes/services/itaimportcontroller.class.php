@@ -14,10 +14,17 @@ class ItaImportController
         }
         if ($post) {
             ItaSession::requireCsrf($_SERVER['HTTP_X_CSRF_TOKEN'] ?? null);
+            if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability($action==='import-upload'?'import.upload':'import.confirm'); }
         }
         if ($action==='asset-export') {
             $rows = (new ItaAssetObjects($this->db,$this->actor))->export($_GET);
-            $this->download(ItaExcel::write(ItaExcel::HEADERS,$rows),'ita-assets.xlsx');
+            $bytes = ItaExcel::write(ItaExcel::HEADERS,$rows);
+            $current = $this->currentActor();
+            $latest = (new ItaAssetObjects($this->db,$current))->export($_GET);
+            if ($rows!==$latest) {
+                throw new ItaHttpError(409,'Dữ liệu hoặc phạm vi tài sản đã đổi trong lúc tạo file. Hãy xuất lại.');
+            }
+            $this->download($bytes,'ita-assets.xlsx');
             return;
         }
         $service = new ItaImportService($this->db,$this->actor,$_SESSION['ita_csrf']);
@@ -26,7 +33,15 @@ class ItaImportController
             return;
         }
         if ($action==='import-errors') {
-            $this->download($service->errors(ItaInput::positiveInt($_GET['batch_id'] ?? null)),'ita-import-errors.xlsx');
+            $id = ItaInput::positiveInt($_GET['batch_id'] ?? null);
+            $version = $service->errorsVersion($id);
+            $bytes = $service->errors($id);
+            $current = $this->currentActor();
+            $latest = new ItaImportService($this->db,$current,$_SESSION['ita_csrf']);
+            if (!hash_equals($version,$latest->errorsVersion($id))) {
+                throw new ItaHttpError(409,'Lô import đã đổi trong lúc tạo file. Hãy tải lại.');
+            }
+            $this->download($bytes,'ita-import-errors.xlsx');
             return;
         }
         $data = match ($action) {
@@ -60,6 +75,22 @@ class ItaImportController
             throw new ItaHttpError(422,'Dữ liệu xác nhận không hợp lệ.');
         }
         return $input;
+    }
+
+    /** Recheck native identity and effective ITA permissions after the slow renderer. */
+    private function currentActor(): ItaUserObjectInfo
+    {
+        $current = (new ItaUserObjects($this->db))->current($this->actor->storeId,$this->actor->id);
+        if (!$current || $current->role!==$this->actor->role || $current->revision!==$this->actor->revision) {
+            throw new ItaHttpError(403,'Tài khoản hoặc quyền đã thay đổi. Không thể tải file.');
+        }
+        $known = $this->actor->departmentIds;
+        $scopes = $current->departmentIds;
+        sort($known);sort($scopes);
+        if ($known!==$scopes) {
+            throw new ItaHttpError(403,'Phạm vi đã thay đổi. Hãy tải lại trước khi xuất file.');
+        }
+        return $current;
     }
 
     private function download(string $bytes, string $name): void

@@ -1,7 +1,7 @@
 <?php
 class ItaAssetObjects
 {
-    private const SELECT = 'SELECT a.*,c.name category_name,d.name department_name FROM ita_assets a
+    private const SELECT = 'SELECT a.*,c.name category_name,c.maintenance_cycle_months,d.name department_name FROM ita_assets a
         JOIN ita_asset_categories c ON c.store_id=a.store_id AND c.id=a.category_id
         LEFT JOIN ita_departments d ON d.store_id=a.store_id AND d.id=a.department_id';
 
@@ -13,7 +13,7 @@ class ItaAssetObjects
     {
         $where = 'a.store_id=? AND a.is_deleted=0';
         $params = [$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             if (!$this->actor->departmentIds) {
                 $where .= ' AND 1=0';
             } else {
@@ -28,7 +28,7 @@ class ItaAssetObjects
     {
         $where = "store_id=? AND status='active'";
         $params = [$this->actor->storeId];
-        if (!$this->actor->isAdmin()) {
+        if (!$this->actor->hasGlobalScope()) {
             $where .= $this->actor->departmentIds ? ' AND id IN ('.implode(',', array_fill(0, count($this->actor->departmentIds), '?')).')' : ' AND 1=0';
             $params = [...$params,...$this->actor->departmentIds];
         }
@@ -90,11 +90,11 @@ class ItaAssetObjects
 
     public function export(array $filters): array
     {
-        if (!in_array($this->actor->role,['admin_it','system_manager'],true)) {
+        if (!$this->actor->can('asset.export')) {
             throw new ItaHttpError(403,'Bạn không có quyền xuất tài sản.');
         }
         [$where,$types,$params] = $this->filteredScope($filters);
-        $select = str_replace('c.name category_name,d.name department_name','c.code category_code,d.code department_code',self::SELECT);
+        $select = str_replace('c.name category_name,c.maintenance_cycle_months,d.name department_name','c.code category_code,d.code department_code',self::SELECT);
         $rows = $this->db->fetchAll($select.' WHERE '.$where.' ORDER BY a.id DESC LIMIT 5001',$types,$params);
         if (count($rows)>5000) {
             throw new ItaHttpError(422,'Có hơn 5.000 tài sản. Hãy thu hẹp bộ lọc trước khi xuất.');
@@ -104,6 +104,7 @@ class ItaAssetObjects
 
     public function listing(array $filters, int $page): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('asset.read'); }
         [$where,$types,$params] = $this->filteredScope($filters);
         $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_assets a WHERE '.$where, $types, $params)['n'];
         $page = min($page, max(1, (int) ceil($total/5)));
@@ -112,22 +113,26 @@ class ItaAssetObjects
             'pagination'=>['page'=>$page,'per_page'=>5,'total'=>$total]];
     }
 
-    public function detail(int $id): array
+    public function detail(int $id, int $page = 1): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('asset.read'); }
         $row = $this->db->fetchOne(self::SELECT.' WHERE a.store_id=? AND a.id=? AND a.is_deleted=0', 'ii', [$this->actor->storeId,$id]);
         if (!$row) {
             throw new ItaHttpError(404, 'Không tìm thấy thiết bị.');
         }
         $this->actor->requireDepartment($row['department_id'] === null ? null : (int) $row['department_id']);
-        $raw = array_diff_key($row,array_flip(['category_name','department_name']));
-        $history = $this->db->fetchAll("SELECT id,user_id,action,before_json,after_json,created_at FROM ita_audit_logs
-            WHERE store_id=? AND entity_type='asset' AND entity_id=? ORDER BY id DESC LIMIT 51",'ii',[$this->actor->storeId,$id]);
+        $raw = array_diff_key($row,array_flip(['category_name','department_name','maintenance_cycle_months']));
+        $from = " FROM ita_audit_logs WHERE store_id=? AND entity_type='asset' AND entity_id=?";
+        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n'.$from,'ii',[$this->actor->storeId,$id])['n'];
+        $page = max(1,min($page,max(1,(int) ceil($total/20))));
+        $history = $this->db->fetchAll('SELECT id,user_id,action,before_json,after_json,created_at'.$from.' ORDER BY id DESC LIMIT 20 OFFSET ?','iii',[$this->actor->storeId,$id,($page-1)*20]);
         return (new ItaAssetObjectInfo($row))->presentation() + ['fields'=>$raw,'version'=>ItaAssetService::version($raw),
-            'history'=>array_slice($history,0,50),'history_has_more'=>count($history)>50];
+            'history'=>$history,'history_has_more'=>$page*20<$total,'history_pagination'=>['page'=>$page,'per_page'=>20,'total'=>$total]];
     }
 
     public function summary(): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('asset.read'); }
         [$where,$types,$params] = $this->scope();
         $counts = array_fill_keys(['in_use','maintenance','broken','retired'], 0);
         foreach ($this->db->fetchAll('SELECT a.status,COUNT(*) n FROM ita_assets a WHERE '.$where.' GROUP BY a.status', $types, $params) as $row) {
@@ -148,12 +153,12 @@ class ItaAssetObjects
     private function maintenanceAlerts(array $scope): array
     {
         [$where,$types,$params] = $scope;
-        $where .= " AND a.status<>'retired' AND a.next_maintenance_due<?";
+        $where .= " AND a.status<>'retired' AND ".ItaMaintenanceSchedule::SQL.'<?';
         $params[] = ItaAssignmentRules::today();
         $types .= 's';
-        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_assets a WHERE '.$where,$types,$params)['n'];
+        $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_assets a JOIN ita_asset_categories c ON c.store_id=a.store_id AND c.id=a.category_id WHERE '.$where,$types,$params)['n'];
         $rows = $this->db->fetchAll(self::SELECT.' WHERE '.$where.' ORDER BY a.next_maintenance_due,a.id LIMIT 10',$types,$params);
         return ['total'=>$total,'alerts'=>array_map(fn($row)=>['asset_id'=>(int) $row['id'],'level'=>'warning',
-            'title'=>'Quá hạn bảo trì: '.$row['name'],'description'=>$row['asset_code'].' · Hạn '.$row['next_maintenance_due']],$rows)];
+            'title'=>'Quá hạn bảo trì: '.$row['name'],'description'=>$row['asset_code'].' · Hạn '.ItaMaintenanceSchedule::effective($row)],$rows)];
     }
 }

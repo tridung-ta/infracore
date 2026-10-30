@@ -1,0 +1,19 @@
+/* Focus: light, quiet, document-oriented work mode. No DOM/data replacement. */
+body[data-ui-theme="focus"] .sidebar{background:var(--ita-surface);border-right:1px solid var(--ita-border)}
+body[data-ui-theme="focus"] .topbar{background:var(--ita-surface);border-bottom:1px solid var(--ita-border)}
+body[data-ui-theme="focus"] .panel{border-radius:12px;background:var(--ita-surface)}
+body[data-ui-theme="focus"] .kpi{border-radius:10px;background:var(--ita-surface)}
+body[data-ui-theme="focus"] .main-nav a[aria-current="page"]{background:var(--ita-accent-soft);color:var(--ita-accent);border-color:var(--ita-border);font-weight:650}
+body[data-ui-theme="focus"] .main-nav a:hover{background:var(--ita-surface-2)}
+body[data-ui-theme="focus"] .workspace-name{background:var(--ita-bg);border-color:var(--ita-border)}
+body[data-ui-theme="focus"] .brand-mark{background:var(--ita-accent);color:var(--ita-on-accent);border-color:var(--ita-accent);border-radius:10px}
+body[data-ui-theme="focus"] .asset-table th{background:var(--ita-bg);color:var(--ita-text-muted)}
+body[data-ui-theme="focus"] .form-control,body[data-ui-theme="focus"] .form-select{background-color:var(--ita-surface);color:var(--ita-text);border-color:var(--ita-border)}
+body[data-ui-theme="focus"] .form-control:focus,body[data-ui-theme="focus"] .form-select:focus{border-color:var(--ita-accent);outline:2px solid var(--ita-accent-soft)}
+body[data-ui-theme="focus"] .primary-button{border-radius:7px}
+body[data-ui-theme="focus"] .secondary-button{background:var(--ita-surface);border-radius:7px}
+body[data-ui-theme="focus"] .network-3d-name{background:var(--ita-surface);color:var(--ita-text);border:1px solid var(--ita-border)}
+body[data-ui-theme="focus"] .subtle-tag{background:var(--ita-bg)}
+[data-motion-toggle]{white-space:normal;line-height:1.55}
+body[data-ui-theme="focus"] [data-motion-toggle]{border:1px solid var(--ita-accent);background:var(--ita-accent-soft);color:var(--ita-accent)}
+body[data-ui-theme="command"] [data-motion-toggle]{background:var(--ita-accent-soft);color:var(--ita-accent);border-color:var(--ita-accent)}

@@ -1,0 +1,89 @@
+# Trạng thái BUILD hiện tại — 23/10/2026
+
+**30/10 — chốt BUILD giao diện và một delta cuối:** source6a9d1eb,37browser/1.141checks/service/HTTP/export/lint10PHPdeltađạt.27file/80.865byte `infracore-delta-final-20261030-a7c2da1-to-6a9d1eb.zip`, basea7c2da1. FINAL_BUILD_VERIFY_20261030/HOST_UPLOAD_FINAL_20261030; chưaupload/DB/PHP8.3/FPM. Các gói29/10 bên dưới là lịch sử, dùng delta cuối này để gom sửa mộtlượt.
+
+**29/10 — gói cập nhật mới đã tạo:** runtime cố định171edde, `artifacts/ita-host-20261029/infracore-update-phase14-171edde.zip`49.322.000byte; SHA256 d4547bcb9a979d0f8827cd4aa96b3d5f6eb4f06844b780274d5fb27297ce8b76.36browser/1.119checks,1.147PHP lint, service/HTTP/export đạt; ZIP readback +review độc lập đạt. Gồm sửa/reset tài khoản có nguồn gốc, CAS PmAuth, thông báo và bố cục nhóm quyền. Hướng dẫn HOST_UPLOAD_PHASE14_20261029; CHƯA UPLOAD, PHP8.3/FPM/DB chưa nghiệm thu. Không gói config/SQL/marker/MOCK/data thật; giữ các checkpoint cũ bên dưới.
+
+**29/10 — tiếp tục kiểm yêu cầu:** BUILD_VERIFY_20261029 ghi lượt kiểm local không DB và cập nhật bằng chứng user: SQL007/mapping 47 quyền đã COMMIT; nút thêm tài khoản hiện sau user bật flag; CHECK ticket_events tồn tại theo SHOW CREATE. Chưa có bằng chứng enforcement CHECK, runtime grants, tạo tài khoản thật hay nghiệm thu DB/host. Các dòng SQL007 chưa chạy/cờ chưa bật bên dưới là checkpoint cũ. PHP local 8.5.10, chưa kiểm 8.3/FPM; gói cũ không chứa sửa 29/10, chưa tạo gói mới.
+
+**28/10 — gói cập nhật đã tạo, chưa upload:** payload cố định a7c2da1, ZIP infracore-update-phase14-a7c2da1.zip (49.310.447byte), manifest/hash/ZIP readback +review độc lập đạt.26browser/948checks và1.145PHP lint cùng unit/service/HTTP/exports được chạy lại theo PHASE14_PREUPLOAD_VERIFY_20261028. Không tự bật flag; PHP8.3/FPM/DB/grants/native schema chưa xác nhận, còn deprecation vendor8.5. User dùng HOST_UPLOAD_PHASE14_20261028, backup rồi upload runtime; khôngSQL/config/marker/MOCK trong ZIP, không agentdeploy/push/merge/tag7–10. Các dòng chưa đóng gói dưới đây là checkpoint trước gói này.
+
+**28/10 — Admin tạo tài khoản:** user duyệt source; có form mới +POST user-create, chọn quyền từng chức năng/bộ phận, native mới hash hiện đại, audit và compensation MyISAM.57checks PHP +23browser mới đạt; hồi quy121quyền/29auth/13routes/109HTTP/Smarty/21model/38browser đạt. PHASE14_ACCOUNT_CREATE_VERIFY và gate ghi phạm vi/giới hạn. Chưa native schema/grants/DB/host/PHP8.3; cờ/config chưa bật, không gói/upload/push/merge/tag. Bản Node local18767 chỉ RAM, không tạo native thật.
+
+**28/10 — đối chiếu lại Phase0–14 với 10 yêu cầu user:** có implementation cho 10 nhóm chính, chưa đủ căn cứ nghiệm thu toàn bộ hoặc tạo gói “đã hoàn tất”. PHASE00_14_REQUIREMENTS_REVIEW.md có bảng từng yêu cầu/phase; chặn chính là SQL007/mapping/cờ Phase14 chưa duyệt, PHP8.3/DB/EXPLAIN/tải chưa kiểm đủ và baseline host chưa xác định toàn bộ. Source có readonly nên không tương thích PHP8.0. Review chỉ đọc source/hồ sơ, không chạy lại test/DB/host; chưa tạo ZIP/upload/push/merge/tag.
+
+**28/10 — bàn giao local tương tác:** mở http://127.0.0.1:18767/ hoặc start-local-review.cmd. UI hiện tại với transport Node/RAM mô phỏng,37browser+21contract đạt, LOCAL_REVIEW_GUIDE/VERIFY. Có chọn quyền/kịch bản/reset, không PHP/auth thật/DB/host/benchmark1triệu; preview/launcher phải loại khỏi deploy. Chưa user review/SQL007/gói/upload/push/merge/tag7–10.
+
+**28/10 — import/mạng dữ liệu lớn:** đã làm gọn chọn file/xem trước và xác nhận cả lô (38browser mock+88unit), giữ bộ lọc mạng khi422/quá200 (35browser mock+179unit); không PHP/SQL/tăngcap/gói/upload. MILLION_ROW_READINESS.md chỉ rà giới hạn/kế hoạch; chưa sinh/đo1triệu dòng, chưa DB/host. Có phân trang không tự chứng minh hiệu năng DB lớn.
+
+**28/10 — sửa5ảnh user, chỉ FE:** nhắc phiên17checks (active risks giữ nguyên), bảo trì70/thống kê49/giấy phép32, bàn giao35/PDF18 browser API mock đạt; baseline1652264 tái hiện các lỗi date/auto-select/badge. Giữ năm lọc/numeric name/nonnegative cost theo user; có xác nhận tổng VND, ngày giấy phép1000–9999 trên form, không tự mở hồ sơ đầu. Năm2011/tiền22 trong ảnh không bị agent tự đổi trên host. Không PHP/DB/SQL/gói/upload/push/merge/tag7–10; BE14 SQL vẫn chưa duyệt/chạy. Chi tiết PHASE14_ALERT_REMINDER_VERIFY, PHASE14_INPUT_FEEDBACK_VERIFY, PHASE14_HANDOVER_SELECTION_VERIFY.
+
+**27/10 — cập nhật mới nhất:** user đã tiếp tục và duyệt source BE14. Nhật ký/bảng nhóm đã cải tiến; quyền theo chức năng và scope đã build/test local qua fake transport/API mock (121 +19 kiểm mới), PHASE14_CAPABILITIES_VERIFY.md. Cờ mặc định tắt; SQL007/mapping ở BE_GATE_14_SQL.md chưa duyệt/chạy, không DB/host hoặc gói/upload/push/merge/tag7–10. Dòng tạm dừng26/10 dưới đây là checkpoint lịch sử, không thay chỉ đạo mới.
+
+**26/10 — USER YÊU CẦU TẠM DỪNG:** dừng đợt cải tiến giao diện/thông báo/icon/motion/môhình3D/ràngbuộc vừa khảo sát; **chưa sửa runtimeFE/PHP của đợt này**. Source3D cuối46ef989, hồ sơ bộkiểm36case3045b62. Đã lưu RETROSPECTIVE_20261026/LESSONS/PROGRESS để đọc lại lỗi và cách lập luận; không tự học nền. Ràvalidation chỉsource, môhình uploadcustom chưabuild/chưagate; user muốn kiểm local trướcupload khi tiếp tục. Không tự resume, DB/host/PHP8.3 vẫn chưa nghiệmthu; khônggói/upload/push/merge/tag7–10. Các cậpnhật bên dưới là lịch sử trước checkpointnày.
+
+**Chuẩn bị local26/10 — cập nhật mới nhất:** user tự dựng Laragon Apache/PHP8.3/MariaDB10.6/vhostHTTPS. LOCAL_RUN/LOCAL_DB_TEST_PLAN và CLI fixture seed/load đã soạn (commit1b041db); rà36 vị trí khóa/grants, harness hai phiên và gatehost005/006 nháp ở commit e7f6001. Chỉ lint/pure guard/static checks, chưa seed/migration/browser/DB. Tin PHP8.3 trước còn placeholder nên S26/unit/export8.3 **CHƯA CHẠY**. Chờ pathphp.exe8.3 thực cho test không DB và câu xác nhận đúng schema riêng trước kết nối DB. RUN_LOCAL.md là ghi chú preview/lịch sử, đã dẫn sang LOCAL_RUN.md hiện hành. Không tạoDB/đọc confighost/gói/upload/merge/tag7–10/push/deploy; DB/host chưa nghiệm thu.
+
+**S26-02 được duyệt/build26/10:** chỉ ItaAuthService(+test), không đổi PmAuth;686checks mới và hồi quy đạt, S26_AUTH_VERIFY.md. Argon2 ngoại lệ một real verify, không dummy; MD5 tương thích được chấp nhận. Counter không chứng minh hằng thời gian; DB/host/PHP8.3 chưa chạy. Auto_prepend/HSTS KHÔNG duyệt, không gói/upload/merge/tag/push/deploy. Ghi chú S26-02 chưa duyệt bên dưới là trước phê duyệt mới này.
+
+**Chốt hồ sơ26/10:** user chấp nhận giữ MD5 native cho tương thích (S26-01), không xóa/reset credential. PHASE11_SECURITY_TEST_20.md đồng bộ báo cáo,17–20 vẫn CHƯA KIỂM host. S26-02 chỉ draft ItaAuthService/count-call, có điểm cần chốt về hash giả/bcrypt; chưa build. S26-03 chỉ kế hoạch runtime8.3/test đếm deprecation; chưa chạy. Chỉ tài liệu, không code/gói/upload/merge/tag/push/deploy; host/DB chưa nghiệm thu.
+
+**Kiểm trước upload26/10:** user bổ sung checklist Word20mục. Local đã chạy auth29checks, các unit/service/HTTP/browser và file export theo PREUPLOAD_SECURITY_VERIFY.md; không DB/host. Còn rủi ro/giới hạn auth, deprecation dependency và xác minh vận hành host. **Tạm dừng đóng gói/upload, không coi mọi mục đã ổn**, không push/merge/tag7–10 hoặc đổi nghiệm thu DB.
+
+**Cập nhật SQL26/10/2026:** user đã duyệt SQL #13. Có migration006 +preflight/verify/hướng dẫn và57 kiểm tĩnh đạt;179 BE13 hồi quy đạt. **Chưa chạy SQL, chưa có bảng/DB/host được xác nhận**, không tạo DB test/gói/push/deploy/merge/tag. Các ghi chú “SQL13 chưa duyệt” trong checkpoint trước bên dưới đã được thay bằng phê duyệt này; không suy thành áp dụng hoặc nghiệm thu. Xem PHASE13_SQL_HOST_GUIDE.md.
+
+**Cập nhật26/10/2026:** hoàn thiện FE bốn bảng dashboard20 dòng/trang;44 browser mới +64 hồi quy/Smarty/syntax/review đạt, PHASE11_DASHBOARD_TABLES_VERIFY.md. Không đổi PHP/API/công thức, chart/KPI toàn tập. Client pagination không giảm query/payload; BE13 source b4bd575 giữ nguyên, SQL13 vẫn chưa duyệt/chạy và DB/host chưa nghiệm thu. Không gói/merge/tag7–10/push/deploy.
+
+**Cập nhật BE13:** user đã duyệt “Duyệt BUILD source BE13”; F13.1 source và UI live đã xây/kiểm local theo PHASE13_BE_VERIFY.md (179 thuần/query-contract,31 browser mock). BE_GATE_13_SQL.md vẫn **chưa duyệt/chưa chạy**; schema/DB/host chưa nghiệm thu. Các dòng “BE13 chưa duyệt” dưới đây là checkpoint trước phê duyệt, không thay cập nhật này. Không tạo/kết nối DB/host hoặc gói/merge/tag/push/deploy.
+
+Source BE13 đang được chốt trên feature/ita-phase13-network, kế thừa các commit Phase11/12, không merge. Đây là trạng thái implementation local, **không phải nghiệm thu DB/host hoặc gói deploy**. User đã duyệt source BE13; SQL gate riêng chưa duyệt. Agent không tạo/kết nối DB test, không chạy SQL/host. Không push/deploy/tạo gói/merge/tag7–10.
+
+## Mười yêu cầu bắt buộc
+
+Commit trong bảng là điểm đại diện đã đối chiếu source/log, không tự chứng minh trọn yêu cầu hay nghiệm thu. Chi tiết theo báo cáo từng phase; source hiện tại có cả các bản sửa sau commit đại diện.
+
+| # | Yêu cầu → chức năng | Code local/commit đại diện | Bằng chứng và phần chưa nghiệm thu |
+|---|---|---|---|
+|1|Login/quyền/scope/audit → F2.x|6f461ef,44c4246|Có implementation; auth/DB/session host chưa nghiệm thu đầy đủ |
+|2|Tài sản/tìm kiếm/trạng thái → F3.x|c4c5942,82e6d42,aaa0b2e|Có implementation, lịch sử và quản lý loại đã SQL pagination; luồng duyệt thanh lý theo Word và lookup lớn còn mở theo AUDIT/PROGRESS |
+|3|Giấy phép/key/chỗ/cảnh báo → F6.x|068931b|Browser mock28 kiểm lại đạt; key/DB/khóa/concurrency host chưa nghiệm thu |
+|4|Bảo trì/ticket/lịch/thống kê → F7.x|c4c5942,cbeaf0e|Browser mock64 kiểm lại đạt; CHECK/rollback/đồng thời DB chưa nghiệm thu |
+|5|Vòng đời/điểm/tỷ lệ lỗi → F8.x|a017327,f86444a|Browser mock/static63 đạt; nhóm có paging FE, server aggregate/EXPLAIN/index chưa nghiệm thu |
+|6|Giao/thu hồi/nhận/PDF → F5.x|c4c5942,5f1e6ea|Browser API mock hồi quy đạt; persistence/DB/host PDF chưa nghiệm thu |
+|7|Dự báo/ngân sách/snapshot → F9.x|b879282,afcf2b0|Browser42 kiểm lại đạt; không tự đổi snapshot; DB/isolation/host chưa nghiệm thu |
+|8|Dashboard/chart/report/alerts → F10.x|a017327,a0b5b16,d607518|Browser64 kiểm lại đạt; query tay/isolation/EXPLAIN/file host chưa nghiệm thu |
+|9|Import/Excel/export → F4.x|561d335|Browser API mock hồi quy đạt; giao dịch/DB/host chưa nghiệm thu |
+|10|Responsive/hiệu năng/phân trang → F11.x|f7d383f,d42020b,cbeaf0e,82e6d42,aaa0b2e|Responsive58/admin14 và app-hardening local đạt; SQL/index/tải và layout PHP thật chưa nghiệm thu, còn các danh sách theo PHASE11_PAGINATION_AUDIT |
+
+Không coi10/10 đã nghiệm thu. Phase1–10 DB vẫn «chưa nghiệm thu» cho đến khi user cung cấp xác nhận cụ thể. Không yêu cầu user tạo DB test để tiếp tục các phần local đã được phép.
+
+## Phần hoàn thành trong đợt BUILD liên tục
+
+| Chức năng | Commit | Trạng thái thật |
+|---|---|---|
+|F12.1 core/toggle/reduced|08bb6cb|[x] FE local,21 browser infrastructure |
+|F12.2 cảnh báo|280af48|[x] FE local; file sót stage đã bổ sung, không dùng checkpoint giữa chặng làm gói |
+|F12.3 ticket|31ff076,ae6d736|[x] FE local; observe message/details trực tiếp |
+|F12.4 dashboard|a7ebb4e|[x] FE local, không loop canvas |
+|F12.5 danh sách tài sản|9d7a297|[x] FE local |
+|F12.6 chi tiết tài sản|6c0e91a|[x] FE local |
+|F12.7 vòng đời|0234ac6|[x] FE local |
+|F12.8 ngân sách|b9f098a|[x] FE local |
+|F12.9 đăng nhập|950d749|[x] FE local MOCK9; không xác thực thật |
+|F13.1 API mạng thật và FE live|Commit F13.1 mới|[x] source local;179 PHP +31 browser mock; schema/DDL vẫn [G], chưa DB/host |
+|F13.2 sơ đồ2D|24acbab|[x] FE MOCK12 checks |
+|F13.3 pulse/luồng|6233ba0|[x] FE MOCK9 checks, không loop/traffic thật |
+|F13.4 Three lazy/fallback|89b0047|[x] FE MOCK23 WebGL checks; giải phóng GPU và bắt init/late-render lỗi |
+
+Phase12:21 core +22 DOM feedback probes +9 login; hồi quy ticket64/lifecycle63/forecast42/dashboard64 đạt. Các probe không chứng minh hiệu ứng ở mọi luồng thật. Phase13 chỉ topology giả; bản live không tải topology MOCK. Three local pin r180, provenance/license/hash có trong source,4/4 byte staged khớp trước commit. Không camera/scanner/SNMP hoặc dữ liệu mạng thật.
+
+Hồi quy cuối sau Phase13: browser tài sản30/import đạt/phân bổ đạt/giấy phép28/responsive58/admin14/login9, Smarty/syntax đạt, không DB. PHASE12_VERIFY.md và PHASE13_VERIFY.md có lệnh/phạm vi; ảnh trong .playwright-cli không commit/gói. PHP render local8.5.10, chưa8.3.33; WebGL local không đại diện mọi GPU/host.
+
+## Việc còn mở theo giới hạn hiện hành
+
+- Source BE13 đã duyệt và build local; DDL ở BE_GATE_13_SQL.md chưa duyệt/chạy. Chưa có bảng/dữ liệu mạng thật được xác nhận trên host, không tạo/kết nối DB hoặc tự triển khai.
+- Phase11: EXPLAIN/index/đo tải chưa chạy; các lookup/phân trang SQL còn lại chỉ audit/gate, không coi client pagination là tối ưu backend. Auto_prepend/.user.ini/HSTS/ErrorDocument/cấu hình host chưa được mở; không tự áp dụng.
+- F11.5 chỉ đặc tả manifest/exclusions/check ZIP/rollback; user chưa cho tạo gói. Không thể ghi đã đóng gói/ready production. Network MOCK phải nằm ngoài runtime release, cần review layout/dependencies đồng bộ trước gói sau này.
+- User kiểm DB/host thủ công khi sẵn sàng, agent ghi nguyên văn kết quả rồi mới đổi trạng thái. Inventory host CHƯA THU THẬP; chưa có source/hash host, backup dependency ngoài máy dev/read-back/restore chưa xác nhận.
+
+Không còn phần BUILD FE trong Phase12/13 được coi là cần xin lại gate. Phần source BE13 đã kiểm local không thay nghiệm thu schema/host; các phần BE/host còn mở không được đánh dấu xong chỉ vì yêu cầu BUILD liên tục. Xem PHASE11_HOST_TEST.md, PHASE11_S11_HOST_TEST.md, BE_GATE_11.md, BE_GATE_13_SQL.md và DEPLOY_LOG.md trước bước tiếp theo được phép.

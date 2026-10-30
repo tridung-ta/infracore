@@ -4,8 +4,14 @@
  const $ = (id) => document.getElementById(id);
  const statuses = {in_use:'Đang sử dụng',maintenance:'Bảo trì',broken:'Hỏng',retired:'Thanh lý'};
  const liveMode=document.body.dataset.mode==='live';
- const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Quản lý quyền IT và phạm vi bộ phận cho tài khoản hiện có.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
+ const titles = {overview:['Tổng quan hạ tầng','Theo dõi tài sản, nắm bắt rủi ro và chủ động vận hành.'],assets:['Tài sản CNTT','Tra cứu thiết bị và thông tin phân bổ trong doanh nghiệp.'],alerts:['Trung tâm cảnh báo','Nhận diện rủi ro để ưu tiên công việc vận hành.'],users:['Tài khoản & phân quyền','Tạo tài khoản, chọn chức năng và giới hạn dữ liệu theo bộ phận.'],audit:['Nhật ký thao tác','Tra cứu lịch sử truy cập và thay đổi trong hệ thống.']};
  const state = {data:null,page:1,pageSize:5,view:'overview'};
+ titles.licenses=['Phần mềm & giấy phép','Theo dõi số chỗ, thời hạn và cấp phát trong phạm vi quản lý.'];
+ titles.forecast=['Dự báo & ngân sách','Lập dự toán, đối chiếu từng thành phần và lưu kế hoạch theo năm.'];
+ titles.reports=['Báo cáo','Xem trước và xuất báo cáo theo phạm vi được cấp quyền.'];
+ titles.lifecycle=['Vòng đời tài sản','Đối chiếu tuổi sử dụng và mức ưu tiên thay thế trong phạm vi quản lý.'];
+ titles.tickets=['Bảo trì & hỗ trợ','Theo dõi phiếu, người xử lý và lịch bảo trì của thiết bị.'];
+ titles.network=liveMode?['Hạ tầng mạng','Liên kết khai báo trong phạm vi tài sản được phép.']:['Hạ tầng mạng · MOCK','Mô hình kết nối minh họa, chưa nối dữ liệu thật.'];
  titles.imports=['Import / Export tài sản',liveMode?'Kiểm tra file, nhập theo lô và xuất tài sản theo quyền.':'Chuẩn bị dữ liệu Excel và xem luồng nhập minh họa.'];
  titles.assignments=['Phân bổ & thu hồi',liveMode?'Giao thiết bị, xác nhận nhận và theo dõi thu hồi trong phạm vi của bạn.':'MOCK · Xem trước bàn giao và lịch sử với dữ liệu giả.'];
  let toastTimer;
@@ -47,19 +53,24 @@
  function changeView() {
   const menuWasOpen=$('sidebar').classList.contains('is-open');
   const candidate = location.hash.slice(1);
-  state.view = Object.hasOwn(titles,candidate)&&(liveMode||!['users','audit'].includes(candidate))?candidate:'overview';
+  state.view = Object.hasOwn(titles,candidate)?candidate:'overview';
   const [title,description] = titles[state.view];
   $('page-title').textContent = title;
   $('page-description').textContent = description;
   $('breadcrumb-current').textContent = state.view==='overview'?'Tổng quan':title;
   document.title = `InfraCore — ${title}`;
-  $('overview-panel').hidden = state.view!=='overview';
-  $('assets-panel').hidden = !['overview','assets'].includes(state.view);
-  $('alerts-panel').hidden = state.view!=='alerts';
+  $('overview-panel').hidden = liveMode || state.view!=='overview';
+  $('assets-panel').hidden = liveMode?state.view!=='assets':!['overview','assets'].includes(state.view);
+  $('alerts-panel').hidden = liveMode || state.view!=='alerts';
   $('users-panel').hidden = state.view!=='users';
   $('audit-panel').hidden = state.view!=='audit';
   $('imports-panel').hidden = state.view!=='imports';
   $('assignments-panel').hidden = state.view!=='assignments';
+  $('licenses-panel').hidden = state.view!=='licenses';
+  $('tickets-panel').hidden = state.view!=='tickets';
+  $('forecast-panel').hidden = state.view!=='forecast';
+  $('lifecycle-panel').hidden = state.view!=='lifecycle';
+  $('network-panel').hidden = state.view!=='network';
   document.querySelectorAll('[data-view]').forEach((link) => {
    if (link.dataset.view===state.view) link.setAttribute('aria-current','page');
    else link.removeAttribute('aria-current');
@@ -112,26 +123,28 @@
   $('notification-button').querySelector('.notification-dot').hidden=liveMode?state.data.summary.alerts_total===0:alerts.length===0;
   $('attention-summary').replaceChildren(...['critical','warning'].map((level)=>{
    const item=el('div','attention-item');
-   const count=liveMode?(state.data.summary.by_status[level==='critical'?'broken':'maintenance']||0)+(level==='warning'?(state.data.summary.maintenance_overdue_total||0):0):alerts.filter((a)=>a.level===level).length;
+   const count=liveMode?(state.data.summary.by_status[level==='critical'?'broken':'maintenance']||0)+(state.data.summary.license_counts?.[level]||0)+(level==='warning'?((state.data.summary.maintenance_overdue_total||0)+(state.data.summary.awaiting_ready_total||0)):0):alerts.filter((a)=>a.level===level).length;
    item.append(el('strong',level==='critical'?'danger-text':'warning-text',String(count).padStart(2,'0')),el('span','',level==='critical'?'Cảnh báo nghiêm trọng':'Cần theo dõi'));return item;
   }));
   $('alert-list').replaceChildren(...alerts.map((alert)=>{
    const row=el('article','alert-row');const text=el('div');text.append(el('h3','',alert.title),el('p','muted',alert.description));
-   const button=el('button','secondary-button','Xem thiết bị');button.type='button';button.addEventListener('click',()=>showDetails(alert.asset_id,button));
+   const button=el('button','secondary-button',alert.license_id?'Xem giấy phép':'Xem thiết bị');button.type='button';button.addEventListener('click',()=>{if(alert.license_id)location.hash='licenses';else showDetails(alert.asset_id,button);});
    row.append(el('span',`alert-severity ${alert.level==='critical'?'danger-text':'warning-text'}`,alert.level==='critical'?'Nghiêm trọng':'Cảnh báo'),text,button);return row;
   }));
-  if(!alerts.length)$('alert-list').append(el('p','muted','Chưa có thiết bị hỏng hoặc đang bảo trì trong phạm vi của bạn.'));
+  if(!alerts.length)$('alert-list').append(el('p','muted','Chưa có cảnh báo trong phạm vi của bạn.'));
  }
  function filteredAssets() {
   const query=$('asset-search').value.trim().toLocaleLowerCase('vi');
   return state.data.assets.filter((a)=>(!query||`${a.code} ${a.name} ${a.serial}`.toLocaleLowerCase('vi').includes(query))&&(!$('department-filter').value||a.department===$('department-filter').value)&&(!$('status-filter').value||a.status===$('status-filter').value));
  }
+ let detailRequest=0;
  async function showDetails(id,trigger) {
+  const request=++detailRequest;
   let asset=state.data.assets.find((a)=>a.id===id);
   if(liveMode){
    trigger.disabled=true;
-   try{const response=await fetch(`/admin.php?op=ita&act=asset&id=${id}`);const result=await response.json();if(response.status===401){location.assign('/admin.php?op=ita&act=login');return;}if(!result.success)throw new Error(result.message);asset=result.data;}
-   catch(error){notify(error.message||'Chưa tải được chi tiết thiết bị.');return;}
+   try{const response=await fetch(`/admin.php?op=ita&act=asset&id=${id}`);const result=await response.json();if(request!==detailRequest)return;if(response.status===401){location.assign('/admin.php?op=ita&act=login');return;}if(!response.ok||!result.success)throw new Error(result.message);asset=result.data;}
+   catch(error){if(request===detailRequest)notify(error.message||'Chưa tải được chi tiết thiết bị.');return;}
    finally{trigger.disabled=false;}
   }
   if(!asset)return;
@@ -180,18 +193,21 @@
    }
    const response=await fetch(liveMode?`/admin.php?${query}`:'/assets/ita/mock/overview.json',{cache:'no-store',signal:controller.signal});
    if(response.status===401&&liveMode){location.assign('/admin.php?op=ita&act=login');return;}
-   const result=await response.json();if(!response.ok)throw new Error(result.message||'Chưa tải được dữ liệu.');
+   let result;
+   try{result=await response.json();}catch{throw Object.assign(new Error('Máy chủ trả phản hồi không hợp lệ. Chưa tải được dữ liệu mới.'),{status:response.ok?500:response.status});}
+   if(!response.ok)throw Object.assign(new Error(result.message||'Chưa tải được dữ liệu.'),{status:response.status});
    const data=liveMode?result.data:result;if(liveMode)data.alerts=data.summary.alerts;
    if(sequence!==loadSequence)return;validateData(data);state.data=data;
    const department=$('department-filter').value;
    $('department-filter').replaceChildren(new Option('Tất cả bộ phận',''),...data.departments.map((d)=>liveMode?new Option(d.label,d.value):new Option(d,d)));
    $('department-filter').value=department;
-   renderKpis();renderDepartments();renderAlerts();renderTable();
+   if(!liveMode){renderKpis();renderDepartments();renderAlerts();}else{$('nav-asset-count').textContent=data.summary.total;}renderTable();
    if(liveMode){window.itaLiveContext={user:data.user,departments:data.departments};document.querySelectorAll('.admin-only').forEach(link=>{link.hidden=data.user.role!=='admin_it';});dispatchEvent(new CustomEvent('ita:data'));}
   } catch(error) {
    if(sequence!==loadSequence)return;
    $('load-error').hidden=false;$('data-content').hidden=true;
-   if(liveMode)$('load-error').querySelector('p').textContent=error.message||'Hãy kiểm tra kết nối rồi thử lại.';
+   if(window.ItaFeedback)window.ItaFeedback.show({status:error.status||0,message:error instanceof SyntaxError?'Máy chủ trả phản hồi không hợp lệ. Chưa tải được dữ liệu mới.':(error.status?error.message:'')});
+   else if(liveMode)$('load-error').querySelector('p').textContent=error.message||'Hãy kiểm tra kết nối rồi thử lại.';
   } finally {
    clearTimeout(timeout);if(sequence===loadSequence){$('data-content').setAttribute('aria-busy','false');$('retry-button').disabled=false;}
   }
@@ -210,9 +226,9 @@
    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
   }
  });
- $('notification-button').addEventListener('click',()=>{if(location.hash==='#alerts')notify(liveMode?'Bạn đang xem trung tâm cảnh báo.':'Bạn đang xem cảnh báo minh họa.');else location.hash='alerts';});
+ $('notification-button').addEventListener('click',()=>{if(location.hash==='#alerts'){if(liveMode)dispatchEvent(new Event('ita:alerts-open'));else notify('Bạn đang xem cảnh báo minh họa.');}else location.hash='alerts';});
  $('close-dialog').addEventListener('click',()=>$('asset-dialog').close());
- $('asset-dialog').addEventListener('close',()=>{if(returnFocus?.isConnected)returnFocus.focus();});
+ $('asset-dialog').addEventListener('close',()=>{detailRequest++;if(returnFocus?.isConnected)returnFocus.focus();});
  $('filter-form').addEventListener('submit',(event)=>event.preventDefault());
  ['asset-search','department-filter','status-filter'].forEach((id)=>$(id).addEventListener(id==='asset-search'?'input':'change',updateFilters));
  // Reset's default action must finish before reading input/select values.
@@ -234,7 +250,7 @@
   document.querySelectorAll('.subtle-tag').forEach(tag=>{tag.textContent=tag.textContent.includes('Chỉ đọc')?'Chỉ đọc':'Dữ liệu hệ thống';});
   document.querySelector('.panel-footnote').textContent='Thống kê trong phạm vi tài sản được cấp quyền.';
   $('load-error').querySelector('h2').textContent='Chưa tải được dữ liệu hệ thống';
-  document.querySelector('#alerts-panel .panel-heading p').textContent='Tối đa 10 thiết bị hỏng hoặc đang bảo trì trong phạm vi của bạn.';
+  document.querySelector('#alerts-panel .panel-heading p').textContent='Thiết bị trong phạm vi và giấy phép dùng chung theo quyền. Danh sách hiển thị có giới hạn; số đếm là tổng cảnh báo.';
   document.querySelector('#assets-panel .panel-heading p').textContent='Tra cứu thiết bị trong phạm vi được cấp quyền';
   document.querySelector('#asset-dialog .dialog-meta').textContent='Hồ sơ tài sản';
   document.querySelector('#asset-dialog>p').textContent='Thông tin thiết bị chỉ đọc. Chức năng cập nhật sẽ được triển khai ở bước tiếp theo.';

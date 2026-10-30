@@ -1,15 +1,32 @@
 <!doctype html>
 <html lang="vi" data-bs-theme="dark">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Đăng nhập — InfraCore</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/assets/ita/vendor/bootstrap/5.3.8/bootstrap.min.css"><link rel="stylesheet" href="/assets/ita/css/ita-tokens.css"><link rel="stylesheet" href="/assets/ita/css/ita-shell.css"><script src="/assets/ita/js/ita-login.js" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><title>Đăng nhập — InfraCore</title><link rel="icon" href="data:,"><script src="/assets/ita/js/ita-appearance.js?v=20261027-1"></script><link rel="stylesheet" href="/assets/ita/vendor/bootstrap/5.3.8/bootstrap.min.css"><link rel="stylesheet" href="/assets/ita/css/ita-tokens.css?v=20261027-themes"><link rel="stylesheet" href="/assets/ita/css/ita-shell.css"><link rel="stylesheet" href="/assets/ita/css/ita-refinements.css?v=20261027-1"><link rel="stylesheet" href="/assets/ita/css/ita-focus.css?v=20261027-1"><link rel="stylesheet" href="/assets/ita/css/ita-login.css?v=20261027-1"><script src="/assets/ita/js/ita-login.js" defer></script><link rel="stylesheet" href="/assets/ita/css/ita-motion.css?v=20261023-12"><script src="/assets/ita/js/motion/ita-core.js?v=20261027-themes" defer></script><script src="/assets/ita/js/motion/ita-login.js?v=20261023-12" defer></script></head>
 <body class="login-page">
  {include file="admin/ita/partials/icons.tpl.html"}
- <main class="login-content"><a class="brand" href="/admin.php?op=ita&amp;act=login"><span class="brand-mark"><svg class="ita-icon" aria-hidden="true"><use href="#ita-icon-monitor"/></svg></span><span class="brand-text">Infra<span>Core</span></span></a>
- <section class="login-card" aria-labelledby="login-title"><h1 id="login-title">Đăng nhập InfraCore</h1><p class="muted">Truy cập tài sản và công việc trong phạm vi bạn phụ trách.</p>
+ <main class="login-content">
+ <section class="login-hero" aria-labelledby="login-intro-title">
+  <a class="brand" href="/admin.php?op=ita&amp;act=login"><span class="brand-mark"><svg class="ita-icon" aria-hidden="true"><use href="#ita-icon-monitor"/></svg></span><span class="brand-text">Infra<span>Core</span><small>IT OPERATIONS WORKSPACE</small></span></a>
+  <h2 id="login-intro-title">Từ từng thiết bị,<br>đến toàn bộ hạ tầng.</h2>
+  <p class="login-intro">Hồ sơ tài sản, bàn giao và công việc vận hành — trong một không gian làm việc theo quyền của bạn.</p>
+  <svg class="login-topology" viewBox="0 0 480 290" role="img" aria-labelledby="login-topology-title"><title id="login-topology-title">Minh họa các công việc quản lý hạ tầng, không phải dữ liệu kết nối thật</title>
+   <g class="login-topology-lines"><path d="M90 70H240V145H390M90 220H240V145M390 220H240M390 70H240"/><circle cx="240" cy="145" r="48"/></g>
+   <g class="login-topology-center"><rect x="210" y="120" width="60" height="40" rx="6"/><path d="M240 160v13m-17 0h34"/></g>
+   <g class="login-topology-device" transform="translate(35 35)"><rect width="110" height="70" rx="12"/><use href="#ita-icon-monitor" x="41" y="10" width="28" height="28"/><text x="55" y="57">Tài sản</text></g>
+   <g class="login-topology-device" transform="translate(335 35)"><rect width="110" height="70" rx="12"/><use href="#ita-icon-transfer" x="41" y="10" width="28" height="28"/><text x="55" y="57">Bàn giao</text></g>
+   <g class="login-topology-device" transform="translate(35 185)"><rect width="110" height="70" rx="12"/><use href="#ita-icon-wrench" x="41" y="10" width="28" height="28"/><text x="55" y="57">Bảo trì</text></g>
+   <g class="login-topology-device" transform="translate(335 185)"><rect width="110" height="70" rx="12"/><use href="#ita-icon-report" x="41" y="10" width="28" height="28"/><text x="55" y="57">Báo cáo</text></g>
+  </svg>
+  <p class="login-focus-note">Không gian làm việc tập trung.<br>Ít trang trí hơn, giữ nguyên mọi chức năng.</p>
+  <p class="login-hero-foot">Enterprise IT Asset &amp; Infrastructure Management</p>
+ </section>
+ <div class="login-form-panel">
+ <button type="button" class="secondary-button motion-toggle login-mode-toggle" data-motion-toggle aria-pressed="true">Hiệu ứng: Bật · Command</button>
+ <section class="login-card" aria-labelledby="login-title"><h1 id="login-title">Đăng nhập InfraCore</h1><p class="muted">Tiếp tục công việc trong phạm vi bạn phụ trách.</p>
  {if $itaError}<div class="login-error" role="alert">{$itaError|escape:'html'}</div>{/if}
  <form method="post" action="/admin.php?op=ita&amp;act=login" id="login-form">
   <input type="hidden" name="csrf_token" value="{$itaCsrf|escape:'html'}">
   <label for="username">Tên đăng nhập hoặc email</label><input class="form-control" id="username" name="username" autocomplete="username" maxlength="200" required autofocus>
   <label for="password">Mật khẩu</label><div class="password-field"><input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required><button type="button" class="secondary-button" id="password-toggle" aria-controls="password" aria-pressed="false">Hiện</button></div>
   <button type="submit" class="primary-button login-submit">Đăng nhập</button>
- </form><p class="login-help muted">Chưa có quyền truy cập? Liên hệ Admin IT của bạn.</p></section><p class="login-footer muted">Hệ thống quản lý & tối ưu hạ tầng CNTT</p></main>
+ </form><p class="login-help muted">Chưa có quyền truy cập? Liên hệ Admin IT của bạn.</p></section><p class="login-footer muted">Hệ thống quản lý &amp; tối ưu hạ tầng CNTT</p></div></main>
 </body></html>

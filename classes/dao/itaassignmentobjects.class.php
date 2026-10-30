@@ -17,7 +17,10 @@ class ItaAssignmentObjects
 
     public function detail(int $id, int $page): array
     {
+        if ($this->actor->capabilitiesEnabled) { $this->actor->requireCapability('assignment.read'); }
         $asset = $this->asset($id);
+        $cycle = $this->db->fetchOne('SELECT maintenance_cycle_months FROM ita_asset_categories WHERE store_id=? AND id=?','ii',[$this->actor->storeId,$asset['category_id']]);
+        $schedule = $asset+['maintenance_cycle_months'=>$cycle['maintenance_cycle_months'] ?? null];
         $active = $this->db->fetchOne('SELECT * FROM ita_assignments WHERE store_id=? AND asset_id=? AND returned_at IS NULL LIMIT 1','ii',[$this->actor->storeId,$id]);
         $total = (int) $this->db->fetchOne('SELECT COUNT(*) n FROM ita_assignments WHERE store_id=? AND asset_id=?','ii',[$this->actor->storeId,$id])['n'];
         $page = max(1,min($page,max(1,(int) ceil($total/20))));
@@ -25,7 +28,7 @@ class ItaAssignmentObjects
             FROM ita_assignments WHERE store_id=? AND asset_id=? ORDER BY assigned_at DESC,id DESC LIMIT 20 OFFSET ?','iii',[$this->actor->storeId,$id,($page-1)*20]);
         return ['asset'=>['id'=>$id,'code'=>$asset['asset_code'],'name'=>$asset['name'],'status'=>$asset['status'],
             'department_id'=>$asset['department_id'],'current_user_id'=>$asset['current_user_id'],'version'=>ItaAssetService::version($asset),
-            'maintenance_overdue'=>ItaAssignmentRules::overdue($asset),'next_maintenance_due'=>$asset['next_maintenance_due'] ?? null],
+                'maintenance_overdue'=>ItaAssignmentRules::overdue($schedule),'next_maintenance_due'=>ItaMaintenanceSchedule::effective($schedule)],
             'active'=>$active ? $this->presentation($active) : null,'history'=>$rows,'page'=>$page,'per_page'=>20,'total'=>$total,
             'pdf_available'=>ItaHandoverPdf::available()];
     }
@@ -39,7 +42,7 @@ class ItaAssignmentObjects
 
     public function recipients(string $query, int $page): array
     {
-        if (!in_array($this->actor->role,['admin_it','system_manager'],true)) {
+        if (!$this->actor->can('assignment.create')) {
             throw new ItaHttpError(403,'Bạn không có quyền chọn người nhận bàn giao mới.');
         }
         $pattern = '%'.str_replace(['=','%','_'],['==','=%','=_'],$query).'%';

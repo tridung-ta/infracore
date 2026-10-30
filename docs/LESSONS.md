@@ -1,5 +1,125 @@
 # Bài học tái sử dụng — phải kiểm chứng tại dự án đích
 
+## 29/10/2026 — Reset mật khẩu và request đăng nhập cũ
+
+- Rà source thấy UPDATE rehash/last_login không gắn credential đã đọc, nên request đăng nhập cũ có thể ghi đè reset. Test fake transport dựng reset ngay trước native UPDATE để kiểm hợp đồng; chưa chứng minh đồng thời DB thật.
+- Sửa CAS cả password/password_hash và trạng thái, refetch khi affected=0 để phân biệt cùng giây với credential đã đổi. Reset chặn tái sử dụng cả modern và MD5 cũ, chặn revision MAX trước native write và kiểm affected revision.
+- Native MyISAM không rollback cùng ITA; lỗi sau ghi phải báo kết quả chưa rõ, không retry mù. Kiểm nguồn gốc audit user.create hạn chế đối tượng quản lý nhưng không chứng minh quyền của tài khoản ở ứng dụng khác luôn thấp.
+
+## 29/10/2026 — Form phân quyền và phản hồi tới trễ
+
+- Review source chỉ ra form trước có thể bị ghi đè bởi phản hồi cũ; tên tài khoản có thể đổi trong lúc lưu. Không có bằng chứng lỗi thực trên host.
+- Sửa bằng sequence theo lượt mở, hủy hiệu lực khi đổi view/tạo mới, khóa mở form khác khi đang lưu và giữ tên tại thời điểm gửi; xóa validity cũ khi mở lại form.
+- Browser Node mock 6 checks gồm giữ GET/POST rồi nhả có kiểm soát; không thay kiểm transaction hay đồng thời DB.
+
+## 29/10/2026 — Timer và lỗi form cũ che trạng thái mới
+
+- Triệu chứng được review source: timer thông báo thành công có thể ẩn thông báo kết quả tìm tiếp; lỗi form loại có thể còn khi chọn bản ghi khác.
+- Sửa: hủy timer khi cập nhật trạng thái tài khoản; hướng dẫn lỗi native hiển thị cạnh trường không gắn custom validity lâu dài, reset form khi chọn loại có sẵn.
+- Kiểm local: 12 browser checks lọc/timer, 26 kiểm danh mục gồm nhập sai rồi chọn bản ghi; API mock, không DB/host.
+
+## 28/10/2026 — Trim không đủ kiểm dữ liệu chỉ có ký tự vô hình
+
+- Triệu chứng: test mới cho fullname toàn NBSP được validator tạo tài khoản chấp nhận (test đỏ No denial), dù yêu cầu tên không trống.
+- Nguyên nhân: PHP trim mặc định không loại mọi khoảng trắng Unicode; chuỗi zero-width cũng không rỗng theo trim.
+- Sửa trong tạo tài khoản: kiểm blank-only bằng nhóm Unicode whitespace/separator/format ở PHP và JS. Không xóa ký tự định dạng nằm trong tên có nội dung hoặc trim mật khẩu thật.
+- Kiểm:135checks PHP và27browser local đạt; form-guidance có thể bắt NBSP bằng field validity trước handler mới. Không dùng test mock làm bằng chứng DB/host.
+
+## 28/10/2026 — Pattern HTML trong Smarty phải render thật
+
+- Triệu chứng: pattern username có quantifier `{2,49}` trong attribute làm Smarty báo Unexpected comma, dù preview HTML tĩnh vẫn mở.
+- Nguyên nhân đã tái hiện: Smarty đọc dấu ngoặc regex như delimiter template khi compile access.tpl.html.
+- Sửa: biểu diễn ngoặc bằng HTML entities trong attribute, giữ pattern DOM sau decode; không đổi validator PHP để né lỗi.
+- Kiểm: ita_phase03_render.php render Smarty thật đạt; browser tạo user/validation/bounds đạt. Preview không thay kiểm compiler.
+
+## 28/10/2026 — Cảnh báo hiệu lực khác nhắc chưa xem; boot/cache và phản hồi muộn
+
+- Triệu chứng: user mở cảnh báo vẫn thấy8 và nghĩ chưa đọc; lọc bộ phận có thể thay badge toàn phạm vi. Source cũ dùng active_total làm badge, không có read receipt. Browser override baseline1652264 tái hiện kiểm ẩn badge đỏ.
+- Sửa trong phạm vi user chọn: trạng thái nhắc chỉ trong session/tab; giữ số còn cần xử lý riêng; canonical GET không filter, chờ snapshot và danh sách thành công rồi mark. Generation/identity bỏ response cũ; fallback storage chỉ bộ nhớ. Fingerprint trang đầu không phải read receipt mọi item.
+- Khi thử reload gặp khởi tạo chuông bị bỏ lỡ nếu data boot đến trước listener: thêm init khi context đã có; không nhận0 giả khi chưa có snapshot. Review phát hiện cache URL JS cũ; tăng version các asset sửa và kiểm URL thực trong DOM.
+- Kiểm: alert_session_browser17 +dashboard70 +capabilities19 qua API mock, không DB/host. Không dùng mở trang để tự giải quyết rủi ro nghiệp vụ hoặc ghi đã đọc trên server.
+
+## 27/10/2026 — Validation liên trường và bounds bên trong panel
+
+- Triệu chứng: bảo hành trước ngày mua bị chặn; sửa riêng ngày mua vẫn không submit được. Phân loại: FE customValidity liên trường.
+- Bằng chứng/nguyên nhân: customValidity còn nằm trên ô bảo hành; native validation chặn trước listener submit có thể tính lại. Đã xóa lỗi liên trường khi một trong hai ngày thay đổi; hồi quy dùng đúng thao tác sửa ngày bắt đầu, không sửa ô kết thúc.
+- Kiểm: ita_ui_refinements_browser20checks và ita_ui_manual_preview_browser12checks; API giả/static, không DB. Quy tắc server vẫn quyết định.
+- Phạm vi: cặp ngày phụ thuộc nhau, không tự xóa mọi lỗi server. Tương tự, đo scrollWidth toàn trang không thấy input bị clip trong panel overflow:hidden; phải đo bounding box từng input. Demo độc lập cần base font/layout riêng, không giả định đã tải Bootstrap từ shell.
+
+## 26/10/2026 — Tổng kết cuối ngày theo yêu cầu tạm dừng
+
+Đã lưu [RETROSPECTIVE_20261026.md](RETROSPECTIVE_20261026.md): trạng thái/commit/artifact, lỗi sản phẩm so với lỗi test/công cụ, bằng chứng và cách sửa, ràng buộc source và việc dở. Đọc cùng PROGRESS/DECISIONS/gitstatus trước khi tiếp tục; bản ghi nhớ không cấp quyền mới.
+
+- Không suy runtime8.3 từ ý định/nơi cài: php.exe user cung cấp thực8.5.10; không đổi nhãn kết quả8.5 thành8.3.
+- Không sửa CSS chỉ từ ảnh nhỏ/zoom50%; không suyTLSđạt từhttps hoặc isolation/DBđạt từ một màn không503.
+- Import0hợp lệ/2lỗi phải sửa mãloại/bộphận/placeholder, không gỡ guardconfirm. Fixture đọcđược không chứng minh lookup/DBhợplệ.
+- Kịch bản cóphụthuộc phải theo trạngtháithật: P1resolved không mởlại đểtestSupport; dùngP4riêng vàghi mốc/sốliệutrước-sau.
+- Hovergiới hạn vàorbit360làhai thao tác; thay pointer phải giữmouse/touch/pen/cancel, phânbiệtclick/drag, kiểm cleanupgiữacapture.
+- Fullscreen cần bộđiềukhiển bêntrong cho bànphím/reduced-motion, focus/Esc; nhãn3D phải theo hìnhchiếucamera khi lật vàkiểm mobile.
+- Spyprototype cóthểkhôngbắt methodinstance; chờUIevent đúng, khôngsửasảnphẩm theoinstrumentation sai. UnicodequaPowerShell phảiđọclạibytes, khôngtin exitcode.
+- Tênmáy khôngmặcđịnh chỉchữ; rulemới vềngày/tiền/modeluploadphảiBEgate. FEchỉđồngbộcontractserverđãxácminh, chưa được triểnkhai trongđợtUIbịdừng.
+
+Không tự học nền, không hooks/daemon/swarm/provider; trí nhớ dự án là hồ sơ đã làm sạch, có bằng chứng và giới hạn.
+
+## 26/10/2026 — Bcrypt variant không được nhận diện chỉ bằng password_get_info
+
+- Triệu chứng/phân loại: S26-02 mới từ chối bcrypt2a/2b/2x hợp lệ dù PmAuth cũ/password_verify chấp nhận.
+- Bằng chứng: review tái hiện bằng hash giả local, test đỏ ở case2a; password_get_info có thể trảunknown cho các prefix này. Không DB/host.
+- Sửa: nhận diện format/cost bcrypt2a/2b/2x/2y đầy đủ, giữ guard>72byte và không fallback MD5 khi modern hash có giá trị; không đổi PmAuth.
+- Kiểm: case đúng/sai từngvariant một real verify, zero native write401,686checks S26+hồi quy đạt. Argon2 ngoại lệ riêng theo user; không benchmark/tuyên bố constant-time.
+- Phạm vi: phân loại credential để chọn real/dummy verify; metadata hash không thay verify mật khẩu thực.
+
+## 26/10/2026 — Hash cây dependency và filename ZIP trên Windows
+
+- Triệu chứng/phân loại: inventory báo Excel lệch baseline dù vẫn566file; validator synthetic ban đầu chấp nhận tên ZIP có NUL sau phần filename hợp lệ.
+- Bằng chứng: sorted(Path) Windows cho80fc14a4…; sort chuỗi relative POSIX cho đúng88815432…. ZipInfo giữ orig_filename nhưng cắt filename ở NUL, nên chỉ kiểm filename bỏ sót tên thô.
+- Sửa: sort explicit relative POSIX ordinal, không đổi byte/baseline; từ chối orig_filename khác filename và reparse flag. Không giải nén hoặc chạy dependency.
+- Kiểm: inventory review chạy lại khớp baseline;66 syntheticZIPchecks đạt, gồm regression NUL/reparse. Chưa ZIP ứng dụng/host.
+- Phạm vi: manifest portable và validator ZIP, không suy hash khớp thành source an toàn hoặc provenance upstream đã xác minh.
+
+## 26/10/2026 — Trích DDL chứa backtick qua PowerShell
+
+- Triệu chứng/phân loại: bản nháp migration trích bằng Python inline trong chuỗi PowerShell chỉ còn CREATE TABLE; chưa chạy SQL.
+- Bằng chứng: PowerShell diễn giải backtick trong delimiter Markdown/SQL trước khi Python nhận chuỗi; đọc lại file thấy nội dung bị cắt.
+- Sửa: ghi DDL bằng apply_patch, không truyền delimiter/backtick qua chuỗi shell nội suy. Kiểm byte CREATE với code fence gate sau chuẩn hóa LF.
+- Kiểm:57 static SQL contract checks đạt, gồm exact approved CREATE, một bảng mới, không seed/destructive, preflight/verify chỉ SELECT/SHOW. Không chứng minh SQL parser/DB.
+- Phạm vi: tạo source SQL/Markdown bằng shell Windows; đọc lại file thật trước stage/chạy bất kỳ SQL nào.
+
+## 23/10/2026 — Cleanup scene phải bao phủ cả khởi tạo và render muộn
+
+- Triệu chứng: renderfail trong browser làm fallback2D nhưng canvas cũ còn; review phát hiện xoay/chọn sau init vẫn có thể ném uncaught.
+- Bằng chứng: test WebGL2.clear ném lỗi trước return và sau scene đã sẵn sàng đều tái hiện đỏ, không suy từ module import lỗi.
+- Sửa: dispose idempotent dùng cả catch khởi tạo, draw phân biệt ready và gọi cleanup/fallback cho lỗi muộn, dừng observer/listener và tài nguyên GPU; không ghi đè message fallback bằng success.
+- Kiểm:23 browser WebGL/import/noWebGL/contextloss/latefail checks đạt; review cuối không finding. Không chứng minh driver mọi máy/host hoặc DB.
+
+## 23/10/2026 — Reset form không đủ để bỏ hidden ID/version đã chọn
+
+- Triệu chứng: browser test danh mục báo Successful save resets stale editor thất bại sau lưu thành công.
+- Bằng chứng: form.reset() không xóa ID/version hidden được gán qua value như giả định; browser assertion kiểm trực tiếp vẫn thấy giá trị cũ. Không suy áp dụng cho mọi loại input.
+- Sửa: handler reset xóa explicit hidden category-id/category-version, dùng cho cả thêm mới và sau save; giữ input khi409, không tự lấy version mới để gửi lại.
+- Kiểm:24 browser mock danh mục đạt, có reset/reselect phiên bản mới và save thành công nhưng reload lỗi;69 scripted có version mismatch409 và đúng version UPDATE/audit. Không DB/host.
+
+## 22/10/2026 — Dispose biểu đồ phải vô hiệu hóa cache view
+
+- Triệu chứng: Tổng quan → Tài sản → Tổng quan giữ KPI/bảng nhưng chart trống.
+- Nguyên nhân có bằng chứng: nhánh rời trang dispose chart nhưng giữ view/documentData; khi quay lại, điều kiện cache return sớm bỏ qua render.
+- Sửa: xóa trạng thái view/documentData lúc rời trang, lần quay lại tải/render lại theo thao tác điều hướng của user, không thêm polling.
+- Kiểm: browser API mock64 check đạt, có4 check mới rời/quay lại trên Admin/Quản lý. Chưa DB/host; phạm vi controller dashboard có dispose/cached view.
+
+## 22/10/2026 — Mốc giờ, actor và phản hồi muộn trong báo cáo
+
+- Triệu chứng/phân loại: token ngân sách có thể lệch vì timestamp được tạo hai lần; tài khoản native bị vô hiệu hóa trong lúc render chưa được kiểm lại; trang server clamp khác biến page local; phản hồi maintenance cũ có thể ghi đè trang từ chối quyền.
+- Bằng chứng: review source chỉ rõ các đường đi; scripted budget giữ as_of cũ kiểm token ổn định, double native-disabled bị403; browser tái hiện trang3 trả về2 và delayed request chuyển sang trang bị từ chối.
+- Sửa: forecast hiện tại dùng as_of chung trước ký; snapshot giữ giờ gốc; đọc lại native active/store trước audit/bytes; đồng bộ page từ response, vô hiệu nút khi tải; abort và sequence guard trên mọi lần chuyển view.
+- Kiểm: 52 pure/scripted,7 budget và60 browser API mock đạt trong đợt #10. Không dùng double để tuyên bố native MyISAM race hoặc rollback InnoDB thật đã đạt.
+- Phạm vi: preview/export có chữ ký và UI bất đồng bộ; phải tái hiện lại trước khi áp dụng vào trang khác.
+
+## ITA-20261020-07 Ticket thiếu phản hồi nhìn thấy khi UAT host
+
+User báo tạo phiếu/tải danh sách không có thông báo; chưa có response/log để xác định nguyên nhân ghi DB host. Đã tái hiện local: lỗi mạng đặt text nhưng thông báo có bbox top=-365px dù đang focus; scroll-behavior smooth chưa đưa nó vào viewport ở thời điểm phản hồi. Tải danh sách thành công cũng không có thông báo hoàn tất khi kết quả không đổi.
+
+Sửa FE: focus/cuộn instant vào giữa, thông báo pending/completion, số phiếu sau tải, lỗi HTTP/JSON và invalid form. Review bổ sung completion mặc định cho detail/statistics/paging. Browser API mock kiểm viewport sau lỗi và HTTP503; không coi việc sửa phản hồi là đã sửa nguyên nhân DB host. Cần UAT lại và đọc thông báo thực tế, không chạy lại CREATE.
+
 Các nguyên tắc dưới đây được rút ra từ tình huống đã gặp ở dự án trước. Chúng không chứng minh dự án mới có cùng lỗi hoặc mọi giải pháp cũ đều áp dụng được.
 
 | Khi gặp | Cách tiếp cận nên dùng | Điều cần kiểm tra |
@@ -64,6 +184,12 @@ Các nguyên tắc dưới đây được rút ra từ tình huống đã gặp 
 
 Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu người thật vào tài liệu này.
 
+## ITA-20261020-06 Lịch ban đầu và mốc trạng thái ticket
+
+- Review Phase7 phát hiện source bỏ qua tính lại lịch khi đã có due, dù chưa bảo trì và ngày mua được sửa. Đã phân biệt last_maintenance_at với lịch ban đầu; scripted test ngày mua 31/01 → 28/02 xác minh due đổi tương ứng, còn lịch sau bảo trì được giữ. Chưa chạy DB.
+- Review cũng thấy dùng updated_at chọn phiếu cuối sẽ để sửa cost phiếu cũ tác động cờ chờ Admin. Đây là rủi ro suy ra từ writer và query, chưa tái hiện trên DB thật. Đã dùng mốc/id event lifecycle và loại trừ pending ở cả helper và query cảnh báo; test contract không còn updated_at, UAT phải thử old failed/new resolved rồi sửa cost cũ.
+- Browser form ticket cho phép gõ khi save còn refresh; dữ liệu gõ có thể bị render đọc lại ghi đè. Đã khóa input/select/textarea trong busy state cùng nút, test chờ đúng read-back trước bước tiếp theo. Browser API mock đạt, không suy thành persistence E2E.
+
 ## ITA-20261016-01 PHP lint thư viện mail cũ
 
 - Triệu chứng: php -l trên 1.456 file thất bại ở 5 file liệt kê trong BASELINE.md.
@@ -103,3 +229,71 @@ Không nhập transcript/raw log, mật khẩu, token, cookie hoặc dữ liệu
 - Bằng chứng: stylesheet inline chứa dấu ngoặc nhọn không có khoảng trắng, Smarty diễn giải thành tag. Lệnh `php -d extension=gd tests/ita_phase05_pdf.php` tái hiện được.
 - Sửa: chỉ bọc stylesheet tĩnh bằng literal, giữ toàn bộ dữ liệu biên bản dùng escape html và nl2br sau escape. Không bọc literal quanh dữ liệu để bỏ escape.
 - Kiểm tra: render PDF thật 1/2 trang, kiểm injection template, pypdf/pdfplumber và nhìn ảnh Poppler đạt. Múi giờ VN, seri 0 đầu, tiếng Việt và chữ ký đọc được; không DB.
+
+
+### 21/10/2026 — POST allowlist thiếu endpoint mới
+- Triệu chứng: tạo phiếu nhận HTTP403 không phải JSON dù trang đăng nhập và giao diện mở được.
+- Phân loại: routing trước application.
+- Nguyên nhân có bằng chứng: itaRequestDecision từ chối ticket-save; dispatcher có endpoint nhưng allowlist chưa cập nhật. Tương tự license-save/license-key.
+- Sửa: chỉ thêm ba endpoint đã duyệt, giữ deny cho action lạ và kiểm quyền/CSRF ở application.
+- Kiểm tra: tests/ita_write_routes.php 12 checks đạt; ticket pure/scripted 236 đạt, không DB.
+- Phạm vi: kiểm routing gate ngoài cùng khi thêm endpoint; mock fetch không chứng minh request qua gate. GET danh sách host vẫn cần response để chẩn đoán riêng.
+
+
+### 21/10/2026 — Hiển thị DECIMAL khi Việt hóa chi phí
+- Triệu chứng: giá trị lớn có nguy cơ bị làm tròn khi định dạng giao diện.
+- Phân loại: FE numeric precision.
+- Bằng chứng: review chỉ ra Number('9999999999999999.99') làm mất phần lẻ và đổi giá trị nguyên.
+- Sửa: nhóm chữ số và dấu thập phân trực tiếp trên chuỗi, không Number/float; đầu ra dùng textContent.
+- Kiểm tra: browser mock thống kê xác nhận 9.999.999.999.999.999,99; bộ43checks đạt, không DB.
+- Phạm vi: formatter hiển thị tiền ticket/list/detail/history/stats; không sửa payload hoặc logic tính chi phí backend.
+
+
+### 21/10/2026 — Nhãn ẩn trong bảng cuộn vẫn có thể làm tràn trang
+
+- Triệu chứng: vòng đời ở 768px có document scrollWidth 816px; ở 390px là 730px.
+- Phân loại: FE responsive, không phải dữ liệu DB.
+- Bằng chứng: nhãn visually-hidden nằm trong ô tiêu đề của bảng min-width 790px; bounding box vượt viewport, vùng bảng chưa có overflow riêng.
+- Sửa: overflow-x:auto cho vùng bảng, position:relative cho ô tiêu đề để chứa nhãn ẩn; bảng thiết bị trên mobile dùng khối thông tin, bảng nhóm giữ scroll cục bộ.
+- Kiểm tra: browser mock đo document width và form bounds ở 1366/768/390 đạt; điểm mobile nằm trong viewport. Bộ 37 checks đạt; đã xem ảnh desktop/mobile.
+- Phạm vi: bảng có nội dung ẩn truy cập được và độ rộng tối thiểu lớn; không chữa bằng cách ẩn tràn toàn body.
+
+
+### 21/10/2026 — Metadata snapshot phải ghi đè dữ liệu lưu
+
+- Triệu chứng: JSON lưu có saved=false, đọc lại vẫn bị gắn nhãn dự báo hiện tại và bỏ qua kiểm version export.
+- Bằng chứng: union mảng PHP giữ giá trị bên trái. Review độc lập xác định; test save/read tái hiện.
+- Sửa: array_replace cho metadata đáng tin, kiểm cấu trúc/tiền/tổng; lọc loại từ snapshot.
+- Kiểm: scripted save/read, đổi giá không đổi snapshot, explicit recalc, stale export409 và snapshot sai409 đạt. Chưa DB thật.
+- Phạm vi: DTO ghép payload lưu với metadata server.
+
+### 21/10/2026 — HTTP200 chưa đủ xác nhận tải báo cáo
+
+- Triệu chứng: HTML đăng nhập/lỗi có thể bị lưu thành PDF và báo thành công.
+- Bằng chứng: FE chấp nhận mọi 200 không JSON; review phát hiện, browser mock tái hiện HTML200 và MIME PDF có chữ ký sai.
+- Sửa: kiểm MIME và signature %PDF-/ZIP trước tạo download.
+- Kiểm: 38 browser mock checks đạt, gồm hai lỗi trên cho Admin/Quản lý. Chưa kiểm host.
+- Phạm vi: tải Excel/PDF qua fetch.
+
+### 21/10/2026 — Pipeline shell có thể làm mất dấu trong script Unicode
+
+- Triệu chứng: phần bổ sung docs và nhãn menu có ký tự ? thay dấu tiếng Việt.
+- Bằng chứng: đọc UTF-8 và git diff thấy dữ liệu đã mất dấu; nội dung đi qua here-string PowerShell pipe vào Python.
+- Sửa: dùng apply_patch hoặc file script UTF-8 rồi chạy bằng đường dẫn; không đổi locale toàn cục. Khôi phục chỉ các đoạn vừa thêm và kiểm lại file thật.
+- Kiểm: đối chiếu docs, nhãn menu và browser regression; không lấy việc file giải mã được UTF-8 làm bằng chứng đủ dấu.
+- Phạm vi: ghi source/tài liệu Unicode qua shell pipeline.
+
+### 22/10/2026 — Giữ HTTP status trước khi giải mã JSON
+
+- Triệu chứng/phân loại: lỗi HTML403/404/503 bị trình bày như mất kết nối ở FE tải trang.
+- Bằng chứng: review phát hiện response.json có thể throw trước nhánh response.ok; browser mock tái hiện phản hồi HTML theo từng mã.
+- Sửa: lỗi giải mã giữ response.status; HTTP200 khôngJSON dùng500. Không thêm retry POST hoặc thay quyền server.
+- Kiểm: 61 kiểm tra browser error-state đạt, gồm HTML403/404/503 và chính sách retry. Chưa kiểm HTTP server host.
+- Phạm vi: shell tải dữ liệu, không thay thông báo form các chức năng khác.
+
+### 22/10/2026 — Đo vùng cuộn bảng khi kiểm responsive
+
+- Triệu chứng/phân loại: test bounds báo nhầm nút bảng lifecycle/admin vượt viewport dù bảng cuộn nội bộ đúng thiết kế.
+- Bằng chứng: đo ancestor overflow-x=auto, scrollWidth>clientWidth và khung nằm trong viewport; document không tràn ngang.
+- Sửa: chỉ chấp nhận phần tử ngoài vùng nhìn khi có ancestor cuộn được đo thật, không bỏ qua theo tên class. Giữ kiểm overflow toàn trang và form ngoài bảng.
+- Kiểm: 58 static responsive và14 admin/login mock đạt tại1366/768/390; đã xem ảnh. Không suy thành nghiệm thu mọi dữ liệu host.
