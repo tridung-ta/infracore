@@ -1,5 +1,7 @@
 # Trạng thái BUILD hiện tại — 23/10/2026
 
+**30/10 — chốt BUILD giao diện và một delta cuối:** source6a9d1eb,37browser/1.141checks/service/HTTP/export/lint10PHPdeltađạt.27file/80.865byte `infracore-delta-final-20261030-a7c2da1-to-6a9d1eb.zip`, basea7c2da1. FINAL_BUILD_VERIFY_20261030/HOST_UPLOAD_FINAL_20261030; chưaupload/DB/PHP8.3/FPM. Các gói29/10 bên dưới là lịch sử, dùng delta cuối này để gom sửa mộtlượt.
+
 **29/10 — gói cập nhật mới đã tạo:** runtime cố định171edde, `artifacts/ita-host-20261029/infracore-update-phase14-171edde.zip`49.322.000byte; SHA256 d4547bcb9a979d0f8827cd4aa96b3d5f6eb4f06844b780274d5fb27297ce8b76.36browser/1.119checks,1.147PHP lint, service/HTTP/export đạt; ZIP readback +review độc lập đạt. Gồm sửa/reset tài khoản có nguồn gốc, CAS PmAuth, thông báo và bố cục nhóm quyền. Hướng dẫn HOST_UPLOAD_PHASE14_20261029; CHƯA UPLOAD, PHP8.3/FPM/DB chưa nghiệm thu. Không gói config/SQL/marker/MOCK/data thật; giữ các checkpoint cũ bên dưới.
 
 **29/10 — tiếp tục kiểm yêu cầu:** BUILD_VERIFY_20261029 ghi lượt kiểm local không DB và cập nhật bằng chứng user: SQL007/mapping 47 quyền đã COMMIT; nút thêm tài khoản hiện sau user bật flag; CHECK ticket_events tồn tại theo SHOW CREATE. Chưa có bằng chứng enforcement CHECK, runtime grants, tạo tài khoản thật hay nghiệm thu DB/host. Các dòng SQL007 chưa chạy/cờ chưa bật bên dưới là checkpoint cũ. PHP local 8.5.10, chưa kiểm 8.3/FPM; gói cũ không chứa sửa 29/10, chưa tạo gói mới.

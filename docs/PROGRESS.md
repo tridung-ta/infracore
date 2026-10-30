@@ -1,5 +1,11 @@
 # Tiến độ dự án 5
 
+## 30/10/2026 — Chốt BUILD và gói delta một lượt
+
+|Mã|Chức năng|Vùng|Trạng thái|Commit|Verify|Ghi chú|
+|---|---|---|---|---|---|---|
+|F11.5/F14final|Hoàn thiện yêu cầuđãduyệt và delta gom29–30/10|FE/BE/tàiliệu|[x]local/gói|Runtime6a9d1eb; hồsơ riêng|37browser1141;service/auth/HTTP267/exports/lint10PHPdelta;actualZIPCRC/hash/exclusionsđạt|FINAL_BUILD_VERIFY_20261030;27file80.865byte,nền a7c2da1;chưahost/DB/PHP8.3,khôngpush/merge/tag/deploy|
+
 30/10 — Theo user, danh sách máy tự tải GET trangđầu khi mở Phân bổ/Thu hồi; không tự chọn/mởhồsơ/ghi. Nút tải lại danh sách giữ để phục hồi lỗi. Browser22+35/Smarty/JSsyntaxđạt, không DB/host/gói/upload. Chi tiết UI_REFINEMENTS_20261030.
 
 ## 30/10/2026 — Bộ chọn máy và giao diện Focus/thông báo
